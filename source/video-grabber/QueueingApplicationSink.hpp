@@ -1,13 +1,14 @@
 #ifndef CATS2_QUEUEING_APPLICATION_SINK_HPP
 #define CATS2_QUEUEING_APPLICATION_SINK_HPP
 
+#include "TimestampedFrame.hpp"
 
 #include <QGst/Utils/ApplicationSink>
 #include <QGst/Structure>
 
+#include <opencv2/core/core.hpp>
+
 #include <QtCore/QObject>
-#include "opencv2/core/core.hpp"
-#include "TimestampedFrame.hpp"
 
 /*!
  * \brief The application sink that puts the recived frames to the queue.

@@ -1,13 +1,17 @@
 #include "QueueingApplicationSink.hpp"
 
-#include <chrono>
-#include <QImage>
 #include <gst/gstcaps.h>
 #include <gst/video/video.h>
+
 #include <QGst/buffer.h>
+
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 #include <opencv2/imgproc/imgproc.hpp>
+
+#include <QtGui/QImage>
+
+#include <chrono>
 
 /*!
  * Constructor. Gets a queue to put the frames in.
@@ -53,8 +57,7 @@ QGst::FlowReturn QueueingApplicationSink::newSample()
     QGst::SamplePtr convertedSample = QGst::SamplePtr::wrap(gst_video_convert_sample(sample, capsTo, GST_SECOND, &err));
     if (convertedSample.isNull()) {
         qWarning() << "Video conversion failed:" << err->message;
-    }
-    else {
+    } else {
         QGst::BufferPtr buffer = convertedSample->buffer();
         QGst::MapInfo mapInfo;
         buffer->map(mapInfo, QGst::MapRead);

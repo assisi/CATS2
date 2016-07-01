@@ -1,12 +1,13 @@
 #ifndef CATS2_TIMESTAMPED_FRAME_HPP
 #define CATS2_TIMESTAMPED_FRAME_HPP
 
-#include <QDebug>
-#include <QtCore/QSharedPointer>
-
 #include <readerwriterqueue.h>
 
 #include "opencv2/core/core.hpp"
+
+#include <QtCore/QDebug>
+#include <QtCore/QSharedPointer>
+
 #include <chrono>
 
 /*!

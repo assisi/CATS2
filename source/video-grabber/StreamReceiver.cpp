@@ -1,4 +1,5 @@
 #include "StreamReceiver.hpp"
+
 #include <QGst/Parse>
 #include <QGlib/Connect>
 #include <QGst/Bus>
@@ -19,17 +20,17 @@ StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, TimestampedFra
     _sink(outputQueue)
 {
     switch (streamParameters.streamType()) {
-    case StreamType::VIDEO_4_LINUX:
-    {
-        int videoDeviceId = streamParameters.parameters().toInt();
-        _pipe1ineDescription = QString("v4l2src device=\"/dev/video%1\" ! "
-                                       "decodebin ! "
-                                       "appsink name=\"queueingsink\" ").arg(videoDeviceId);
-        break;
-    }
-    case StreamType::UNDEFINED:
-    default:
-        break;
+        case StreamType::VIDEO_4_LINUX:
+        {
+            int videoDeviceId = streamParameters.parameters().toInt();
+            _pipe1ineDescription = QString("v4l2src device=\"/dev/video%1\" ! "
+                                           "decodebin ! "
+                                           "appsink name=\"queueingsink\" ").arg(videoDeviceId);
+            break;
+        }
+        case StreamType::UNDEFINED:
+        default:
+            break;
     }
 }
 
@@ -70,14 +71,14 @@ void StreamReceiver::onError(const QGst::MessagePtr & message)
 {
     QString errorMessage;
     switch (message->type()) {
-    case QGst::MessageEos:
-        errorMessage = "End of stream ";
-        break;
-    case QGst::MessageError:
-        errorMessage = message.staticCast<QGst::ErrorMessage>()->error().message();
-        break;
-    default:
-        break;
+        case QGst::MessageEos:
+            errorMessage = "End of stream ";
+            break;
+        case QGst::MessageError:
+            errorMessage = message.staticCast<QGst::ErrorMessage>()->error().message();
+            break;
+        default:
+            break;
     }
     qCritical() << errorMessage;
     stop();

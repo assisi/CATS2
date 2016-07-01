@@ -1,9 +1,9 @@
 #ifndef CATS2_VIDEO_GRABBER_HPP
 #define CATS2_VIDEO_GRABBER_HPP
 
-#include <QtCore/QObject>
-
 #include "StreamReceiver.hpp"
+
+#include <QtCore/QObject>
 
 /*!
 * \brief This class manages the video reception from one or several sources. It creates and launches stream receivers in separated threads.

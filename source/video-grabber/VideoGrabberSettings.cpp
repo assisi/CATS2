@@ -34,9 +34,8 @@ bool VideoGrabberSettings::init(int argc, char** argv)
     bool settingsAccepted = false;
 
     // first check for the "-h"/"--help" request
-    if ((std::find(argv, argv + argc, "-h") != (argv + argc)) ||
-        (std::find(argv, argv + argc, "--help") != (argv + argc)))
-    {
+    if ((std::find(argv, argv + argc, "-h") != (argv + argc))
+        || (std::find(argv, argv + argc, "--help") != (argv + argc))) {
         printSupportedArguments();
         // if the user asks for a help then he/she doesn't know what is happening,
         // hence need to ignore the rest of arguments
@@ -46,8 +45,8 @@ bool VideoGrabberSettings::init(int argc, char** argv)
     // try to find the supported arguments among present ones
     QString streamType;
     QString streamParameters;
-    bool foundMainCameraParameters = (parseStreamArguments(argc, argv, "-mc", streamType, streamParameters) ||
-                                         parseStreamArguments(argc, argv, "--maincam", streamType, streamParameters));
+    bool foundMainCameraParameters = (parseStreamArguments(argc, argv, "-mc", streamType, streamParameters)
+                                      || parseStreamArguments(argc, argv, "--maincam", streamType, streamParameters));
     if (foundMainCameraParameters) {
         _mainCameraDescriptor = StreamDescriptor(streamType, streamParameters);
         settingsAccepted = foundMainCameraParameters;

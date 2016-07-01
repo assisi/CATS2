@@ -1,6 +1,6 @@
 #include "VideoGrabber.hpp"
 
-#include <QThread>
+#include <QtCore/QThread>
 
 /*!
 * Constructor.

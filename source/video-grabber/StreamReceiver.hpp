@@ -1,10 +1,12 @@
 #ifndef CATS2_STREAM_RECEIVER_H
 #define CATS2_STREAM_RECEIVER_H
 
-#include <QMap>
-#include <QtCore/QObject>
-#include <QGst/Pipeline>
 #include "QueueingApplicationSink.hpp"
+
+#include <QGst/Pipeline>
+
+#include <QtCore/QMap>
+#include <QtCore/QObject>
 
 /*!
  * \brief The type of the incoming video stream
