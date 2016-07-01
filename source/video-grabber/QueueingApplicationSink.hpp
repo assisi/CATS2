@@ -1,0 +1,33 @@
+#ifndef CATS2_QUEUEING_APPLICATION_SINK_HPP
+#define CATS2_QUEUEING_APPLICATION_SINK_HPP
+
+
+#include <QGst/Utils/ApplicationSink>
+#include <QGst/Structure>
+
+#include <QtCore/QObject>
+#include "opencv2/core/core.hpp"
+#include "TimestampedFrame.hpp"
+
+/*!
+ * \brief The application sink that puts the recived frames to the queue.
+ * Inspired by thsi QtGStreamer example:
+ * https://gstreamer.freedesktop.org/data/doc/gstreamer/head/qt-gstreamer/html/examples_2appsink-src_2main_8cpp-example.html
+ */
+class QueueingApplicationSink : public QGst::Utils::ApplicationSink
+{
+public:
+    //! Constructor. Gets a queue to put the frames in.
+    explicit QueueingApplicationSink(TimestampedFrameQueuePtr outputQueue);
+
+protected:
+    //! Called when a new sample arrives
+    virtual QGst::FlowReturn newSample() override;
+
+private:
+    //! The queue to put incoming frames.
+    TimestampedFrameQueuePtr _outputQueue;
+};
+
+
+#endif // CATS2_QUEUEING_APPLICATION_SINK_HPP
