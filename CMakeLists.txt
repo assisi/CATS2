@@ -1,4 +1,4 @@
-project(video-grabber)
+project(CATS2)
 cmake_minimum_required(VERSION 3.0.0)
 enable_testing()
 
@@ -18,28 +18,37 @@ find_package(GStreamer 1.2.0 REQUIRED COMPONENTS base)
 #find_package(GStreamerPluginsBase 1.2.0 COMPONENTS app audio video pbutils)
 find_package(GLIB2 REQUIRED)
 
-include_directories(${QT_INCLUDE_DIR})
-include_directories(${QTGSTREAMER_INCLUDES})
-include_directories(${GSTREAMER_INCLUDE_DIR})
-include_directories(${GSTREAMER_CONFIG_INCLUDE_DIR})
-include_directories(${GSTREAMER_PLUGIN_DIR})
-include_directories(${GSTREAMER_BASE_INCLUDE_DIR})
-include_directories(${GLIB2_INTERNAL_INCLUDE_DIR})
-include_directories(${GLIB2_MAIN_INCLUDE_DIR})
-include_directories(${OpenCV_INCLUDE_DIR})
-include_directories(${READERWRITERQUEUE_INCLUDE_DIRS})
+# SYSTEM is used to suppress GCC warnings in libraries headers
+include_directories(SYSTEM ${QT_INCLUDE_DIR})
+include_directories(SYSTEM ${QTGSTREAMER_INCLUDES})
+include_directories(SYSTEM ${GSTREAMER_INCLUDE_DIR})
+include_directories(SYSTEM ${GSTREAMER_CONFIG_INCLUDE_DIR})
+include_directories(SYSTEM ${GSTREAMER_PLUGIN_DIR})
+include_directories(SYSTEM ${GSTREAMER_BASE_INCLUDE_DIR})
+include_directories(SYSTEM ${GLIB2_INTERNAL_INCLUDE_DIR})
+include_directories(SYSTEM ${GLIB2_MAIN_INCLUDE_DIR})
+include_directories(SYSTEM ${OpenCV_INCLUDE_DIR})
+include_directories(SYSTEM ${READERWRITERQUEUE_INCLUDE_DIRS})
 
 #add_definitions(${QTGSTREAMER_DEFINITIONS}) # defines QT_NO_KEYWORDS that demands replacing all "signals" by "Q_SIGNALS"
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${QTGSTREAMER_FLAGS}")
 
+set(CATS2_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Wformat=2 \
+-Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Woverloaded-virtual \
+-Wredundant-decls -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default \
+-Wno-unused-parameter -Wold-style-cast  -Wsuggest-override \
+-Wsuggest-final-methods -Wfloat-equal -Wundef -Wshadow")
 
 if (CMAKE_COMPILER_IS_GNUCXX)
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -Wformat-security -Wundef -Wpointer-arith -fno-common")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CATS2_CXX_FLAGS}")
 endif ()
 
-#message(${CMAKE_CXX_FLAGS})
-#message(${QTGSTREAMER_DEFINITIONS})
-#message(${OpenCV_INCLUDE_DIR})
+if ("${CMAKE_CXX_COMPILER_ID}" MATCHES "Clang")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CATS2_CXX_FLAGS} -Wnull-dereference")
+elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${CATS2_CXX_FLAGS}")
+#elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
+endif()
 
 
 add_subdirectory(source)
