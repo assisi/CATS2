@@ -51,7 +51,7 @@ QGst::FlowReturn QueueingApplicationSink::newSample()
                                  "format", G_TYPE_STRING, "RGB",
                                  "width", G_TYPE_INT, width,
                                  "height", G_TYPE_INT, height,
-                                 NULL);
+                                 nullptr);
 
     GError *err = NULL;
     QGst::SamplePtr convertedSample = QGst::SamplePtr::wrap(gst_video_convert_sample(sample, capsTo, GST_SECOND, &err));

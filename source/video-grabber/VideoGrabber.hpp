@@ -14,13 +14,17 @@ class VideoGrabber : public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    explicit VideoGrabber();
+    explicit VideoGrabber(QObject *parent = 0);
     //! Destructor.
     virtual ~VideoGrabber();
 
+public:
     //! Creates and launches a stream receiver in a separated thread.
     void addStreamReceiver(StreamDescriptor parameters, TimestampedFrameQueuePtr outputQueue);
 //    void addMultiCameraReceiver();
+
+    //! Stops all the pipelines.
+    void stopAll();
 
 private slots:
     void onError(QString errorMessage);

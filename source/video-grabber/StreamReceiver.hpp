@@ -75,7 +75,7 @@ public:
     explicit StreamReceiver(StreamDescriptor parameters, TimestampedFrameQueuePtr outputQueue);
 
     //! Destructor.
-    ~StreamReceiver();
+    virtual ~StreamReceiver();
 
 public slots:
     //! Starts the receiver.

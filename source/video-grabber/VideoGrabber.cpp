@@ -5,7 +5,7 @@
 /*!
 * Constructor.
 */
-VideoGrabber::VideoGrabber() : QObject()
+VideoGrabber::VideoGrabber(QObject *parent) : QObject(parent)
 {
 
 }
@@ -15,7 +15,7 @@ VideoGrabber::VideoGrabber() : QObject()
 */
 VideoGrabber::~VideoGrabber()
 {
-
+    stopAll();
 }
 
 /*!
@@ -24,7 +24,7 @@ VideoGrabber::~VideoGrabber()
 void VideoGrabber::addStreamReceiver(StreamDescriptor parameters, TimestampedFrameQueuePtr outputQueue)
 {
     QThread* thread = new QThread;
-    QSharedPointer<StreamReceiver> receiver = QSharedPointer<StreamReceiver>(new StreamReceiver(parameters, outputQueue));
+    QSharedPointer<StreamReceiver> receiver = QSharedPointer<StreamReceiver>(new StreamReceiver(parameters, outputQueue), &QObject::deleteLater);
     // keep the receiver pointer
     _streamReceivers.append(receiver);
 
@@ -52,3 +52,14 @@ void VideoGrabber::onError(QString errorMessage)
         }
     }
 }
+
+/*!
+ * Stops all the pipelines.
+ */
+void VideoGrabber::stopAll()
+{
+    foreach (StreamReceiverPtr ptr , _streamReceivers) {
+        ptr.data()->stop();
+    }
+}
+
