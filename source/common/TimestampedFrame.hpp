@@ -9,6 +9,7 @@
 #include <QtCore/QSharedPointer>
 
 #include <chrono>
+#include <thread>
 
 /*!
 * \brief This class stores a video frame image and its timestamp
@@ -23,7 +24,8 @@ public:
     virtual ~TimestampedFrame();
 
 public:
-    // get setters and getters here
+    //! Returns the frame image.
+    QSharedPointer<cv::Mat> image() { return _image; }
 
 private:
     //! The frame image.
@@ -57,12 +59,27 @@ public:
         _queue.try_dequeue(frameToForget);
     }
 
-    void enqueue(TimestampedFrame frame)
+    //! Adds an element to the queue.
+    void enqueue(const TimestampedFrame& frame)
     {
         if (!_queue.try_enqueue(frame))
-            qDebug() << "Could not enqueue new element";
+            qDebug() << Q_FUNC_INFO << "Could not enqueue new element, skipping";
 
-        qDebug() << QString("Input queue contains %1 elements").arg(_queue.size_approx());
+        qDebug() <<  Q_FUNC_INFO << QString("Frames queue contains %1 elements").arg(_queue.size_approx());
+    }
+
+    //! Gets an element from the queue, returns true if succeded.
+    bool dequeue(TimestampedFrame& frame, int timeOutMs)
+    {
+        bool result = _queue.try_dequeue(frame);
+        // if nothing in the queue then wait a bit
+        if (!result) {
+            qDebug() << Q_FUNC_INFO << "Failed to get an element from the queue, is it empty?";
+            std::this_thread::sleep_for( std::chrono::milliseconds(timeOutMs));
+        } else
+            qDebug() << Q_FUNC_INFO << "Took one element from the queue";
+
+        return result;
     }
 
 private:
