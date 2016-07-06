@@ -3,6 +3,7 @@
 \usepackage{amssymb,amsmath}
 \usepackage{graphics}
 \usepackage{graphicx}
+
  \oddsidemargin 0cm \evensidemargin 0cm \textwidth 16cm
 \textheight 22cm
 \usepackage{amssymb,amsmath}
@@ -218,8 +219,7 @@ union AlignHelper {
 
 % === Subsection ====
 \subsection{auto Keyword}
-Optionally, you can use the auto keyword in the following cases. If in doubt, for example if using auto could make the code less readable, do not use auto. Keep in mind that code is read much more often than written.
-
+Optionally, you can use the auto keyword in the following cases: 
 \begin{itemize}
 \item When it avoids repetition of a type in the same statement.
 % === START(Example) ====
@@ -237,9 +237,34 @@ auto it = myList.const_iterator();
 % === END(Example) ====
 \end{itemize}
 
+If using auto could make the code less readable, do not use auto; the code is read much more often than written.
+
 % === Subsection ====
 \subsection{nullptr}
 In C++ code, use nullptr for pointers. 
+
+% === Subsection ====
+\subsection{override and final}
+\begin{itemize}
+ \item Use override that specifies that a virtual function overrides another virtual function. 
+ \item Use final that specifies that a virtual function cannot be overridden in a derived class or that a class cannot be inherited from. 
+\end{itemize}
+
+% === Subsection ====
+\subsection{Objects lifetime management}
+\begin{itemize}
+ \item Where possible provide a parent object to the objects of classes inheriting QObject, the parent object will take care for the clean up.
+ \item Use Qt's smart pointers to manage the pointers. 
+\end{itemize} 
+  
+% === Subsection ====
+\subsection{Scoped enums}
+Use scoped enums instead of C++98-style enums.
+
+
+ 
+\end{itemize}
+
 
 \clearpage
 \newpage
