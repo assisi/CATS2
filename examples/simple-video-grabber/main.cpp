@@ -1,5 +1,5 @@
-#include "VideoGrabber.hpp"
-#include "VideoGrabberSettings.hpp"
+#include <VideoGrabber.hpp>
+#include <VideoGrabberSettings.hpp>
 
 #include <QGst/Init>
 
@@ -12,7 +12,7 @@ int main(int argc, char *argv[])
 
     // parse input arguments to initialize the grabber
     if (VideoGrabberSettings::get().init(argc, argv)) {
-        TimestampedFrameQueuePtr queuePtr = QSharedPointer<TimestampedFrameQueue>(new TimestampedFrameQueue(100));
+        TimestampedFrameQueuePtr queuePtr = TimestampedFrameQueuePtr(new TimestampedFrameQueue(100));
         VideoGrabber grabber;
         if (VideoGrabberSettings::get().mainCameraDescriptor().isValid()){
             grabber.addStreamReceiver(VideoGrabberSettings::get().mainCameraDescriptor(), queuePtr);
