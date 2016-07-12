@@ -12,7 +12,7 @@
 const QMap<QString, StreamType> StreamDescriptor::_streamTypeByName = {{"v4l", StreamType::VIDEO_4_LINUX}};
 
 /*!
-* Constructor for a typified input stream.
+* Constructor.
 */
 StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, TimestampedFrameQueuePtr outputQueue) :
     QObject(),

@@ -36,7 +36,7 @@ QGst::FlowReturn QueueingApplicationSink::newSample()
     width = structure.data()->value("width").get<int>();
     height = structure.data()->value("height").get<int>();
 
-//    qDebug() << "Sample caps:" << structure.data()->toString();
+    qDebug() << Q_FUNC_INFO << "Sample caps:" << structure.data()->toString();
 
     // this part is inspired by the posts
     // (1) http://stackoverflow.com/questions/35983701/qtgstreamer-how-to-take-a-snapshot-while-playing-live-video-stream

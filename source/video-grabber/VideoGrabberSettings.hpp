@@ -6,6 +6,7 @@
 /*!
  * Class-signleton that is used to store parameters of the grabber; at the moment those are just input streams types and attributes.
  * Their values are received from the command line arguments.
+ * NOTE : in C++11 there is no need for manual locking. Concurrent execution shall wait if a static local variable is already being initialized.
  * Based on http://stackoverflow.com/questions/11711920/how-to-implement-multithread-safe-singleton-in-c11-without-using-mutex
  */
 class VideoGrabberSettings

@@ -9,13 +9,13 @@
 #include <QtCore/QObject>
 
 /*!
- * \brief The type of the incoming video stream
+ * \brief The type of the incoming video stream.
  */
 enum class StreamType
 {
     VIDEO_4_LINUX,
     UNDEFINED
-    // TODO : to be extenced
+    // TODO : to be extended
 };
 
 /*!

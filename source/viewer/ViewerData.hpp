@@ -9,6 +9,10 @@ class FrameConvertor;
 
 /*!
  * \brief The data class that provides the video frames for the GUI.
+ * The data is split on this data class and on the FrameConvertor class that
+ * is getting frames from the input queue and converting them to the Qt format
+ * and that is run in a separated thread. This split is done in order to encapsulate
+ * all the data generation routine in the ViewerData.
  */
 class ViewerData : public QObject
 {
@@ -17,7 +21,7 @@ public:
     //! Constructor.
     explicit ViewerData(TimestampedFrameQueuePtr inputQueue, QObject *parent = 0);
     //! Destructor.
-    ~ViewerData();
+    virtual ~ViewerData();
 
 signals:
     //! Transfers the new frame further.
