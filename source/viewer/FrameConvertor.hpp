@@ -12,7 +12,7 @@ class FrameConvertor : public QObject
 {
     Q_OBJECT
 public:
-    //! Constructor for a typified input stream.
+    //! Constructor.
     explicit FrameConvertor(TimestampedFrameQueuePtr inputQueue);
     //! Destructor.
     virtual ~FrameConvertor();
@@ -24,9 +24,9 @@ signals:
     void finished();
 
 public slots:
-    //! Starts the receiver.
+    //! Starts the convertor.
     void process();
-    //! Stops the receiver.
+    //! Stops the convertor.
     void stop();
 
 private:
@@ -34,10 +34,7 @@ private:
     QSharedPointer<QImage> cvMatToQImage(const QSharedPointer<cv::Mat>& imageCv);
 
 private:
-    //! Dequeueing time out.
-    static const int TimeOutMs;  // [ms]
-
-    //! The queue containing frames to conver.
+    //! The queue containing frames to convert.
     TimestampedFrameQueuePtr _inputQueue;
     //! The flag that defines if the convertor is to be stopped.
     std::atomic_bool _stopped;

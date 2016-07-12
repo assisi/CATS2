@@ -3,7 +3,7 @@
 
 #include <readerwriterqueue.h>
 
-#include "opencv2/core/core.hpp"
+#include <opencv2/core/core.hpp>
 
 #include <QtCore/QDebug>
 #include <QtCore/QSharedPointer>
@@ -69,13 +69,13 @@ public:
     }
 
     //! Gets an element from the queue, returns true if succeded.
-    bool dequeue(TimestampedFrame& frame, int timeOutMs)
+    bool dequeue(TimestampedFrame& frame)
     {
         bool result = _queue.try_dequeue(frame);
         // if nothing in the queue then wait a bit
         if (!result) {
             qDebug() << Q_FUNC_INFO << "Failed to get an element from the queue, is it empty?";
-            std::this_thread::sleep_for( std::chrono::milliseconds(timeOutMs));
+            std::this_thread::sleep_for( std::chrono::milliseconds(TimeOutMs));
         } else
             qDebug() << Q_FUNC_INFO << "Took one element from the queue";
 
@@ -90,6 +90,8 @@ private:
     //! we need to store it separately.
     size_t _maxSize;
 
+    //! Dequeueing time out.
+    static const int TimeOutMs;  // [ms]
     //! Default maximal queue size.
     static constexpr size_t DefaultMaxSize = 1500;
     //! Default initial queue size.

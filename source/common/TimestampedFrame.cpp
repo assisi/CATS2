@@ -1,5 +1,8 @@
 #include "TimestampedFrame.hpp"
 
+const int TimestampedFrameQueue::TimeOutMs = 250;  // [ms]
+
+
 /*!
  * Constructor.
  */

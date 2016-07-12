@@ -2,10 +2,8 @@
 
 #include <QtGui/QImage>
 
-const int FrameConvertor::TimeOutMs = 250;  // [ms]
-
 /*!
-* Constructor
+* Constructor.
 */
 FrameConvertor::FrameConvertor(TimestampedFrameQueuePtr inputQueue) :
     QObject(),
@@ -33,7 +31,7 @@ void FrameConvertor::process()
 
     while (!_stopped) {
         // Use the blocking with timeout version of dequeue
-        if (_inputQueue.data()->dequeue(frame, TimeOutMs))
+        if (_inputQueue.data()->dequeue(frame))
             emit newFrame(cvMatToQImage(frame.image()));
     }
 
