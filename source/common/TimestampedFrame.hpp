@@ -25,7 +25,7 @@ public:
 
 public:
     //! Returns the frame image.
-    QSharedPointer<cv::Mat> image() { return _image; }
+    QSharedPointer<cv::Mat> image() const { return _image; }
 
 private:
     //! The frame image.
@@ -51,7 +51,7 @@ public:
 
 public:
     //! The queue became too big.
-    bool isOutgrown() { return (_queue.size_approx() > _maxSize); }
+    bool isOutgrown() const { return (_queue.size_approx() > _maxSize); }
     //! Drops one element from the tail.
     void dropTail()
     {

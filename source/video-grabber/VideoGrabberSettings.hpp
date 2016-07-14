@@ -31,7 +31,7 @@ public:
 
 public:
     //! Returns the parameters of the main camera.
-    StreamDescriptor mainCameraDescriptor() { return _mainCameraDescriptor; }
+    StreamDescriptor mainCameraDescriptor() const { return _mainCameraDescriptor; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -47,6 +47,7 @@ private:
     bool parseStreamArguments(int argc, char** argv, QString argument, QString& streamType, QString& parameters);
 
 private:
+    // TODO : refactor to integrate SetupType based more generic approach
     //! Input streams parameters.
     StreamDescriptor _mainCameraDescriptor;
 };

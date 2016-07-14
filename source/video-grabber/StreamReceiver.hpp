@@ -41,11 +41,11 @@ public:
     }
 
     //! Getter for the stream type.
-    StreamType streamType() { return _streamType; }
+    StreamType streamType() const { return _streamType; }
     //! Getter for the parameters.
-    QString parameters() { return _parameters; }
+    QString parameters() const { return _parameters; }
     //! Checks that the stream descriptor is valid.
-    bool isValid() { return (_streamType != StreamType::UNDEFINED); }
+    bool isValid() const { return (_streamType != StreamType::UNDEFINED); }
 
     //! Checks that the provided string is a valid stream type.
     static bool isValidStreamType(QString streamType) { return _streamTypeByName.contains(streamType); }
