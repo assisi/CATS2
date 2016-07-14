@@ -17,6 +17,7 @@ find_package(OpenCV 3 REQUIRED)
 find_package(GStreamer 1.2.0 REQUIRED COMPONENTS base)
 #find_package(GStreamerPluginsBase 1.2.0 COMPONENTS app audio video pbutils)
 find_package(GLIB2 REQUIRED)
+find_package(Libtsai REQUIRED)
 
 # SYSTEM is used to suppress GCC warnings in libraries headers
 include_directories(SYSTEM ${QT_INCLUDE_DIR})
@@ -29,6 +30,7 @@ include_directories(SYSTEM ${GLIB2_INTERNAL_INCLUDE_DIR})
 include_directories(SYSTEM ${GLIB2_MAIN_INCLUDE_DIR})
 include_directories(SYSTEM ${OpenCV_INCLUDE_DIR})
 include_directories(SYSTEM ${READERWRITERQUEUE_INCLUDE_DIRS})
+include_directories(SYSTEM ${LIBTSAI_INCLUDE_DIRS})
 
 #add_definitions(${QTGSTREAMER_DEFINITIONS}) # defines QT_NO_KEYWORDS that demands replacing all "signals" by "Q_SIGNALS"
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${QTGSTREAMER_FLAGS}")
