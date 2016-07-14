@@ -19,12 +19,12 @@ public:
     //! Sets the x coordinate.
     void setAngle(double angle) { _angle = angle; }
     //! Return the x coordinate.
-    double angle() { return _angle; }
+    double angle() const { return _angle; }
 
     //! Set the validity status.
     void setValid(bool valid) { _valid = valid; }
     //! Return the position validity status.
-    bool isValid() { return _valid; }
+    bool isValid() const { return _valid; }
 
 private:
     //! The angle value.
@@ -45,17 +45,17 @@ public:
     //! Sets the x coordinate.
     void setX(double x) { _x = x; }
     //! Return the x coordinate.
-    double x() { return _x; }
+    double x() const { return _x; }
 
     //! Sets the y coordinate.
     void setY(double y) { _y = y; }
     //! Return the y coordinate.
-    double y() { return _y; }
+    double y() const { return _y; }
 
     //! Set the validity status.
     void setValid(bool valid) { _valid = valid; }
     //! Return the position validity status.
-    bool isValid() { return _valid; }
+    bool isValid() const { return _valid; }
 
 private:
     //! Position x.
@@ -66,36 +66,6 @@ private:
     double _z; // [m]
     //! Position validity, set to false when the position could not be determined.
     bool _valid;
-};
-
-/*!
- * \brief The class that stores the position in meters and the orientation.
- */
-class StateMeters
-{
-public:
-    //! Constructor.
-    StateMeters(PositionMeters position = PositionMeters(), OrientationRad orientation = OrientationRad()) :
-        _positionMeters(position),
-        _orientationRad(orientation)
-    {
-    }
-
-    //! Sets the position.
-    void setPosition(PositionMeters position) { _positionMeters = position; }
-    //! Return the position.
-    PositionMeters position() { return _positionMeters; }
-
-    //! Sets the orientation.
-    void setOrientation(OrientationRad orientationRad) { _orientationRad = orientationRad; }
-    //! Return the orientation.
-    OrientationRad orientation() { return _orientationRad; }
-
-private:
-    //! Position in meters.
-    PositionMeters _positionMeters;  // [m]
-    //! The orientation of the agent, with respect to the horizontal x axis.
-    OrientationRad _orientationRad;
 };
 
 /*!
@@ -112,17 +82,17 @@ public:
     //! Sets the x coordinate.
     void setX(double x) { _x = x; }
     //! Return the x coordinate.
-    double x() { return _x; }
+    double x() const { return _x; }
 
     //! Sets the y coordinate.
     void setY(double y) { _y = y; }
     //! Return the y coordinate.
-    double y() { return _y; }
+    double y() const { return _y; }
 
     //! Set the validity status.
     void setValid(bool valid) { _valid = valid; }
     //! Return the position validity status.
-    bool isValid() { return _valid; }
+    bool isValid() const { return _valid; }
 
 private:
     //! Position x.
@@ -132,6 +102,68 @@ private:
     //! Position validity, set to false when the position could not be determined.
     bool _valid;
 };
+
+/*!
+ * \brief The class that stores the position in meters and the orientation.
+ */
+class StateWorld
+{
+public:
+    //! Constructor.
+    StateWorld(PositionMeters position = PositionMeters(), OrientationRad orientation = OrientationRad()) :
+        _positionMeters(position),
+        _orientationRad(orientation)
+    {
+    }
+
+    //! Sets the position.
+    void setPosition(PositionMeters position) { _positionMeters = position; }
+    //! Return the position.
+    PositionMeters position() const { return _positionMeters; }
+
+    //! Sets the orientation.
+    void setOrientation(OrientationRad orientationRad) { _orientationRad = orientationRad; }
+    //! Return the orientation.
+    OrientationRad orientation() const { return _orientationRad; }
+
+private:
+    //! Position in meters.
+    PositionMeters _positionMeters;  // [m]
+    //! The orientation of the agent, with respect to the horizontal x axis.
+    OrientationRad _orientationRad;
+};
+
+/*!
+ * \brief The class that stores the position in pixels and the orientation.
+ */
+class StateImage
+{
+public:
+    //! Constructor.
+    StateImage(PositionPixels position = PositionPixels(), OrientationRad orientation = OrientationRad()) :
+        _positionPixels(position),
+        _orientationRad(orientation)
+    {
+    }
+
+    //! Sets the position.
+    void setPosition(PositionPixels position) { _positionPixels = position; }
+    //! Return the position.
+    PositionPixels position() const { return _positionPixels; }
+
+    //! Sets the orientation.
+    void setOrientation(OrientationRad orientationRad) { _orientationRad = orientationRad; }
+    //! Return the orientation.
+    OrientationRad orientation() const { return _orientationRad; }
+
+private:
+    //! Position in meters.
+    PositionPixels _positionPixels;  // [m]
+    //! The orientation of the agent, with respect to the horizontal x axis.
+    OrientationRad _orientationRad;
+};
+
+
 
 
 #endif // CATS2_POSITION_HPP
