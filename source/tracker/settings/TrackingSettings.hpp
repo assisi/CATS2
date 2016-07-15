@@ -17,12 +17,10 @@ class TrackingSettings
 public:
     //! The singleton getter. Provides an instance of the settings corresponding
     //! to the type of setup : main camera or the below camera.
-    static TrackingSettings& get(SetupType setupType);
+    static TrackingSettings& get();
 
     //! Initializes the parameters from the configuration file.
-    bool init(QString configurationFileName);
-    //! Sets the type of setup.
-    void setSetupType(SetupType setupType) { _setupType = setupType; }
+    bool init(QString configurationFileName, SetupType setupType);
 
     // delete copy and move constructors and assign operators
     //! Copy constructor.
@@ -35,19 +33,16 @@ public:
     TrackingSettings& operator=(TrackingSettings &&) = delete;
 
 public:
-    //! Returns the parameters.
-    TrackingRoutineType trackingRoutineType()
-    {
-        if (_trackingRoutineSettings.isNull())
-            return TrackingRoutineType::UNDEFINED;
-        else
-            return _trackingRoutineSettings.data()->type();
-    }
-
     /*!
      * Returns the settings for the tracking routine used in this setup.
      */
-    TrackingRoutineSettingsPtr trackingRoutineSettings() const { return _trackingRoutineSettings; }
+    TrackingRoutineSettingsPtr trackingRoutineSettings(SetupType type) const
+    {
+        if (_trackingRoutineSettings.contains(type))
+            return _trackingRoutineSettings.value(type);
+        else
+            return TrackingRoutineSettingsPtr();
+    }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -58,14 +53,11 @@ private:
 private:
     //! Reads from the configuration file the tracking routine type corresponding to the setup
     //! type of this instance.
-    TrackingRoutineType readTrackingRoutineType(QString configurationFileName);
+    TrackingRoutineType readTrackingRoutineType(QString configurationFileName, SetupType setupType);
 
 private:
-    //! The type of the setup for which these settings are specified.
-    SetupType _setupType;
-    //! The settings for the tracking routine used in this setup.
-    TrackingRoutineSettingsPtr _trackingRoutineSettings;
-
+    //! The settings for the tracking routine used in various setups.
+    QMap<SetupType, TrackingRoutineSettingsPtr> _trackingRoutineSettings;
 };
 
 #endif // CATS2_TRACKING_SETTINGS_HPP

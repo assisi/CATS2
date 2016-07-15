@@ -4,45 +4,32 @@
 #include <ReadSettingsHelper.hpp>
 
 /*!
- * The singleton getter. Provides an instance of the settings corresponding
- * to the type of setup : main camera or the below camera.
+ * The singleton getter. Provides an instance of the settings.
  */
-TrackingSettings& TrackingSettings::get(SetupType setupType)
+TrackingSettings& TrackingSettings::get()
 {
-    if (setupType == SetupType::CAMERA_BELOW){
-        static TrackingSettings cameraBelowTrackingInstance;
-        cameraBelowTrackingInstance.setSetupType(setupType);
-        return cameraBelowTrackingInstance;
-    } else if (setupType == SetupType::MAIN_CAMERA) {
-        static TrackingSettings mainCameraTrackingInstance;
-        mainCameraTrackingInstance.setSetupType(SetupType::MAIN_CAMERA);
-        return mainCameraTrackingInstance;
-    }
-
-    // security for a case if the provided setup type is not supported by this method:
-    // by default we return the main camera instance
-    static TrackingSettings mainCameraTrackingInstance;
-    mainCameraTrackingInstance.setSetupType(SetupType::MAIN_CAMERA);
-    return mainCameraTrackingInstance;
+    static TrackingSettings instance;
+    return instance;
 }
 
 /*!
  * Initializes the parameters from the configuration file.
  */
-bool TrackingSettings::init(QString configurationFileName)
+bool TrackingSettings::init(QString configurationFileName, SetupType setupType)
 {
     bool settingsAccepted = true;
 
     // get the tracking routine type
-    TrackingRoutineType trackingRoutineType = readTrackingRoutineType(configurationFileName);
+    TrackingRoutineType trackingRoutineType = readTrackingRoutineType(configurationFileName, setupType);
     if (trackingRoutineType == TrackingRoutineType::UNDEFINED)
         return false;
 
     // create corresponding settings
-   _trackingRoutineSettings = TrackerFactory::createTrackingRoutineSettings(trackingRoutineType, TrackingSetup::setupSettingsNameByType(_setupType));
+    TrackingRoutineSettingsPtr settings = TrackerFactory::createTrackingRoutineSettings(trackingRoutineType, setupType);
+    _trackingRoutineSettings.insert(setupType, settings);
 
    // initialize settings
-   settingsAccepted = _trackingRoutineSettings.data()->init(configurationFileName);
+   settingsAccepted = settings.data()->init(configurationFileName);
 
     return settingsAccepted;
 }
@@ -51,10 +38,10 @@ bool TrackingSettings::init(QString configurationFileName)
  * Reads from the configuration file the tracking routine type corresponding to the setup
  * type of this instance.
  */
-TrackingRoutineType TrackingSettings::readTrackingRoutineType(QString configurationFileName)
+TrackingRoutineType TrackingSettings::readTrackingRoutineType(QString configurationFileName, SetupType setupType)
 {
     // get the prefix in the path in the configuration file
-    QString prefix = TrackingSetup::setupSettingsNameByType(_setupType);
+    QString prefix = TrackingSetup::setupSettingsNameByType(setupType);
 
     std::string trackingRoutineName;
     ReadSettingsHelper settings(configurationFileName);
