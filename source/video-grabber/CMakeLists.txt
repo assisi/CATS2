@@ -2,7 +2,6 @@ set(srcs
     VideoGrabber.cpp
     StreamReceiver.cpp
     QueueingApplicationSink.cpp
-    VideoGrabberSettings.cpp
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)

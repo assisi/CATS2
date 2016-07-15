@@ -3,6 +3,7 @@ set(srcs
     AgentData.cpp
     CameraCalibration.cpp
     CoordinatesConversion.cpp
+    CommandLineParameters.cpp
 )
 
 set(hdrs
