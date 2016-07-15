@@ -70,7 +70,7 @@ class BlobDetectorSettings : public TrackingRoutineSettings
 {
 public:
     //! Constructor.
-    BlobDetectorSettings(QString settingPathPrefix);
+    BlobDetectorSettings(SetupType setupType);
 
 public:
     //! Initialization of the parameters for this specific method of tracking.

@@ -5,8 +5,8 @@
 /*!
  * Constructor.
  */
-BlobDetectorSettings::BlobDetectorSettings(QString settingPathPrefix) :
-    TrackingRoutineSettings(settingPathPrefix)
+BlobDetectorSettings::BlobDetectorSettings(SetupType setupType) :
+    TrackingRoutineSettings(setupType)
 {
     _trackingRoutineType = TrackingRoutineType::BLOB_DETECTOR;
 }

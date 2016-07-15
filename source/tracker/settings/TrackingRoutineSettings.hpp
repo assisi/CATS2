@@ -4,6 +4,8 @@
 #include "routines/TrackingRoutine.hpp"
 #include "routines/TrackingRoutineType.hpp"
 
+#include <SetupType.hpp>
+
 #include <QtCore/QString>
 #include <QtCore/QSharedPointer>
 
@@ -14,7 +16,7 @@ class TrackingRoutineSettings
 {
 public:
     //! Constructor.
-    explicit TrackingRoutineSettings(QString settingPathPrefix);
+    explicit TrackingRoutineSettings(SetupType setupType);
     //! Destructor.
     virtual ~TrackingRoutineSettings();
 
