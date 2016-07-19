@@ -27,15 +27,17 @@ public:
      */
     static TrackingRoutinePtr createTrackingRoutine(SetupType setupType, TimestampedFrameQueuePtr inputQueue, TimestampedFrameQueuePtr debugQueue)
     {
-        TrackingRoutineSettingsPtr seetings = TrackingSettings::get(setupType).trackingRoutineSettings();
+        TrackingRoutineSettingsPtr settings = TrackingSettings::get().trackingRoutineSettings(setupType);
 
-        switch (seetings.data()->type()) {
-        case TrackingRoutineType::BLOB_DETECTOR:
-            return TrackingRoutinePtr(new BlobDetector(seetings, inputQueue, debugQueue), &QObject::deleteLater); // delete later is used for security as multithreaded
-                                                                                                        // signals and slots might result is crashes when a
-                                                                                                        // a sender is deleted before a signal is received for instance
-        default:
-            break;
+        if (!settings.isNull()) {
+            switch (settings.data()->type()) {
+            case TrackingRoutineType::BLOB_DETECTOR:
+                return TrackingRoutinePtr(new BlobDetector(settings, inputQueue, debugQueue), &QObject::deleteLater); // delete later is used for security as multithreaded
+                                                                                                            // signals and slots might result is crashes when a
+                                                                                                            // a sender is deleted before a signal is received for instance
+            default:
+                break;
+            }
         }
         return TrackingRoutinePtr();
     }
@@ -43,11 +45,11 @@ public:
     /*!
      * Generates the tracking routine settings of given type.
      */
-    static QSharedPointer<TrackingRoutineSettings> createTrackingRoutineSettings(TrackingRoutineType type, QString settingPathPrefix)
+    static QSharedPointer<TrackingRoutineSettings> createTrackingRoutineSettings(TrackingRoutineType trackingType, SetupType setupType)
     {
-        switch (type) {
+        switch (trackingType) {
         case TrackingRoutineType::BLOB_DETECTOR:
-            return TrackingRoutineSettingsPtr(new BlobDetectorSettings(settingPathPrefix));
+            return TrackingRoutineSettingsPtr(new BlobDetectorSettings(setupType));
         default:
             break;
         }
