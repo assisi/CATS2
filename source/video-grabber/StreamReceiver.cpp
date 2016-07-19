@@ -23,9 +23,9 @@ StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, TimestampedFra
         case StreamType::VIDEO_4_LINUX:
         {
             int videoDeviceId = streamParameters.parameters().toInt();
-            _pipe1ineDescription = QString("v4l2src device=\"/dev/video%1\" ! "
-                                           "decodebin ! "
-                                           "appsink name=\"queueingsink\" ").arg(videoDeviceId);
+            _pipe1ineDescription = QString("v4l2src device=/dev/video%1 ! "
+                                           "video/x-raw-rgb ! ffmpegcolorspace ! "
+                                           "appsink name=queueingsink").arg(videoDeviceId);
             break;
         }
         case StreamType::UNDEFINED:

@@ -1,138 +1,132 @@
-# - Try to find GStreamer
-# Once done this will define
+# - Try to find GStreamer and its plugins
+# Once done, this will define
 #
 #  GSTREAMER_FOUND - system has GStreamer
-#  GSTREAMER_INCLUDE_DIR - the GStreamer include directory
-#  GSTREAMER_LIBRARY - the main GStreamer library
-#  GSTREAMER_PLUGIN_DIR - the GStreamer plugin directory
+#  GSTREAMER_INCLUDE_DIRS - the GStreamer include directories
+#  GSTREAMER_LIBRARIES - link these to use GStreamer
 #
-#  And for all the plugin libraries specified in the COMPONENTS
-#  of find_package, this module will define:
+# Additionally, gstreamer-base is always looked for and required, and
+# the following related variables are defined:
 #
-#  GSTREAMER_<plugin_lib>_LIBRARY_FOUND - system has <plugin_lib>
-#  GSTREAMER_<plugin_lib>_LIBRARY - the <plugin_lib> library
-#  GSTREAMER_<plugin_lib>_INCLUDE_DIR - the <plugin_lib> include directory
+#  GSTREAMER_BASE_INCLUDE_DIRS - gstreamer-base's include directory
+#  GSTREAMER_BASE_LIBRARIES - link to these to use gstreamer-base
 #
-# Copyright (c) 2010, Collabora Ltd.
-#   @author George Kiagiadakis <george.kiagiadakis@collabora.co.uk>
+# Optionally, the COMPONENTS keyword can be passed to FIND_PACKAGE()
+# and GStreamer plugins can be looked for.  Currently, the following
+# plugins can be searched, and they define the following variables if
+# found:
 #
-# Redistribution and use is allowed according to the terms of the BSD license.
-# For details see the accompanying COPYING-CMAKE-SCRIPTS file.
+#  gstreamer-app:        GSTREAMER_APP_INCLUDE_DIRS and GSTREAMER_APP_LIBRARIES
+#  gstreamer-audio:      GSTREAMER_AUDIO_INCLUDE_DIRS and GSTREAMER_AUDIO_LIBRARIES
+#  gstreamer-fft:        GSTREAMER_FFT_INCLUDE_DIRS and GSTREAMER_FFT_LIBRARIES
+#  gstreamer-interfaces: GSTREAMER_INTERFACES_INCLUDE_DIRS and GSTREAMER_INTERFACES_LIBRARIES
+#  gstreamer-pbutils:    GSTREAMER_PBUTILS_INCLUDE_DIRS and GSTREAMER_PBUTILS_LIBRARIES
+#  gstreamer-video:      GSTREAMER_VIDEO_INCLUDE_DIRS and GSTREAMER_VIDEO_LIBRARIES
+#
+# Copyright (C) 2012 Raphael Kubo da Costa <rakuco@webkit.org>
+#
+# Redistribution and use in source and binary forms, with or without
+# modification, are permitted provided that the following conditions
+# are met:
+# 1.  Redistributions of source code must retain the above copyright
+#     notice, this list of conditions and the following disclaimer.
+# 2.  Redistributions in binary form must reproduce the above copyright
+#     notice, this list of conditions and the following disclaimer in the
+#     documentation and/or other materials provided with the distribution.
+#
+# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDER AND ITS CONTRIBUTORS ``AS
+# IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO,
+# THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR
+# PURPOSE ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR ITS
+# CONTRIBUTORS BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+# EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+# PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+# OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+# WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+# OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+# ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-if (GSTREAMER_INCLUDE_DIR AND GSTREAMER_LIBRARY)
-    set(GStreamer_FIND_QUIETLY TRUE)
-else()
-    set(GStreamer_FIND_QUIETLY FALSE)
-endif()
+FIND_PACKAGE(PkgConfig)
 
-set(GSTREAMER_ABI_VERSION "1.0")
+# The minimum GStreamer version we support.
+SET(GSTREAMER_MINIMUM_VERSION 0.10.30)
 
-# Find the main library
-find_package(PkgConfig)
+# Helper macro to find a GStreamer plugin (or GStreamer itself)
+#   _component_prefix is prepended to the _INCLUDE_DIRS and _LIBRARIES variables (eg. "GSTREAMER_AUDIO")
+#   _pkgconfig_name is the component's pkg-config name (eg. "gstreamer-0.10", or "gstreamer-video-0.10").
+#   _header is the component's header, relative to the gstreamer-0.10 directory (eg. "gst/gst.h").
+#   _library is the component's library name (eg. "gstreamer-0.10" or "gstvideo-0.10")
+MACRO(FIND_GSTREAMER_COMPONENT _component_prefix _pkgconfig_name _header _library)
+    # FIXME: The QUIET keyword can be used once we require CMake 2.8.2.
+    PKG_CHECK_MODULES(PC_${_component_prefix} ${_pkgconfig_name})
 
-if (PKG_CONFIG_FOUND)
-    pkg_check_modules(PKG_GSTREAMER gstreamer-${GSTREAMER_ABI_VERSION})
-    exec_program(${PKG_CONFIG_EXECUTABLE}
-                 ARGS --variable pluginsdir gstreamer-${GSTREAMER_ABI_VERSION}
-                 OUTPUT_VARIABLE PKG_GSTREAMER_PLUGIN_DIR)
-    set(GSTREAMER_DEFINITIONS ${PKG_GSTREAMER_CFLAGS})
-endif()
+    FIND_PATH(${_component_prefix}_INCLUDE_DIRS
+        NAMES ${_header}
+        HINTS ${PC_${_component_prefix}_INCLUDE_DIRS} ${PC_${_component_prefix}_INCLUDEDIR}
+        PATH_SUFFIXES gstreamer-0.10
+    )
 
-find_library(GSTREAMER_LIBRARY
-             NAMES gstreamer-${GSTREAMER_ABI_VERSION}
-             HINTS ${PKG_GSTREAMER_LIBRARY_DIRS} ${PKG_GSTREAMER_LIBDIR})
+    FIND_LIBRARY(${_component_prefix}_LIBRARIES
+        NAMES ${_library}
+        HINTS ${PC_${_component_prefix}_LIBRARY_DIRS} ${PC_${_component_prefix}_LIBDIR}
+    )
+ENDMACRO()
 
-find_path(GSTREAMER_INCLUDE_DIR
-          gst/gst.h
-          HINTS ${PKG_GSTREAMER_INCLUDE_DIRS} ${PKG_GSTREAMER_INCLUDEDIR}
-          PATH_SUFFIXES gstreamer-${GSTREAMER_ABI_VERSION})
+# ------------------------
+# 1. Find GStreamer itself
+# ------------------------
 
-# add missing path to the directory containing gstconfig.h
-find_path(GSTREAMER_CONFIG_INCLUDE_DIR
-          gst/gstconfig.h
-          HINTS ${PKG_GSTREAMER_INCLUDE_DIRS} ${PKG_GSTREAMER_INCLUDEDIR}
-          PATH_SUFFIXES gstreamer-${GSTREAMER_ABI_VERSION})
+# 1.1. Find headers and libraries
+FIND_GSTREAMER_COMPONENT(GSTREAMER gstreamer-0.10 gst/gst.h gstreamer-0.10)
+FIND_GSTREAMER_COMPONENT(GSTREAMER_BASE gstreamer-base-0.10 gst/gst.h gstbase-0.10)
 
-if (PKG_GSTREAMER_PLUGIN_DIR)
-    set(_GSTREAMER_PLUGIN_DIR ${PKG_GSTREAMER_PLUGIN_DIR})
-else()
-    get_filename_component(_GSTREAMER_LIB_DIR ${GSTREAMER_LIBRARY} PATH)
-    set(_GSTREAMER_PLUGIN_DIR ${_GSTREAMER_LIB_DIR}/gstreamer-${GSTREAMER_ABI_VERSION})
-endif()
+# 1.2. Check GStreamer version
+IF (GSTREAMER_INCLUDE_DIRS)
+    IF (EXISTS "${GSTREAMER_INCLUDE_DIRS}/gst/gstversion.h")
+        FILE (READ "${GSTREAMER_INCLUDE_DIRS}/gst/gstversion.h" GSTREAMER_VERSION_CONTENTS)
 
-set(GSTREAMER_PLUGIN_DIR ${_GSTREAMER_PLUGIN_DIR}
-    CACHE PATH "The path to the gstreamer plugins installation directory")
+        STRING(REGEX MATCH "#define +GST_VERSION_MAJOR +\\(([0-9]+)\\)" _dummy "${GSTREAMER_VERSION_CONTENTS}")
+        SET(GSTREAMER_VERSION_MAJOR "${CMAKE_MATCH_1}")
 
-mark_as_advanced(GSTREAMER_LIBRARY GSTREAMER_INCLUDE_DIR GSTREAMER_PLUGIN_DIR)
+        STRING(REGEX MATCH "#define +GST_VERSION_MINOR +\\(([0-9]+)\\)" _dummy "${GSTREAMER_VERSION_CONTENTS}")
+        SET(GSTREAMER_VERSION_MINOR "${CMAKE_MATCH_1}")
 
+        STRING(REGEX MATCH "#define +GST_VERSION_MICRO +\\(([0-9]+)\\)" _dummy "${GSTREAMER_VERSION_CONTENTS}")
+        SET(GSTREAMER_VERSION_MICRO "${CMAKE_MATCH_1}")
 
-# Find additional libraries
-include(MacroFindGStreamerLibrary)
+        SET(GSTREAMER_VERSION "${GSTREAMER_VERSION_MAJOR}.${GSTREAMER_VERSION_MINOR}.${GSTREAMER_VERSION_MICRO}")
+    ENDIF ()
+ENDIF ()
 
-macro(_find_gst_component _name _header)
-    find_gstreamer_library(${_name} ${_header} ${GSTREAMER_ABI_VERSION})
-    set(_GSTREAMER_EXTRA_VARIABLES ${_GSTREAMER_EXTRA_VARIABLES}
-                                    GSTREAMER_${_name}_LIBRARY GSTREAMER_${_name}_INCLUDE_DIR)
-endmacro()
+# FIXME: With CMake 2.8.3 we can just pass GSTREAMER_VERSION to FIND_PACKAGE_HANDLE_STARNDARD_ARGS as VERSION_VAR
+#        and remove the version check here (GSTREAMER_MINIMUM_VERSION would be passed to FIND_PACKAGE).
+SET(VERSION_OK TRUE)
+IF ("${GSTREAMER_VERSION}" VERSION_LESS "${GSTREAMER_MINIMUM_VERSION}")
+    SET(VERSION_OK FALSE)
+ENDIF ()
 
-foreach(_component ${GStreamer_FIND_COMPONENTS})
-    if (${_component} STREQUAL "base")
-        _find_gst_component(BASE gstbasesink.h)
-    elseif (${_component} STREQUAL "check")
-        _find_gst_component(CHECK gstcheck.h)
-    elseif (${_component} STREQUAL "controller")
-        _find_gst_component(CONTROLLER gstargbcontrolbinding.h)
-    elseif (${_component} STREQUAL "net")
-        _find_gst_component(NET gstnet.h)
-    else()
-        message (AUTHOR_WARNING "FindGStreamerPluginsBase.cmake: Invalid component \"${_component}\" was specified")
-    endif()
-endforeach()
+# -------------------------
+# 2. Find GStreamer plugins
+# -------------------------
 
+FIND_GSTREAMER_COMPONENT(GSTREAMER_APP gstreamer-app-0.10 gst/app/gstappsink.h gstapp-0.10)
+FIND_GSTREAMER_COMPONENT(GSTREAMER_AUDIO gstreamer-audio-0.10 gst/audio/audio.h gstaudio-0.10)
+FIND_GSTREAMER_COMPONENT(GSTREAMER_FFT gstreamer-fft-0.10 gst/fft/gstfft.h gstfft-0.10)
+FIND_GSTREAMER_COMPONENT(GSTREAMER_INTERFACES gstreamer-interfaces-0.10 gst/interfaces/mixer.h gstinterfaces-0.10)
+FIND_GSTREAMER_COMPONENT(GSTREAMER_PBUTILS gstreamer-pbutils-0.10 gst/pbutils/pbutils.h gstpbutils-0.10)
+FIND_GSTREAMER_COMPONENT(GSTREAMER_VIDEO gstreamer-video-0.10 gst/video/video.h gstvideo-0.10)
 
-# Version check
-if (GStreamer_FIND_VERSION)
-    if (PKG_GSTREAMER_FOUND)
-        if("${PKG_GSTREAMER_VERSION}" VERSION_LESS "${GStreamer_FIND_VERSION}")
-            message(STATUS "Found GStreamer version ${PKG_GSTREAMER_VERSION}, but at least version ${GStreamer_FIND_VERSION} is required")
-            set(GSTREAMER_VERSION_COMPATIBLE FALSE)
-        else()
-            set(GSTREAMER_VERSION_COMPATIBLE TRUE)
-        endif()
-    elseif(GSTREAMER_INCLUDE_DIR)
-        include(CheckCXXSourceCompiles)
+# ------------------------------------------------
+# 3. Process the COMPONENTS passed to FIND_PACKAGE
+# ------------------------------------------------
+SET(_GSTREAMER_REQUIRED_VARS GSTREAMER_INCLUDE_DIRS GSTREAMER_LIBRARIES VERSION_OK GSTREAMER_BASE_INCLUDE_DIRS GSTREAMER_BASE_LIBRARIES)
 
-        set(CMAKE_REQUIRED_INCLUDES ${GSTREAMER_INCLUDE_DIR})
-        string(REPLACE "." "," _comma_version ${GStreamer_FIND_VERSION})
-        # Hack to invalidate the cached value
-        set(GSTREAMER_VERSION_COMPATIBLE GSTREAMER_VERSION_COMPATIBLE)
+FOREACH(_component ${GStreamer_FIND_COMPONENTS})
+    SET(_gst_component "GSTREAMER_${_component}")
+    STRING(TOUPPER ${_gst_component} _UPPER_NAME)
 
-        check_cxx_source_compiles("
-#define G_BEGIN_DECLS
-#define G_END_DECLS
-#include <gst/gstversion.h>
+    LIST(APPEND _GSTREAMER_REQUIRED_VARS ${_UPPER_NAME}_INCLUDE_DIRS ${_UPPER_NAME}_LIBRARIES)
+ENDFOREACH()
 
-#if GST_CHECK_VERSION(${_comma_version})
-int main() { return 0; }
-#else
-# error \"GStreamer version incompatible\"
-#endif
-" GSTREAMER_VERSION_COMPATIBLE)
-
-        if (NOT GSTREAMER_VERSION_COMPATIBLE)
-            message(STATUS "GStreamer ${GStreamer_FIND_VERSION} is required, but the version found is older")
-        endif()
-    else()
-        # We didn't find gstreamer at all
-        set(GSTREAMER_VERSION_COMPATIBLE FALSE)
-    endif()
-else()
-    # No version constrain was specified, thus we consider the version compatible
-    set(GSTREAMER_VERSION_COMPATIBLE TRUE)
-endif()
-
-
-include(FindPackageHandleStandardArgs)
-find_package_handle_standard_args(GStreamer DEFAULT_MSG
-                                  GSTREAMER_LIBRARY GSTREAMER_INCLUDE_DIR
-                                  GSTREAMER_VERSION_COMPATIBLE ${_GSTREAMER_EXTRA_VARIABLES})
+INCLUDE(FindPackageHandleStandardArgs)
+FIND_PACKAGE_HANDLE_STANDARD_ARGS(GStreamer DEFAULT_MSG ${_GSTREAMER_REQUIRED_VARS})

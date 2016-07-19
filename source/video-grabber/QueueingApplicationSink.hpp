@@ -23,7 +23,7 @@ public:
 
 protected:
     //! Called when a new sample arrives
-    virtual QGst::FlowReturn newSample() override;
+    virtual QGst::FlowReturn newBuffer() override;
 
 private:
     //! The queue to put incoming frames.
