@@ -3,66 +3,12 @@
 
 #include "QueueingApplicationSink.hpp"
 
+#include <CommandLineParameters.hpp>
+
 #include <QGst/Pipeline>
 
 #include <QtCore/QMap>
 #include <QtCore/QObject>
-
-/*!
- * \brief The type of the incoming video stream.
- */
-enum class StreamType
-{
-    VIDEO_4_LINUX,
-    UNDEFINED
-    // TODO : to be extended
-};
-
-/*!
- * Stores the input stream type and parameters.
- */
-class StreamDescriptor
-{
-public:
-    //! Constructor.
-    StreamDescriptor(StreamType streamType = StreamType::UNDEFINED, QString parameters = ""):
-        _streamType(streamType),
-        _parameters(parameters)
-    {}
-
-    //! Convenience constructor, takes the stream type as as string.
-    StreamDescriptor(QString streamType, QString parameters) :
-        _streamType(StreamType::UNDEFINED)
-    {
-        if (_streamTypeByName.contains(streamType)){
-            _streamType = _streamTypeByName[streamType];
-            _parameters = parameters;
-        }
-    }
-
-    //! Getter for the stream type.
-    StreamType streamType() const { return _streamType; }
-    //! Getter for the parameters.
-    QString parameters() const { return _parameters; }
-    //! Checks that the stream descriptor is valid.
-    bool isValid() const { return (_streamType != StreamType::UNDEFINED); }
-
-    //! Checks that the provided string is a valid stream type.
-    static bool isValidStreamType(QString streamType) { return _streamTypeByName.contains(streamType); }
-
-private:
-    //! The type of the incoming video stream.
-    StreamType _streamType;
-    //! Additional parameters of the stream.
-    QString _parameters;
-    //! The map to translate the string stream type to the corresponding enum.
-    static const QMap<QString, StreamType> _streamTypeByName;
-};
-
-/*!
- * The alias for the stream parameters list.
- */
-using StreamDescriptorList = QList<StreamDescriptor>;
 
 /*!
 * \brief This class manages the video stream reception from a specific source. 

@@ -4,7 +4,7 @@
 #include <ViewerWidget.hpp>
 #include <ViewerHandler.hpp>
 #include <VideoGrabber.hpp>
-#include <VideoGrabberSettings.hpp>
+#include <CommandLineParameters.hpp>
 
 #include <QtCore/QCoreApplication>
 #include <QtGui/QtGui>
@@ -23,8 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // add the video grabber
     _grabber = new VideoGrabber(this);
-    if (VideoGrabberSettings::get().mainCameraDescriptor().isValid()){
-        _grabber->addStreamReceiver(VideoGrabberSettings::get().mainCameraDescriptor(), queuePtr);
+    if (CommandLineParameters::get().mainCameraDescriptor().isValid()){
+        _grabber->addStreamReceiver(CommandLineParameters::get().mainCameraDescriptor(), queuePtr);
     }
 
     // add the viewer gui

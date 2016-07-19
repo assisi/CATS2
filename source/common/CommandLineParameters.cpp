@@ -1,16 +1,18 @@
-#include "VideoGrabberSettings.hpp"
+#include "CommandLineParameters.hpp"
+
+#include <QtCore/QDebug>
 
 /*!
  * Constructor.
  */
-VideoGrabberSettings::VideoGrabberSettings()
+CommandLineParameters::CommandLineParameters()
 {
 }
 
 /*!
  * Destructor.
  */
-VideoGrabberSettings::~VideoGrabberSettings()
+CommandLineParameters::~CommandLineParameters()
 {
 
 }
@@ -18,9 +20,9 @@ VideoGrabberSettings::~VideoGrabberSettings()
 /*!
  * The singleton getter.
  */
-VideoGrabberSettings& VideoGrabberSettings::get()
+CommandLineParameters& CommandLineParameters::get()
 {
-    static VideoGrabberSettings instance;
+    static CommandLineParameters instance;
     return instance;
 }
 
@@ -29,7 +31,7 @@ VideoGrabberSettings& VideoGrabberSettings::get()
  * This part is inspired by this stackoverflow post
  * http://stackoverflow.com/questions/865668/how-to-parse-command-line-arguments-in-c
  */
-bool VideoGrabberSettings::init(int argc, char** argv)
+bool CommandLineParameters::init(int argc, char** argv, bool needMainCamera)
 {
     bool settingsAccepted = false;
 
@@ -48,16 +50,18 @@ bool VideoGrabberSettings::init(int argc, char** argv)
     bool foundMainCameraParameters = (parseStreamArguments(argc, argv, "-mc", streamType, streamParameters)
                                       || parseStreamArguments(argc, argv, "--maincam", streamType, streamParameters));
     if (foundMainCameraParameters) {
+        // the main camera
         _mainCameraDescriptor = StreamDescriptor(streamType, streamParameters);
-        settingsAccepted = foundMainCameraParameters;
     }
+    settingsAccepted = (foundMainCameraParameters || (!needMainCamera));
+
     return settingsAccepted;
 }
 
 /*!
  * Prints out the command line arguments expected by the video grabber.
  */
-void VideoGrabberSettings::printSupportedArguments()
+void CommandLineParameters::printSupportedArguments()
 {
     qDebug() << "Video grabber usage";
     qDebug() << "\t -h --help\t\tShow this help message";
@@ -68,7 +72,7 @@ void VideoGrabberSettings::printSupportedArguments()
  * Looks for the given argument in the command line, if found it return second and third argument as
  * stream type and parameters.
  */
-bool VideoGrabberSettings::parseStreamArguments(int argc, char** argv, QString argument, QString& streamType, QString& parameters)
+bool CommandLineParameters::parseStreamArguments(int argc, char** argv, QString argument, QString& streamType, QString& parameters)
 {
     char** itr = std::find(argv, argv + argc, argument);
     if ((itr != (argv + argc)) && ((itr + 1) != (argv + argc)) && ((itr + 2) != (argv + argc))) {

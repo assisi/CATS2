@@ -8,6 +8,9 @@ TrackingRoutineWidget::TrackingRoutineWidget(QWidget *parent) :
     ui->setupUi(this);
 }
 
+/*!
+ * Destructor.
+ */
 TrackingRoutineWidget::~TrackingRoutineWidget()
 {
     delete ui;
