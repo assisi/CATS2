@@ -29,34 +29,36 @@ QGst::FlowReturn QueueingApplicationSink::newBuffer()
 {
     QGst::BufferPtr buffer = pullBuffer();
 
-    // get the image attributes
-    QGst::CapsPtr caps = buffer->caps();
-    const QGst::StructurePtr structure = caps->internalStructure(0);
+    if (!buffer.isNull()) {
+        // get the image attributes
+        QGst::CapsPtr caps = buffer->caps();
+        const QGst::StructurePtr structure = caps->internalStructure(0);
 
-    int width, height;
-    width = structure.data()->value("width").get<int>();
-    height = structure.data()->value("height").get<int>();
+        int width, height;
+        width = structure.data()->value("width").get<int>();
+        height = structure.data()->value("height").get<int>();
 
-    //    qDebug() << Q_FUNC_INFO << "Sample caps:" << structure.data()->toString();
+        //    qDebug() << Q_FUNC_INFO << "Sample caps:" << structure.data()->toString();
 
-    // create the image from the buffer data
-    cv::Mat image(height, width, CV_8UC3, const_cast<uchar*>(buffer->data()));
+        // create the image from the buffer data
+        cv::Mat image(height, width, CV_8UC3, const_cast<uchar*>(buffer->data()));
 
-    // copy the image to be placed in the queue
-    cv::Mat* frameImage = new cv::Mat(height, width, CV_8UC3);
-    image.copyTo(*frameImage);
+        // copy the image to be placed in the queue
+        cv::Mat* frameImage = new cv::Mat(height, width, CV_8UC3);
+        image.copyTo(*frameImage);
 
-    // first check if there is allows place in the queue
-    // otherwise remove the tail element
-    if (_outputQueue.data()->isOutgrown()) { // TODO : to move this logics to the TimestampedFrameQueue
-                                             // class and add a flag to the  constructor
-        _outputQueue.data()->dropTail();
+        // first check if there is allows place in the queue
+        // otherwise remove the tail element
+        if (_outputQueue.data()->isOutgrown()) { // TODO : to move this logics to the TimestampedFrameQueue
+                                                 // class and add a flag to the  constructor
+            _outputQueue.data()->dropTail();
+        }
+
+        // and push it to the queue
+        std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
+        TimestampedFrame frame(frameImage, ms);
+        _outputQueue.data()->enqueue(frame);
     }
-
-    // and push it to the queue
-    std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
-    TimestampedFrame frame(frameImage, ms);
-    _outputQueue.data()->enqueue(frame);
 
     return QGst::FlowOk;
 }
