@@ -3,7 +3,7 @@
 #  READERWRITERQUEUE_INCLUDE_DIRS - The readerwriterqueue include directories
 
 find_path(READERWRITERQUEUE_INCLUDE_DIR readerwriterqueue.h
-          HINTS "$ENV{CATS2_DIR}" 
+          HINTS "$ENV{CATS2_DIR}/dependencies"
           PATH_SUFFIXES readerwriterqueue)
 
 include(FindPackageHandleStandardArgs)
