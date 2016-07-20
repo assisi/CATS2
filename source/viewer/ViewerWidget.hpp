@@ -12,6 +12,8 @@ namespace Ui
 class ViewerWidget;
 }
 
+class ViewerData;
+
 /*!
  * \brief The user interface class that shows current video frame and the detected objects positions.
  */
@@ -20,7 +22,7 @@ class ViewerWidget : public QWidget
     Q_OBJECT
 public:
     //! Constructor.
-    explicit ViewerWidget(QWidget *parent = 0);
+    explicit ViewerWidget(QSharedPointer<ViewerData> data, QWidget *parent);
     //! Destructor.
     virtual ~ViewerWidget();
 
@@ -35,6 +37,8 @@ public slots:
     void saveCurrentFrameToFile();
 
 protected:
+    //! The data class that provides the frames and agent's positions to show.
+    QSharedPointer<ViewerData> _viewerData;
     //! The form.
     Ui::ViewerWidget* _uiViewer;
     //! The scene.

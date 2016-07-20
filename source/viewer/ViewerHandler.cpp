@@ -8,13 +8,11 @@
 */
 ViewerHandler::ViewerHandler(TimestampedFrameQueuePtr inputQueue, QWidget& parent) :
     QObject(&parent),
-    _viewerGui(new ViewerWidget(&parent))
     _data(QSharedPointer<ViewerData>(new ViewerData(inputQueue), &QObject::deleteLater)),
+    _viewerWidget(new ViewerWidget(_data, &parent))
 {
-    qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QImage>");
-    connect(&_data, &ViewerData::newFrame, _viewerGui, &ViewerWidget::onNewFrame);
     // some security: when the viewer widget is destroyed, reset the pointer to it
-    connect(_viewerGui, &QObject::destroyed, [=]() { _viewerGui = nullptr; });
+    connect(_viewerWidget, &QObject::destroyed, [=]() { _viewerWidget = nullptr; });
 }
 
 /*!

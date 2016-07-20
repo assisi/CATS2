@@ -28,13 +28,13 @@ public:
 
 public:
     //! Returns the pointer to the viewer widget.
-    ViewerWidget* widget() { return _viewerGui; }
+    ViewerWidget* widget() { return _viewerWidget; }
 
 private:
     //! The data class.
     QSharedPointer<ViewerData> _data;
     //! The GUI class.
-    ViewerWidget* _viewerGui;
+    ViewerWidget* _viewerWidget;
 };
 
 #endif // CATS2_VIEWER_HANDLER_HPP

@@ -1,5 +1,6 @@
 #include "ui_ViewerWidget.h"
 #include "ViewerWidget.hpp"
+#include "ViewerData.hpp"
 
 #include <QtWidgets/QGraphicsPixmapItem>
 #include <QtCore/QDir>
@@ -11,8 +12,9 @@
 /*!
  * Constructor.
  */
-ViewerWidget::ViewerWidget(QWidget *parent) :
+ViewerWidget::ViewerWidget(QSharedPointer<ViewerData> viewerData, QWidget *parent) :
     QWidget(parent),
+    _viewerData(viewerData),
     _uiViewer(new Ui::ViewerWidget)
 {
     _uiViewer->setupUi(this);
@@ -26,6 +28,10 @@ ViewerWidget::ViewerWidget(QWidget *parent) :
     _videoFrame->setZValue(0);
     _videoFrame->setPos(0,0);
     _scene->addItem(_videoFrame);
+
+    // connect to the data class
+    qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QImage>");
+    connect(_viewerData.data(), &ViewerData::newFrame, this, &ViewerWidget::onNewFrame);
 }
 
 /*!
