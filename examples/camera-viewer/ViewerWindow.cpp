@@ -35,6 +35,7 @@ ViewerWindow::ViewerWindow(QWidget *parent) :
     // connect the window's actions
     connect(_ui->actionZoomIn, &QAction::triggered, _viewerHandler->widget(), &ViewerWidget::onZoomIn);
     connect(_ui->actionZoomOut, &QAction::triggered, _viewerHandler->widget(), &ViewerWidget::onZoomOut);
+    connect(_ui->actionSaveCurrentView, &QAction::triggered, _viewerHandler->widget(), &ViewerWidget::saveCurrentFrameToFile);
 }
 
 /*!

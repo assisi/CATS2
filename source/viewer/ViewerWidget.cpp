@@ -2,6 +2,11 @@
 #include "ViewerWidget.hpp"
 
 #include <QtWidgets/QGraphicsPixmapItem>
+#include <QtCore/QDir>
+#include <QtCore/QStandardPaths>
+#include <QtCore/QDateTime>
+#include <QtWidgets/QFileDialog>
+#include <QtWidgets/QMessageBox>
 
 /*!
  * Constructor.
@@ -52,3 +57,20 @@ void ViewerWidget::onNewFrame(QSharedPointer<QImage> frame)
     _videoFrame->setPixmap(QPixmap::fromImage(*frame.data()));
 }
 
+/*!
+ * Save current frame.
+ */
+void ViewerWidget::saveCurrentFrameToFile()
+{
+    QString defaultName = QString("%1%2%3_%4.png").arg(QStandardPaths::writableLocation(QStandardPaths::PicturesLocation))
+                                                  .arg(QDir::separator())
+                                                  .arg(QApplication::applicationName())
+                                                  .arg(QDateTime::currentDateTime().toString("yyyy-MM-dd hh-mm-ss"));
+
+    QString fileName = QFileDialog::getSaveFileName(this, tr("Save image"), defaultName, tr("Images (*.png *.bmp *.jpg)"));
+    if (!fileName.isEmpty()) {
+        if (!_videoFrame->pixmap().save(fileName)) {
+            QMessageBox::information(this, tr("Saving current frame..."), tr("Can't save image"));;
+        }
+    }
+}

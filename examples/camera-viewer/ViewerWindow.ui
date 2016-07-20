@@ -29,6 +29,7 @@
     </property>
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
+    <addaction name="actionSaveCurrentView"/>
    </widget>
    <addaction name="menuView"/>
   </widget>
@@ -45,6 +46,7 @@
    </attribute>
    <addaction name="actionZoomIn"/>
    <addaction name="actionZoomOut"/>
+   <addaction name="actionSaveCurrentView"/>
   </widget>
   <action name="actionZoomIn">
    <property name="icon">
@@ -68,6 +70,15 @@
    </property>
    <property name="toolTip">
     <string>Zoom out the image</string>
+   </property>
+  </action>
+  <action name="actionSaveCurrentView">
+   <property name="icon">
+    <iconset resource="icons.qrc">
+     <normaloff>:/resources/icons/ic_camera_enhance_black_24dp.png</normaloff>:/resources/icons/ic_camera_enhance_black_24dp.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save current view</string>
    </property>
   </action>
  </widget>

@@ -31,6 +31,8 @@ public slots:
     void onZoomIn();
     //! Unzoom the video.
     void onZoomOut();
+    //! Save current frame.
+    void saveCurrentFrameToFile();
 
 protected:
     //! The form.
