@@ -1,9 +1,9 @@
 set(srcs
     main.cpp
-    MainWindow.cpp
+    ViewerWindow.cpp
 )
 
-qt5_wrap_ui(uis_hdrs MainWindow.ui)
+qt5_wrap_ui(uis_hdrs ViewerWindow.ui)
 qt5_add_resources(resources icons.qrc)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/video-grabber)

@@ -2,8 +2,8 @@
 	Class of the applications' main window
 */
 
-#ifndef CATS2_EXAMPLE_MAIN_WINDOW_HPP
-#define CATS2_EXAMPLE_MAIN_WINDOW_HPP
+#ifndef CATS2_EXAMPLE_VIEWER_WINDOW_HPP
+#define CATS2_EXAMPLE_VIEWER_WINDOW_HPP
 
 #include <TimestampedFrame.hpp>
 
@@ -17,22 +17,22 @@ class ViewerHandler;
 
 namespace Ui
 {
-class MainWindow;
+class ViewerWindow;
 }
 
 
-class MainWindow : public QMainWindow
+class ViewerWindow : public QMainWindow
 {
     Q_OBJECT
 public:
     //! Constructor.
-    explicit MainWindow (QWidget *parent = 0);
+    explicit ViewerWindow (QWidget *parent = 0);
     //! Destructor.
-    virtual ~MainWindow() override;
+    virtual ~ViewerWindow() override;
 
 private:
     //! The form.
-    Ui::MainWindow* _ui;
+    Ui::ViewerWindow* _ui;
 
     // NOTE : all objects below receive this class as an owner, so no need in smart pointers.
     //! The video grabber.
@@ -43,4 +43,4 @@ private:
     ViewerHandler* _viewerHandler;
 };
 
-#endif // CATS2_EXAMPLE_MAIN_WINDOW_HPP
+#endif // CATS2_EXAMPLE_VIEWER_WINDOW_HPP

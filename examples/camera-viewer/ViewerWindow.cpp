@@ -1,5 +1,5 @@
-#include "ui_MainWindow.h"
-#include "MainWindow.hpp"
+#include "ui_ViewerWindow.h"
+#include "ViewerWindow.hpp"
 
 #include <ViewerWidget.hpp>
 #include <ViewerHandler.hpp>
@@ -12,9 +12,9 @@
 /*!
  * Constructor.
  */
-MainWindow::MainWindow(QWidget *parent) :
+ViewerWindow::ViewerWindow(QWidget *parent) :
     QMainWindow(parent),
-    _ui(new Ui::MainWindow)
+    _ui(new Ui::ViewerWindow)
 {
     _ui->setupUi(this);
 //	setWindowIcon(QIcon(":/images/mobots_logo.png"));
@@ -41,7 +41,7 @@ MainWindow::MainWindow(QWidget *parent) :
 /*!
  * Destructor.
  */
-MainWindow::~MainWindow()
+ViewerWindow::~ViewerWindow()
 {
 
 }

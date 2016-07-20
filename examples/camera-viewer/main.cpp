@@ -1,4 +1,4 @@
-#include "MainWindow.hpp"
+#include "ViewerWindow.hpp"
 #include <CommandLineParameters.hpp>
 
 #include <QGst/Init>
@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     // parse input arguments to initialize the grabber
     if (CommandLineParameters::get().init(argc, argv)) {
 
-        MainWindow mainWindow;
+        ViewerWindow mainWindow;
         mainWindow.show();
         return app.exec();
     } else {
