@@ -28,7 +28,7 @@ ViewerWindow::ViewerWindow(QWidget *parent) :
     }
 
     // and the viewer handler
-    _viewerHandler = new ViewerHandler(queuePtr, this);
+    _viewerHandler = new ViewerHandler(queuePtr, *this);
     // make the frame viewer the central widget
     setCentralWidget(_viewerHandler->widget());
 
