@@ -22,13 +22,13 @@ ViewerWindow::ViewerWindow(QWidget *parent) :
     TimestampedFrameQueuePtr queuePtr = TimestampedFrameQueuePtr(new TimestampedFrameQueue(100));
 
     // add the video grabber
-    _grabber = new VideoGrabber(this);
+    _grabber = QSharedPointer<VideoGrabber>(new VideoGrabber(), &QObject::deleteLater);
     if (CommandLineParameters::get().mainCameraDescriptor().isValid()){
         _grabber->addStreamReceiver(CommandLineParameters::get().mainCameraDescriptor(), queuePtr);
     }
 
     // and the viewer handler
-    _viewerHandler = new ViewerHandler(queuePtr, *this);
+    _viewerHandler = QSharedPointer<ViewerHandler>(new  ViewerHandler(queuePtr, this), &QObject::deleteLater);
     // make the frame viewer the central widget
     setCentralWidget(_viewerHandler->widget());
 

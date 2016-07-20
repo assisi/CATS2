@@ -7,6 +7,7 @@
 
 /*!
 * \brief This class receives frames from a queue in openCV Mat format and converts it to Qt image.
+* Runs in a separated thread.
 */
 class FrameConvertor : public QObject
 {

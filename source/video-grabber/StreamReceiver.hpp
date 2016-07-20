@@ -11,7 +11,8 @@
 #include <QtCore/QObject>
 
 /*!
-* \brief This class manages the video stream reception from a specific source. 
+* \brief This class manages the video stream reception from a specific source.
+* Runs in a separated thread.
 */
 class StreamReceiver : public QObject
 {

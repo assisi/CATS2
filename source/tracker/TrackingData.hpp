@@ -16,6 +16,8 @@ class AgentDataImage;
  * \brief The data class that launches the tracking routine.
  * Which tracking method to use and its parameters is defined by the
  * TrackingSettings settings singleton.
+ * NOTE : data classes should be managed through smart pointers without using the Qt's mechanism
+ * of ownership; thus we set the parent to nullptr in the constructor.
  */
 class TrackingData : public QObject
 {

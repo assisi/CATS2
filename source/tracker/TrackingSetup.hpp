@@ -1,6 +1,8 @@
 #ifndef CATS2_TRACKING_SETUP_HPP
 #define CATS2_TRACKING_SETUP_HPP
 
+#include "TrackingHandler.hpp"
+
 #include <SetupType.hpp>
 #include <VideoGrabber.hpp>
 

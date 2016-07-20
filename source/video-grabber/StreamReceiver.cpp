@@ -15,7 +15,7 @@ const QMap<QString, StreamType> StreamDescriptor::_streamTypeByName = {{"v4l", S
 * Constructor.
 */
 StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, TimestampedFrameQueuePtr outputQueue) :
-    QObject(),
+    QObject(nullptr),
     _pipe1ineDescription(),
     _sink(outputQueue)
 {

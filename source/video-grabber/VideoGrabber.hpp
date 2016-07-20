@@ -7,14 +7,15 @@
 
 /*!
 * \brief This class manages the video reception from one or several sources. It creates and launches stream receivers in separated threads.
-*
+ * NOTE : handler classes should be managed through smart pointers without using the Qt's mechanism
+ * of ownership; thus we set the parent to nullptr in the constructor.
 */
 class VideoGrabber : public QObject
 {
     Q_OBJECT
 public:
     //! Constructor.
-    explicit VideoGrabber(QObject *parent = 0);
+    explicit VideoGrabber();
     //! Destructor.
     virtual ~VideoGrabber();
 

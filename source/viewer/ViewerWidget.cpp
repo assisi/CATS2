@@ -14,7 +14,7 @@
  */
 ViewerWidget::ViewerWidget(QSharedPointer<ViewerData> viewerData, QWidget *parent) :
     QWidget(parent),
-    _viewerData(viewerData),
+    _data(viewerData),
     _uiViewer(new Ui::ViewerWidget)
 {
     _uiViewer->setupUi(this);
@@ -31,7 +31,7 @@ ViewerWidget::ViewerWidget(QSharedPointer<ViewerData> viewerData, QWidget *paren
 
     // connect to the data class
     qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QImage>");
-    connect(_viewerData.data(), &ViewerData::newFrame, this, &ViewerWidget::onNewFrame);
+    connect(_data.data(), &ViewerData::newFrame, this, &ViewerWidget::onNewFrame);
 }
 
 /*!
@@ -60,7 +60,8 @@ void ViewerWidget::onZoomOut()
 
 void ViewerWidget::onNewFrame(QSharedPointer<QImage> frame)
 {
-    _videoFrame->setPixmap(QPixmap::fromImage(*frame.data()));
+    if (!frame.isNull())
+        _videoFrame->setPixmap(QPixmap::fromImage(*frame.data()));
 }
 
 /*!

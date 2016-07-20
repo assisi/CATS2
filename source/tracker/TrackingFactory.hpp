@@ -30,11 +30,9 @@ public:
         TrackingRoutineSettingsPtr settings = TrackingSettings::get().trackingRoutineSettings(setupType);
 
         if (!settings.isNull()) {
-            switch (settings.data()->type()) {
+            switch (settings->type()) {
             case TrackingRoutineType::BLOB_DETECTOR:
-                return TrackingRoutinePtr(new BlobDetector(settings, inputQueue, debugQueue), &QObject::deleteLater); // delete later is used for security as multithreaded
-                                                                                                            // signals and slots might result is crashes when a
-                                                                                                            // a sender is deleted before a signal is received for instance
+                return TrackingRoutinePtr(new BlobDetector(settings, inputQueue, debugQueue), &QObject::deleteLater);
             default:
                 break;
             }

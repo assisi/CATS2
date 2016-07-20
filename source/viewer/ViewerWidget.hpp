@@ -38,7 +38,7 @@ public slots:
 
 protected:
     //! The data class that provides the frames and agent's positions to show.
-    QSharedPointer<ViewerData> _viewerData;
+    QSharedPointer<ViewerData> _data;
     //! The form.
     Ui::ViewerWidget* _uiViewer;
     //! The scene.

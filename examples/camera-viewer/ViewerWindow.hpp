@@ -34,11 +34,10 @@ private:
     //! The form.
     Ui::ViewerWindow* _ui;
 
-    // NOTE : all objects below receive this class as an owner, so no need in smart pointers.
     //! The video grabber.
-    VideoGrabber* _grabber;
+    QSharedPointer<VideoGrabber> _grabber;
     //! The viewer handler.
-    ViewerHandler* _viewerHandler;
+    QSharedPointer<ViewerHandler> _viewerHandler;
 };
 
 #endif // CATS2_EXAMPLE_VIEWER_WINDOW_HPP

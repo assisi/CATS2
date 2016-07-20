@@ -13,7 +13,7 @@ class FrameConvertor;
  * is getting frames from the input queue and converting them to the Qt format
  * and that is run in a separated thread. This split is done in order to encapsulate
  * all the data generation routine in the ViewerData.
- * NOTE : data classes are managed through smart pointers without using the Qt's mechanism
+ * NOTE : data classes should be managed through smart pointers without using the Qt's mechanism
  * of ownership; thus we set the parent to nullptr in the constructor.
  */
 class ViewerData : public QObject

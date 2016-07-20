@@ -5,7 +5,7 @@
 /*!
 * Constructor.
 */
-VideoGrabber::VideoGrabber(QObject *parent) : QObject(parent)
+VideoGrabber::VideoGrabber() : QObject(nullptr)
 {
 
 }

@@ -1,40 +1,37 @@
 #ifndef CATS2_VIEWER_HANDLER_HPP
 #define CATS2_VIEWER_HANDLER_HPP
 
-#include "ViewerWidget.hpp"
-
 #include <TimestampedFrame.hpp>
 
 #include <QtCore/QObject>
 
 class ViewerData;
+class ViewerWidget;
 
 /*!
 * \brief This class manages the visualization of the video stream.
 * Binds together the data and GUI.
-*
+ * NOTE : handler classes should managed through smart pointers without using the Qt's mechanism
+ * of ownership; thus we set the parent to nullptr in the constructor.
 */
 class ViewerHandler : public QObject
 {
     Q_OBJECT
 public:
-    //! Constructor. It receives a qwidget as a parent to pass it further as a parent of
-    //! the viewer widget. It's set by a reference to prevent getting null pointers.
-    explicit ViewerHandler(TimestampedFrameQueuePtr inputQueue, QWidget& parent);
-    //! Forbids passing a temporary object as a parent to the constructor.
-    explicit ViewerHandler(TimestampedFrameQueuePtr inputQueue, QWidget&& parent) = delete;
+    //! Constructor. It receives a qwidget to pass as a parent to the viewer widget.
+    explicit ViewerHandler(TimestampedFrameQueuePtr inputQueue, QWidget* parentWidget);
     //! Destructor.
     virtual ~ViewerHandler();
 
 public:
     //! Returns the pointer to the viewer widget.
-    ViewerWidget* widget() { return _viewerWidget; }
+    ViewerWidget* widget() { return _widget; }
 
 private:
     //! The data class.
     QSharedPointer<ViewerData> _data;
     //! The GUI class.
-    ViewerWidget* _viewerWidget;
+    ViewerWidget* _widget;
 };
 
 #endif // CATS2_VIEWER_HANDLER_HPP
