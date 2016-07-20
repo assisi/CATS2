@@ -6,6 +6,8 @@ set(srcs
     settings/BlobDetectorSettings.cpp
     TrackingData.cpp
     TrackingSetup.cpp
+    TrackingHandler.cpp
+    gui/TrackingRoutineWidget.cpp
 )
 
 set(hdrs
