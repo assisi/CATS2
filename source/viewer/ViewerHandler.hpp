@@ -15,15 +15,20 @@ class ViewerHandler : public QObject
 {
     Q_OBJECT
 public:
-    //! Constructor.
-    explicit ViewerHandler(TimestampedFrameQueuePtr inputQueue, ViewerWidget* viewerGui, QObject *parent = 0);
+    //! Constructor. It receives a qwidget as a parent to pass it further as a parent of
+    //! the viewer widget.
+    explicit ViewerHandler(TimestampedFrameQueuePtr inputQueue, QWidget *parent = 0);
     //! Destructor.
     virtual ~ViewerHandler();
+
+public:
+    //! Returns the pointer to the viewer widget.
+    ViewerWidget* widget() { return _viewerGui; }
 
 private:
     //! The data class.
     ViewerData _data;
-    //! The GUI class. Owned by the main window, only the pointer is stored here.
+    //! The GUI class. Receives this class as a parent.
     ViewerWidget* _viewerGui;
 };
 

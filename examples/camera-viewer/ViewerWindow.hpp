@@ -37,8 +37,6 @@ private:
     // NOTE : all objects below receive this class as an owner, so no need in smart pointers.
     //! The video grabber.
     VideoGrabber* _grabber;
-    //! The main camera viewer.
-    ViewerWidget* _viewer;
     //! The viewer handler.
     ViewerHandler* _viewerHandler;
 };

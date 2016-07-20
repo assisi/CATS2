@@ -27,15 +27,14 @@ ViewerWindow::ViewerWindow(QWidget *parent) :
         _grabber->addStreamReceiver(CommandLineParameters::get().mainCameraDescriptor(), queuePtr);
     }
 
-    // add the viewer gui
-    _viewer = new ViewerWidget(this);
-    setCentralWidget(_viewer);
     // and the viewer handler
-    _viewerHandler = new ViewerHandler(queuePtr, _viewer, this);
+    _viewerHandler = new ViewerHandler(queuePtr, this);
+    // make the frame viewer the central widget
+    setCentralWidget(_viewerHandler->widget());
 
     // connect the window's actions
-    connect(_ui->actionZoomIn, &QAction::triggered, _viewer, &ViewerWidget::onZoomIn);
-    connect(_ui->actionZoomOut, &QAction::triggered, _viewer, &ViewerWidget::onZoomOut);
+    connect(_ui->actionZoomIn, &QAction::triggered, _viewerHandler->widget(), &ViewerWidget::onZoomIn);
+    connect(_ui->actionZoomOut, &QAction::triggered, _viewerHandler->widget(), &ViewerWidget::onZoomOut);
 }
 
 /*!
