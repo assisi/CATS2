@@ -29,7 +29,7 @@ bool TrackingSettings::init(QString configurationFileName, SetupType setupType)
     _trackingRoutineSettings.insert(setupType, settings);
 
    // initialize settings
-   settingsAccepted = settings.data()->init(configurationFileName);
+   settingsAccepted = settings->init(configurationFileName);
 
     return settingsAccepted;
 }

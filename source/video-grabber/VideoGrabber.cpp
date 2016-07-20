@@ -28,7 +28,7 @@ void VideoGrabber::addStreamReceiver(StreamDescriptor parameters, TimestampedFra
     // keep the receiver pointer
     _streamReceivers.append(receiver);
 
-    receiver.data()->moveToThread(thread);
+    receiver->moveToThread(thread);
     connect(receiver.data(), &StreamReceiver::error, this, &VideoGrabber::onError);
     connect(thread, &QThread::started, receiver.data(), &StreamReceiver::process);
     connect(receiver.data(), &StreamReceiver::destroyed, thread, &QThread::quit);
@@ -59,7 +59,7 @@ void VideoGrabber::onError(QString errorMessage)
 void VideoGrabber::stopAll()
 {
     foreach (StreamReceiverPtr ptr , _streamReceivers) {
-        ptr.data()->stop();
+        ptr->stop();
     }
 }
 

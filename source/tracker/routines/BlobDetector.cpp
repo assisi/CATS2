@@ -43,8 +43,8 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
     // get the red channel image
     std::vector<cv::Mat> channels;
     cv::split(*image.data(), channels);
-    channels[0] = cv::Mat::zeros(image.data()->rows, image.data()->cols, CV_8UC1);  // blue channel is set to 0
-    channels[1] = cv::Mat::zeros(image.data()->rows, image.data()->cols, CV_8UC1);  // green channel is set to 0
+    channels[0] = cv::Mat::zeros(image->rows, image->cols, CV_8UC1);  // blue channel is set to 0
+    channels[1] = cv::Mat::zeros(image->rows, image->cols, CV_8UC1);  // green channel is set to 0
     cv::Mat redChannelImage;
     cv::merge(redChannelImage, channels);
 

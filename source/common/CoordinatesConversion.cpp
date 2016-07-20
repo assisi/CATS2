@@ -25,8 +25,8 @@ CoordinatesConversion::~CoordinatesConversion()
 PositionMeters CoordinatesConversion::imageToWorld(PositionPixels imageCoordinates)
 {
     PositionMeters position;
-    if (_cameraCalibration.data()->isInitialized())
-        position = _cameraCalibration.data()->image2World(imageCoordinates);
+    if (_cameraCalibration->isInitialized())
+        position = _cameraCalibration->image2World(imageCoordinates);
     else
         position.setValid(false);
 
@@ -39,8 +39,8 @@ PositionMeters CoordinatesConversion::imageToWorld(PositionPixels imageCoordinat
 OrientationRad CoordinatesConversion::image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientation)
 {
     OrientationRad orientation;
-    if (_cameraCalibration.data()->isInitialized())
-        orientation = _cameraCalibration.data()->image2WorldOrientationRad(imageCoordinates, imageOrientation);
+    if (_cameraCalibration->isInitialized())
+        orientation = _cameraCalibration->image2WorldOrientationRad(imageCoordinates, imageOrientation);
     else
         orientation.setValid(false);
 

@@ -14,7 +14,7 @@ ViewerData::ViewerData(TimestampedFrameQueuePtr inputQueue) : QObject(nullptr)
     _convertor = QSharedPointer<FrameConvertor>(new FrameConvertor(inputQueue), &QObject::deleteLater); // delete later is used for security as multithreaded
                                                                                                         // signals and slots might result is crashes when a
                                                                                                         // a sender is deleted before a signal is received for instance
-    _convertor.data()->moveToThread(thread);
+    _convertor->moveToThread(thread);
 
     connect(thread, &QThread::started, _convertor.data(), &FrameConvertor::process);
     connect(_convertor.data(), &FrameConvertor::finished, thread, &QThread::quit);
@@ -30,6 +30,6 @@ ViewerData::ViewerData(TimestampedFrameQueuePtr inputQueue) : QObject(nullptr)
  */
 ViewerData::~ViewerData()
 {
-    _convertor.data()->stop();
+    _convertor->stop();
 }
 

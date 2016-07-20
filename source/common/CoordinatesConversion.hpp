@@ -11,6 +11,7 @@ class CameraCalibration;
 /*!
  * \brief The class that converts the position from the frame pixels
  * to the world coordinates in meters.
+ * NOTE : this class is not thread-safe, so it should be used in the main thread only.
  */
 class CoordinatesConversion
 {

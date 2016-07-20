@@ -15,7 +15,6 @@ enum class AgentType
     UNDEFINED
 };
 
-
 /*!
  * \brief The class that contains states of agents on the arena.
  */
@@ -42,7 +41,6 @@ private:
     //! from different concurrent trackers.
     std::chrono::milliseconds _timestamp;
 };
-
 
 /*!
  * \brief The class that contains states of agents on the arena.

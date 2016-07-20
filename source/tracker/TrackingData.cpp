@@ -25,7 +25,7 @@ TrackingData::TrackingData(SetupType setupType,
 
         // launch the tracking routine in a separated thread
         QThread* thread = new QThread;
-        _trackingRoutine.data()->moveToThread(thread);
+        _trackingRoutine->moveToThread(thread);
 
         connect(thread, &QThread::started, _trackingRoutine.data(), &TrackingRoutine::process);
         connect(_trackingRoutine.data(), &TrackingRoutine::finished, thread, &QThread::quit);
@@ -43,7 +43,7 @@ TrackingData::TrackingData(SetupType setupType,
 TrackingData::~TrackingData()
 {
     if (!_trackingRoutine.isNull())
-        _trackingRoutine.data()->stop();
+        _trackingRoutine->stop();
 }
 
 /*!

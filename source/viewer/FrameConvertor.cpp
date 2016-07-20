@@ -31,7 +31,7 @@ void FrameConvertor::process()
 
     while (!_stopped) {
         // Use the blocking with timeout version of dequeue
-        if (_inputQueue.data()->dequeue(frame))
+        if (_inputQueue->dequeue(frame))
             emit newFrame(cvMatToQImage(frame.image()));
     }
 
@@ -53,19 +53,19 @@ void FrameConvertor::stop()
 QSharedPointer<QImage> FrameConvertor::cvMatToQImage(const QSharedPointer<cv::Mat>& imageCv)
 {
     QImage* imageQt = nullptr;
-    switch (imageCv.data()->type()) {
+    switch (imageCv->type()) {
         case CV_8UC4: // 8-bit, 4 channel
         {
-            imageQt = new QImage(imageCv.data()->data, imageCv.data()->cols, imageCv.data()->rows, imageCv.data()->step, QImage::Format_RGB32);
+            imageQt = new QImage(imageCv->data, imageCv->cols, imageCv->rows, imageCv->step, QImage::Format_RGB32);
             break;
         }
         case CV_8UC3: // 8-bit, 3 channel
         {
-            imageQt = new QImage(imageCv.data()->data, imageCv.data()->cols, imageCv.data()->rows, imageCv.data()->step, QImage::Format_RGB888);
+            imageQt = new QImage(imageCv->data, imageCv->cols, imageCv->rows, imageCv->step, QImage::Format_RGB888);
             break;
         }
         default: // unsupported format
-            imageQt = new QImage(imageCv.data()->cols, imageCv.data()->rows, QImage::Format_RGB888);
+            imageQt = new QImage(imageCv->cols, imageCv->rows, QImage::Format_RGB888);
             imageQt->fill(Qt::black);
             break;
     }

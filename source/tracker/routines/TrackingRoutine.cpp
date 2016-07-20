@@ -31,7 +31,7 @@ void TrackingRoutine::process()
     TimestampedFrame frame;
 
     while (!_stopped) {
-        if (_inputQueue.data()->dequeue(frame)) {
+        if (_inputQueue->dequeue(frame)) {
             doTracking(frame);
         }
         emit trackedAgents(_agents);
