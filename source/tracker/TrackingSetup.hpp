@@ -38,6 +38,9 @@ private:
 
     //! The grabber.
     QSharedPointer<VideoGrabber> _grabber;
+    //! The tracker.
+    QSharedPointer<TrackingHandler> _tracking;
+
 
     // TODO : add Grabber / Viewer / Tracker / CoordinateTransformation instance here, the are to be initialized from the settings based on the given setup type
 };

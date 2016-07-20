@@ -27,8 +27,7 @@ public:
     explicit TrackingData(SetupType setupType,
                           CoordinatesConversionPtr coordinatesConversion,
                           TimestampedFrameQueuePtr inputQueue,
-                          TimestampedFrameQueuePtr debugQueue,
-                          QObject *parent = 0);
+                          TimestampedFrameQueuePtr debugQueue);
     //! Destructor.
     virtual ~TrackingData();
 

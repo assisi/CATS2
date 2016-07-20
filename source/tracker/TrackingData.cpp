@@ -13,9 +13,8 @@
 TrackingData::TrackingData(SetupType setupType,
                            CoordinatesConversionPtr coordinatesConversion,
                            TimestampedFrameQueuePtr inputQueue,
-                           TimestampedFrameQueuePtr debugQueue,
-                           QObject *parent) :
-    QObject(parent),
+                           TimestampedFrameQueuePtr debugQueue) :
+    QObject(nullptr),
     _coordinatesConversion(coordinatesConversion)
 {
     // create the tracking routine
