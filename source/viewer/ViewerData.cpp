@@ -7,7 +7,7 @@
 /*!
  * Constructor.
  */
-ViewerData::ViewerData(TimestampedFrameQueuePtr inputQueue, QObject *parent) : QObject(parent)
+ViewerData::ViewerData(TimestampedFrameQueuePtr inputQueue) : QObject(nullptr)
 {
     // launch the incoming frames conversion in separated thread
     QThread* thread = new QThread;

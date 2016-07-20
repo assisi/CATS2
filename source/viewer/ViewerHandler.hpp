@@ -1,10 +1,13 @@
 #ifndef CATS2_VIEWER_HANDLER_HPP
 #define CATS2_VIEWER_HANDLER_HPP
 
-#include "ViewerData.hpp"
 #include "ViewerWidget.hpp"
 
+#include <TimestampedFrame.hpp>
+
 #include <QtCore/QObject>
+
+class ViewerData;
 
 /*!
 * \brief This class manages the visualization of the video stream.
@@ -29,7 +32,7 @@ public:
 
 private:
     //! The data class.
-    ViewerData _data;
+    QSharedPointer<ViewerData> _data;
     //! The GUI class.
     ViewerWidget* _viewerGui;
 };
