@@ -65,7 +65,7 @@ public:
         if (!_queue.try_enqueue(frame))
             qDebug() << Q_FUNC_INFO << "Could not enqueue new element, skipping";
 
-        qDebug() <<  Q_FUNC_INFO << QString("Frames queue contains %1 elements").arg(_queue.size_approx());
+//        qDebug() <<  Q_FUNC_INFO << QString("Frames queue contains %1 elements").arg(_queue.size_approx());
     }
 
     //! Gets an element from the queue, returns true if succeded.
@@ -74,10 +74,11 @@ public:
         bool result = _queue.try_dequeue(frame);
         // if nothing in the queue then wait a bit
         if (!result) {
-            qDebug() << Q_FUNC_INFO << "Failed to get an element from the queue, is it empty?";
+//            qDebug() << Q_FUNC_INFO << "Failed to get an element from the queue, is it empty?";
             std::this_thread::sleep_for( std::chrono::milliseconds(TimeOutMs));
-        } else
-            qDebug() << Q_FUNC_INFO << "Took one element from the queue";
+        }
+//        } else
+//            qDebug() << Q_FUNC_INFO << "Took one element from the queue";
 
         return result;
     }
