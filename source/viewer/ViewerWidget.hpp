@@ -24,7 +24,7 @@ public:
     //! Constructor.
     explicit ViewerWidget(QSharedPointer<ViewerData> data, QWidget *parent);
     //! Destructor.
-    virtual ~ViewerWidget();
+    virtual ~ViewerWidget() final;
 
 public slots:
     //! A new frame arrived.

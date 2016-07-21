@@ -21,7 +21,7 @@ public:
     //! Constructor.
     explicit TimestampedFrame(cv::Mat* image = nullptr, std::chrono::milliseconds timestamp = std::chrono::milliseconds());
     //! Destructor.
-    virtual ~TimestampedFrame();
+    virtual ~TimestampedFrame() final;
 
 public:
     //! Returns the frame image.
@@ -47,7 +47,7 @@ public:
         _maxSize(maxSize)
     { }
     //! Destructor.
-    virtual ~TimestampedFrameQueue() { }
+    virtual ~TimestampedFrameQueue() final { }
 
 public:
     //! The queue became too big.

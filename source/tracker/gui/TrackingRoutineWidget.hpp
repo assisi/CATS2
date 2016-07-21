@@ -17,7 +17,7 @@ public:
     //! Constructor.
     explicit TrackingRoutineWidget(QWidget *parent = 0);
     //! Destructor.
-    ~TrackingRoutineWidget();
+    virtual ~TrackingRoutineWidget() final;
 
 private:
     //! The gui form.

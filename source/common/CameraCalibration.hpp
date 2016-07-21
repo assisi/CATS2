@@ -32,7 +32,7 @@ public:
     //! Constructor.
     explicit CameraCalibration(QString calibrationFileName);
     //! Destructor.
-    virtual ~CameraCalibration();
+    virtual ~CameraCalibration() final;
 
     //! Converts the position in pixels to the position in meters.
     PositionMeters image2World(PositionPixels imageCoordinates);
