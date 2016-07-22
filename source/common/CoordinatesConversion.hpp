@@ -24,7 +24,7 @@ public:
 
 public:
     //! Converts the position in pixels to the position in meters.
-    PositionMeters imageToWorld(PositionPixels imageCoordinates);
+    PositionMeters imageToWorldPosition(PositionPixels imageCoordinates);
     //! Converts the orientation from image to world.
     OrientationRad image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientation);
 

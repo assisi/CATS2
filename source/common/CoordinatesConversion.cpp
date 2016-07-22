@@ -22,7 +22,7 @@ CoordinatesConversion::~CoordinatesConversion()
 /*!
  * Converts the position in pixels to the position in meters.
  */
-PositionMeters CoordinatesConversion::imageToWorld(PositionPixels imageCoordinates)
+PositionMeters CoordinatesConversion::imageToWorldPosition(PositionPixels imageCoordinates)
 {
     PositionMeters position;
     if (m_cameraCalibration->isInitialized())
