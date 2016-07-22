@@ -262,9 +262,6 @@ In C++ code, use nullptr for pointers.
 Use scoped enums instead of C++98-style enums.
 
 
- 
-\end{itemize}
-
 
 \clearpage
 \newpage
@@ -292,7 +289,7 @@ Use scoped enums instead of C++98-style enums.
 // Wrong
  int a, b;
  char *c, *d;
-�
+
  // Correct
  int height;
  int width;
@@ -300,14 +297,25 @@ Use scoped enums instead of C++98-style enums.
  char *nameOfThat;
  \end{lstlisting}
 % === END(Example) ====
-\item  Variables and functions start with a lower-case letter. Each consecutive word in a variable's name starts with an upper-case letter
+\item  Variables and functions start with a lower-case letter. Each consecutive word in a variable's name starts with an upper-case letter.
+\item  Class members start with {\bf m\_}\footnote{This seems to be inconsistent with the variables naming conventions, to replace my a simple {\bf m}?}. 
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ class TableInfo {
+  ...
+ private:
+  string m_tableName;  // OK - starts with m_
+};
+ \end{lstlisting}
+% === END(Example) ====
+
 \item  Avoid abbreviations
 % === START(Example) ====
 \begin{lstlisting}[breaklines]
  // Wrong
  short Cntr;
  char ITEM_DELIM = ' ';
-�
+
  // Correct
  short counter;
  char itemDelimiter = ' ';
@@ -625,6 +633,17 @@ Only the first line makes it clear that there's a high probability that h, s, an
 \item If the type is bigger than 16 bytes, pass by const-ref.
 \item If the type has a non-trivial copy-constructor or a non-trivial destructor, pass by const-ref to avoid executing these methods.
 \item All other types should usually be passed by value.
+\end{itemize}
+
+
+% === Subsection ====
+\subsection{Ownership}
+We try to get rid of the manual memory management. For this reason
+\begin{itemize}
+\item In the GUI classes we use the Qt mechanism of ownership.
+\item In data classes, handler classes\footnote{The handler classes make a link between the data classes and GUI.} and other classes inheriting QObject we use the Qt's smart pointers, that are provided QObject::deleteLater as destruction mechanism.
+\item In all other cases we use smart pointers or references. 
+
 \end{itemize}
 
 
