@@ -4,6 +4,7 @@ set(srcs
     CameraCalibration.cpp
     CoordinatesConversion.cpp
     settings/CommandLineParameters.cpp
+    settings/CalibrationSettings.cpp
 )
 
 set(hdrs
