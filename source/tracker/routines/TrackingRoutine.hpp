@@ -1,7 +1,7 @@
 #ifndef CATS2_TRACKING_ROUTINE_HPP
 #define CATS2_TRACKING_ROUTINE_HPP
 
-#include <CommonTypes.hpp>
+#include <CommonPointerTypes.hpp>
 #include <AgentData.hpp>
 
 #include <QtCore/QObject>

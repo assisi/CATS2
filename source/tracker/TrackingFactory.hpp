@@ -7,6 +7,7 @@
 #include "settings/TrackingRoutineSettings.hpp"
 #include "settings/BlobDetectorSettings.hpp"
 #include "settings/TrackingSettings.hpp"
+#include <SetupType.hpp>
 
 /*!
  * \brief The factory class that generates a tracking routine of given type.
@@ -25,7 +26,7 @@ public:
     /*!
      * Generates the tracking routine of given type.
      */
-    static TrackingRoutinePtr createTrackingRoutine(SetupType setupType, TimestampedFrameQueuePtr inputQueue, TimestampedFrameQueuePtr debugQueue)
+    static TrackingRoutinePtr createTrackingRoutine(SetupType::Enum setupType, TimestampedFrameQueuePtr inputQueue, TimestampedFrameQueuePtr debugQueue)
     {
         TrackingRoutineSettingsPtr settings = TrackingSettings::get().trackingRoutineSettings(setupType);
 
@@ -43,7 +44,7 @@ public:
     /*!
      * Generates the tracking routine settings of given type.
      */
-    static QSharedPointer<TrackingRoutineSettings> createTrackingRoutineSettings(TrackingRoutineType trackingType, SetupType setupType)
+    static QSharedPointer<TrackingRoutineSettings> createTrackingRoutineSettings(TrackingRoutineType trackingType, SetupType::Enum setupType)
     {
         switch (trackingType) {
         case TrackingRoutineType::BLOB_DETECTOR:

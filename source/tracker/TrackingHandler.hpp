@@ -1,7 +1,8 @@
 #ifndef CATS2_TRACKING_HANDLER_HPP
 #define CATS2_TRACKING_HANDLER_HPP
 
-#include <CommonTypes.hpp>
+#include <CommonPointerTypes.hpp>
+#include <SetupType.hpp>
 #include <CoordinatesConversion.hpp>
 #include <TimestampedFrame.hpp>
 
@@ -20,7 +21,7 @@ class TrackingHandler : public QObject
     Q_OBJECT
 public:
     //! Constructor. It receives a qwidget to pass as a parent to the tracking routine widget.
-    explicit TrackingHandler(SetupType setupType, CoordinatesConversionPtr coordinatesConversion,
+    explicit TrackingHandler(SetupType::Enum setupType, CoordinatesConversionPtr coordinatesConversion,
                              TimestampedFrameQueuePtr inputQueue, QWidget* parentWidget);
     //! Destructor.
     virtual ~TrackingHandler();

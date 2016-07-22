@@ -3,6 +3,7 @@
 
 #include <TrackingSetup.hpp>
 #include "TrackingRoutineSettings.hpp"
+#include <SetupType.hpp>
 
 /*!
  * Class-signleton that is used to store parameters of the tracking.
@@ -20,7 +21,7 @@ public:
     static TrackingSettings& get();
 
     //! Initializes the parameters from the configuration file.
-    bool init(QString configurationFileName, SetupType setupType);
+    bool init(QString configurationFileName, SetupType::Enum setupType);
 
     // delete copy and move constructors and assign operators
     //! Copy constructor.
@@ -36,7 +37,7 @@ public:
     /*!
      * Returns the settings for the tracking routine used in this setup.
      */
-    TrackingRoutineSettingsPtr trackingRoutineSettings(SetupType type) const
+    TrackingRoutineSettingsPtr trackingRoutineSettings(SetupType::Enum type) const
     {
         if (m_trackingRoutineSettings.contains(type))
             return m_trackingRoutineSettings.value(type);
@@ -53,11 +54,11 @@ private:
 private:
     //! Reads from the configuration file the tracking routine type corresponding to the setup
     //! type of this instance.
-    TrackingRoutineType readTrackingRoutineType(QString configurationFileName, SetupType setupType);
+    TrackingRoutineType readTrackingRoutineType(QString configurationFileName, SetupType::Enum setupType);
 
 private:
     //! The settings for the tracking routine used in various setups.
-    QMap<SetupType, TrackingRoutineSettingsPtr> m_trackingRoutineSettings;
+    QMap<SetupType::Enum, TrackingRoutineSettingsPtr> m_trackingRoutineSettings;
 };
 
 #endif // CATS2_TRACKING_SETTINGS_HPP

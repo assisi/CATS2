@@ -4,7 +4,8 @@
 #include "routines/TrackingRoutine.hpp"
 
 #include <CoordinatesConversion.hpp>
-#include <CommonTypes.hpp>
+#include <CommonPointerTypes.hpp>
+#include <SetupType.hpp>
 
 #include <QObject>
 
@@ -24,7 +25,7 @@ class TrackingData : public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    explicit TrackingData(SetupType setupType,
+    explicit TrackingData(SetupType::Enum setupType,
                           CoordinatesConversionPtr coordinatesConversion,
                           TimestampedFrameQueuePtr inputQueue,
                           TimestampedFrameQueuePtr debugQueue);

@@ -70,7 +70,7 @@ class BlobDetectorSettings : public TrackingRoutineSettings
 {
 public:
     //! Constructor.
-    BlobDetectorSettings(SetupType setupType);
+    BlobDetectorSettings(SetupType::Enum setupType);
 
 public:
     //! Initialization of the parameters for this specific method of tracking.

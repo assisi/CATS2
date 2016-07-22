@@ -8,7 +8,8 @@ set(srcs
 
 set(hdrs
     AgentState.hpp
-    CommonTypes.hpp
+    SetupType.hpp
+    CommonPointerTypes.hpp
     settings/ReadSettingsHelper.hpp
 )
 

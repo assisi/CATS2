@@ -6,10 +6,10 @@
 /*!
  * Constructor.
  */
-TrackingRoutineSettings::TrackingRoutineSettings(SetupType setupType) :
+TrackingRoutineSettings::TrackingRoutineSettings(SetupType::Enum setupType) :
     m_trackingRoutineType(TrackingRoutineType::UNDEFINED)
 {
-    m_settingPathPrefix = TrackingSetup::setupSettingsNameByType(setupType);
+    m_settingPathPrefix = SetupType::toString(setupType);
 }
 
 /*!

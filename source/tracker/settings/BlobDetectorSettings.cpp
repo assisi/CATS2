@@ -5,7 +5,7 @@
 /*!
  * Constructor.
  */
-BlobDetectorSettings::BlobDetectorSettings(SetupType setupType) :
+BlobDetectorSettings::BlobDetectorSettings(SetupType::Enum setupType) :
     TrackingRoutineSettings(setupType)
 {
     m_trackingRoutineType = TrackingRoutineType::BLOB_DETECTOR;

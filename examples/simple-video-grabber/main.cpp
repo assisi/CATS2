@@ -1,7 +1,7 @@
 #include <VideoGrabber.hpp>
 #include <settings/CommandLineParameters.hpp>
 #include <TimestampedFrame.hpp>
-#include <CommonTypes.hpp>
+#include <CommonPointerTypes.hpp>
 
 #include <QGst/Init>
 

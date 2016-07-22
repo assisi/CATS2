@@ -1,14 +1,7 @@
-#ifndef CATS2_COMMON_TYPES_HPP
-#define CATS2_COMMON_TYPES_HPP
+#ifndef CATS2_COMMON_POINTER_TYPES_HPP
+#define CATS2_COMMON_POINTER_TYPES_HPP
 
-#include <QMap>
 #include <QSharedPointer>
-
-enum class SetupType
-{
-    MAIN_CAMERA, // camera fixed above the setup
-    CAMERA_BELOW // camera below the robot's support
-};
 
 /*!
  * The alias for the stream descriptors list.
@@ -29,5 +22,5 @@ class TimestampedFrameQueue;
 using TimestampedFrameQueuePtr = QSharedPointer<TimestampedFrameQueue>;
 
 
-#endif // CATS2_COMMON_TYPES_HPP
+#endif // CATS2_COMMON_POINTER_TYPES_HPP
 

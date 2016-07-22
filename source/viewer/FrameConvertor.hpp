@@ -1,7 +1,7 @@
 #ifndef CATS2_FRAME_CONVERTOR_HPP
 #define CATS2_FRAME_CONVERTOR_HPP
 
-#include <CommonTypes.hpp>
+#include <CommonPointerTypes.hpp>
 
 #include <opencv2/core/core.hpp>
 

@@ -15,7 +15,7 @@ TrackingSettings& TrackingSettings::get()
 /*!
  * Initializes the parameters from the configuration file.
  */
-bool TrackingSettings::init(QString configurationFileName, SetupType setupType)
+bool TrackingSettings::init(QString configurationFileName, SetupType::Enum setupType)
 {
     bool settingsAccepted = true;
 
@@ -38,10 +38,10 @@ bool TrackingSettings::init(QString configurationFileName, SetupType setupType)
  * Reads from the configuration file the tracking routine type corresponding to the setup
  * type of this instance.
  */
-TrackingRoutineType TrackingSettings::readTrackingRoutineType(QString configurationFileName, SetupType setupType)
+TrackingRoutineType TrackingSettings::readTrackingRoutineType(QString configurationFileName, SetupType::Enum setupType)
 {
     // get the prefix in the path in the configuration file
-    QString prefix = TrackingSetup::setupSettingsNameByType(setupType);
+    QString prefix = SetupType::toString(setupType);
 
     std::string trackingRoutineName;
     ReadSettingsHelper settings(configurationFileName);

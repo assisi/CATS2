@@ -3,7 +3,7 @@
 
 #include "TrackingHandler.hpp"
 
-#include <CommonTypes.hpp>
+#include <CommonPointerTypes.hpp>
 #include <VideoGrabber.hpp>
 
 #include <QtCore/QSharedPointer>
@@ -18,23 +18,11 @@ class TrackingSetup
 {
 public:
     //! Constructor.
-    TrackingSetup(SetupType type);
-
-public:
-    //! Provides the configuration file section name that corresponds to given setup type.
-    static QString setupSettingsNameByType(SetupType type)
-    {
-        return m_setupTypeSettingsName.value(type);  // if the type is not in the map then an
-                                                    // empty string is returned
-    }
-
-private:
-    //! Links the setup type with the corresponding section name in the configuration file.
-    static QMap<SetupType, QString> m_setupTypeSettingsName;
+    TrackingSetup(SetupType::Enum type);
 
 private:
     //! The type of setup, for instance, main camera or the camera below.
-    SetupType m_type;
+    SetupType::Enum m_type;
 
     //! The grabber.
     QSharedPointer<VideoGrabber> m_grabber;

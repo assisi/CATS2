@@ -6,7 +6,7 @@
 /*!
  * Constructor.
  */
-TrackingHandler::TrackingHandler(SetupType setupType,
+TrackingHandler::TrackingHandler(SetupType::Enum setupType,
                                  CoordinatesConversionPtr coordinatesConversion,
                                  TimestampedFrameQueuePtr inputQueue,
                                  QWidget* parentWidget) :

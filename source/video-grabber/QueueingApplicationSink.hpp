@@ -1,7 +1,7 @@
 #ifndef CATS2_QUEUEING_APPLICATION_SINK_HPP
 #define CATS2_QUEUEING_APPLICATION_SINK_HPP
 
-#include <CommonTypes.hpp>
+#include <CommonPointerTypes.hpp>
 
 #include <QGst/Utils/ApplicationSink>
 #include <QGst/Structure>

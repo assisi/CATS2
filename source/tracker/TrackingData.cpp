@@ -11,7 +11,7 @@
 /*!
  * Constructor.
  */
-TrackingData::TrackingData(SetupType setupType,
+TrackingData::TrackingData(SetupType::Enum setupType,
                            CoordinatesConversionPtr coordinatesConversion,
                            TimestampedFrameQueuePtr inputQueue,
                            TimestampedFrameQueuePtr debugQueue) :
