@@ -99,10 +99,5 @@ private:
     static constexpr size_t DefaultInitialSize = 300;
 };
 
-/*!
- * The alias for the shared pointer to a queue of the timestamped frames.
- */
-using TimestampedFrameQueuePtr = QSharedPointer<TimestampedFrameQueue>;
-
 #endif // CATS2_TIMESTAMPED_FRAME_HPP
 

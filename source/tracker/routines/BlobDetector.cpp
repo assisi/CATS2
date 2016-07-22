@@ -1,5 +1,8 @@
 #include "BlobDetector.hpp"
+
 #include "settings/BlobDetectorSettings.hpp"
+#include <TimestampedFrame.hpp>
+#include <AgentData.hpp>
 
 /*!
  * Constructor. Gets the input queue to process and a queue to place debug images on request.

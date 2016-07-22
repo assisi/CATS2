@@ -1,5 +1,6 @@
 #include "CameraCalibration.hpp"
 #include "ReadSettingsHelper.hpp"
+#include "AgentState.hpp"
 
 /*!
  * Constructor.

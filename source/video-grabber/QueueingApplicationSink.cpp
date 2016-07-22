@@ -1,5 +1,7 @@
 #include "QueueingApplicationSink.hpp"
 
+#include <TimestampedFrame.hpp>
+
 #include <gst/gstcaps.h>
 #include <gst/video/video.h>
 

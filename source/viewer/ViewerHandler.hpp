@@ -1,12 +1,13 @@
 #ifndef CATS2_VIEWER_HANDLER_HPP
 #define CATS2_VIEWER_HANDLER_HPP
 
-#include <TimestampedFrame.hpp>
+#include <CommonTypes.hpp>
 
 #include <QtCore/QObject>
 
 class ViewerData;
 class ViewerWidget;
+class CoordinatesConversion;
 
 /*!
 * \brief This class manages the visualization of the video stream.

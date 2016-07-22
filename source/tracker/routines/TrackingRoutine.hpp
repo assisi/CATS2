@@ -1,12 +1,14 @@
 #ifndef CATS2_TRACKING_ROUTINE_HPP
 #define CATS2_TRACKING_ROUTINE_HPP
 
-#include "settings/TrackingRoutineSettings.hpp"
-
-#include <TimestampedFrame.hpp>
+#include <CommonTypes.hpp>
 #include <AgentData.hpp>
 
 #include <QtCore/QObject>
+
+#include <atomic>
+
+class TimestampedFrame;
 
 /*!
 * \brief Parent class for various tracking routines.

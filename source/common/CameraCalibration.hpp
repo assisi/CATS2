@@ -1,13 +1,15 @@
 #ifndef CATS2_TRACKER_CALIBRATOR_HPP
 #define CATS2_TRACKER_CALIBRATOR_HPP
 
-#include "AgentState.hpp"
-
 #include <libtsai.h>
 
 #include <QtCore>
 #include <QtGui>
 #include <QtXml/QDomDocument>
+
+class PositionPixels;
+class PositionMeters;
+class OrientationRad;
 
 /*!
  * \brief The type of the camera.

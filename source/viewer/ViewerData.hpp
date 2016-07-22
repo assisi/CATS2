@@ -1,7 +1,7 @@
 #ifndef CATS2_VIEWER_DATA_HPP
 #define CATS2_VIEWER_DATA_HPP
 
-#include <TimestampedFrame.hpp>
+#include <CommonTypes.hpp>
 
 #include <QtCore/QObject>
 

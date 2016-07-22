@@ -1,5 +1,8 @@
 #include "TrackingRoutine.hpp"
 
+#include <TimestampedFrame.hpp>
+#include "settings/TrackingRoutineSettings.hpp"
+
 #include <QtGui/QImage>
 
 /*!

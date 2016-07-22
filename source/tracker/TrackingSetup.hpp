@@ -3,7 +3,7 @@
 
 #include "TrackingHandler.hpp"
 
-#include <SetupType.hpp>
+#include <CommonTypes.hpp>
 #include <VideoGrabber.hpp>
 
 #include <QtCore/QSharedPointer>

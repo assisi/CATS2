@@ -1,5 +1,7 @@
 #include "FrameConvertor.hpp"
 
+#include <TimestampedFrame.hpp>
+
 #include <QtGui/QImage>
 
 /*!

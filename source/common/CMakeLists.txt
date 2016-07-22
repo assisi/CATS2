@@ -9,7 +9,7 @@ set(srcs
 set(hdrs
     AgentState.hpp
     ReadSettingsHelper.hpp
-    SetupType.hpp
+    CommonTypes.hpp
 )
 
 add_library(common SHARED ${srcs} ${hdrs})

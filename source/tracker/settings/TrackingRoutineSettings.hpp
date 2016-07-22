@@ -4,7 +4,7 @@
 #include "routines/TrackingRoutine.hpp"
 #include "routines/TrackingRoutineType.hpp"
 
-#include <SetupType.hpp>
+#include <CommonTypes.hpp>
 
 #include <QtCore/QString>
 #include <QtCore/QSharedPointer>

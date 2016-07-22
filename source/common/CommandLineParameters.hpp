@@ -56,10 +56,6 @@ private:
     static const QMap<QString, StreamType> m_streamTypeByName;
 };
 
-/*!
- * The alias for the stream parameters list.
- */
-using StreamDescriptorList = QList<StreamDescriptor>;
 
 /*!
  * Class-signleton that is used to store parameters of the grabber; at the moment those are just input streams types and attributes.

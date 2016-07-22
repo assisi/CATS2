@@ -1,7 +1,7 @@
 #ifndef CATS2_TRACKING_HANDLER_HPP
 #define CATS2_TRACKING_HANDLER_HPP
 
-#include <SetupType.hpp>
+#include <CommonTypes.hpp>
 #include <CoordinatesConversion.hpp>
 #include <TimestampedFrame.hpp>
 

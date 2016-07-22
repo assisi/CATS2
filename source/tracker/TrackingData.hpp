@@ -4,7 +4,7 @@
 #include "routines/TrackingRoutine.hpp"
 
 #include <CoordinatesConversion.hpp>
-#include <SetupType.hpp>
+#include <CommonTypes.hpp>
 
 #include <QObject>
 

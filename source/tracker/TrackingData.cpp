@@ -3,6 +3,7 @@
 #include "TrackingFactory.hpp"
 #include "settings/TrackingSettings.hpp"
 
+#include <AgentData.hpp>
 #include <TimestampedFrame.hpp>
 
 #include <QtCore/QThread>

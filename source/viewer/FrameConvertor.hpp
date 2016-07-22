@@ -1,9 +1,13 @@
 #ifndef CATS2_FRAME_CONVERTOR_HPP
 #define CATS2_FRAME_CONVERTOR_HPP
 
-#include <TimestampedFrame.hpp>
+#include <CommonTypes.hpp>
+
+#include <opencv2/core/core.hpp>
 
 #include <QtCore/QObject>
+
+#include <atomic>
 
 /*!
 * \brief This class receives frames from a queue in openCV Mat format and converts it to Qt image.

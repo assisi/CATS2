@@ -1,11 +1,12 @@
 #ifndef CATS2_COORDINATES_CONVERSION_HPP
 #define CATS2_COORDINATES_CONVERSION_HPP
 
-#include "AgentState.hpp"
-
 #include <QtCore/QString>
 #include <QtCore/QSharedPointer>
 
+class PositionPixels;
+class PositionMeters;
+class OrientationRad;
 class CameraCalibration;
 
 /*!
@@ -31,7 +32,5 @@ private:
     //! The object that calibrates the camera and basically makes the job of coordinates conversion.
     QSharedPointer<CameraCalibration> m_cameraCalibration;
 };
-
-using CoordinatesConversionPtr = QSharedPointer<CoordinatesConversion>;
 
 #endif // CATS2_COORDINATES_CONVERSION_HPP
