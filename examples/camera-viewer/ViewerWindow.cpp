@@ -1,7 +1,7 @@
 #include "ui_ViewerWindow.h"
 #include "ViewerWindow.hpp"
 
-#include <ViewerWidget.hpp>
+#include <gui/ViewerWidget.hpp>
 #include <ViewerHandler.hpp>
 #include <VideoGrabber.hpp>
 #include <CommandLineParameters.hpp>

@@ -1,7 +1,7 @@
 #include "ViewerHandler.hpp"
 
 #include "ViewerData.hpp"
-#include "ViewerWidget.hpp"
+#include "gui/ViewerWidget.hpp"
 
 #include <QtGui/QImage>
 

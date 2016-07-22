@@ -1,11 +1,11 @@
 set(srcs
     ViewerHandler.cpp
     ViewerData.cpp
-    ViewerWidget.cpp
     FrameConvertor.cpp
+    gui/ViewerWidget.cpp
 )
 
-qt5_wrap_ui(uis_hdrs ViewerWidget.ui)
+qt5_wrap_ui(uis_hdrs gui/ViewerWidget.ui)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 add_library(viewer SHARED ${srcs} ${uis_hdrs})
