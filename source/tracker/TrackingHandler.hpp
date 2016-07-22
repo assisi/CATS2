@@ -27,13 +27,13 @@ public:
 
 public:
     //! Returns the pointer to the tracking widget.
-    TrackingRoutineWidget* widget() { return _widget; }
+    TrackingRoutineWidget* widget() { return m_widget; }
 
 private:
     //! The data class.
-    QSharedPointer<TrackingData> _data;
+    QSharedPointer<TrackingData> m_data;
     //! The GUI class.
-    TrackingRoutineWidget* _widget;
+    TrackingRoutineWidget* m_widget;
 };
 
 #endif // CATS2_TRACKING_HANDLER_HPP

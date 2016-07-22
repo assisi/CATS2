@@ -25,13 +25,13 @@ public:
     //! considered valid.
     virtual bool init(QString configurationFileName) = 0;
     //! The tracking method.
-    TrackingRoutineType type() const { return _trackingRoutineType; }
+    TrackingRoutineType type() const { return m_trackingRoutineType; }
 
 protected:
     //! The tracking method for which these settings are applied.
-    TrackingRoutineType _trackingRoutineType;
+    TrackingRoutineType m_trackingRoutineType;
     //! The section name in the configuration file.
-    QString _settingPathPrefix;
+    QString m_settingPathPrefix;
 };
 
 /*!

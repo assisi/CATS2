@@ -15,22 +15,22 @@ TrackingData::TrackingData(SetupType setupType,
                            TimestampedFrameQueuePtr inputQueue,
                            TimestampedFrameQueuePtr debugQueue) :
     QObject(nullptr),
-    _coordinatesConversion(coordinatesConversion)
+    m_coordinatesConversion(coordinatesConversion)
 {
     // create the tracking routine
-    _trackingRoutine = TrackerFactory::createTrackingRoutine(setupType, inputQueue, debugQueue);
+    m_trackingRoutine = TrackerFactory::createTrackingRoutine(setupType, inputQueue, debugQueue);
 
-    if (!_trackingRoutine.isNull()) {
+    if (!m_trackingRoutine.isNull()) {
 
         // launch the tracking routine in a separated thread
         QThread* thread = new QThread;
-        _trackingRoutine->moveToThread(thread);
+        m_trackingRoutine->moveToThread(thread);
 
-        connect(thread, &QThread::started, _trackingRoutine.data(), &TrackingRoutine::process);
-        connect(_trackingRoutine.data(), &TrackingRoutine::finished, thread, &QThread::quit);
-        connect(_trackingRoutine.data(), &TrackingRoutine::finished, [=]() { _trackingRoutine.clear(); });
+        connect(thread, &QThread::started, m_trackingRoutine.data(), &TrackingRoutine::process);
+        connect(m_trackingRoutine.data(), &TrackingRoutine::finished, thread, &QThread::quit);
+        connect(m_trackingRoutine.data(), &TrackingRoutine::finished, [=]() { m_trackingRoutine.clear(); });
         connect(thread, &QThread::finished, thread, &QThread::deleteLater);
-        connect(_trackingRoutine.data(), &TrackingRoutine::trackedAgents, this, &TrackingData::onTrackedAgents);
+        connect(m_trackingRoutine.data(), &TrackingRoutine::trackedAgents, this, &TrackingData::onTrackedAgents);
 
         thread->start();
     }
@@ -41,8 +41,8 @@ TrackingData::TrackingData(SetupType setupType,
  */
 TrackingData::~TrackingData()
 {
-    if (!_trackingRoutine.isNull())
-        _trackingRoutine->stop();
+    if (!m_trackingRoutine.isNull())
+        m_trackingRoutine->stop();
 }
 
 /*!

@@ -29,7 +29,7 @@ public:
 
 private:
     //! The object that calibrates the camera and basically makes the job of coordinates conversion.
-    QSharedPointer<CameraCalibration> _cameraCalibration;
+    QSharedPointer<CameraCalibration> m_cameraCalibration;
 };
 
 using CoordinatesConversionPtr = QSharedPointer<CoordinatesConversion>;

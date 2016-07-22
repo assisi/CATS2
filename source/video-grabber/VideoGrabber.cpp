@@ -26,7 +26,7 @@ void VideoGrabber::addStreamReceiver(StreamDescriptor parameters, TimestampedFra
     QThread* thread = new QThread;
     QSharedPointer<StreamReceiver> receiver = QSharedPointer<StreamReceiver>(new StreamReceiver(parameters, outputQueue), &QObject::deleteLater);
     // keep the receiver pointer
-    _streamReceivers.append(receiver);
+    m_streamReceivers.append(receiver);
 
     receiver->moveToThread(thread);
     connect(receiver.data(), &StreamReceiver::error, this, &VideoGrabber::onError);
@@ -43,11 +43,11 @@ void VideoGrabber::onError(QString errorMessage)
 {
     // find who sent the message
     StreamReceiver* streamReceiver = qobject_cast<StreamReceiver*>(QObject::sender());
-    foreach (StreamReceiverPtr ptr , _streamReceivers) {
+    foreach (StreamReceiverPtr ptr , m_streamReceivers) {
         if (ptr.data() == streamReceiver){
             // and remove it from the list, it will encure the deletion
             // of the receiver and of the corresponding thread
-            _streamReceivers.removeAll(ptr);
+            m_streamReceivers.removeAll(ptr);
             break;
         }
     }
@@ -58,7 +58,7 @@ void VideoGrabber::onError(QString errorMessage)
  */
 void VideoGrabber::stopAll()
 {
-    foreach (StreamReceiverPtr ptr , _streamReceivers) {
+    foreach (StreamReceiverPtr ptr , m_streamReceivers) {
         ptr->stop();
     }
 }

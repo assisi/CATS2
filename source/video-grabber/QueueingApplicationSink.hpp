@@ -27,7 +27,7 @@ protected:
 
 private:
     //! The queue to put incoming frames.
-    TimestampedFrameQueuePtr _outputQueue;
+    TimestampedFrameQueuePtr m_outputQueue;
 };
 
 

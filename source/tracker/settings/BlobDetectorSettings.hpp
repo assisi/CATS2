@@ -12,55 +12,55 @@ class BlobDetectorSettingsData
 public:
     //! Constructor.
     BlobDetectorSettingsData() :
-        _numberOfAgents(0),
-        _minBlobSizePx(15),
-        _qualityLevel(0.01),
-        _minDistance(20.0),
-        _blockSize(5),
-        _useHarrisDetector(false),
-        _k(0.04)
+        m_numberOfAgents(0),
+        m_minBlobSizePx(15),
+        m_qualityLevel(0.01),
+        m_minDistance(20.0),
+        m_blockSize(5),
+        m_useHarrisDetector(false),
+        m_k(0.04)
     {}
 
 public:
     //! Return the number of agents to be tracked.
-    int numberOfAgents() const { return _numberOfAgents; }
+    int numberOfAgents() const { return m_numberOfAgents; }
     //! Set the number of agents.
-    void setNumberOfAgents(int numberOfAgents) { _numberOfAgents = numberOfAgents; }
+    void setNumberOfAgents(int numberOfAgents) { m_numberOfAgents = numberOfAgents; }
     //! Returns the value of _minBlobSizePx
-    int minBlobSizePx() const { return _minBlobSizePx; }
-    void setMinBlobSizePx(int minBlobSizePx) { _minBlobSizePx = minBlobSizePx; }
+    int minBlobSizePx() const { return m_minBlobSizePx; }
+    void setMinBlobSizePx(int minBlobSizePx) { m_minBlobSizePx = minBlobSizePx; }
 
-    double qualityLevel() const { return _qualityLevel; }
-    void setQualityLevel(double qualityLevel) { _qualityLevel = qualityLevel; }
+    double qualityLevel() const { return m_qualityLevel; }
+    void setQualityLevel(double qualityLevel) { m_qualityLevel = qualityLevel; }
 
-    double minDistance() const { return _minDistance; }
-    void setMinDistance(double minDistance) { _minDistance = minDistance; }
+    double minDistance() const { return m_minDistance; }
+    void setMinDistance(double minDistance) { m_minDistance = minDistance; }
 
-    int blockSize() const { return _blockSize; }
-    void setBlockSize(int blockSize) { _blockSize = blockSize; }
+    int blockSize() const { return m_blockSize; }
+    void setBlockSize(int blockSize) { m_blockSize = blockSize; }
 
-    bool useHarrisDetector() const { return _useHarrisDetector; }
-    void setUseHarrisDetector(bool useHarrisDetector) { _useHarrisDetector = useHarrisDetector; }
+    bool useHarrisDetector() const { return m_useHarrisDetector; }
+    void setUseHarrisDetector(bool useHarrisDetector) { m_useHarrisDetector = useHarrisDetector; }
 
-    double k() const { return _k; }
-    void setK(double k) { _k = k; }
+    double k() const { return m_k; }
+    void setK(double k) { m_k = k; }
 
 protected:
     //! Number of agents to track.
-    int _numberOfAgents;
+    int m_numberOfAgents;
     //! All the blobs that are smaller than this size will not be taken into account
     //! by the fish search algorithm.
-    int _minBlobSizePx; // in [px]
+    int m_minBlobSizePx; // in [px]
     //!
-    double _qualityLevel;
+    double m_qualityLevel;
     //!
-    double _minDistance;
+    double m_minDistance;
     //!
-    int _blockSize;
+    int m_blockSize;
     //!
-    bool _useHarrisDetector;
+    bool m_useHarrisDetector;
     //!
-    double _k;
+    double m_k;
 };
 
 /*!

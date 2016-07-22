@@ -6,7 +6,7 @@
  * Constructor. Gets the file name containing the camera calibration data.
  */
 CoordinatesConversion::CoordinatesConversion(QString calibrationFileName) :
-    _cameraCalibration(new CameraCalibration(calibrationFileName))
+    m_cameraCalibration(new CameraCalibration(calibrationFileName))
 {
 
 }
@@ -25,8 +25,8 @@ CoordinatesConversion::~CoordinatesConversion()
 PositionMeters CoordinatesConversion::imageToWorld(PositionPixels imageCoordinates)
 {
     PositionMeters position;
-    if (_cameraCalibration->isInitialized())
-        position = _cameraCalibration->image2World(imageCoordinates);
+    if (m_cameraCalibration->isInitialized())
+        position = m_cameraCalibration->image2World(imageCoordinates);
     else
         position.setValid(false);
 
@@ -39,8 +39,8 @@ PositionMeters CoordinatesConversion::imageToWorld(PositionPixels imageCoordinat
 OrientationRad CoordinatesConversion::image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientation)
 {
     OrientationRad orientation;
-    if (_cameraCalibration->isInitialized())
-        orientation = _cameraCalibration->image2WorldOrientationRad(imageCoordinates, imageOrientation);
+    if (m_cameraCalibration->isInitialized())
+        orientation = m_cameraCalibration->image2WorldOrientationRad(imageCoordinates, imageOrientation);
     else
         orientation.setValid(false);
 

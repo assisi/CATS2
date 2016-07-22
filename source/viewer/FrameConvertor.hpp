@@ -36,9 +36,9 @@ private:
 
 private:
     //! The queue containing frames to convert.
-    TimestampedFrameQueuePtr _inputQueue;
+    TimestampedFrameQueuePtr m_inputQueue;
     //! The flag that defines if the convertor is to be stopped.
-    std::atomic_bool _stopped;
+    std::atomic_bool m_stopped;
 };
 
 #endif // CATS2_FRAME_CONVERTOR_HPP

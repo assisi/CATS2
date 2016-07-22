@@ -7,10 +7,10 @@
 */
 TrackingRoutine::TrackingRoutine(TimestampedFrameQueuePtr inputQueue, TimestampedFrameQueuePtr debugQueue) :
     QObject(),
-    _inputQueue(inputQueue),
-    _debugQueue(debugQueue),
-    _stopped(false),
-    _enqueueDebugFrames(false)
+    m_inputQueue(inputQueue),
+    m_debugQueue(debugQueue),
+    m_stopped(false),
+    m_enqueueDebugFrames(false)
 {
 }
 
@@ -27,14 +27,14 @@ TrackingRoutine::~TrackingRoutine()
  */
 void TrackingRoutine::process()
 {
-    _stopped = false;
+    m_stopped = false;
     TimestampedFrame frame;
 
-    while (!_stopped) {
-        if (_inputQueue->dequeue(frame)) {
+    while (!m_stopped) {
+        if (m_inputQueue->dequeue(frame)) {
             doTracking(frame);
         }
-        emit trackedAgents(_agents);
+        emit trackedAgents(m_agents);
     }
 
     emit finished();
@@ -45,7 +45,7 @@ void TrackingRoutine::process()
  */
 void TrackingRoutine::stop()
 {
-    _stopped = true;
+    m_stopped = true;
 }
 
 /*!
@@ -53,11 +53,11 @@ void TrackingRoutine::stop()
  */
 void TrackingRoutine::sendDebugImages(bool send)
 {
-    if (_enqueueDebugFrames != send) {
-        if (!_enqueueDebugFrames) // i.e. we are not sending at the moment
-            _debugQueue.clear(); // empty the debug queue if by chance there are old frames
+    if (m_enqueueDebugFrames != send) {
+        if (!m_enqueueDebugFrames) // i.e. we are not sending at the moment
+            m_debugQueue.clear(); // empty the debug queue if by chance there are old frames
 
-        _enqueueDebugFrames = send;
+        m_enqueueDebugFrames = send;
     }
 }
 

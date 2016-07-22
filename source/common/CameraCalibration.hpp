@@ -39,7 +39,7 @@ public:
     //! Converts the orientation at given position from image to world.
     OrientationRad image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad);
 
-    bool isInitialized() const { return _calibrationInitialized; }
+    bool isInitialized() const { return m_calibrationInitialized; }
 
 private:
     //! Sets the camera parameters based on the camera type.
@@ -48,7 +48,7 @@ private:
     //! Initializes the calibration.
     void calibrate(QString fileName);
     //! Camera is calibrated.
-    bool _calibrationInitialized;
+    bool m_calibrationInitialized;
     // members used for recalculation of world coordinates
     struct CalibrationPoint {
         double xWorld;
@@ -57,8 +57,8 @@ private:
         double xImage;
         double yImage;
     };
-    calibration_data _calibrationData;
-    camera_parameters _cameraParameters;
-    calibration_constants _calibrationConstants;
+    calibration_data m_calibrationData;
+    camera_parameters m_cameraParameters;
+    calibration_constants m_calibrationConstants;
 };
 #endif // CATS2_TRACKER_CALIBRATOR_HPP

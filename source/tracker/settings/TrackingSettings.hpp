@@ -38,8 +38,8 @@ public:
      */
     TrackingRoutineSettingsPtr trackingRoutineSettings(SetupType type) const
     {
-        if (_trackingRoutineSettings.contains(type))
-            return _trackingRoutineSettings.value(type);
+        if (m_trackingRoutineSettings.contains(type))
+            return m_trackingRoutineSettings.value(type);
         else
             return TrackingRoutineSettingsPtr();
     }
@@ -57,7 +57,7 @@ private:
 
 private:
     //! The settings for the tracking routine used in various setups.
-    QMap<SetupType, TrackingRoutineSettingsPtr> _trackingRoutineSettings;
+    QMap<SetupType, TrackingRoutineSettingsPtr> m_trackingRoutineSettings;
 };
 
 #endif // CATS2_TRACKING_SETTINGS_HPP

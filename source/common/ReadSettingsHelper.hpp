@@ -16,16 +16,16 @@ public:
     //! Constructor.
     explicit ReadSettingsHelper(QString fileName)
     {
-        _fs = cv::FileStorage(fileName.toStdString(), cv::FileStorage::READ);
+        m_fs = cv::FileStorage(fileName.toStdString(), cv::FileStorage::READ);
 
-        if (!_fs.isOpened())
+        if (!m_fs.isOpened())
             qDebug() << QString("Could not open the configuration file: %1").arg(fileName);
     }
 
     //! Desctructor.
     virtual ~ReadSettingsHelper()
     {
-        _fs.release();
+        m_fs.release();
     }
 
     //! Read the variable value with the given path starting from the document's root node.
@@ -35,13 +35,13 @@ public:
     {
         value = defaultValue;
 
-        if (!_fs.isOpened()){
+        if (!m_fs.isOpened()){
             qDebug() << QString("Could not read the configuration file");
             return;
         }
 
         QStringList pathInFileList = pathInFile.split("/");
-        cv::FileNode node = _fs.root();
+        cv::FileNode node = m_fs.root();
         foreach (QString nodeName, pathInFileList){
             node = node[nodeName.toStdString()];
             if (node.empty())
@@ -54,7 +54,7 @@ public:
     }
 private:
     //! The file storage.
-    cv::FileStorage _fs;
+    cv::FileStorage m_fs;
 };
 
 #endif // CATS2_READ_SETTINGS_HELPER_HPP

@@ -25,14 +25,14 @@ public:
 
 public:
     //! Returns the frame image.
-    QSharedPointer<cv::Mat> image() const { return _image; }
+    QSharedPointer<cv::Mat> image() const { return m_image; }
 
 private:
     //! The frame image.
-    QSharedPointer<cv::Mat> _image;
+    QSharedPointer<cv::Mat> m_image;
     //! The corresponding timestamp, in number of milliseconds since 1970-01-01T00:00:00
     //! Universal Coordinated Time.
-    std::chrono::milliseconds _timestamp;
+    std::chrono::milliseconds m_timestamp;
 };
 
 /*!
@@ -43,26 +43,26 @@ class TimestampedFrameQueue
 public:
     //! Constructor.
     explicit TimestampedFrameQueue(int initialSize = DefaultInitialSize, size_t maxSize = DefaultMaxSize):
-        _queue(initialSize),
-        _maxSize(maxSize)
+        m_queue(initialSize),
+        m_maxSize(maxSize)
     { }
     //! Destructor.
     virtual ~TimestampedFrameQueue() final { }
 
 public:
     //! The queue became too big.
-    bool isOutgrown() const { return (_queue.size_approx() > _maxSize); }
+    bool isOutgrown() const { return (m_queue.size_approx() > m_maxSize); }
     //! Drops one element from the tail.
     void dropTail()
     {
         TimestampedFrame frameToForget;
-        _queue.try_dequeue(frameToForget);
+        m_queue.try_dequeue(frameToForget);
     }
 
     //! Adds an element to the queue.
     void enqueue(const TimestampedFrame& frame)
     {
-        if (!_queue.try_enqueue(frame))
+        if (!m_queue.try_enqueue(frame))
             qDebug() << Q_FUNC_INFO << "Could not enqueue new element, skipping";
 
 //        qDebug() <<  Q_FUNC_INFO << QString("Frames queue contains %1 elements").arg(_queue.size_approx());
@@ -71,7 +71,7 @@ public:
     //! Gets an element from the queue, returns true if succeded.
     bool dequeue(TimestampedFrame& frame)
     {
-        bool result = _queue.try_dequeue(frame);
+        bool result = m_queue.try_dequeue(frame);
         // if nothing in the queue then wait a bit
         if (!result) {
 //            qDebug() << Q_FUNC_INFO << "Failed to get an element from the queue, is it empty?";
@@ -85,11 +85,11 @@ public:
 
 private:
     //! The queue to store data.
-    moodycamel::ReaderWriterQueue<TimestampedFrame> _queue;
+    moodycamel::ReaderWriterQueue<TimestampedFrame> m_queue;
     //! The max number of elements that can be put to the queue. Since it seems to be
     //! not supported by the "moodycamel::ReaderWriterQueue" to limit the size of the queue
     //! we need to store it separately.
-    size_t _maxSize;
+    size_t m_maxSize;
 
     //! Dequeueing time out.
     static const int TimeOutMs;  // [ms]

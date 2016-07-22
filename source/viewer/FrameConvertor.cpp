@@ -7,8 +7,8 @@
 */
 FrameConvertor::FrameConvertor(TimestampedFrameQueuePtr inputQueue) :
     QObject(),
-    _inputQueue(inputQueue),
-    _stopped(false)
+    m_inputQueue(inputQueue),
+    m_stopped(false)
 {
 
 }
@@ -26,12 +26,12 @@ FrameConvertor::~FrameConvertor()
  */
 void FrameConvertor::process()
 {
-    _stopped = false;
+    m_stopped = false;
     TimestampedFrame frame;
 
-    while (!_stopped) {
+    while (!m_stopped) {
         // Use the blocking with timeout version of dequeue
-        if (_inputQueue->dequeue(frame))
+        if (m_inputQueue->dequeue(frame))
             emit newFrame(cvMatToQImage(frame.image()));
     }
 
@@ -43,7 +43,7 @@ void FrameConvertor::process()
  */
 void FrameConvertor::stop()
 {
-    _stopped = true;
+    m_stopped = true;
 }
 
 /*!

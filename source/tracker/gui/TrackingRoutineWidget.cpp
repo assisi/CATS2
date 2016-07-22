@@ -6,9 +6,9 @@
  */
 TrackingRoutineWidget::TrackingRoutineWidget(QWidget *parent) :
     QWidget(parent),
-    ui(new Ui::TrackingRoutineWidget)
+    m_ui(new Ui::TrackingRoutineWidget)
 {
-    ui->setupUi(this);
+    m_ui->setupUi(this);
 }
 
 /*!
@@ -16,5 +16,5 @@ TrackingRoutineWidget::TrackingRoutineWidget(QWidget *parent) :
  */
 TrackingRoutineWidget::~TrackingRoutineWidget()
 {
-    delete ui;
+    delete m_ui;
 }

@@ -6,20 +6,20 @@
  */
 BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrameQueuePtr inputQueue, TimestampedFrameQueuePtr debugQueue) :
     TrackingRoutine(inputQueue, debugQueue),
-    _backgroundCalculationStepCounter(0),
-    _backgroundSubtractor(cv::createBackgroundSubtractorMOG2(5))
+    m_backgroundCalculationStepCounter(0),
+    m_backgroundSubtractor(cv::createBackgroundSubtractorMOG2(5))
 {
     // HACK : to get parameters specific for this tracker we need to convert the settings to the corresponding format
     BlobDetectorSettings* blobDetectorSettings = dynamic_cast<BlobDetectorSettings*>(settings.data());
     if (blobDetectorSettings != nullptr){
         // copy the parameters
-        _settings = blobDetectorSettings->data();
+        m_settings = blobDetectorSettings->data();
     }
 
     // set the agents' list
-    for (unsigned char id = 1; id <= _settings.numberOfAgents(); id++) {
+    for (unsigned char id = 1; id <= m_settings.numberOfAgents(); id++) {
         AgentDataImage agent(id, AgentType::UNDEFINED);
-        _agents.append(agent);
+        m_agents.append(agent);
     }
 }
 
@@ -51,35 +51,35 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
     // get the background image
     cv::Mat redChannelImageWithoutBackground; // The mask image to be used by the feature detection.
 
-    if (_backgroundCalculationStepCounter < BackgroundCalculationSufficientNumber) {
+    if (m_backgroundCalculationStepCounter < BackgroundCalculationSufficientNumber) {
         // update the background
-        _backgroundSubtractor.get()->apply(redChannelImage, redChannelImageWithoutBackground, 0.10);
-        _backgroundCalculationStepCounter++;
+        m_backgroundSubtractor.get()->apply(redChannelImage, redChannelImageWithoutBackground, 0.10);
+        m_backgroundCalculationStepCounter++;
         // until we have a solid background model it's pointless to do processing
     } else {
         // subract the backgound
-        _backgroundSubtractor.get()->apply(redChannelImage, redChannelImageWithoutBackground, 0.0);
+        m_backgroundSubtractor.get()->apply(redChannelImage, redChannelImageWithoutBackground, 0.0);
 
         // NOTE : Add an erosion after ?
         cv::dilate(redChannelImageWithoutBackground, redChannelImageWithoutBackground, cv::Mat(), cv::Point(-1, -1), 1);
 
         // filter out small blobs on the mask image
-        if (_settings.minBlobSizePx() > 0)
+        if (m_settings.minBlobSizePx() > 0)
         {
-            removeSmallBlobs(redChannelImageWithoutBackground, _settings.minBlobSizePx());
+            removeSmallBlobs(redChannelImageWithoutBackground, m_settings.minBlobSizePx());
         }
 
         // find the fishes on the stored red channel image
         std::vector<cv::Point2f> corners;
         cv::goodFeaturesToTrack(redChannelImage,
                                 corners,
-                                _settings.numberOfAgents(),
-                                _settings.qualityLevel(),
-                                _settings.minDistance(),
+                                m_settings.numberOfAgents(),
+                                m_settings.qualityLevel(),
+                                m_settings.minDistance(),
                                 redChannelImageWithoutBackground,
-                                _settings.blockSize(),
-                                _settings.useHarrisDetector(),
-                                _settings.k());
+                                m_settings.blockSize(),
+                                m_settings.useHarrisDetector(),
+                                m_settings.k());
 
 
         // find the contours in the image
@@ -147,19 +147,19 @@ void BlobDetector::detectContours(cv::Mat& image, std::vector<cv::Point2f>& corn
     std::vector<std::vector<cv::Point>> contoursPoly;
     contoursPoly.resize(contours.size());
 
-    _boundRect.resize(contours.size());
-    _centers.resize(contours.size());
-    _radius.resize(contours.size());
-    _cornersInPoly.resize(contours.size());
+    m_boundRect.resize(contours.size());
+    m_centers.resize(contours.size());
+    m_radius.resize(contours.size());
+    m_cornersInPoly.resize(contours.size());
 
     for(size_t i = 0; i < contours.size(); ++i) {
         cv::approxPolyDP(cv::Mat(contours[i]), contoursPoly[i], 3, true);
-        _boundRect[i] = cv::boundingRect(cv::Mat(contoursPoly[i]));
-        cv::minEnclosingCircle(contoursPoly[i], _centers[i], _radius[i]);
+        m_boundRect[i] = cv::boundingRect(cv::Mat(contoursPoly[i]));
+        cv::minEnclosingCircle(contoursPoly[i], m_centers[i], m_radius[i]);
 
         for(auto c: corners) {
             if(cv::pointPolygonTest(contours[i], c, false) >= 0) {
-                _cornersInPoly[i].push_back(c);
+                m_cornersInPoly[i].push_back(c);
             }
         }
     }

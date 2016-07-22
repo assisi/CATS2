@@ -38,13 +38,13 @@ public slots:
 
 protected:
     //! The data class that provides the frames and agent's positions to show.
-    QSharedPointer<ViewerData> _data;
+    QSharedPointer<ViewerData> m_data;
     //! The form.
-    Ui::ViewerWidget* _uiViewer;
+    Ui::ViewerWidget* m_uiViewer;
     //! The scene.
-    QGraphicsScene* _scene;
+    QGraphicsScene* m_scene;
     //! The item used to show the video stream.
-    QGraphicsPixmapItem* _videoFrame;
+    QGraphicsPixmapItem* m_videoFrame;
     // TODO add the agents here
 };
 

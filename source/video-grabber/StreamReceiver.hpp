@@ -40,11 +40,11 @@ signals:
 
 private:
     //! The pipeline description to set the gstreamer.
-    QString _pipe1ineDescription;
+    QString m_pipelineDescription;
     //! The acquisition pipeline.
-    QGst::PipelinePtr _pipeline;
+    QGst::PipelinePtr m_pipeline;
     //! The sink that recieives frames.
-    QueueingApplicationSink _sink;
+    QueueingApplicationSink m_sink;
 };
 
 /*!

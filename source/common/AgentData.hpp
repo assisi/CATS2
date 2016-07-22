@@ -31,15 +31,15 @@ public:
 
 private:
     //! Agent's id.
-    unsigned char _id;
+    unsigned char m_id;
     //! The type of image.
-    AgentType _type;
+    AgentType m_type;
     //! The position of the agent, in [px].
-    StateImage _stateImage;
+    StateImage m_stateImage;
     //! The corresponding timestamp, in number of milliseconds since 1970-01-01T00:00:00
     //! Universal Coordinated Time. The timestamp is used to combine the tracking results
     //! from different concurrent trackers.
-    std::chrono::milliseconds _timestamp;
+    std::chrono::milliseconds m_timestamp;
 };
 
 /*!
@@ -58,15 +58,15 @@ public:
 
 private:
     //! Agent's id.
-    unsigned char _id;
+    unsigned char m_id;
     //! The type of image.
-    AgentType _type;
+    AgentType m_type;
     //! The position of the agent, in [m].
-    StateWorld _stateWorld;
+    StateWorld m_stateWorld;
     //! The corresponding timestamp, in number of milliseconds since 1970-01-01T00:00:00
     //! Universal Coordinated Time. The timestamp is used to combine the tracking results
     //! from different concurrent trackers.
-    std::chrono::milliseconds _timestamp;
+    std::chrono::milliseconds m_timestamp;
 };
 
 #endif // CATS2_AGENT_DATA_HPP

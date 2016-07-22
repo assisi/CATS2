@@ -14,28 +14,28 @@
  */
 ViewerWindow::ViewerWindow(QWidget *parent) :
     QMainWindow(parent),
-    _ui(new Ui::ViewerWindow)
+    m_ui(new Ui::ViewerWindow)
 {
-    _ui->setupUi(this);
+    m_ui->setupUi(this);
 //	setWindowIcon(QIcon(":/images/mobots_logo.png"));
 
     TimestampedFrameQueuePtr queuePtr = TimestampedFrameQueuePtr(new TimestampedFrameQueue(100));
 
     // add the video grabber
-    _grabber = QSharedPointer<VideoGrabber>(new VideoGrabber(), &QObject::deleteLater);
+    m_grabber = QSharedPointer<VideoGrabber>(new VideoGrabber(), &QObject::deleteLater);
     if (CommandLineParameters::get().mainCameraDescriptor().isValid()){
-        _grabber->addStreamReceiver(CommandLineParameters::get().mainCameraDescriptor(), queuePtr);
+        m_grabber->addStreamReceiver(CommandLineParameters::get().mainCameraDescriptor(), queuePtr);
     }
 
     // and the viewer handler
-    _viewerHandler = QSharedPointer<ViewerHandler>(new  ViewerHandler(queuePtr, this), &QObject::deleteLater);
+    m_viewerHandler = QSharedPointer<ViewerHandler>(new  ViewerHandler(queuePtr, this), &QObject::deleteLater);
     // make the frame viewer the central widget
-    setCentralWidget(_viewerHandler->widget());
+    setCentralWidget(m_viewerHandler->widget());
 
     // connect the window's actions
-    connect(_ui->actionZoomIn, &QAction::triggered, _viewerHandler->widget(), &ViewerWidget::onZoomIn);
-    connect(_ui->actionZoomOut, &QAction::triggered, _viewerHandler->widget(), &ViewerWidget::onZoomOut);
-    connect(_ui->actionSaveCurrentView, &QAction::triggered, _viewerHandler->widget(), &ViewerWidget::saveCurrentFrameToFile);
+    connect(m_ui->actionZoomIn, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::onZoomIn);
+    connect(m_ui->actionZoomOut, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::onZoomOut);
+    connect(m_ui->actionSaveCurrentView, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::saveCurrentFrameToFile);
 }
 
 /*!

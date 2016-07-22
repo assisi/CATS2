@@ -10,11 +10,11 @@
 */
 ViewerHandler::ViewerHandler(TimestampedFrameQueuePtr inputQueue, QWidget* parentWidget) :
     QObject(nullptr),
-    _data(QSharedPointer<ViewerData>(new ViewerData(inputQueue), &QObject::deleteLater)),
-    _widget(new ViewerWidget(_data, parentWidget))
+    m_data(QSharedPointer<ViewerData>(new ViewerData(inputQueue), &QObject::deleteLater)),
+    m_widget(new ViewerWidget(m_data, parentWidget))
 {
     // some security: when the viewer widget is destroyed, reset the pointer to it
-    connect(_widget, &QObject::destroyed, [=]() { _widget = nullptr; });
+    connect(m_widget, &QObject::destroyed, [=]() { m_widget = nullptr; });
 }
 
 /*!
@@ -23,6 +23,6 @@ ViewerHandler::ViewerHandler(TimestampedFrameQueuePtr inputQueue, QWidget* paren
 ViewerHandler::~ViewerHandler()
 {
     // if the viewer widget's parent is not set then delete it, otherwise it will stay forever
-    if (_widget->parent() == nullptr)
-        delete _widget;
+    if (m_widget->parent() == nullptr)
+        delete m_widget;
 }

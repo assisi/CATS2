@@ -11,14 +11,14 @@ TrackingHandler::TrackingHandler(SetupType setupType,
                                  TimestampedFrameQueuePtr inputQueue,
                                  QWidget* parentWidget) :
     QObject(nullptr),
-    _data(QSharedPointer<TrackingData>(new TrackingData(setupType,
+    m_data(QSharedPointer<TrackingData>(new TrackingData(setupType,
                                                               coordinatesConversion,
                                                               inputQueue,
                                                               TimestampedFrameQueuePtr()), &QObject::deleteLater)), // FIXME : provide the correct debug queue
-    _widget(new TrackingRoutineWidget(parentWidget))
+    m_widget(new TrackingRoutineWidget(parentWidget))
 {
     // some security: when the tracking widget is destroyed, reset the pointer to it
-    connect(_widget, &QObject::destroyed, [=]() { _widget = nullptr; });
+    connect(m_widget, &QObject::destroyed, [=]() { m_widget = nullptr; });
 }
 
 /*!
@@ -27,7 +27,7 @@ TrackingHandler::TrackingHandler(SetupType setupType,
 TrackingHandler::~TrackingHandler()
 {
     // if the tracking widget's parent is not set then delete it, otherwise it will stay forever
-    if (_widget->parent() == nullptr)
-        delete _widget;
+    if (m_widget->parent() == nullptr)
+        delete m_widget;
 }
 

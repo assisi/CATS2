@@ -24,22 +24,22 @@ public:
     //! Provides the configuration file section name that corresponds to given setup type.
     static QString setupSettingsNameByType(SetupType type)
     {
-        return _setupTypeSettingsName.value(type);  // if the type is not in the map then an
+        return m_setupTypeSettingsName.value(type);  // if the type is not in the map then an
                                                     // empty string is returned
     }
 
 private:
     //! Links the setup type with the corresponding section name in the configuration file.
-    static QMap<SetupType, QString> _setupTypeSettingsName;
+    static QMap<SetupType, QString> m_setupTypeSettingsName;
 
 private:
     //! The type of setup, for instance, main camera or the camera below.
-    SetupType _type;
+    SetupType m_type;
 
     //! The grabber.
-    QSharedPointer<VideoGrabber> _grabber;
+    QSharedPointer<VideoGrabber> m_grabber;
     //! The tracker.
-    QSharedPointer<TrackingHandler> _tracking;
+    QSharedPointer<TrackingHandler> m_tracking;
 
 
     // TODO : add Grabber / Viewer / Tracker / CoordinateTransformation instance here, the are to be initialized from the settings based on the given setup type

@@ -32,21 +32,21 @@ private:
 
 private:
     //! First processing steps are used to compute the background.
-    size_t _backgroundCalculationStepCounter;
+    size_t m_backgroundCalculationStepCounter;
     //! The number of steps that is enough to compute the background.
     static const size_t BackgroundCalculationSufficientNumber = 100;
     //! The tracking settings.
-    BlobDetectorSettingsData _settings;
+    BlobDetectorSettingsData m_settings;
 
 private:
 
     //! The backgound model.
-    cv::Ptr<cv::BackgroundSubtractor> _backgroundSubtractor;
+    cv::Ptr<cv::BackgroundSubtractor> m_backgroundSubtractor;
     //! The tracking results.
-    std::vector<cv::Rect> _boundRect;
-    std::vector<cv::Point2f> _centers;
-    std::vector<float> _radius;
-    std::vector<std::vector<cv::Point2f>> _cornersInPoly;
+    std::vector<cv::Rect> m_boundRect;
+    std::vector<cv::Point2f> m_centers;
+    std::vector<float> m_radius;
+    std::vector<std::vector<cv::Point2f>> m_cornersInPoly;
 
 
 //    //!

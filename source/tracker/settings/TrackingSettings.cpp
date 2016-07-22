@@ -26,7 +26,7 @@ bool TrackingSettings::init(QString configurationFileName, SetupType setupType)
 
     // create corresponding settings
     TrackingRoutineSettingsPtr settings = TrackerFactory::createTrackingRoutineSettings(trackingRoutineType, setupType);
-    _trackingRoutineSettings.insert(setupType, settings);
+    m_trackingRoutineSettings.insert(setupType, settings);
 
    // initialize settings
    settingsAccepted = settings->init(configurationFileName);

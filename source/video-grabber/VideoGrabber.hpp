@@ -32,7 +32,7 @@ private slots:
 
 private:
     //! The list of all stream receivers created by the grabber.
-    QList<StreamReceiverPtr> _streamReceivers;
+    QList<StreamReceiverPtr> m_streamReceivers;
 };
 
 #endif // CATS2_VIDEO_GRABBER_HPP

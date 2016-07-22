@@ -23,37 +23,37 @@ class StreamDescriptor
 public:
     //! Constructor.
     StreamDescriptor(StreamType streamType = StreamType::UNDEFINED, QString parameters = ""):
-        _streamType(streamType),
-        _parameters(parameters)
+        m_streamType(streamType),
+        m_parameters(parameters)
     {}
 
     //! Convenience constructor, takes the stream type as as string.
     StreamDescriptor(QString streamType, QString parameters) :
-        _streamType(StreamType::UNDEFINED)
+        m_streamType(StreamType::UNDEFINED)
     {
-        if (_streamTypeByName.contains(streamType)){
-            _streamType = _streamTypeByName[streamType];
-            _parameters = parameters;
+        if (m_streamTypeByName.contains(streamType)){
+            m_streamType = m_streamTypeByName[streamType];
+            m_parameters = parameters;
         }
     }
 
     //! Getter for the stream type.
-    StreamType streamType() const { return _streamType; }
+    StreamType streamType() const { return m_streamType; }
     //! Getter for the parameters.
-    QString parameters() const { return _parameters; }
+    QString parameters() const { return m_parameters; }
     //! Checks that the stream descriptor is valid.
-    bool isValid() const { return (_streamType != StreamType::UNDEFINED); }
+    bool isValid() const { return (m_streamType != StreamType::UNDEFINED); }
 
     //! Checks that the provided string is a valid stream type.
-    static bool isValidStreamType(QString streamType) { return _streamTypeByName.contains(streamType); }
+    static bool isValidStreamType(QString streamType) { return m_streamTypeByName.contains(streamType); }
 
 private:
     //! The type of the incoming video stream.
-    StreamType _streamType;
+    StreamType m_streamType;
     //! Additional parameters of the stream.
-    QString _parameters;
+    QString m_parameters;
     //! The map to translate the string stream type to the corresponding enum.
-    static const QMap<QString, StreamType> _streamTypeByName;
+    static const QMap<QString, StreamType> m_streamTypeByName;
 };
 
 /*!
@@ -91,7 +91,7 @@ public:
 
 public:
     //! Returns the parameters of the main camera.
-    StreamDescriptor mainCameraDescriptor() const { return _mainCameraDescriptor; }
+    StreamDescriptor mainCameraDescriptor() const { return m_mainCameraDescriptor; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -109,7 +109,7 @@ private:
 private:
     // TODO : refactor to integrate SetupType based more generic approach
     //! Input streams parameters.
-    StreamDescriptor _mainCameraDescriptor;
+    StreamDescriptor m_mainCameraDescriptor;
 };
 
 #endif // CATS2_COMMAND_LINE_PARAMETERS_HPP

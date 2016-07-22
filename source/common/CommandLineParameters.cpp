@@ -51,7 +51,7 @@ bool CommandLineParameters::init(int argc, char** argv, bool needMainCamera)
                                       || parseStreamArguments(argc, argv, "--maincam", streamType, streamParameters));
     if (foundMainCameraParameters) {
         // the main camera
-        _mainCameraDescriptor = StreamDescriptor(streamType, streamParameters);
+        m_mainCameraDescriptor = StreamDescriptor(streamType, streamParameters);
     }
     settingsAccepted = (foundMainCameraParameters || (!needMainCamera));
 

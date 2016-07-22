@@ -5,7 +5,7 @@
  * Constructor.
  */
 CameraCalibration::CameraCalibration(QString calibrationFileName) :
-    _calibrationInitialized(false)
+    m_calibrationInitialized(false)
 {
     calibrate(calibrationFileName);
 }
@@ -29,7 +29,7 @@ void CameraCalibration::calibrate(QString calibrationFileName)
     // read the camera type
     std::string cameraTypeString;
     settings.readVariable("cameraType", cameraTypeString);
-    if (!setCameraParameters(QString::fromUtf8(cameraTypeString.c_str()), _cameraParameters)) { // could not find camera parameters
+    if (!setCameraParameters(QString::fromUtf8(cameraTypeString.c_str()), m_cameraParameters)) { // could not find camera parameters
         return;
     }
 
@@ -51,11 +51,11 @@ void CameraCalibration::calibrate(QString calibrationFileName)
 
     for(size_t i = 1; i <= numberOfPoints; i++) {
 //        CalibrationPoint calibrationPoint;
-        _calibrationData.zw[i] = 0;
-        settings.readVariable(QString("calibrationPoints/point_%1/xWorld").arg(i), _calibrationData.xw[i]);
-        settings.readVariable(QString("calibrationPoints/point_%2/xWorld").arg(i), _calibrationData.yw[i]);
-        settings.readVariable(QString("calibrationPoints/point_%1/xImage").arg(i), _calibrationData.Xf[i]);
-        settings.readVariable(QString("calibrationPoints/point_%2/yImage").arg(i), _calibrationData.Yf[i]);
+        m_calibrationData.zw[i] = 0;
+        settings.readVariable(QString("calibrationPoints/point_%1/xWorld").arg(i), m_calibrationData.xw[i]);
+        settings.readVariable(QString("calibrationPoints/point_%2/xWorld").arg(i), m_calibrationData.yw[i]);
+        settings.readVariable(QString("calibrationPoints/point_%1/xImage").arg(i), m_calibrationData.Xf[i]);
+        settings.readVariable(QString("calibrationPoints/point_%2/yImage").arg(i), m_calibrationData.Yf[i]);
 //        calibrationPointList.append(calibrationPoint);
     }
 
@@ -84,14 +84,14 @@ void CameraCalibration::calibrate(QString calibrationFileName)
     // Do the calibration
     try {
         //noncoplanar_calibration_with_full_optimization(&calibrationData,&calibrationConstants,&cameraParameters);
-        coplanar_calibration_with_full_optimization(&_calibrationData, &_calibrationConstants, &_cameraParameters);
+        coplanar_calibration_with_full_optimization(&m_calibrationData, &m_calibrationConstants, &m_cameraParameters);
     }
     catch (...) {
         return;
     }
 
     //return true;
-    _calibrationInitialized = true;
+    m_calibrationInitialized = true;
 }
 
 /*!
@@ -101,7 +101,7 @@ PositionMeters CameraCalibration::image2World(PositionPixels imageCoordinates)
 {
     double wz = 0;
     double wx,wy;
-    image_coord_to_world_coord(_calibrationConstants, _cameraParameters,
+    image_coord_to_world_coord(m_calibrationConstants, m_cameraParameters,
                                imageCoordinates.x(), imageCoordinates.y(),
                                wz, &wx, &wy);
     PositionMeters worldCoordinates(wx, wy);
@@ -113,15 +113,15 @@ PositionMeters CameraCalibration::image2World(PositionPixels imageCoordinates)
  */
 OrientationRad CameraCalibration::image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad)
 {
-    double vectorLength = _cameraParameters.Ncx / 20; // empirical constant
+    double vectorLength = m_cameraParameters.Ncx / 20; // empirical constant
     double ix = imageCoordinates.x() + vectorLength * cos(imageOrientationRad.angle()); // a vector in  image coordinates
     double iy = imageCoordinates.y() + vectorLength * sin(imageOrientationRad.angle());
     double wz = 0;
     double wx,wy;						// corresponding world coordinates
     double wox,woy;						// world coordinates of agent's position
 
-    image_coord_to_world_coord(_calibrationConstants, _cameraParameters, ix, iy, wz, &wx, &wy);
-    image_coord_to_world_coord(_calibrationConstants, _cameraParameters, imageCoordinates.x(), imageCoordinates.y(), wz, &wox, &woy);
+    image_coord_to_world_coord(m_calibrationConstants, m_cameraParameters, ix, iy, wz, &wx, &wy);
+    image_coord_to_world_coord(m_calibrationConstants, m_cameraParameters, imageCoordinates.x(), imageCoordinates.y(), wz, &wox, &woy);
 
     return OrientationRad(atan2(wy-woy, wx-wox));
 }
@@ -142,15 +142,15 @@ bool CameraCalibration::setCameraParameters(QString cameraType, camera_parameter
         double height = 3.6;
         double resX = 1920;
         double resY = 1080;
-        _cameraParameters.Ncx = resX;
-        _cameraParameters.Nfx = resX;
-        _cameraParameters.Cx = cameraParameters.Ncx / 2.;
-        _cameraParameters.Cy = resY / 2.;
-        _cameraParameters.dx = width / resX;
-        _cameraParameters.dpx = _cameraParameters.dx * _cameraParameters.Ncx / _cameraParameters.Nfx;
-        _cameraParameters.dy = height / resY;
-        _cameraParameters.dpy = cameraParameters.dy;
-        _cameraParameters.sx = 1.0;
+        m_cameraParameters.Ncx = resX;
+        m_cameraParameters.Nfx = resX;
+        m_cameraParameters.Cx = cameraParameters.Ncx / 2.;
+        m_cameraParameters.Cy = resY / 2.;
+        m_cameraParameters.dx = width / resX;
+        m_cameraParameters.dpx = m_cameraParameters.dx * m_cameraParameters.Ncx / m_cameraParameters.Nfx;
+        m_cameraParameters.dy = height / resY;
+        m_cameraParameters.dpy = cameraParameters.dy;
+        m_cameraParameters.sx = 1.0;
         return true;
     }
     qDebug() << Q_FUNC_INFO << "Unknown camera type";

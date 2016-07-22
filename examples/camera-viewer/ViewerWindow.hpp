@@ -32,12 +32,12 @@ public:
 
 private:
     //! The form.
-    Ui::ViewerWindow* _ui;
+    Ui::ViewerWindow* m_ui;
 
     //! The video grabber.
-    QSharedPointer<VideoGrabber> _grabber;
+    QSharedPointer<VideoGrabber> m_grabber;
     //! The viewer handler.
-    QSharedPointer<ViewerHandler> _viewerHandler;
+    QSharedPointer<ViewerHandler> m_viewerHandler;
 };
 
 #endif // CATS2_EXAMPLE_VIEWER_WINDOW_HPP

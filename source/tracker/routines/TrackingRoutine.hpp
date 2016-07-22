@@ -44,17 +44,17 @@ protected:
 
 protected:
     //! The queue containing frames to do the tracking.
-    TimestampedFrameQueuePtr _inputQueue;
+    TimestampedFrameQueuePtr m_inputQueue;
     //! The debug frames queue to control the work of a tracker.
-    TimestampedFrameQueuePtr _debugQueue;
+    TimestampedFrameQueuePtr m_debugQueue;
 
     //! The flag that defines if the convertor is to be stopped.
-    std::atomic_bool _stopped;
+    std::atomic_bool m_stopped;
     //! The flag that defines if the debug images are to be put to the debug queue.
-    std::atomic_bool _enqueueDebugFrames;
+    std::atomic_bool m_enqueueDebugFrames;
 
     //! The tracked agents.
-    QList<AgentDataImage> _agents;
+    QList<AgentDataImage> m_agents;
 };
 
 /*!

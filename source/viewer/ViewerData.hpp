@@ -32,7 +32,7 @@ signals:
 private:
     //! The frame convertor that receives frame images and converts them to the Qt image format.
     //! Doesn't have a Qt owner as it is managed by another thread.
-    QSharedPointer<FrameConvertor> _convertor;
+    QSharedPointer<FrameConvertor> m_convertor;
     // TODO : to add the agents here (?)
 };
 

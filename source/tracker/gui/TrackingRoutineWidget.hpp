@@ -21,7 +21,7 @@ public:
 
 private:
     //! The gui form.
-    Ui::TrackingRoutineWidget *ui;
+    Ui::TrackingRoutineWidget *m_ui;
 };
 
 #endif // CATS2_TRACKING_ROUTINE_WIDGET_HPP

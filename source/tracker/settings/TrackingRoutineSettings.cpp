@@ -7,9 +7,9 @@
  * Constructor.
  */
 TrackingRoutineSettings::TrackingRoutineSettings(SetupType setupType) :
-    _trackingRoutineType(TrackingRoutineType::UNDEFINED)
+    m_trackingRoutineType(TrackingRoutineType::UNDEFINED)
 {
-    _settingPathPrefix = TrackingSetup::setupSettingsNameByType(setupType);
+    m_settingPathPrefix = TrackingSetup::setupSettingsNameByType(setupType);
 }
 
 /*!

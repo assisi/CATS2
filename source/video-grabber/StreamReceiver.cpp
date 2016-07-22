@@ -9,21 +9,21 @@
 /*!
  * The map to translate the string stream type to the corresponding enum.
  */
-const QMap<QString, StreamType> StreamDescriptor::_streamTypeByName = {{"v4l", StreamType::VIDEO_4_LINUX}};
+const QMap<QString, StreamType> StreamDescriptor::m_streamTypeByName = {{"v4l", StreamType::VIDEO_4_LINUX}};
 
 /*!
 * Constructor.
 */
 StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, TimestampedFrameQueuePtr outputQueue) :
     QObject(nullptr),
-    _pipe1ineDescription(),
-    _sink(outputQueue)
+    m_pipelineDescription(),
+    m_sink(outputQueue)
 {
     switch (streamParameters.streamType()) {
         case StreamType::VIDEO_4_LINUX:
         {
             int videoDeviceId = streamParameters.parameters().toInt();
-            _pipe1ineDescription = QString("v4l2src device=/dev/video%1 ! "
+            m_pipelineDescription = QString("v4l2src device=/dev/video%1 ! "
                                            "video/x-raw-rgb ! ffmpegcolorspace ! "
                                            "appsink name=queueingsink").arg(videoDeviceId);
             break;
@@ -47,12 +47,12 @@ StreamReceiver::~StreamReceiver()
  */
 void StreamReceiver::process()
 {
-    _pipeline = QGst::Parse::launch(_pipe1ineDescription).dynamicCast<QGst::Pipeline>();
-    _sink.setElement(_pipeline->getElementByName("queueingsink"));
-    QGlib::connect(_pipeline->bus(), "message::error", this, &StreamReceiver::onError);
+    m_pipeline = QGst::Parse::launch(m_pipelineDescription).dynamicCast<QGst::Pipeline>();
+    m_sink.setElement(m_pipeline->getElementByName("queueingsink"));
+    QGlib::connect(m_pipeline->bus(), "message::error", this, &StreamReceiver::onError);
 
     // start the pipeline
-    _pipeline->setState(QGst::StatePlaying);
+    m_pipeline->setState(QGst::StatePlaying);
 }
 
 /*!
@@ -60,7 +60,7 @@ void StreamReceiver::process()
  */
 void StreamReceiver::stop()
 {
-    _pipeline->setState(QGst::StateNull);
+    m_pipeline->setState(QGst::StateNull);
 }
 
 /*!

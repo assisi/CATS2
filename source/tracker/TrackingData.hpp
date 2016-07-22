@@ -43,10 +43,10 @@ private slots:
 private:
     //! The tracking routine that tracks agents on the scene.
     //! Doesn't have a Qt owner as it is managed by another thread.
-    QSharedPointer<TrackingRoutine> _trackingRoutine;
+    QSharedPointer<TrackingRoutine> m_trackingRoutine;
 
     //! The coordinates conversion to get world state of the agents.
-    CoordinatesConversionPtr _coordinatesConversion;
+    CoordinatesConversionPtr m_coordinatesConversion;
 };
 
 #endif // CATS2_TRACKING_DATA_HPP

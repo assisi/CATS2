@@ -14,24 +14,24 @@
  */
 ViewerWidget::ViewerWidget(QSharedPointer<ViewerData> viewerData, QWidget *parent) :
     QWidget(parent),
-    _data(viewerData),
-    _uiViewer(new Ui::ViewerWidget)
+    m_data(viewerData),
+    m_uiViewer(new Ui::ViewerWidget)
 {
-    _uiViewer->setupUi(this);
+    m_uiViewer->setupUi(this);
 
     // create the scene
-    _scene = new QGraphicsScene(this);
-    _uiViewer->view->setScene(_scene);
+    m_scene = new QGraphicsScene(this);
+    m_uiViewer->view->setScene(m_scene);
 
     // create the video frame item
-    _videoFrame = new QGraphicsPixmapItem();
-    _videoFrame->setZValue(0);
-    _videoFrame->setPos(0,0);
-    _scene->addItem(_videoFrame);
+    m_videoFrame = new QGraphicsPixmapItem();
+    m_videoFrame->setZValue(0);
+    m_videoFrame->setPos(0,0);
+    m_scene->addItem(m_videoFrame);
 
     // connect to the data class
     qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QImage>");
-    connect(_data.data(), &ViewerData::newFrame, this, &ViewerWidget::onNewFrame);
+    connect(m_data.data(), &ViewerData::newFrame, this, &ViewerWidget::onNewFrame);
 }
 
 /*!
@@ -39,7 +39,7 @@ ViewerWidget::ViewerWidget(QSharedPointer<ViewerData> viewerData, QWidget *paren
  */
 ViewerWidget::~ViewerWidget()
 {
-    delete _uiViewer;
+    delete m_uiViewer;
 }
 
 /*!
@@ -47,7 +47,7 @@ ViewerWidget::~ViewerWidget()
  */
 void ViewerWidget::onZoomIn()
 {
-    _uiViewer->view->scale(1.2, 1.2);
+    m_uiViewer->view->scale(1.2, 1.2);
 }
 
 /*!
@@ -55,13 +55,13 @@ void ViewerWidget::onZoomIn()
  */
 void ViewerWidget::onZoomOut()
 {
-    _uiViewer->view->scale(1/1.2, 1/1.2);
+    m_uiViewer->view->scale(1/1.2, 1/1.2);
 }
 
 void ViewerWidget::onNewFrame(QSharedPointer<QImage> frame)
 {
     if (!frame.isNull())
-        _videoFrame->setPixmap(QPixmap::fromImage(*frame.data()));
+        m_videoFrame->setPixmap(QPixmap::fromImage(*frame.data()));
 }
 
 /*!
@@ -76,7 +76,7 @@ void ViewerWidget::saveCurrentFrameToFile()
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save image"), defaultName, tr("Images (*.png *.bmp *.jpg)"));
     if (!fileName.isEmpty()) {
-        if (!_videoFrame->pixmap().save(fileName)) {
+        if (!m_videoFrame->pixmap().save(fileName)) {
             QMessageBox::information(this, tr("Saving current frame..."), tr("Can't save image"));;
         }
     }
