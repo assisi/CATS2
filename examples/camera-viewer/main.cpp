@@ -1,5 +1,5 @@
 #include "ViewerWindow.hpp"
-#include <CommandLineParameters.hpp>
+#include <settings/CommandLineParameters.hpp>
 
 #include <QGst/Init>
 

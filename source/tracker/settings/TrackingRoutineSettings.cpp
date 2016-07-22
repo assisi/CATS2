@@ -1,7 +1,7 @@
 #include "TrackingRoutineSettings.hpp"
 
 #include <TrackingSetup.hpp>
-#include <ReadSettingsHelper.hpp>
+#include <settings/ReadSettingsHelper.hpp>
 
 /*!
  * Constructor.

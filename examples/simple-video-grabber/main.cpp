@@ -1,5 +1,5 @@
 #include <VideoGrabber.hpp>
-#include <CommandLineParameters.hpp>
+#include <settings/CommandLineParameters.hpp>
 #include <TimestampedFrame.hpp>
 #include <CommonTypes.hpp>
 

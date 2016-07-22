@@ -3,13 +3,13 @@ set(srcs
     AgentData.cpp
     CameraCalibration.cpp
     CoordinatesConversion.cpp
-    CommandLineParameters.cpp
+    settings/CommandLineParameters.cpp
 )
 
 set(hdrs
     AgentState.hpp
-    ReadSettingsHelper.hpp
     CommonTypes.hpp
+    settings/ReadSettingsHelper.hpp
 )
 
 add_library(common SHARED ${srcs} ${hdrs})

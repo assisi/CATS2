@@ -1,7 +1,7 @@
 #include "TrackingSettings.hpp"
 #include "TrackingFactory.hpp"
 
-#include <ReadSettingsHelper.hpp>
+#include <settings/ReadSettingsHelper.hpp>
 
 /*!
  * The singleton getter. Provides an instance of the settings.

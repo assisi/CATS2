@@ -1,6 +1,6 @@
 #include "BlobDetectorSettings.hpp"
 
-#include <ReadSettingsHelper.hpp>
+#include <settings/ReadSettingsHelper.hpp>
 
 /*!
  * Constructor.

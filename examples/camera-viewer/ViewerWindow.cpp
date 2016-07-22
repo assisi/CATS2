@@ -4,7 +4,7 @@
 #include <gui/ViewerWidget.hpp>
 #include <ViewerHandler.hpp>
 #include <VideoGrabber.hpp>
-#include <CommandLineParameters.hpp>
+#include <settings/CommandLineParameters.hpp>
 
 #include <QtCore/QCoreApplication>
 #include <QtGui/QtGui>

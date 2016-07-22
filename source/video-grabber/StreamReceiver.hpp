@@ -3,7 +3,7 @@
 
 #include "QueueingApplicationSink.hpp"
 
-#include <CommandLineParameters.hpp>
+#include <settings/CommandLineParameters.hpp>
 
 #include <QGst/Pipeline>
 
