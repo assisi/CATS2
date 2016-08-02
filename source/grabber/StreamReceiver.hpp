@@ -47,11 +47,5 @@ private:
     QueueingApplicationSink m_sink;
 };
 
-/*!
- * The alias for the stream receiver shared pointer.
- */
-using StreamReceiverPtr = QSharedPointer<StreamReceiver>;
-
-
 #endif // CATS2_STREAM_RECEIVER_H
 

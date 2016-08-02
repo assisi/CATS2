@@ -1,5 +1,7 @@
 #include "GrabberData.hpp"
 
+#include "StreamReceiver.hpp"
+
 #include <QtCore/QThread>
 
 /*!

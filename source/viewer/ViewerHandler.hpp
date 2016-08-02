@@ -2,6 +2,7 @@
 #define CATS2_VIEWER_HANDLER_HPP
 
 #include <CommonPointerTypes.hpp>
+#include <ViewerPointerTypes.hpp>
 
 #include <QtCore/QObject>
 

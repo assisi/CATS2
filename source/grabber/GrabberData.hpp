@@ -1,7 +1,9 @@
 #ifndef CATS2_GRABBER_DATA_HPP
 #define CATS2_GRABBER_DATA_HPP
 
-#include "StreamReceiver.hpp"
+#include <CommonPointerTypes.hpp>
+#include <GrabberPointerTypes.hpp>
+#include <settings/CommandLineParameters.hpp>
 
 #include <QtCore/QObject>
 

@@ -2,10 +2,9 @@
 #define CATS2_VIEWER_DATA_HPP
 
 #include <CommonPointerTypes.hpp>
+#include <ViewerPointerTypes.hpp>
 
 #include <QtCore/QObject>
-
-class FrameConvertor;
 
 /*!
  * \brief The data class that provides the video frames for the GUI.

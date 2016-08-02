@@ -1,9 +1,13 @@
 #include "ui_ViewerWidget.h"
 #include "ViewerWidget.hpp"
 #include "ViewerData.hpp"
+#include "FrameScene.hpp"
+
+#include <CoordinatesConversion.hpp>
 
 #include <QtWidgets/QGraphicsPixmapItem>
 #include <QtCore/QDir>
+#include <QtCore/QDebug>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDateTime>
 #include <QtWidgets/QFileDialog>

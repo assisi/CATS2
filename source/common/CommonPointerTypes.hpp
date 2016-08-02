@@ -1,7 +1,7 @@
 #ifndef CATS2_COMMON_POINTER_TYPES_HPP
 #define CATS2_COMMON_POINTER_TYPES_HPP
 
-#include <QSharedPointer>
+#include <QtCore/QSharedPointer>
 
 /*!
  * The alias for the stream descriptors list.
@@ -21,6 +21,11 @@ using CoordinatesConversionPtr = QSharedPointer<CoordinatesConversion>;
 class TimestampedFrameQueue;
 using TimestampedFrameQueuePtr = QSharedPointer<TimestampedFrameQueue>;
 
+/*!
+ * The alias for the shared pointer to camera calibration.
+ */
+class CameraCalibration;
+using CameraCalibrationPtr = QSharedPointer<CameraCalibration>;
 
 #endif // CATS2_COMMON_POINTER_TYPES_HPP
 

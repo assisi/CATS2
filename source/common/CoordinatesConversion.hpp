@@ -1,13 +1,14 @@
 #ifndef CATS2_COORDINATES_CONVERSION_HPP
 #define CATS2_COORDINATES_CONVERSION_HPP
 
+#include <CommonPointerTypes.hpp>
+
 #include <QtCore/QString>
 #include <QtCore/QSharedPointer>
 
 class PositionPixels;
 class PositionMeters;
 class OrientationRad;
-class CameraCalibration;
 
 /*!
  * \brief The class that converts the position from the frame pixels
@@ -30,7 +31,7 @@ public:
 
 private:
     //! The object that calibrates the camera and basically makes the job of coordinates conversion.
-    QSharedPointer<CameraCalibration> m_cameraCalibration;
+    CameraCalibrationPtr m_cameraCalibration;
 };
 
 #endif // CATS2_COORDINATES_CONVERSION_HPP

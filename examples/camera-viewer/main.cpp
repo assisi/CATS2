@@ -1,5 +1,11 @@
 #include "ViewerWindow.hpp"
+
 #include <settings/CommandLineParameters.hpp>
+#include <settings/CalibrationSettings.hpp>
+#include <CoordinatesConversion.hpp>
+#include <CommonPointerTypes.hpp>
+#include <GrabberPointerTypes.hpp>
+#include <GrabberData.hpp>
 
 #include <QGst/Init>
 
