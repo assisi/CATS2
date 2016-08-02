@@ -3,7 +3,7 @@
 
 #include <gui/ViewerWidget.hpp>
 #include <ViewerHandler.hpp>
-#include <VideoGrabber.hpp>
+#include <GrabberData.hpp>
 #include <settings/CommandLineParameters.hpp>
 
 #include <QtCore/QCoreApplication>
@@ -22,9 +22,8 @@ ViewerWindow::ViewerWindow(QWidget *parent) :
     TimestampedFrameQueuePtr queuePtr = TimestampedFrameQueuePtr(new TimestampedFrameQueue(100));
 
     // add the video grabber
-    m_grabber = QSharedPointer<VideoGrabber>(new VideoGrabber(), &QObject::deleteLater);
     if (CommandLineParameters::get().mainCameraDescriptor().isValid()){
-        m_grabber->addStreamReceiver(CommandLineParameters::get().mainCameraDescriptor(), queuePtr);
+        m_grabber = QSharedPointer<GrabberData>(new GrabberData(CommandLineParameters::get().mainCameraDescriptor(), queuePtr), &QObject::deleteLater);
     }
 
     // and the viewer handler

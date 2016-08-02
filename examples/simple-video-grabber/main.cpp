@@ -1,11 +1,12 @@
-#include <VideoGrabber.hpp>
+#include <GrabberData.hpp>
 #include <settings/CommandLineParameters.hpp>
 #include <TimestampedFrame.hpp>
 #include <CommonPointerTypes.hpp>
 
 #include <QGst/Init>
 
-#include <QApplication>
+#include <QtWidgets/QApplication>
+#include <QtCore/QSharedPointer>
 
 int main(int argc, char *argv[])
 {
@@ -19,9 +20,9 @@ int main(int argc, char *argv[])
     // parse input arguments to initialize the grabber
     if (CommandLineParameters::get().init(argc, argv)) {
         TimestampedFrameQueuePtr queuePtr = TimestampedFrameQueuePtr(new TimestampedFrameQueue(100));
-        VideoGrabber grabber;
+        QSharedPointer<GrabberData> grabber;
         if (CommandLineParameters::get().mainCameraDescriptor().isValid()){
-            grabber.addStreamReceiver(CommandLineParameters::get().mainCameraDescriptor(), queuePtr);
+            grabber = QSharedPointer<GrabberData>(new GrabberData(CommandLineParameters::get().mainCameraDescriptor(), queuePtr), &QObject::deleteLater);
         }
         return app.exec();
     }

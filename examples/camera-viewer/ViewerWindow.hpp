@@ -11,7 +11,7 @@
 #include <QtGui>
 #include <QtWidgets/QMainWindow>
 
-class VideoGrabber;
+class GrabberData;
 class ViewerWidget;
 class ViewerHandler;
 
@@ -35,7 +35,7 @@ private:
     Ui::ViewerWindow* m_ui;
 
     //! The video grabber.
-    QSharedPointer<VideoGrabber> m_grabber;
+    QSharedPointer<GrabberData> m_grabber; // FIXME : nothing to do here move it out, the only thing we need is the input queue
     //! The viewer handler.
     QSharedPointer<ViewerHandler> m_viewerHandler;
 };

@@ -4,7 +4,7 @@
 #include "TrackingHandler.hpp"
 
 #include <CommonPointerTypes.hpp>
-#include <VideoGrabber.hpp>
+#include <GrabberData.hpp>
 
 #include <QtCore/QSharedPointer>
 #include <QtCore/QMap>
@@ -25,7 +25,7 @@ private:
     SetupType::Enum m_type;
 
     //! The grabber.
-    QSharedPointer<VideoGrabber> m_grabber;
+    QSharedPointer<GrabberData> m_grabber;
     //! The tracker.
     QSharedPointer<TrackingHandler> m_tracking;
 
