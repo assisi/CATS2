@@ -73,7 +73,7 @@ public:
     //! main camera parameter is found and there were no "-h" option.
     //! It receives also flags difining which command line parameters are considired essential
     //! so that the initialisation passes.
-    bool init(int argc, char** argv, bool needMainCamera = true);
+    bool init(int argc, char** argv, bool needConfigFile = true, bool needMainCamera = true);
 
     // delete copy and move constructors and assign operators
     //! Copy constructor.
@@ -101,11 +101,15 @@ private:
     //! Looks for the given argument in the command line, if found it return second and third argument as
     //! stream type and parameters.
     bool parseStreamArguments(int argc, char** argv, QString argument, QString& streamType, QString& parameters);
+    //! Looks for the given argument in the command line, if found it return the argument as configuration file name.
+    bool parseConfigFilePath(int argc, char** argv, QString argument, QString& filePath);
 
 private:
-    // TODO : refactor to integrate SetupType based more generic approach
     //! Input streams parameters.
-    StreamDescriptor m_mainCameraDescriptor;
+    StreamDescriptor m_mainCameraDescriptor; // TODO : refactor to integrate SetupType based more generic approach
+
+    //! The path to the configuration file.
+    QString m_configFilePath;
 };
 
 #endif // CATS2_COMMAND_LINE_PARAMETERS_HPP

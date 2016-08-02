@@ -31,7 +31,7 @@ CommandLineParameters& CommandLineParameters::get()
  * This part is inspired by this stackoverflow post
  * http://stackoverflow.com/questions/865668/how-to-parse-command-line-arguments-in-c
  */
-bool CommandLineParameters::init(int argc, char** argv, bool needMainCamera)
+bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, bool needMainCamera)
 {
     bool settingsAccepted = false;
 
@@ -44,7 +44,7 @@ bool CommandLineParameters::init(int argc, char** argv, bool needMainCamera)
         return settingsAccepted;
     }
 
-    // try to find the supported arguments among present ones
+    // read the main camera parameters
     QString streamType;
     QString streamParameters;
     bool foundMainCameraParameters = (parseStreamArguments(argc, argv, "-mc", streamType, streamParameters)
@@ -54,6 +54,15 @@ bool CommandLineParameters::init(int argc, char** argv, bool needMainCamera)
         m_mainCameraDescriptor = StreamDescriptor(streamType, streamParameters);
     }
     settingsAccepted = (foundMainCameraParameters || (!needMainCamera));
+
+    // get the configuration file path
+    QString filePath;
+    bool foundConfigFilePath = (parseConfigFilePath(argc, argv, "-c", filePath)
+                                      || parseConfigFilePath(argc, argv, "--config", filePath));
+    if (foundConfigFilePath) {
+        m_configFilePath = filePath;
+    }
+    settingsAccepted = (foundConfigFilePath || (!needConfigFile));
 
     return settingsAccepted;
 }
@@ -66,6 +75,7 @@ void CommandLineParameters::printSupportedArguments()
     qDebug() << "Video grabber usage";
     qDebug() << "\t -h --help\t\tShow this help message";
     qDebug() << "\t -mc --maincam\tDefines the video stream used to track agents. Format : -mc <StreamType> <parameters>";
+    qDebug() << "\t -c --config\tThe configuration file. Format : -c <PathToFile>";
 }
 
 /*!
@@ -82,6 +92,20 @@ bool CommandLineParameters::parseStreamArguments(int argc, char** argv, QString 
             parameters = *(itr + 2);
             return true;
         }
+    }
+    return false;
+}
+
+/*!
+ * Looks for the given argument in the command line, if found it return the argument as configuration file name.
+ */
+bool CommandLineParameters::parseConfigFilePath(int argc, char** argv, QString argument, QString& filePath)
+{
+    char** end = argv + argc;
+    char** itr = std::find(argv, end, argument);
+    if ((itr != end) && (++itr != end)) {
+        filePath = QString(*itr);
+        return true;
     }
     return false;
 }
