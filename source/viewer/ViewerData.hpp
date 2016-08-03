@@ -19,10 +19,15 @@ class ViewerData : public QObject
 {
     Q_OBJECT
 public:
-    //! Constructor.
-    explicit ViewerData(TimestampedFrameQueuePtr inputQueue);
+    //! Constructor. Receives the coordinates conversion for the setup to which corresponds this viewer.
+    explicit ViewerData(TimestampedFrameQueuePtr inputQueue,
+                        CoordinatesConversionPtr coordinatesConversion = CoordinatesConversionPtr());
     //! Destructor.
     virtual ~ViewerData();
+
+public:
+    //! Returns the coordinates transformation.
+    CoordinatesConversionPtr coordinatesConversion() { return m_coordinatesConversion; }
 
 signals:
     //! Transfers the new frame further.
@@ -31,7 +36,9 @@ signals:
 private:
     //! The frame convertor that receives frame images and converts them to the Qt image format.
     //! Doesn't have a Qt owner as it is managed by another thread.
-    QSharedPointer<FrameConvertor> m_convertor;
+    FrameConvertorPtr m_frameConvertor;
+    //! The coordinates transformation to convert positions between meters and camera frame's pixels.
+    CoordinatesConversionPtr m_coordinatesConversion;
     // TODO : to add the agents here (?)
 };
 

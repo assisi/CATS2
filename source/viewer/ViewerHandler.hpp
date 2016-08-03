@@ -20,17 +20,21 @@ class ViewerHandler : public QObject
     Q_OBJECT
 public:
     //! Constructor. It receives a qwidget to pass as a parent to the viewer widget.
-    explicit ViewerHandler(TimestampedFrameQueuePtr inputQueue, QWidget* parentWidget);
+    explicit ViewerHandler(TimestampedFrameQueuePtr inputQueue,
+                           QWidget* parentWidget,
+                           CoordinatesConversionPtr coordinatesConversion = CoordinatesConversionPtr());
     //! Destructor.
     virtual ~ViewerHandler();
 
 public:
+    //! Returns the shared pointer to the data class.
+    QSharedPointer<ViewerData> data() { return m_data; }
     //! Returns the pointer to the viewer widget.
     ViewerWidget* widget() { return m_widget; }
 
 private:
     //! The data class.
-    QSharedPointer<ViewerData> m_data;
+    ViewerDataPtr m_data;
     //! The GUI class.
     ViewerWidget* m_widget;
 };

@@ -8,9 +8,11 @@
 /*!
 * Constructor.
 */
-ViewerHandler::ViewerHandler(TimestampedFrameQueuePtr inputQueue, QWidget* parentWidget) :
+ViewerHandler::ViewerHandler(TimestampedFrameQueuePtr inputQueue,
+                             QWidget* parentWidget,
+                             CoordinatesConversionPtr coordinatesConversion) :
     QObject(nullptr),
-    m_data(QSharedPointer<ViewerData>(new ViewerData(inputQueue), &QObject::deleteLater)),
+    m_data(QSharedPointer<ViewerData>(new ViewerData(inputQueue, coordinatesConversion), &QObject::deleteLater)),
     m_widget(new ViewerWidget(m_data, parentWidget))
 {
     // some security: when the viewer widget is destroyed, reset the pointer to it
