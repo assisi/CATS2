@@ -1,7 +1,7 @@
 #ifndef CATS2_COORDINATES_CONVERSION_HPP
 #define CATS2_COORDINATES_CONVERSION_HPP
 
-#include <CommonPointerTypes.hpp>
+#include "CommonPointerTypes.hpp"
 
 #include <QtCore/QString>
 #include <QtCore/QSharedPointer>

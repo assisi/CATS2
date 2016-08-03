@@ -5,8 +5,9 @@
 #ifndef CATS2_EXAMPLE_VIEWER_WINDOW_HPP
 #define CATS2_EXAMPLE_VIEWER_WINDOW_HPP
 
+#include "ViewerPointerTypes.hpp"
+
 #include <TimestampedFrame.hpp>
-#include <ViewerPointerTypes.hpp>
 #include <CommonPointerTypes.hpp>
 
 #include <QtCore>

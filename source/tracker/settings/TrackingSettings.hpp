@@ -1,8 +1,9 @@
 #ifndef CATS2_TRACKING_SETTINGS_HPP
 #define CATS2_TRACKING_SETTINGS_HPP
 
-#include <TrackingSetup.hpp>
 #include "TrackingRoutineSettings.hpp"
+
+#include "TrackingSetup.hpp"
 #include <SetupType.hpp>
 
 /*!
@@ -11,7 +12,6 @@
  * NOTE : All the settings are made as singltons to simplify the access to them;
  * the drawback is that initialization of many objects becomes obscure because of this.
  * NOTE : All the settings must be initialized on the program startup.
- *
 */
 class TrackingSettings
 {

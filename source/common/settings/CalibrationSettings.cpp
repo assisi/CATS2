@@ -1,6 +1,6 @@
 #include "CalibrationSettings.hpp"
 
-#include <settings/ReadSettingsHelper.hpp>
+#include "settings/ReadSettingsHelper.hpp"
 
 #include <QtCore/QFileInfo>
 

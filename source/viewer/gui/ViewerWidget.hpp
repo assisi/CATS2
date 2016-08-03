@@ -1,8 +1,9 @@
 #ifndef CATS2_VIEWER_WIDGET_HPP
 #define CATS2_VIEWER_WIDGET_HPP
 
+#include "ViewerPointerTypes.hpp"
+
 #include <AgentData.hpp>
-#include <ViewerPointerTypes.hpp>
 
 #include <QtCore/QObject>
 #include <QtWidgets/QWidget>

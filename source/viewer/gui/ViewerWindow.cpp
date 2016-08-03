@@ -1,8 +1,9 @@
 #include "ui_ViewerWindow.h"
 #include "ViewerWindow.hpp"
 
+#include "ViewerHandler.hpp"
+
 #include <gui/ViewerWidget.hpp>
-#include <ViewerHandler.hpp>
 #include <settings/CommandLineParameters.hpp>
 
 #include <QtCore/QCoreApplication>

@@ -1,8 +1,9 @@
 #ifndef CATS2_VIEWER_DATA_HPP
 #define CATS2_VIEWER_DATA_HPP
 
+#include "ViewerPointerTypes.hpp"
+
 #include <CommonPointerTypes.hpp>
-#include <ViewerPointerTypes.hpp>
 
 #include <QtCore/QObject>
 

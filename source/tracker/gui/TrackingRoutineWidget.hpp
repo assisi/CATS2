@@ -1,7 +1,7 @@
 #ifndef CATS2_TRACKING_ROUTINE_WIDGET_HPP
 #define CATS2_TRACKING_ROUTINE_WIDGET_HPP
 
-#include <QWidget>
+#include <QtWidgets/QWidget>
 
 namespace Ui {
 class TrackingRoutineWidget;

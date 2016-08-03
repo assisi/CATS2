@@ -1,8 +1,8 @@
 #ifndef CATS2_CALIBRATION_SETTINGS_HPP
 #define CATS2_CALIBRATION_SETTINGS_HPP
 
-#include <CommonPointerTypes.hpp>
-#include <SetupType.hpp>
+#include "CommonPointerTypes.hpp"
+#include "SetupType.hpp"
 
 /*!
  * Class-signleton that is used to store parameters of the calibration.
