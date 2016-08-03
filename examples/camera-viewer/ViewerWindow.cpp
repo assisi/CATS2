@@ -12,24 +12,20 @@
 /*!
  * Constructor.
  */
-ViewerWindow::ViewerWindow(QWidget *parent) :
+ViewerWindow::ViewerWindow(TimestampedFrameQueuePtr queuePtr, CoordinatesConversionPtr coordinatesConversion, QWidget *parent) :
     QMainWindow(parent),
     m_ui(new Ui::ViewerWindow)
 {
     m_ui->setupUi(this);
 //	setWindowIcon(QIcon(":/images/mobots_logo.png"));
 
-    TimestampedFrameQueuePtr queuePtr = TimestampedFrameQueuePtr(new TimestampedFrameQueue(100));
-
-    // add the video grabber
-    if (CommandLineParameters::get().mainCameraDescriptor().isValid()){
-        m_grabber = QSharedPointer<GrabberData>(new GrabberData(CommandLineParameters::get().mainCameraDescriptor(), queuePtr), &QObject::deleteLater);
-    }
-
     // and the viewer handler
-    m_viewerHandler = QSharedPointer<ViewerHandler>(new  ViewerHandler(queuePtr, this), &QObject::deleteLater);
+    m_viewerHandler = QSharedPointer<ViewerHandler>(new  ViewerHandler(queuePtr, this, coordinatesConversion), &QObject::deleteLater);
     // make the frame viewer the central widget
     setCentralWidget(m_viewerHandler->widget());
+    connect(m_viewerHandler->widget(), &ViewerWidget::mousePosition, [this](PositionPixels imagePosition, PositionMeters worldPosition) {
+        statusBar()->showMessage(tr("Image position: %1, world position: %2").arg(imagePosition.toString()).arg(worldPosition.toString()));
+    });
 
     // connect the window's actions
     connect(m_ui->actionZoomIn, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::onZoomIn);

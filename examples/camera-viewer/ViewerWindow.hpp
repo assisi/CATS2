@@ -6,27 +6,29 @@
 #define CATS2_EXAMPLE_VIEWER_WINDOW_HPP
 
 #include <TimestampedFrame.hpp>
+#include <GrabberPointerTypes.hpp>
+#include <ViewerPointerTypes.hpp>
+#include <CommonPointerTypes.hpp>
 
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets/QMainWindow>
 
-class GrabberData;
 class ViewerWidget;
-class ViewerHandler;
 
 namespace Ui
 {
 class ViewerWindow;
 }
 
-
 class ViewerWindow : public QMainWindow
 {
     Q_OBJECT
 public:
-    //! Constructor.
-    explicit ViewerWindow (QWidget *parent = 0);
+    //! Constructor. Gets the income frames queue and the optional coordinates conversion class.
+    explicit ViewerWindow (TimestampedFrameQueuePtr queuePtr,
+                           CoordinatesConversionPtr coordinatesConversion = CoordinatesConversionPtr(),
+                           QWidget *parent = 0);
     //! Destructor.
     virtual ~ViewerWindow() override;
 
@@ -34,10 +36,8 @@ private:
     //! The form.
     Ui::ViewerWindow* m_ui;
 
-    //! The video grabber.
-    QSharedPointer<GrabberData> m_grabber; // FIXME : nothing to do here move it out, the only thing we need is the input queue
     //! The viewer handler.
-    QSharedPointer<ViewerHandler> m_viewerHandler;
+    ViewerHandlerPtr m_viewerHandler;
 };
 
 #endif // CATS2_EXAMPLE_VIEWER_WINDOW_HPP
