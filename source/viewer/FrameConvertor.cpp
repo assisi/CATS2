@@ -12,7 +12,7 @@ FrameConvertor::FrameConvertor(TimestampedFrameQueuePtr inputQueue) :
     m_inputQueue(inputQueue),
     m_stopped(false)
 {
-
+    qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QImage>");
 }
 
 /*!
