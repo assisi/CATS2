@@ -60,7 +60,7 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, boo
     bool foundConfigFilePath = (parseConfigFilePath(argc, argv, "-c", filePath)
                                       || parseConfigFilePath(argc, argv, "--config", filePath));
     if (foundConfigFilePath) {
-        m_configFilePath = filePath;
+        m_configurationFilePath = filePath;
     }
     settingsAccepted = (foundConfigFilePath || (!needConfigFile));
 

@@ -88,6 +88,8 @@ public:
 public:
     //! Returns the parameters of the main camera.
     StreamDescriptor mainCameraDescriptor() const { return m_mainCameraDescriptor; }
+    //! Return the path to the configuration file.
+    QString configurationFilePath() const { return m_configurationFilePath; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -109,7 +111,7 @@ private:
     StreamDescriptor m_mainCameraDescriptor; // TODO : refactor to integrate SetupType based more generic approach
 
     //! The path to the configuration file.
-    QString m_configFilePath;
+    QString m_configurationFilePath;
 };
 
 #endif // CATS2_COMMAND_LINE_PARAMETERS_HPP
