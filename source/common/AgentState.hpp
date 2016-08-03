@@ -1,10 +1,12 @@
 #ifndef CATS2_POSITION_HPP
 #define CATS2_POSITION_HPP
 
+#include <QtCore/QString>
+#include <QtCore/QObject>
+
 /*
  * The position and orientation classes that define the agent's state.
  */
-
 /*!
  * \brief The class that stores the orientation in radians.
  * NOTE : it would me ideologically more correct to have two classes : OrientationImageRad and
@@ -57,6 +59,15 @@ public:
     //! Return the position validity status.
     bool isValid() const { return m_valid; }
 
+    //! Returns the position as text.
+    QString toString()
+    {
+        if (m_valid)
+            return QObject::tr("%1 m, %2 m").arg(m_x, 0, 'f', 3).arg(m_y, 0, 'f', 3);
+        else
+            return QObject::tr("- m, - m");
+    }
+
 private:
     //! Position x.
     double m_x;  // [m]
@@ -93,6 +104,15 @@ public:
     void setValid(bool valid) { m_valid = valid; }
     //! Return the position validity status.
     bool isValid() const { return m_valid; }
+
+    //! Returns the position as text.
+    QString toString()
+    {
+        if (m_valid)
+            return QObject::tr("%1 px, %2 px").arg(m_x, 0, 'f', 1).arg(m_y, 0, 'f', 1);
+        else
+            return QObject::tr("- px, - px");
+    }
 
 private:
     //! Position x.
