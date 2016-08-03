@@ -6,7 +6,6 @@
 #define CATS2_EXAMPLE_VIEWER_WINDOW_HPP
 
 #include <TimestampedFrame.hpp>
-#include <GrabberPointerTypes.hpp>
 #include <ViewerPointerTypes.hpp>
 #include <CommonPointerTypes.hpp>
 

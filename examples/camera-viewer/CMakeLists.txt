@@ -1,15 +1,11 @@
 set(srcs
     main.cpp
-    ViewerWindow.cpp
 )
-
-qt5_wrap_ui(uis_hdrs ViewerWindow.ui)
-qt5_add_resources(resources icons.qrc)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/grabber)
 include_directories(${CMAKE_SOURCE_DIR}/source/viewer)
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
-add_executable(camera-viewer ${srcs} ${uis_hdrs} ${resources})
+add_executable(camera-viewer ${srcs})
 target_link_libraries(camera-viewer common grabber viewer Qt5::Core Qt5::Widgets Qt5::Gui
                         ${QTGSTREAMER_LIBRARY} ${QTGSTREAMER_LIBRARIES}
                         ${QTGSTREAMER_UTILS_LIBRARY} ${QTGSTREAMER_UTILS_LIBRARIES}

@@ -3,7 +3,6 @@
 
 #include <gui/ViewerWidget.hpp>
 #include <ViewerHandler.hpp>
-#include <GrabberData.hpp>
 #include <settings/CommandLineParameters.hpp>
 
 #include <QtCore/QCoreApplication>
