@@ -7,6 +7,7 @@ set(srcs
     TrackingData.cpp
     TrackingSetup.cpp
     TrackingHandler.cpp
+    TrackerPointerTypes.hpp
     gui/TrackingRoutineWidget.cpp
 )
 
