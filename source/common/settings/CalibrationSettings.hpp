@@ -31,6 +31,10 @@ public:
     //! Move assignment.
     CalibrationSettings& operator=(CalibrationSettings &&) = delete;
 
+public:
+    //! Returns the path to the camera calibration file.
+    QString calibrationFilePath(SetupType::Enum setupType) const { return m_calibrationFilePaths[setupType]; }
+
 private:
     //! Constructor. Defining it here prevents construction.
     CalibrationSettings() {}

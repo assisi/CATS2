@@ -56,7 +56,6 @@ private:
     static const QMap<QString, StreamType> m_streamTypeByName;
 };
 
-
 /*!
  * Class-signleton that is used to store parameters of the grabber; at the moment those are just input streams types and attributes.
  * Their values are received from the command line arguments.
