@@ -4,6 +4,7 @@ set(srcs
     settings/TrackingSettings.cpp
     settings/TrackingRoutineSettings.cpp
     settings/BlobDetectorSettings.cpp
+    settings/TrackingSetupSettings.cpp
     TrackingData.cpp
     TrackingSetup.cpp
     TrackingHandler.cpp
