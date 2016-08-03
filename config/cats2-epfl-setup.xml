@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+<opencv_storage>
+    <mainCamera>
+        <tracking>
+            <trackingMethod>blobDetector</trackingMethod>
+            <numberOfAgents>2</numberOfAgents>
+            <blobDetector>
+                <minBlobSizePx>15</minBlobSizePx>
+                <qualityLevel>0.01</qualityLevel>
+                <minDistance>20.0</minDistance>
+                <blockSize>5</blockSize>
+                <useHarrisDetector>0</useHarrisDetector>
+                <k>0.04</k>
+        </blobDetector>
+        </tracking>
+        <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
+    </mainCamera>
+</opencv_storage>
+
