@@ -22,9 +22,12 @@ ViewerWidget::ViewerWidget(QSharedPointer<ViewerData> viewerData, QWidget *paren
     m_uiViewer(new Ui::ViewerWidget)
 {
     m_uiViewer->setupUi(this);
+    // always receive mouse events
+    m_uiViewer->view->setMouseTracking(true);
 
     // create the scene
-    m_scene = new QGraphicsScene(this);
+    m_scene = new FrameScene(this);
+    connect(m_scene, &FrameScene::mouseMoved, this, &ViewerWidget::onMouseMoved);
     m_uiViewer->view->setScene(m_scene);
 
     // create the video frame item
@@ -82,6 +85,21 @@ void ViewerWidget::saveCurrentFrameToFile()
     if (!fileName.isEmpty()) {
         if (!m_videoFrame->pixmap().save(fileName)) {
             QMessageBox::information(this, tr("Saving current frame..."), tr("Can't save image"));;
+        }
+    }
+}
+
+/*!
+ * Triggered when a new mouse position is received from the scene.
+ */
+void ViewerWidget::onMouseMoved(QPointF scenePosition)
+{
+    if (!m_data.isNull()) {
+        CoordinatesConversionPtr coordinatesConversion = m_data->coordinatesConversion();
+        if (!coordinatesConversion.isNull()){
+            PositionPixels imagePosition(scenePosition.x(), scenePosition.y());
+            PositionMeters worldPosition = coordinatesConversion->imageToWorldPosition(imagePosition);
+            emit mousePosition(imagePosition, worldPosition);
         }
     }
 }
