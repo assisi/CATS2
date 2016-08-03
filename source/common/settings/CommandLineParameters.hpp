@@ -1,6 +1,8 @@
 #ifndef CATS2_COMMAND_LINE_PARAMETERS_HPP
 #define CATS2_COMMAND_LINE_PARAMETERS_HPP
 
+#include "SetupType.hpp"
+
 #include <QtCore/QString>
 #include <QtCore/QList>
 #include <QtCore/QMap>
@@ -85,8 +87,10 @@ public:
     CommandLineParameters& operator=(CommandLineParameters &&) = delete;
 
 public:
+    //! Returns the parameters of the given setup.
+    StreamDescriptor cameraDescriptor(SetupType::Enum setupType) const { return m_cameraDescriptors[setupType]; }
     //! Returns the parameters of the main camera.
-    StreamDescriptor mainCameraDescriptor() const { return m_mainCameraDescriptor; }
+    StreamDescriptor mainCameraDescriptor() const { return m_cameraDescriptors[SetupType::MAIN_CAMERA]; }
     //! Return the path to the configuration file.
     QString configurationFilePath() const { return m_configurationFilePath; }
 
@@ -106,8 +110,8 @@ private:
     bool parseConfigFilePath(int argc, char** argv, QString argument, QString& filePath);
 
 private:
-    //! Input streams parameters.
-    StreamDescriptor m_mainCameraDescriptor; // TODO : refactor to integrate SetupType based more generic approach
+    //! Input streams parameters for different setups.
+    QMap<SetupType::Enum, StreamDescriptor> m_cameraDescriptors;
 
     //! The path to the configuration file.
     QString m_configurationFilePath;
