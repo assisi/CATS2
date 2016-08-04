@@ -16,16 +16,22 @@ class TrackingRoutine;
 using TrackingRoutinePtr = QSharedPointer<TrackingRoutine>;
 
 /*!
- * The alias for the pointer to the tracking routine settings class.
+ * The alias for the shared pointer to the tracking routine settings class.
  */
 class TrackingRoutineSettings;
 using TrackingRoutineSettingsPtr = QSharedPointer<TrackingRoutineSettings>;
 
 /*!
- * The alias for the pointer to the tracking data.
+ * The alias for the shared pointer to the tracking data.
  */
 class TrackingData;
 using TrackingDataPtr = QSharedPointer<TrackingData>;
+
+/*!
+ * The alias for the shared pointer to the tracking setup.
+ */
+class TrackingSetup;
+using TrackingSetupPtr = QSharedPointer<TrackingSetup>;
 
 #endif // CATS2_TRACKER_POINTER_TYPES_HPP
 

@@ -7,6 +7,8 @@
 #include <CommonPointerTypes.hpp>
 #include <GrabberPointerTypes.hpp>
 
+#include <gui/TrackingRoutineWidget.hpp>
+
 #include <QtCore/QSharedPointer>
 #include <QtCore/QMap>
 
@@ -21,9 +23,13 @@ public:
     //! Constructor.
     TrackingSetup(SetupType::Enum setupType);
 
+public:
+    //! Returns the pointer to the tracking routine gui.
+    QWidget* trackingWidget() { return m_tracking->widget(); }
+
 private:
     //! The type of setup, for instance, main camera or the camera below.
-    SetupType::Enum m_type;
+    SetupType::Enum m_setupType;
 
     //! Input queue for the grabber.
     TimestampedFrameQueuePtr m_queue;

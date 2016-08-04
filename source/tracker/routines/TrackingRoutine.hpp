@@ -22,6 +22,10 @@ public:
     //! Destructor.
     virtual ~TrackingRoutine();
 
+public:
+    //! Returns a pointer to the debug queue.
+    TimestampedFrameQueuePtr debugQueue() { return m_debugQueue; }
+
 signals:
     //! Sends out the tracked agents.
     void trackedAgents(QList<AgentDataImage> agents);
