@@ -17,8 +17,11 @@ TrackingData::TrackingData(SetupType::Enum setupType,
                            TimestampedFrameQueuePtr inputQueue,
                            TimestampedFrameQueuePtr debugQueue) :
     QObject(nullptr),
+    m_setupType(setupType),
     m_coordinatesConversion(coordinatesConversion)
 {
+    qRegisterMetaType<QList<AgentDataImage>>("QList<AgentDataImage>");
+
     // create the tracking routine
     m_trackingRoutine = TrackerFactory::createTrackingRoutine(setupType, inputQueue, debugQueue);
 
@@ -56,3 +59,16 @@ void TrackingData::onTrackedAgents(QList<AgentDataImage> agents)
     // TODO: add code here
 }
 
+/*!
+ * The type of the tracking routine.
+ */
+TrackingRoutineType::Enum TrackingData::trackingType() const
+{
+    // first get the tracking settings for the current setup
+    TrackingRoutineSettingsPtr settings = TrackingSettings::get().trackingRoutineSettings(m_setupType);
+
+    if (!settings.isNull())
+        return settings->type();
+    else
+        return TrackingRoutineType::UNDEFINED;
+}

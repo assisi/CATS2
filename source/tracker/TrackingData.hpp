@@ -2,6 +2,7 @@
 #define CATS2_TRACKING_DATA_HPP
 
 #include "routines/TrackingRoutine.hpp"
+#include "routines/TrackingRoutineType.hpp"
 #include "TrackerPointerTypes.hpp"
 
 #include <CommonPointerTypes.hpp>
@@ -31,6 +32,16 @@ public:
     //! Destructor.
     virtual ~TrackingData();
 
+public:
+    //! Returns a pointer to the tracking routine's debug queue.
+    TimestampedFrameQueuePtr debugQueue() const { return m_trackingRoutine->debugQueue(); }
+    //! The type of setup for which this tracking is used.
+    SetupType::Enum setupType() const { return m_setupType; }
+    //! The type of the tracking routine.
+    TrackingRoutineType::Enum trackingType() const;
+    //! Getter for the pointer to the coordinates conversion.
+    CoordinatesConversionPtr coordinatesConversion() const { return m_coordinatesConversion; }
+
 signals:
     //! Sends out the tracked agents.
     void trackedAgents(QList<AgentDataWorld> agents);
@@ -41,6 +52,10 @@ private slots:
     void onTrackedAgents(QList<AgentDataImage> agents);
 
 private:
+    //! The type of setup, for instance, main camera or the camera below.
+    //! It's stored here to be provided to the gui on request.
+    SetupType::Enum m_setupType;
+
     //! The tracking routine that tracks agents on the scene.
     //! Doesn't have a Qt owner as it is managed by another thread.
     TrackingRoutinePtr m_trackingRoutine;
