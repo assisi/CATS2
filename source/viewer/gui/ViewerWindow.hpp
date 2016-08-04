@@ -28,7 +28,7 @@ public:
     //! Constructor. Gets the income frames queue and the optional coordinates conversion class.
     explicit ViewerWindow (TimestampedFrameQueuePtr queuePtr,
                            CoordinatesConversionPtr coordinatesConversion = CoordinatesConversionPtr(),
-                           QWidget *parent = 0);
+                           QWidget *parent = nullptr);
     //! Destructor.
     virtual ~ViewerWindow() override;
 

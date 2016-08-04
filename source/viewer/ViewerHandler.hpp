@@ -22,7 +22,6 @@ class ViewerHandler : public QObject
 public:
     //! Constructor. It receives a qwidget to pass as a parent to the viewer widget.
     explicit ViewerHandler(TimestampedFrameQueuePtr inputQueue,
-                           QWidget* parentWidget,
                            CoordinatesConversionPtr coordinatesConversion = CoordinatesConversionPtr());
     //! Destructor.
     virtual ~ViewerHandler();

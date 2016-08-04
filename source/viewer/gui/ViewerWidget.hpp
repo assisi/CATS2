@@ -24,7 +24,7 @@ class ViewerWidget : public QWidget
     Q_OBJECT
 public:
     //! Constructor.
-    explicit ViewerWidget(ViewerDataPtr data, QWidget *parent);
+    explicit ViewerWidget(ViewerDataPtr data, QWidget *parent = nullptr);
     //! Destructor.
     virtual ~ViewerWidget() final;
 
