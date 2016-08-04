@@ -1,5 +1,6 @@
 set(srcs
     GrabberData.cpp
+    GrabberHandler.cpp
     StreamReceiver.cpp
     QueueingApplicationSink.cpp
 )
