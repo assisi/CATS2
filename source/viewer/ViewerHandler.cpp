@@ -24,6 +24,6 @@ ViewerHandler::ViewerHandler(TimestampedFrameQueuePtr inputQueue,
 ViewerHandler::~ViewerHandler()
 {
     // if the viewer widget's parent is not set then delete it, otherwise it will stay forever
-    if (m_widget->parent() == nullptr)
+    if (m_widget && m_widget->parent() == nullptr)
         delete m_widget;
 }

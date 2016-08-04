@@ -28,7 +28,7 @@ TrackingHandler::TrackingHandler(SetupType::Enum setupType,
 TrackingHandler::~TrackingHandler()
 {
     // if the tracking widget's parent is not set then delete it, otherwise it will stay forever
-    if (m_widget->parent() == nullptr)
+    if (m_widget && m_widget->parent() == nullptr)
         delete m_widget;
 }
 
