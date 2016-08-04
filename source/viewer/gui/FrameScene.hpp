@@ -12,7 +12,7 @@ class FrameScene : public QGraphicsScene
     Q_OBJECT
 public:
     //! Constructor.
-    explicit FrameScene(QObject *parent);
+    explicit FrameScene(QObject *parent = nullptr);
 
 signals:
     //! Sends out the mouse position.

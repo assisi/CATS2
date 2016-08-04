@@ -15,7 +15,7 @@ class TrackingRoutineWidget : public QWidget
     Q_OBJECT
 public:
     //! Constructor.
-    explicit TrackingRoutineWidget(QWidget *parent = 0);
+    explicit TrackingRoutineWidget(QWidget *parent = nullptr);
     //! Destructor.
     virtual ~TrackingRoutineWidget() final;
 

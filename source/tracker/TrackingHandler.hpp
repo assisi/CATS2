@@ -20,9 +20,10 @@ class TrackingHandler : public QObject
 {
     Q_OBJECT
 public:
-    //! Constructor. It receives a qwidget to pass as a parent to the tracking routine widget.
-    explicit TrackingHandler(SetupType::Enum setupType, CoordinatesConversionPtr coordinatesConversion,
-                             TimestampedFrameQueuePtr inputQueue, QWidget* parentWidget);
+    //! Constructor.
+    explicit TrackingHandler(SetupType::Enum setupType,
+                             CoordinatesConversionPtr coordinatesConversion,
+                             TimestampedFrameQueuePtr inputQueue);
     //! Destructor.
     virtual ~TrackingHandler();
 
