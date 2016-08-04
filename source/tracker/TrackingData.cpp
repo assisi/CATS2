@@ -33,7 +33,10 @@ TrackingData::TrackingData(SetupType::Enum setupType,
 
         connect(thread, &QThread::started, m_trackingRoutine.data(), &TrackingRoutine::process);
         connect(m_trackingRoutine.data(), &TrackingRoutine::finished, thread, &QThread::quit);
-        connect(m_trackingRoutine.data(), &TrackingRoutine::finished, [=]() { m_trackingRoutine.clear(); });
+        connect(m_trackingRoutine.data(), &TrackingRoutine::finished, [=]() {
+            if (!m_trackingRoutine.isNull())
+                m_trackingRoutine.clear();
+        });
         connect(thread, &QThread::finished, thread, &QThread::deleteLater);
         connect(m_trackingRoutine.data(), &TrackingRoutine::trackedAgents, this, &TrackingData::onTrackedAgents);
 

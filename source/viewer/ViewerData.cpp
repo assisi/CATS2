@@ -21,7 +21,10 @@ ViewerData::ViewerData(TimestampedFrameQueuePtr inputQueue,
 
     connect(thread, &QThread::started, m_frameConvertor.data(), &FrameConvertor::process);
     connect(m_frameConvertor.data(), &FrameConvertor::finished, thread, &QThread::quit);
-    connect(m_frameConvertor.data(), &FrameConvertor::finished, [=]() { m_frameConvertor.clear(); });
+    connect(m_frameConvertor.data(), &FrameConvertor::finished, [=]() {
+        if (!m_frameConvertor.isNull())
+            m_frameConvertor.clear();
+    });
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);
     connect(m_frameConvertor.data(), &FrameConvertor::newFrame, this, &ViewerData::newFrame);
 
