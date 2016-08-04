@@ -33,6 +33,8 @@ public:
     TrackingRoutineWidget* widget() { return m_widget; }
 
 private:
+    //! Debug queue for the tracker.
+    TimestampedFrameQueuePtr m_debugQueue;
     //! The data class.
     TrackingDataPtr m_data;
     //! The GUI class.
