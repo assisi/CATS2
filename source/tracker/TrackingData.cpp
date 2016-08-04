@@ -5,6 +5,7 @@
 
 #include <AgentData.hpp>
 #include <TimestampedFrame.hpp>
+#include <CoordinatesConversion.hpp>
 
 #include <QtCore/QThread>
 

@@ -35,9 +35,4 @@ protected:
     QString m_settingPathPrefix;
 };
 
-/*!
- * The alias for the pointer to the tracking routine settings class.
- */
-using TrackingRoutineSettingsPtr = QSharedPointer<TrackingRoutineSettings>;
-
 #endif // CATS2_TRACKING_ROUTINE_SETTINGS_HPP

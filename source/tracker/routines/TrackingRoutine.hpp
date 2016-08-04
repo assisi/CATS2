@@ -59,10 +59,4 @@ protected:
     QList<AgentDataImage> m_agents;
 };
 
-/*!
- * The alias for the pointer to the tracking routine class.
- */
-using TrackingRoutinePtr = QSharedPointer<TrackingRoutine>;
-
-
 #endif // CATS2_TRACKING_ROUTINE_HPP

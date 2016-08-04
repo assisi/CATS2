@@ -7,7 +7,6 @@
 
 #include <QtCore/QObject>
 
-class ViewerData;
 class ViewerWidget;
 
 /*!
@@ -20,7 +19,7 @@ class ViewerHandler : public QObject
 {
     Q_OBJECT
 public:
-    //! Constructor. It receives a qwidget to pass as a parent to the viewer widget.
+    //! Constructor.
     explicit ViewerHandler(TimestampedFrameQueuePtr inputQueue,
                            CoordinatesConversionPtr coordinatesConversion = CoordinatesConversionPtr());
     //! Destructor.
@@ -28,7 +27,7 @@ public:
 
 public:
     //! Returns the shared pointer to the data class.
-    QSharedPointer<ViewerData> data() { return m_data; }
+    ViewerDataPtr data() { return m_data; }
     //! Returns the pointer to the viewer widget.
     ViewerWidget* widget() { return m_widget; }
 

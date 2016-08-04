@@ -2,14 +2,13 @@
 #define CATS2_TRACKING_DATA_HPP
 
 #include "routines/TrackingRoutine.hpp"
+#include "TrackerPointerTypes.hpp"
 
-#include <CoordinatesConversion.hpp>
 #include <CommonPointerTypes.hpp>
 #include <SetupType.hpp>
 
 #include <QObject>
 
-class TrackingRoutine;
 class AgentDataWorld;
 class AgentDataImage;
 
@@ -44,7 +43,7 @@ private slots:
 private:
     //! The tracking routine that tracks agents on the scene.
     //! Doesn't have a Qt owner as it is managed by another thread.
-    QSharedPointer<TrackingRoutine> m_trackingRoutine;
+    TrackingRoutinePtr m_trackingRoutine;
 
     //! The coordinates conversion to get world state of the agents.
     CoordinatesConversionPtr m_coordinatesConversion;

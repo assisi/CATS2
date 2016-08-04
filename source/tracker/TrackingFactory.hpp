@@ -44,7 +44,7 @@ public:
     /*!
      * Generates the tracking routine settings of given type.
      */
-    static QSharedPointer<TrackingRoutineSettings> createTrackingRoutineSettings(TrackingRoutineType trackingType, SetupType::Enum setupType)
+    static TrackingRoutineSettingsPtr createTrackingRoutineSettings(TrackingRoutineType trackingType, SetupType::Enum setupType)
     {
         switch (trackingType) {
         case TrackingRoutineType::BLOB_DETECTOR:

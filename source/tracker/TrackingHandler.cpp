@@ -10,11 +10,11 @@ TrackingHandler::TrackingHandler(SetupType::Enum setupType,
                                  CoordinatesConversionPtr coordinatesConversion,
                                  TimestampedFrameQueuePtr inputQueue) :
     QObject(nullptr),
-    m_data(QSharedPointer<TrackingData>(new TrackingData(setupType,
-                                                         coordinatesConversion,
-                                                         inputQueue,
-                                                         TimestampedFrameQueuePtr()), // FIXME : provide the correct debug queue
-                                                         &QObject::deleteLater)),
+    m_data(TrackingDataPtr(new TrackingData(setupType,
+                                            coordinatesConversion,
+                                            inputQueue,
+                                            TimestampedFrameQueuePtr()), // FIXME : provide the correct debug queue
+                                            &QObject::deleteLater)),
     m_widget(new TrackingRoutineWidget(nullptr)) // on creation the widget's parent is not set, it is treated in the destructor
 {
     // some security: when the tracking widget is destroyed, reset the pointer to it

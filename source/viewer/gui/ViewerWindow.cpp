@@ -20,7 +20,7 @@ ViewerWindow::ViewerWindow(TimestampedFrameQueuePtr queuePtr, CoordinatesConvers
 //	setWindowIcon(QIcon(":/images/mobots_logo.png"));
 
     // and the viewer handler
-    m_viewerHandler = QSharedPointer<ViewerHandler>(new  ViewerHandler(queuePtr, coordinatesConversion), &QObject::deleteLater);
+    m_viewerHandler = ViewerHandlerPtr(new  ViewerHandler(queuePtr, coordinatesConversion), &QObject::deleteLater);
     // make the frame viewer the central widget
     setCentralWidget(m_viewerHandler->widget());
     connect(m_viewerHandler->widget(), &ViewerWidget::mousePosition, [this](PositionPixels imagePosition, PositionMeters worldPosition) {

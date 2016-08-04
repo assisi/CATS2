@@ -16,7 +16,7 @@
 /*!
  * Constructor.
  */
-ViewerWidget::ViewerWidget(QSharedPointer<ViewerData> viewerData, QWidget *parent) :
+ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QWidget *parent) :
     QWidget(parent),
     m_data(viewerData),
     m_uiViewer(new Ui::ViewerWidget)

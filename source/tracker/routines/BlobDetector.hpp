@@ -3,6 +3,7 @@
 
 #include "TrackingRoutine.hpp"
 #include "settings/BlobDetectorSettings.hpp"
+#include "TrackerPointerTypes.hpp"
 
 #include <opencv2/video.hpp>
 #include <opencv2/video/background_segm.hpp>

@@ -1,6 +1,8 @@
 #ifndef CATS2_TRACKING_HANDLER_HPP
 #define CATS2_TRACKING_HANDLER_HPP
 
+#include "TrackerPointerTypes.hpp"
+
 #include <CommonPointerTypes.hpp>
 #include <SetupType.hpp>
 #include <CoordinatesConversion.hpp>
@@ -8,7 +10,6 @@
 
 #include <QObject>
 
-class TrackingData;
 class TrackingRoutineWidget;
 
 /*!
@@ -33,7 +34,7 @@ public:
 
 private:
     //! The data class.
-    QSharedPointer<TrackingData> m_data;
+    TrackingDataPtr m_data;
     //! The GUI class.
     TrackingRoutineWidget* m_widget;
 };
