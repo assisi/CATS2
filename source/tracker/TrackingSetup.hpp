@@ -2,9 +2,10 @@
 #define CATS2_TRACKING_SETUP_HPP
 
 #include "TrackingHandler.hpp"
+#include "TrackerPointerTypes.hpp"
 
 #include <CommonPointerTypes.hpp>
-#include <GrabberData.hpp>
+#include <GrabberPointerTypes.hpp>
 
 #include <QtCore/QSharedPointer>
 #include <QtCore/QMap>
@@ -18,19 +19,20 @@ class TrackingSetup
 {
 public:
     //! Constructor.
-    TrackingSetup(SetupType::Enum type);
+    TrackingSetup(SetupType::Enum setupType);
 
 private:
     //! The type of setup, for instance, main camera or the camera below.
     SetupType::Enum m_type;
 
-    //! The grabber.
-    QSharedPointer<GrabberData> m_grabber;
-    //! The tracker.
-    QSharedPointer<TrackingHandler> m_tracking;
-
-
-    // TODO : add Grabber / Viewer / Tracker / CoordinateTransformation instance here, the are to be initialized from the settings based on the given setup type
+    //! Input queue for the grabber.
+    TimestampedFrameQueuePtr m_queue;
+    //! The coordinate conversion to trasform the agents' position in pixels to positions in meters.
+    CoordinatesConversionPtr m_coordinatesConversion;
+    //! The grabber that receives the video stream.
+    GrabberHandlerPtr m_grabber;
+    //! The tracker that detects and tracks agents in the income stream.
+    TrackingHandlerPtr m_tracking;
 };
 
 #endif // CATS2_TRACKING_SETUP_HPP
