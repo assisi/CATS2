@@ -54,7 +54,7 @@ private:
 private:
     //! Reads from the configuration file the tracking routine type corresponding to the setup
     //! type of this instance.
-    TrackingRoutineType readTrackingRoutineType(QString configurationFileName, SetupType::Enum setupType);
+    TrackingRoutineType::Enum readTrackingRoutineType(QString configurationFileName, SetupType::Enum setupType);
 
 private:
     //! The settings for the tracking routine used in various setups.

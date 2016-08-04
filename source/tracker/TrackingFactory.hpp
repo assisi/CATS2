@@ -15,14 +15,6 @@
 class TrackerFactory
 {
 public:
-    static TrackingRoutineType trackingRoutineTypeByName(QString routineName)
-    {
-        if (routineName.toLower() == "blobdetector")
-            return TrackingRoutineType::BLOB_DETECTOR;
-        else
-            return TrackingRoutineType::UNDEFINED;
-    }
-
     /*!
      * Generates the tracking routine of given type.
      */
@@ -44,7 +36,7 @@ public:
     /*!
      * Generates the tracking routine settings of given type.
      */
-    static TrackingRoutineSettingsPtr createTrackingRoutineSettings(TrackingRoutineType trackingType, SetupType::Enum setupType)
+    static TrackingRoutineSettingsPtr createTrackingRoutineSettings(TrackingRoutineType::Enum trackingType, SetupType::Enum setupType)
     {
         switch (trackingType) {
         case TrackingRoutineType::BLOB_DETECTOR:

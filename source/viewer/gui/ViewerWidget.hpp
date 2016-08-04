@@ -48,7 +48,7 @@ protected slots:
     void onMouseMoved(QPointF scenePosition);
 
 protected:
-    //! The data class that provides the frames and agent's positions to show.
+    //! The data object that provides the frames and agent's positions to show.
     ViewerDataPtr m_data;
     //! The form.
     Ui::ViewerWidget* m_uiViewer;

@@ -21,7 +21,7 @@ int main(int argc, char *argv[])
     QGst::init(&argc, &argv);
     QApplication app(argc, argv);
 
-    // parse input arguments to initialize the grabber
+    // parse input arguments to initialize the settings
     if (CommandLineParameters::get().init(argc, argv)) {
         // check that the calibration settings are valid
         if (CalibrationSettings::get().init(CommandLineParameters::get().configurationFilePath(), SetupType::MAIN_CAMERA)) {

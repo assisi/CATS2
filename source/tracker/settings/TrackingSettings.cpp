@@ -20,7 +20,7 @@ bool TrackingSettings::init(QString configurationFileName, SetupType::Enum setup
     bool settingsAccepted = true;
 
     // get the tracking routine type
-    TrackingRoutineType trackingRoutineType = readTrackingRoutineType(configurationFileName, setupType);
+    TrackingRoutineType::Enum trackingRoutineType = readTrackingRoutineType(configurationFileName, setupType);
     if (trackingRoutineType == TrackingRoutineType::UNDEFINED)
         return false;
 
@@ -38,14 +38,14 @@ bool TrackingSettings::init(QString configurationFileName, SetupType::Enum setup
  * Reads from the configuration file the tracking routine type corresponding to the setup
  * type of this instance.
  */
-TrackingRoutineType TrackingSettings::readTrackingRoutineType(QString configurationFileName, SetupType::Enum setupType)
+TrackingRoutineType::Enum TrackingSettings::readTrackingRoutineType(QString configurationFileName, SetupType::Enum setupType)
 {
     // get the prefix in the path in the configuration file
-    QString prefix = SetupType::toString(setupType);
+    QString prefix = SetupType::toSettingsString(setupType);
 
     std::string trackingRoutineName;
     ReadSettingsHelper settings(configurationFileName);
     settings.readVariable(QString("%1/tracking/trackingMethod").arg(prefix), trackingRoutineName);
 
-    return TrackerFactory::trackingRoutineTypeByName(QString::fromUtf8(trackingRoutineName.c_str()));
+    return TrackingRoutineType::fromSettingsString(QString::fromUtf8(trackingRoutineName.c_str()));
 }

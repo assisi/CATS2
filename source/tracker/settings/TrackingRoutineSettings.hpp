@@ -26,11 +26,11 @@ public:
     //! considered valid.
     virtual bool init(QString configurationFileName) = 0;
     //! The tracking method.
-    TrackingRoutineType type() const { return m_trackingRoutineType; }
+    TrackingRoutineType::Enum type() const { return m_trackingRoutineType; }
 
 protected:
     //! The tracking method for which these settings are applied.
-    TrackingRoutineType m_trackingRoutineType;
+    TrackingRoutineType::Enum m_trackingRoutineType;
     //! The section name in the configuration file.
     QString m_settingPathPrefix;
 };
