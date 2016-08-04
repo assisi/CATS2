@@ -4,6 +4,7 @@
 #include <CommonPointerTypes.hpp>
 #include <GrabberPointerTypes.hpp>
 #include <GrabberData.hpp>
+#include <GrabberHandler.hpp>
 #include <gui/ViewerWindow.hpp>
 
 #include <QGst/Init>
@@ -27,21 +28,16 @@ int main(int argc, char *argv[])
             // create the camera calibration
             CoordinatesConversionPtr coordinatesConversion = CoordinatesConversionPtr(new CoordinatesConversion(CalibrationSettings::get().calibrationFilePath(SetupType::MAIN_CAMERA)));
 
-            // exchange queue between the grabber and the viewer
-            TimestampedFrameQueuePtr queuePtr = TimestampedFrameQueuePtr(new TimestampedFrameQueue(100));
-
-            // create the grabber
-            GrabberDataPtr grabber;
+            GrabberHandlerPtr grabberHandler;
             if (CommandLineParameters::get().mainCameraDescriptor().isValid()){
-                grabber = GrabberDataPtr(new GrabberData(CommandLineParameters::get().mainCameraDescriptor(), queuePtr), &QObject::deleteLater);
+                grabberHandler = GrabberHandlerPtr(new GrabberHandler(SetupType::MAIN_CAMERA));
             } else {
                 qDebug() << Q_FUNC_INFO << "Main camera descriptor is ill-defined";
             }
 
-            ViewerWindow mainWindow(queuePtr, coordinatesConversion);
+            ViewerWindow mainWindow(grabberHandler->inputQueue(), coordinatesConversion);
             mainWindow.show();
             return app.exec();
-
         } else {
             qDebug() << Q_FUNC_INFO << "Couldn't setup calibration settings, finished";
         }

@@ -1,4 +1,5 @@
 #include <GrabberData.hpp>
+#include <GrabberHandler.hpp>
 #include <settings/CommandLineParameters.hpp>
 #include <TimestampedFrame.hpp>
 #include <CommonPointerTypes.hpp>
@@ -19,10 +20,12 @@ int main(int argc, char *argv[])
 
     // parse input arguments to initialize the grabber
     if (CommandLineParameters::get().init(argc, argv)) {
-        TimestampedFrameQueuePtr queuePtr = TimestampedFrameQueuePtr(new TimestampedFrameQueue(100));
-        QSharedPointer<GrabberData> grabber;
+
+        GrabberHandlerPtr grabberHandler;
         if (CommandLineParameters::get().mainCameraDescriptor().isValid()){
-            grabber = QSharedPointer<GrabberData>(new GrabberData(CommandLineParameters::get().mainCameraDescriptor(), queuePtr), &QObject::deleteLater);
+            grabberHandler = GrabberHandlerPtr(new GrabberHandler(SetupType::MAIN_CAMERA));
+        } else {
+            qDebug() << Q_FUNC_INFO << "Main camera descriptor is ill-defined";
         }
         return app.exec();
     }

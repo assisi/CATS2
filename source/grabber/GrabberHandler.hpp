@@ -20,8 +20,10 @@ public:
     virtual ~GrabberHandler();
 
 public:
-    //! Returns the shared pointer to the data class.
+    //! Returns the shared pointer to the data.
     GrabberDataPtr data() { return m_data; }
+    //! Returns the shared pointer to the queue.
+    TimestampedFrameQueuePtr inputQueue() { return m_queue; }
 
 private:
     //! Input queue for the grabber.
