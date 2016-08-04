@@ -21,7 +21,7 @@ bool CalibrationSettings::init(QString configurationFileName, SetupType::Enum se
     bool settingsAccepted = true;
 
     // get the prefix in the path in the configuration file
-    QString prefix = SetupType::toString(setupType);
+    QString prefix = SetupType::toSettingsString(setupType);
 
     std::string calibrationFilePath;
     ReadSettingsHelper settings(configurationFileName);

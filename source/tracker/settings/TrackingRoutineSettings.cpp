@@ -9,7 +9,7 @@
 TrackingRoutineSettings::TrackingRoutineSettings(SetupType::Enum setupType) :
     m_trackingRoutineType(TrackingRoutineType::UNDEFINED)
 {
-    m_settingPathPrefix = SetupType::toString(setupType);
+    m_settingPathPrefix = SetupType::toSettingsString(setupType);
 }
 
 /*!

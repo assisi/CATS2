@@ -14,7 +14,9 @@ public:
         CAMERA_BELOW // camera below the robot's support
     };
 
-    static QString toString(Enum setupType) {
+    //! Returns that setup type string that is used to look for settings values
+    //! in the configuration file.
+    static QString toSettingsString(Enum setupType) {
         QString string = "undefined";
 
         switch (setupType) {
@@ -23,6 +25,23 @@ public:
             break;
         case CAMERA_BELOW:
             string = "cameraBelow";
+            break;
+        default:
+            break;
+        }
+        return string;
+    }
+
+    //! Returns that setup type string in human friendly format.
+    static QString toString(Enum setupType) {
+        QString string = "Undefined";
+
+        switch (setupType) {
+        case MAIN_CAMERA:
+            string = "Main camera";
+            break;
+        case CAMERA_BELOW:
+            string = "Camera below";
             break;
         default:
             break;
