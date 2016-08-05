@@ -21,11 +21,13 @@ ViewerWindow::ViewerWindow(TimestampedFrameQueuePtr queuePtr, CoordinatesConvers
 
     // and the viewer handler
     m_viewerHandler = ViewerHandlerPtr(new  ViewerHandler(queuePtr, coordinatesConversion), &QObject::deleteLater);
+    m_viewerHandler->widget()->blockSignals(true);
     // make the frame viewer the central widget
     setCentralWidget(m_viewerHandler->widget());
     connect(m_viewerHandler->widget(), &ViewerWidget::mousePosition, [this](PositionPixels imagePosition, PositionMeters worldPosition) {
         statusBar()->showMessage(tr("Image position: %1, world position: %2").arg(imagePosition.toString()).arg(worldPosition.toString()));
     });
+    m_viewerHandler->widget()->blockSignals(false);
 
     // connect the window's actions
     connect(m_ui->actionZoomIn, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::onZoomIn);
