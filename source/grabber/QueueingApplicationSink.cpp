@@ -49,13 +49,6 @@ QGst::FlowReturn QueueingApplicationSink::newBuffer()
         cv::Mat* frameImage = new cv::Mat(height, width, CV_8UC3);
         image.copyTo(*frameImage);
 
-        // first check if there is allows place in the queue
-        // otherwise remove the tail element
-        if (m_outputQueue->isOutgrown()) { // TODO : to move this logics to the TimestampedFrameQueue
-                                                 // class and add a flag to the  constructor
-            m_outputQueue->dropTail();
-        }
-
         // and push it to the queue
         std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
         TimestampedFrame frame(frameImage, ms);

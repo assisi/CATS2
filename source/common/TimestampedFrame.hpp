@@ -42,9 +42,10 @@ class TimestampedFrameQueue
 {
 public:
     //! Constructor.
-    explicit TimestampedFrameQueue(int initialSize = DefaultInitialSize, size_t maxSize = DefaultMaxSize):
+    explicit TimestampedFrameQueue(int initialSize = DefaultInitialSize, size_t maxSize = DefaultMaxSize, bool dropTailWhenOutgrown = true):
         m_queue(initialSize),
-        m_maxSize(maxSize)
+        m_maxSize(maxSize),
+        m_dropTailWhenOutgrown(dropTailWhenOutgrown)
     { }
     //! Destructor.
     virtual ~TimestampedFrameQueue() final { }
@@ -52,6 +53,7 @@ public:
 public:
     //! The queue became too big.
     bool isOutgrown() const { return (m_queue.size_approx() > m_maxSize); }
+
     //! Drops one element from the tail.
     void dropTail()
     {
@@ -62,9 +64,14 @@ public:
     //! Adds an element to the queue.
     void enqueue(const TimestampedFrame& frame)
     {
+        // first check if there is allows place in the queue otherwise remove the tail element
+        if (isOutgrown() && m_dropTailWhenOutgrown) {
+            dropTail();
+        }
+
+        // enqueue the new element
         if (!m_queue.try_enqueue(frame))
             qDebug() << Q_FUNC_INFO << "Could not enqueue new element, skipping";
-
 //        qDebug() <<  Q_FUNC_INFO << QString("Frames queue contains %1 elements").arg(_queue.size_approx());
     }
 
@@ -90,6 +97,9 @@ private:
     //! not supported by the "moodycamel::ReaderWriterQueue" to limit the size of the queue
     //! we need to store it separately.
     size_t m_maxSize;
+    //! Defines if the queue should drop the tail element when trying to add new element and
+    //! the size is too big
+    bool m_dropTailWhenOutgrown;
 
     //! Dequeueing time out.
     static const int TimeOutMs;  // [ms]
