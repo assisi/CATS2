@@ -22,8 +22,9 @@ qt5_wrap_ui(uis_hdrs gui/TrackingRoutineWidget.ui)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 include_directories(${CMAKE_SOURCE_DIR}/source/grabber)
+include_directories(${CMAKE_SOURCE_DIR}/source/viewer)
 add_library(tracker SHARED ${srcs} ${hdrs} ${uis_hdrs} ${resources})
-target_link_libraries(tracker grabber common
+target_link_libraries(tracker grabber common viewer
                       Qt5::Core Qt5::Widgets
                       ${OpenCV_LIBS} ${LIBTSAI_LIBRARY})
 
