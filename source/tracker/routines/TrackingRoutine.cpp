@@ -65,16 +65,18 @@ void TrackingRoutine::onSendDebugImages(bool send)
 }
 
 /*!
- * Puts an image to the debug queue.
+ * Puts an image to the debug queue if the corresponding flag is active.
  */
 void TrackingRoutine::enqueueDebugImage(const cv::Mat& image)
 {
-    // copy the image to be placed in the queue
-    cv::Mat* debugImage = new cv::Mat(image.rows, image.cols, CV_8UC3);
-    image.copyTo(*debugImage);
+    if (m_enqueueDebugFrames) {
+        // copy the image to be placed in the queue
+        cv::Mat* debugImage = new cv::Mat(image.rows, image.cols, CV_8UC3);
+        image.copyTo(*debugImage);
 
-    // and push it to the queue
-    std::chrono::milliseconds ms = std::chrono::milliseconds();
-    TimestampedFrame frame(debugImage, ms);
-    m_debugQueue->enqueue(frame);
+        // and push it to the queue
+        std::chrono::milliseconds ms = std::chrono::milliseconds();
+        TimestampedFrame frame(debugImage, ms);
+        m_debugQueue->enqueue(frame);
+    }
 }
