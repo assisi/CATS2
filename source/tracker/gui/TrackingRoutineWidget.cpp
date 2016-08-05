@@ -30,6 +30,11 @@ TrackingRoutineWidget::TrackingRoutineWidget(TrackingDataPtr trackingData, QWidg
  */
 TrackingRoutineWidget::~TrackingRoutineWidget()
 {
+    // we don't care anymore if the window is closed
+    // (also sometimes the lambda-slot from below makes the app crash
+    if (m_viewerWindow)
+        m_viewerWindow->disconnect();
+    // delete gui
     delete m_ui;
 }
 

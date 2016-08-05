@@ -67,8 +67,10 @@ void ViewerWidget::onZoomOut()
 
 void ViewerWidget::onNewFrame(QSharedPointer<QImage> frame)
 {
-    if (!frame.isNull())
-        m_videoFrame->setPixmap(QPixmap::fromImage(*frame.data()));
+    if (parent()) { // doesn't make sense to update the widget that belongs nowhere
+        if (!frame.isNull())
+            m_videoFrame->setPixmap(QPixmap::fromImage(*frame.data()));
+    }
 }
 
 /*!
