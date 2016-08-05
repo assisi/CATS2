@@ -54,13 +54,27 @@ void TrackingRoutine::stop()
 /*!
  * Starts/stops to enqueue the debug images to the debug queue.
  */
-void TrackingRoutine::sendDebugImages(bool send)
+void TrackingRoutine::onSendDebugImages(bool send)
 {
     if (m_enqueueDebugFrames != send) {
         if (!m_enqueueDebugFrames) // i.e. we are not sending at the moment
-            m_debugQueue.clear(); // empty the debug queue if by chance there are old frames
+            m_debugQueue->empty(); // empty the debug queue if by chance there are old frames
 
         m_enqueueDebugFrames = send;
     }
 }
 
+/*!
+ * Puts an image to the debug queue.
+ */
+void TrackingRoutine::enqueueDebugImage(const cv::Mat& image)
+{
+    // copy the image to be placed in the queue
+    cv::Mat* debugImage = new cv::Mat(image.rows, image.cols, CV_8UC3);
+    image.copyTo(*debugImage);
+
+    // and push it to the queue
+    std::chrono::milliseconds ms = std::chrono::milliseconds();
+    TimestampedFrame frame(debugImage, ms);
+    m_debugQueue->enqueue(frame);
+}

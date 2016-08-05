@@ -45,6 +45,8 @@ public:
 signals:
     //! Sends out the tracked agents.
     void trackedAgents(QList<AgentDataWorld> agents);
+    //! Request to start/stop enqueueing the debug images to the debug queue.
+    void sendDebugImages(bool send);
 
 private slots:
     //! Gets the agents from the tracking routine, converts their position in the

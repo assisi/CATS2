@@ -39,7 +39,8 @@ TrackingData::TrackingData(SetupType::Enum setupType,
         });
         connect(thread, &QThread::finished, thread, &QThread::deleteLater);
         connect(m_trackingRoutine.data(), &TrackingRoutine::trackedAgents, this, &TrackingData::onTrackedAgents);
-
+        connect(this, &TrackingData::sendDebugImages,
+                m_trackingRoutine.data(), &TrackingRoutine::onSendDebugImages, Qt::DirectConnection);  // NOTE : direct connection is to ensure that the slot is called, but we need to ensure that it is thread safe
         thread->start();
     }
 }

@@ -19,7 +19,10 @@ TrackingRoutineWidget::TrackingRoutineWidget(TrackingDataPtr trackingData, QWidg
     m_ui->setupLabel->setText(SetupType::toString(m_data->setupType()));
     m_ui->trackingTypeLabel->setText(TrackingRoutineType::toString(m_data->trackingType()));
 
+    // show the debug viewer window
     connect(m_ui->showViewerButton, &QPushButton::toggled, this, &TrackingRoutineWidget::onShowDebugViewer);
+    // request to start feeding the debug queue
+    connect(m_ui->showViewerButton, &QPushButton::toggled, m_data.data(), &TrackingData::sendDebugImages);
 }
 
 /*!

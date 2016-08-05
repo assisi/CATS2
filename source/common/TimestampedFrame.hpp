@@ -61,6 +61,16 @@ public:
         m_queue.try_dequeue(frameToForget);
     }
 
+    //! Empties the queue.
+    void empty()
+    {
+        TimestampedFrame frame;
+        int cnt = 0;
+        while (m_queue.try_dequeue(frame))
+            cnt++;
+        qDebug() << Q_FUNC_INFO << QObject::tr("Dropped %1 elements").arg(cnt);
+    }
+
     //! Adds an element to the queue.
     void enqueue(const TimestampedFrame& frame)
     {

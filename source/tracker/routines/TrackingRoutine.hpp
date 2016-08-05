@@ -6,6 +6,9 @@
 
 #include <QtCore/QObject>
 
+#include <opencv2/video.hpp>
+#include <opencv2/video/background_segm.hpp>
+
 #include <atomic>
 
 class TimestampedFrame;
@@ -40,19 +43,21 @@ public slots:
     //! Stops the tracking.
     void stop();
     //! Starts/stops to enqueue the debug images to the debug queue.
-    void sendDebugImages(bool send);
+    void onSendDebugImages(bool send);
 
 protected:
     //! The tracking routine excecuted. Gets the original frame, detects
     //! agents, eventually associates them with the trajectories and
     //! enqueue debug images on request.
     virtual void doTracking(const TimestampedFrame& frame) = 0;
+    //! Puts an image to the debug queue.
+    void enqueueDebugImage(const cv::Mat& image);
 
 protected:
     //! The queue containing frames to do the tracking.
     TimestampedFrameQueuePtr m_inputQueue;
     //! The debug frames queue to control the work of a tracker.
-    TimestampedFrameQueuePtr m_debugQueue;
+    TimestampedFrameQueuePtr m_debugQueue; // TODO : replaced this one queue by a list of queues to debug various phases of the tracking routine
 
     //! The flag that defines if the convertor is to be stopped.
     std::atomic_bool m_stopped;
