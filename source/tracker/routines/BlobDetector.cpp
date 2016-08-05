@@ -46,49 +46,55 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
     // get the red channel image
     std::vector<cv::Mat> channels;
     cv::split(*image.data(), channels);
-    channels[0] = cv::Mat::zeros(image->rows, image->cols, CV_8UC1);  // blue channel is set to 0
     channels[1] = cv::Mat::zeros(image->rows, image->cols, CV_8UC1);  // green channel is set to 0
+    channels[2] = cv::Mat::zeros(image->rows, image->cols, CV_8UC1);  // blue channel is set to 0
     cv::Mat redChannelImage;
-    cv::merge(redChannelImage, channels);
+    cv::merge(channels, redChannelImage);
 
     // get the background image
     cv::Mat redChannelImageWithoutBackground; // The mask image to be used by the feature detection.
 
     if (m_backgroundCalculationStepCounter < BackgroundCalculationSufficientNumber) {
         // update the background
-        m_backgroundSubtractor.get()->apply(redChannelImage, redChannelImageWithoutBackground, 0.10);
+        m_backgroundSubtractor.get()->apply(redChannelImage, redChannelImageWithoutBackground, 0.025);
         m_backgroundCalculationStepCounter++;
+
         // until we have a solid background model it's pointless to do processing
-    } else {
-        // subract the backgound
-        m_backgroundSubtractor.get()->apply(redChannelImage, redChannelImageWithoutBackground, 0.0);
-
-        // NOTE : Add an erosion after ?
-        cv::dilate(redChannelImageWithoutBackground, redChannelImageWithoutBackground, cv::Mat(), cv::Point(-1, -1), 1);
-
-        // filter out small blobs on the mask image
-        if (m_settings.minBlobSizePx() > 0)
-        {
-            removeSmallBlobs(redChannelImageWithoutBackground, m_settings.minBlobSizePx());
-        }
-
-        // find the fishes on the stored red channel image
-        std::vector<cv::Point2f> corners;
-        cv::goodFeaturesToTrack(redChannelImage,
-                                corners,
-                                m_settings.numberOfAgents(),
-                                m_settings.qualityLevel(),
-                                m_settings.minDistance(),
-                                redChannelImageWithoutBackground,
-                                m_settings.blockSize(),
-                                m_settings.useHarrisDetector(),
-                                m_settings.k());
-
-
-        // find the contours in the image
-        cv::Mat maskImage;
-        detectContours(redChannelImageWithoutBackground, corners);
+        return;
     }
+
+    // subract the background
+    m_backgroundSubtractor.get()->apply(redChannelImage, redChannelImageWithoutBackground, 0.0);
+
+    // NOTE : Add an erosion after ?
+    int an = 1;
+    cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(an*2+1, an*2+1), cv::Point(an, an));
+    cv::dilate(redChannelImageWithoutBackground, redChannelImageWithoutBackground, element);
+    cv::erode(redChannelImageWithoutBackground, redChannelImageWithoutBackground, element);
+
+
+    // filter out small blobs on the mask image
+    if (m_settings.minBlobSizePx() > 0)
+    {
+        removeSmallBlobs(redChannelImageWithoutBackground, m_settings.minBlobSizePx());
+    }
+
+    // find the fishes on the stored red channel image
+    std::vector<cv::Point2f> corners;
+    cv::goodFeaturesToTrack(redChannelImage,
+                            corners,
+                            m_settings.numberOfAgents(),
+                            m_settings.qualityLevel(),
+                            m_settings.minDistance(),
+                            redChannelImageWithoutBackground,
+                            m_settings.blockSize(),
+                            m_settings.useHarrisDetector(),
+                            m_settings.k());
+
+
+    // find the contours in the image
+    cv::Mat maskImage;
+    detectContours(redChannelImageWithoutBackground, corners);
 }
 
 /*!

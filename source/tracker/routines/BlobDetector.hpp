@@ -32,7 +32,7 @@ private:
     //! First processing steps are used to compute the background.
     size_t m_backgroundCalculationStepCounter;
     //! The number of steps that is enough to compute the background.
-    static const size_t BackgroundCalculationSufficientNumber = 100;
+    static const size_t BackgroundCalculationSufficientNumber = 120;
     //! The tracking settings.
     BlobDetectorSettingsData m_settings;
 
