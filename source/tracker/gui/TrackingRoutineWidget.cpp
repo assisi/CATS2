@@ -45,8 +45,6 @@ void TrackingRoutineWidget::onShowDebugViewer(bool showWindow)
         });
         m_viewerWindow->show();
     } else {
-        delete m_viewerWindow;
+        m_viewerWindow->deleteLater();
     }
-
 }
-
