@@ -24,27 +24,24 @@ private:
     //! Finds and removes the blobs on the mask image that are smaller than given threshold (in px).
     void removeSmallBlobs(cv::Mat& image, int minSize);
     //! Finds the contours in the red channel image.
-    void detectContours(cv::Mat& image, std::vector<cv::Point2f>& corners);
-
-    //    void getAgentsImage();
+    void detectContours(cv::Mat& image, const std::vector<cv::Point2f>& m_corners, std::vector<cv::Point2f>& centers, std::vector<std::vector<cv::Point2f>>& cornersInContours);
 
 private:
     //! First processing steps are used to compute the background.
     size_t m_backgroundCalculationStepCounter;
     //! The number of steps that is enough to compute the background.
-    static const size_t BackgroundCalculationSufficientNumber = 120;
+    static const size_t BackgroundCalculationSufficientNumber = 100;
     //! The tracking settings.
     BlobDetectorSettingsData m_settings;
 
 private:
-
     //! The backgound model.
     cv::Ptr<cv::BackgroundSubtractor> m_backgroundSubtractor;
-    //! The tracking results.
-    std::vector<cv::Rect> m_boundRect;
-    std::vector<cv::Point2f> m_centers;
-    std::vector<float> m_radius;
-    std::vector<std::vector<cv::Point2f>> m_cornersInPoly;
+    //! The intermediate data.
+    //! The grayscale version of the frame image.
+    cv::Mat m_grayscaleImage;
+    //! The foreground image.
+    cv::Mat m_foregroundImage;
 
 
 //    //!

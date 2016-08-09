@@ -1,8 +1,12 @@
 #include "BlobDetector.hpp"
 
+#include <opencv2/bgsegm.hpp>
+
 #include "settings/BlobDetectorSettings.hpp"
 #include <TimestampedFrame.hpp>
 #include <AgentData.hpp>
+
+#include <QtMath>
 
 /*!
  * Constructor. Gets the input queue to process and a queue to place debug images on request.
@@ -10,7 +14,7 @@
 BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrameQueuePtr inputQueue, TimestampedFrameQueuePtr debugQueue) :
     TrackingRoutine(inputQueue, debugQueue),
     m_backgroundCalculationStepCounter(0),
-    m_backgroundSubtractor(cv::createBackgroundSubtractorMOG2(5))
+    m_backgroundSubtractor(cv::bgsegm::createBackgroundSubtractorMOG(200, 5, 0.3))
 {
     // HACK : to get parameters specific for this tracker we need to convert the settings to the corresponding format
     BlobDetectorSettings* blobDetectorSettings = dynamic_cast<BlobDetectorSettings*>(settings.data());
@@ -21,7 +25,7 @@ BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrame
 
     // set the agents' list
     for (unsigned char id = 1; id <= m_settings.numberOfAgents(); id++) {
-        AgentDataImage agent(id, AgentType::UNDEFINED);
+        AgentDataImage agent(id);
         m_agents.append(agent);
     }
 }
@@ -31,7 +35,6 @@ BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrame
  */
 BlobDetector::~BlobDetector()
 {
-
 }
 
 /*!
@@ -43,58 +46,70 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
 {
     QSharedPointer<cv::Mat> image = frame.image();
 
-    // get the red channel image
-    std::vector<cv::Mat> channels;
-    cv::split(*image.data(), channels);
-    channels[1] = cv::Mat::zeros(image->rows, image->cols, CV_8UC1);  // green channel is set to 0
-    channels[2] = cv::Mat::zeros(image->rows, image->cols, CV_8UC1);  // blue channel is set to 0
-    cv::Mat redChannelImage;
-    cv::merge(channels, redChannelImage);
-
-    // get the background image
-    cv::Mat redChannelImageWithoutBackground; // The mask image to be used by the feature detection.
-
+    // convert the image to grayscale
+    cv::cvtColor(*image.data(), m_grayscaleImage, CV_RGB2GRAY);
+    // learn the background
     if (m_backgroundCalculationStepCounter < BackgroundCalculationSufficientNumber) {
         // update the background
-        m_backgroundSubtractor.get()->apply(redChannelImage, redChannelImageWithoutBackground, 0.025);
+        m_backgroundSubtractor.get()->apply(m_grayscaleImage, m_foregroundImage, 0.05);
         m_backgroundCalculationStepCounter++;
-
         // until we have a solid background model it's pointless to do processing
         return;
     }
-
     // subract the background
-    m_backgroundSubtractor.get()->apply(redChannelImage, redChannelImageWithoutBackground, 0.0);
+    m_backgroundSubtractor.get()->apply(m_grayscaleImage, m_foregroundImage, 0.0);
 
     // NOTE : Add an erosion after ?
     int an = 1;
     cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(an*2+1, an*2+1), cv::Point(an, an));
-    cv::dilate(redChannelImageWithoutBackground, redChannelImageWithoutBackground, element);
-    cv::erode(redChannelImageWithoutBackground, redChannelImageWithoutBackground, element);
-
+    cv::dilate(m_foregroundImage, m_foregroundImage, element);
+    cv::erode(m_foregroundImage, m_foregroundImage, element);
 
     // filter out small blobs on the mask image
     if (m_settings.minBlobSizePx() > 0)
     {
-        removeSmallBlobs(redChannelImageWithoutBackground, m_settings.minBlobSizePx());
+        removeSmallBlobs(m_foregroundImage, m_settings.minBlobSizePx());
     }
 
-    // find the fishes on the stored red channel image
+    // all the corners corresponding to fishes' heads
     std::vector<cv::Point2f> corners;
-    cv::goodFeaturesToTrack(redChannelImage,
-                            corners,
-                            m_settings.numberOfAgents(),
+    // centers of the detected objects
+    std::vector<cv::Point2f> centers;
+    // corners that are inside the detected objects
+    std::vector<std::vector<cv::Point2f>> cornersInContours;
+
+    // find the most prominent corners in the image
+    cv::goodFeaturesToTrack(m_grayscaleImage,               // input
+                            corners,                      // output
+                            m_settings.numberOfAgents(),    // max number of corners to search
                             m_settings.qualityLevel(),
                             m_settings.minDistance(),
-                            redChannelImageWithoutBackground,
+                            m_foregroundImage,              // mask
                             m_settings.blockSize(),
                             m_settings.useHarrisDetector(),
                             m_settings.k());
 
+    // find the contours in the image containing the detected corners
+    detectContours(m_foregroundImage, corners, centers, cornersInContours);
 
-    // find the contours in the image
-    cv::Mat maskImage;
-    detectContours(redChannelImageWithoutBackground, corners);
+    // submit the debug image
+    if (m_enqueueDebugFrames) {
+        for(auto center: centers) {
+            cv::circle(m_grayscaleImage, center, 2, 255);
+        }
+        enqueueDebugImage(m_grayscaleImage);
+    }
+
+    // compute the agents orientations
+    std::vector<float> directions(centers.size());
+    for (size_t i = 0; i < directions.size(); ++i) {
+        cv::Point2f head = cornersInContours[i][0];
+        cv::Point2f center = centers[i];
+        directions[i] = qAtan2(head.y - center.y, head.x - center.x);
+    }
+
+    // tracking : assign the detected agents to id's
+    assingIds(IdsAssignmentMethod::NAIVE_CLOSEST_NEIGHBOUR, centers, directions);
 }
 
 /*!
@@ -141,148 +156,44 @@ void BlobDetector::removeSmallBlobs(cv::Mat& image, int minSize)
 }
 
 /*!
- * Finds the contours in the red channel image.
+ * Finds the contours in the image.
  */
-void BlobDetector::detectContours(cv::Mat& image, std::vector<cv::Point2f>& corners)
+void BlobDetector::detectContours(cv::Mat& image, const std::vector<cv::Point2f>& corners, std::vector<cv::Point2f>& centers, std::vector<std::vector<cv::Point2f>>& cornersInContours)
 {
     std::vector<std::vector<cv::Point>> contours;
     std::vector<cv::Vec4i> hierarchy;
     try {
+        // retrieve contours from the binary image
         cv::findContours(image, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
     } catch(cv::Exception& e) {
         qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
     }
 
+    //! Radiuses of enclosing circles for detected objects.
+    std::vector<float> radius(contours.size());
     std::vector<std::vector<cv::Point>> contoursPoly;
     contoursPoly.resize(contours.size());
 
-    m_boundRect.resize(contours.size());
-    m_centers.resize(contours.size());
-    m_radius.resize(contours.size());
-    m_cornersInPoly.resize(contours.size());
+    // centero the contour
+    cv::Point2f center;
+    // all corners that are inside the contour
+    std::vector<cv::Point2f> cornersInContour;
 
     for(size_t i = 0; i < contours.size(); ++i) {
         cv::approxPolyDP(cv::Mat(contours[i]), contoursPoly[i], 3, true);
-        m_boundRect[i] = cv::boundingRect(cv::Mat(contoursPoly[i]));
-        cv::minEnclosingCircle(contoursPoly[i], m_centers[i], m_radius[i]);
+        cv::minEnclosingCircle(contoursPoly[i], center, radius[i]);
 
-        for(auto c: corners) {
-            if(cv::pointPolygonTest(contours[i], c, false) >= 0) {
-                m_cornersInPoly[i].push_back(c);
+        cornersInContour.clear();
+        for(auto corner: corners) {
+            if(cv::pointPolygonTest(contours[i], corner, false) >= 0) {
+                cornersInContour.push_back(corner);
             }
         }
+        // take only the contours that contain corners
+        if (cornersInContour.size() > 0) {
+            centers.push_back(center);
+            cornersInContours.push_back(cornersInContour);
+        }
     }
 }
 
-
-/////////////////////////////////////////////////////////
-///////////////////// AgentClassifier ///////////////////
-///////////////////////////////////////////////////////// {{{1
-
-/*
-
-void AgentClassifier::_computeLocalIDs(BlobDetector& bDetector) {
-    std::vector<size_t> remainingAgents(agents.size());
-    for(size_t i = 0; i < remainingAgents.size(); ++i) remainingAgents[i] = i;
-    double const minDistThreshold = 15.; // XXX min Dist threshold from config
-
-    for(size_t i = 0; i < bDetector.centers.size(); ++i) {
-        double minDist = 1000000.0; // XXX max double
-        size_t indexMinDist = 0;
-        bool detected = false;
-        for(size_t j = 0; j < remainingAgents.size(); ++j) {
-            auto const& a = agents[remainingAgents[j]];
-            auto const& b = bDetector.centers[i];
-            double const dist = sqrt((b.x - a.center.x) * (b.x - a.center.x) + (b.y - a.center.y) * (b.y - a.center.y));
-            if(bDetector.cornersInPoly[i].size() && dist < minDist) {
-                minDist = dist;
-                indexMinDist = remainingAgents[j];
-                detected = true;
-            }
-        }
-
-        if(detected) {
-            auto& a = agents[indexMinDist];
-            a.head = bDetector.cornersInPoly[i][0];
-            a.center = bDetector.centers[i];
-            a.direction = atan2(a.head.y - a.center.y, a.head.x - a.center.x);
-            a.detected = true;
-            a.closeToOtherAgent = bDetector.cornersInPoly[i].size() > 1;
-            //std::cout << "DEBUGa: " << i << " " << a.head << " " << a.center << std::endl;
-            remainingAgents.erase(std::remove(remainingAgents.begin(), remainingAgents.end(), indexMinDist), remainingAgents.end()); // https://en.wikipedia.org/wiki/Erase–remove_idiom
-            a.localIDAccurate = minDist < minDistThreshold;
-        }
-    }
-
-    for(size_t j = 0; j < remainingAgents.size(); ++j) {
-        auto& a = agents[remainingAgents[j]];
-        a.detected = false;
-        a.closeToOtherAgent = false;
-        a.localIDAccurate = false;
-    }
-
-    // Determine if there are trackedAgents that are too close to each other
-    for(size_t i = 0; i < agents.size(); ++i) {
-        for(size_t j = i + 1; j < agents.size(); ++j) {
-            if(!(agents[i].detected && agents[j].detected)) continue;
-            double const distHead = sqrt((agents[i].head.x - agents[j].head.x) * (agents[i].head.x - agents[j].head.x) + (agents[i].head.y - agents[j].head.y) * (agents[i].head.y - agents[j].head.y));
-            double const distCenter = sqrt((agents[i].center.x - agents[j].center.x) * (agents[i].center.x - agents[j].center.x) + (agents[i].center.y - agents[j].center.y) * (agents[i].center.y - agents[j].center.y));
-            bool const close = distHead < 5.0 || distCenter < 5.0;
-            agents[i].closeToOtherAgent |= close;
-            agents[j].closeToOtherAgent |= close;
-            //std::cout << "DEBUGc: " << i << "," << j << ": " << close << std::endl;
-        }
-    }
-
-    // Assign local ID
-    for(auto& a: agents) {
-        if(a.detected) {
-            if(a.closeToOtherAgent)
-                a.localIDAccurate = false;
-            if(!a.localIDAccurate) {
-                a.localId = currentMaxId;
-                ++currentMaxId;
-                a.localIDAccurate = true;
-            }
-        }
-        //std::cout << "DEBUGd: " << a.detected << " " << a.closeToOtherAgent << " " << a.localIDAccurate << " " << a.localId << std::endl;
-    }
-}
-
-
-void AgentClassifier::_updateHistory() {
-    for(auto const& a: agents) {
-        if(!a.detected) continue;
-
-        // Find (or create) local id descriptor
-        auto const& localId = a.localId;
-        if(!_localIds.count(localId)) {
-            size_t const startingFrame = 0; // TODO
-            LocalIdDescriptor descriptor(localId, startingFrame);
-            _localIds.insert({localId, descriptor});
-        }
-        LocalIdDescriptor& descriptor = _localIds.at(localId);
-
-        // Update history size (i.e. nb timesteps for each local ID
-        ++descriptor.histSize;
-
-        // Update mean Agent Size
-        descriptor.histAgentSize.push_back(a.size());
-    }
-}
-
-
-void AgentClassifier::_identifyAgentsType() {
-    // TODO
-}
-
-
-void AgentClassifier::localIdentification(BlobDetector& bDetector) {
-    _computeLocalIDs(bDetector);
-    _updateHistory(); // XXX
-    _identifyAgentsType(); // XXX
-}
-
-
-
-*/

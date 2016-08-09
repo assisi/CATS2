@@ -14,6 +14,16 @@
 class TimestampedFrame;
 
 /*!
+ * \brief The method of the ids' assignment.
+ */
+enum class IdsAssignmentMethod
+{
+    NAIVE_CLOSEST_NEIGHBOUR // the one originally used in CATS
+    // TODO : add other methods
+};
+
+
+/*!
 * \brief Parent class for various tracking routines.
 */
 class TrackingRoutine : public QObject
@@ -54,11 +64,20 @@ protected:
     void enqueueDebugImage(const cv::Mat& image);
 
 protected:
+    //! Assign detected objects to ids.
+    void assingIds(IdsAssignmentMethod method, std::vector<cv::Point2f>& centers, std::vector<float> directions = std::vector<float>());
+    //! The ids assignment method originally used in CATS.
+    //! NOTE FIXME : this method is potentially erroneous in many cases, as the order of assigment is defined by the indeces of agents in the list.
+    void naiveClosestNeighbour(std::vector<cv::Point2f>& centers, std::vector<float> directions = std::vector<float>());
+
+protected:
     //! The queue containing frames to do the tracking.
     TimestampedFrameQueuePtr m_inputQueue;
     //! The debug frames queue to control the work of a tracker.
     TimestampedFrameQueuePtr m_debugQueue; // TODO : replaced this one queue by a list of queues to debug various phases of the tracking routine
 
+    //! The current frame's timestamp.
+    std::chrono::milliseconds m_currentTimestamp;
     //! The flag that defines if the convertor is to be stopped.
     std::atomic_bool m_stopped;
     //! The flag that defines if the debug images are to be put to the debug queue.

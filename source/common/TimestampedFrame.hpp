@@ -26,6 +26,8 @@ public:
 public:
     //! Returns the frame image.
     QSharedPointer<cv::Mat> image() const { return m_image; }
+    //! Returns the time stamp.
+    std::chrono::milliseconds timestamp() const { return m_timestamp; }
 
 private:
     //! The frame image.
