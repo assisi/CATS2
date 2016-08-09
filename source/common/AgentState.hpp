@@ -129,8 +129,10 @@ private:
 class StateWorld
 {
 public:
-    //! Constructor.
-    StateWorld(PositionMeters position = PositionMeters(), OrientationRad orientation = OrientationRad()) :
+    //! Constructor. If position or orientation are not provided then they are
+    //! considered unknown.
+    StateWorld(PositionMeters position = PositionMeters(0, 0, 0, false),
+               OrientationRad orientation = OrientationRad(0, false)) :
         m_positionMeters(position),
         m_orientationRad(orientation)
     {
@@ -159,8 +161,10 @@ private:
 class StateImage
 {
 public:
-    //! Constructor.
-    StateImage(PositionPixels position = PositionPixels(), OrientationRad orientation = OrientationRad()) :
+    //! Constructor. If position or orientation are not provided then they are
+    //! considered unknown.
+    StateImage(PositionPixels position = PositionPixels(0, 0, false),
+               OrientationRad orientation = OrientationRad(0, false)) :
         m_positionPixels(position),
         m_orientationRad(orientation)
     {
@@ -182,8 +186,5 @@ private:
     //! The orientation of the agent, with respect to the horizontal x axis.
     OrientationRad m_orientationRad;
 };
-
-
-
 
 #endif // CATS2_POSITION_HPP
