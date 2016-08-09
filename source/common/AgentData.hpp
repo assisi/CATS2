@@ -3,6 +3,8 @@
 
 #include "AgentState.hpp"
 
+#include <opencv2/core/types.hpp>
+
 #include <chrono>
 
 /*!
@@ -27,14 +29,24 @@ public:
                             StateImage stateImage = StateImage());
 
 public:
-    // TODO : add setters and getters
+    //! Constant getter for the agent's state.
+    const StateImage& state()  const { return m_stateImage; }
+
+    //! Sets the position and orientation.
+    void setState(cv::Point2f center, float direction);
+    //! Sets the position, the orientation is considered unknown.
+    void setState(cv::Point2f center);
+    //! Sets the state values invalid.
+    void invalidateState();
+    //! Sets the timestamp.
+    void setTimestamp(std::chrono::milliseconds timestamp) { m_timestamp = timestamp; }
 
 private:
     //! Agent's id.
     unsigned char m_id;
     //! The type of image.
     AgentType m_type;
-    //! The position of the agent, in [px].
+    //! The position of the agent (center) in [px], and it's orientation.
     StateImage m_stateImage;
     //! The corresponding timestamp, in number of milliseconds since 1970-01-01T00:00:00
     //! Universal Coordinated Time. The timestamp is used to combine the tracking results
