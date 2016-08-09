@@ -29,6 +29,11 @@ public:
                             StateImage stateImage = StateImage());
 
 public:
+    //! Returns the agent's id.
+    unsigned char id() const { return m_id; }
+    //! Returns the agent's type.
+    AgentType type() const { return m_type; }
+
     //! Constant getter for the agent's state.
     const StateImage& state()  const { return m_stateImage; }
 

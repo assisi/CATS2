@@ -43,8 +43,8 @@ public:
     CoordinatesConversionPtr coordinatesConversion() const { return m_coordinatesConversion; }
 
 signals:
-    //! Sends out the tracked agents.
-    void trackedAgents(QList<AgentDataWorld> agents);
+    //! Sends out the tracked agents in world coordinates. Also the setup type is send to "sign" the signal.
+    void trackedAgents(SetupType::Enum setupType, QList<AgentDataWorld> worldAgents);
     //! Request to start/stop enqueueing the debug images to the debug queue.
     void sendDebugImages(bool send);
 

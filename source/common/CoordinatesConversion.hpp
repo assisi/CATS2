@@ -24,10 +24,13 @@ public:
     virtual ~CoordinatesConversion();
 
 public:
+    //! Returns the status of the calibration initialization.
+    bool isValid();
     //! Converts the position in pixels to the position in meters.
-    PositionMeters imageToWorldPosition(PositionPixels imageCoordinates);
+    PositionMeters imageToWorldPosition(PositionPixels imageCoordinates) const;
     //! Converts the orientation from image to world.
-    OrientationRad image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientation);
+    //! FIXME : this method calls imageToWorldPosition() and so it is not optimal to call both methods, need to be merged somehow
+    OrientationRad image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientation) const;
 
 private:
     //! The object that calibrates the camera and basically makes the job of coordinates conversion.

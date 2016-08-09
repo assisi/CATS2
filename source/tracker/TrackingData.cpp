@@ -53,9 +53,20 @@ TrackingData::~TrackingData()
  * Gets the agents from the tracking routine, converts their position in the  world coordinates
  * and sends them further.
  */
-void TrackingData::onTrackedAgents(QList<AgentDataImage> agents)
+void TrackingData::onTrackedAgents(QList<AgentDataImage> imageAgents)
 {
-    // TODO: add code here
+    if (!m_coordinatesConversion.isNull() && m_coordinatesConversion->isValid()) {
+        QList<AgentDataWorld> worldAgents;
+        foreach (AgentDataImage imageAgent, imageAgents) {
+            PositionMeters worldPosition = m_coordinatesConversion->imageToWorldPosition(imageAgent.state().position());
+            OrientationRad worldOrientation = m_coordinatesConversion->image2WorldOrientationRad(imageAgent.state().position(), imageAgent.state().orientation());
+            AgentDataWorld worldAgent(imageAgent.id(), imageAgent.type(), StateWorld(worldPosition, worldOrientation));
+            worldAgents.append(worldAgent);
+        }
+        emit trackedAgents(m_setupType, worldAgents);
+    } else {
+        qDebug() << Q_FUNC_INFO << "Unable to convert the image coordinates to the world coordinates";
+    }
 }
 
 /*!
