@@ -66,6 +66,11 @@ QSharedPointer<QImage> FrameConvertor::cvMatToQImage(const QSharedPointer<cv::Ma
             imageQt = new QImage(imageCv->data, imageCv->cols, imageCv->rows, imageCv->step, QImage::Format_RGB888);
             break;
         }
+        case CV_8UC1: // 8-bit, 1 channel
+        {
+            imageQt = new QImage(imageCv->data, imageCv->cols, imageCv->rows, imageCv->step, QImage::Format_Grayscale8);
+            break;
+        }
         default: // unsupported format
             imageQt = new QImage(imageCv->cols, imageCv->rows, QImage::Format_RGB888);
             imageQt->fill(Qt::black);
