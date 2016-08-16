@@ -9,7 +9,7 @@ class BlobDetector : public TrackingRoutine
 {
     Q_OBJECT
 public:
-    //! Constructor. Gets the input queue to process and a queue to place debug images on request.
+    //! Constructor. Gets the settings, the input queue to process and a queue to place debug images on request.
     explicit BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrameQueuePtr inputQueue, TimestampedFrameQueuePtr debugQueue);
     //! Destructor.
     virtual ~BlobDetector();
@@ -42,21 +42,6 @@ private:
     cv::Mat m_grayscaleImage;
     //! The foreground image.
     cv::Mat m_foregroundImage;
-
-
-//    //!
-//    short _bgNbMixtures;
-
-//    cv::Mat _img;
-//    cv::Mat const* _imgOrig = nullptr;
-
-
-//    cv::Mat _maskOrig;
-
-//private:
-//    std::vector<cv::Mat> agentsImg;
-
-
 };
 
 #endif // CATS2_BLOB_DETECTOR_HPP

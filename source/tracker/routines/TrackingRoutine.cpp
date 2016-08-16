@@ -131,10 +131,14 @@ void TrackingRoutine::naiveClosestNeighbour(std::vector<cv::Point2f>& centers, s
 
         if (detected) {
             AgentDataImage& agent = m_agents[agentIndex];
-            if (directions.size() > 0)
-                agent.setState(centers[i], directions[i]);
-            else
-                agent.setState(centers[i]);
+            if (directions.size() > 0) {
+                agent.mutableState()->setPosition(centers[i]);
+                agent.mutableState()->setOrientation(directions[i]);
+            }
+            else {
+                agent.mutableState()->setPosition(centers[i]);
+                agent.mutableState()->invalidateOrientation();
+            }
 
             agent.setTimestamp(m_currentTimestamp);
             // remove this agent's index from the list
@@ -144,6 +148,6 @@ void TrackingRoutine::naiveClosestNeighbour(std::vector<cv::Point2f>& centers, s
 
     // invalidate the state for agents whose positions were not updated
     for(size_t j = 0; j < remainingAgents.size(); ++j) {
-        m_agents[remainingAgents[j]].invalidateState();
+        m_agents[remainingAgents[j]].mutableState()->invalidateState();
     }
 }

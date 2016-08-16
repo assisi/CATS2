@@ -35,14 +35,10 @@ public:
     AgentType type() const { return m_type; }
 
     //! Constant getter for the agent's state.
-    const StateImage& state()  const { return m_stateImage; }
+    const StateImage& state() const { return m_stateImage; }
+    //! Mutable getter for the agent's state.
+    StateImage* mutableState() { return &m_stateImage; }
 
-    //! Sets the position and orientation.
-    void setState(cv::Point2f center, float direction);
-    //! Sets the position, the orientation is considered unknown.
-    void setState(cv::Point2f center);
-    //! Sets the state values invalid.
-    void invalidateState();
     //! Sets the timestamp.
     void setTimestamp(std::chrono::milliseconds timestamp) { m_timestamp = timestamp; }
 

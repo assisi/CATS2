@@ -19,7 +19,6 @@ bool BlobDetectorSettings::init(QString configurationFileName)
     // read the settings
     ReadSettingsHelper settings(configurationFileName);
 
-
     // we pass the variable as defaulf value
     {
         int value;

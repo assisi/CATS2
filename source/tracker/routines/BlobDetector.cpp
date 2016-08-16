@@ -9,7 +9,7 @@
 #include <QtMath>
 
 /*!
- * Constructor. Gets the input queue to process and a queue to place debug images on request.
+ * Constructor. Gets the settings, the input queue to process and a queue to place debug images on request.
  */
 BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrameQueuePtr inputQueue, TimestampedFrameQueuePtr debugQueue) :
     TrackingRoutine(inputQueue, debugQueue),
@@ -59,7 +59,7 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
     // subract the background
     m_backgroundSubtractor.get()->apply(m_grayscaleImage, m_foregroundImage, 0.0);
 
-    // NOTE : Add an erosion after ?
+    // dilate and erode directly after
     int an = 1;
     cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(an*2+1, an*2+1), cv::Point(an, an));
     cv::dilate(m_foregroundImage, m_foregroundImage, element);
@@ -174,7 +174,7 @@ void BlobDetector::detectContours(cv::Mat& image, const std::vector<cv::Point2f>
     std::vector<std::vector<cv::Point>> contoursPoly;
     contoursPoly.resize(contours.size());
 
-    // centero the contour
+    // center of the contour
     cv::Point2f center;
     // all corners that are inside the contour
     std::vector<cv::Point2f> cornersInContour;
