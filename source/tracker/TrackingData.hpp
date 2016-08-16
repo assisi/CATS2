@@ -34,7 +34,7 @@ public:
 
 public:
     //! Returns a pointer to the tracking routine's debug queue.
-    TimestampedFrameQueuePtr debugQueue() const { return m_trackingRoutine->debugQueue(); }
+    TimestampedFrameQueuePtr debugQueue() const;
     //! The type of setup for which this tracking is used.
     SetupType::Enum setupType() const { return m_setupType; }
     //! The type of the tracking routine.

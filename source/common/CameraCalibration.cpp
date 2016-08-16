@@ -24,6 +24,10 @@ CameraCalibration::~CameraCalibration()
  */
 void CameraCalibration::calibrate(QString calibrationFileName)
 {
+    // check first that the file exists
+    if (!QFileInfo(calibrationFileName).exists())
+        return;
+
     // read the XML file
     ReadSettingsHelper settings(calibrationFileName);
 

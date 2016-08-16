@@ -29,6 +29,7 @@ StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, TimestampedFra
             break;
         }
         case StreamType::UNDEFINED:
+            qDebug() << Q_FUNC_INFO << "Stream type is undefined";
         default:
             break;
     }
@@ -47,6 +48,10 @@ StreamReceiver::~StreamReceiver()
  */
 void StreamReceiver::process()
 {
+    // check if the pipeline was set
+    if (m_pipelineDescription.isEmpty())
+        return;
+
     m_pipeline = QGst::Parse::launch(m_pipelineDescription).dynamicCast<QGst::Pipeline>();
     m_sink.setElement(m_pipeline->getElementByName("queueingsink"));
     QGlib::connect(m_pipeline->bus(), "message::error", this, &StreamReceiver::onError);

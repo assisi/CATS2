@@ -39,10 +39,7 @@ public:
      */
     TrackingRoutineSettingsPtr trackingRoutineSettings(SetupType::Enum type) const
     {
-        if (m_trackingRoutineSettings.contains(type))
-            return m_trackingRoutineSettings.value(type);
-        else
-            return TrackingRoutineSettingsPtr();
+        return m_trackingRoutineSettings.value(type);
     }
 
 private:

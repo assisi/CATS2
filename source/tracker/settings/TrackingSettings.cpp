@@ -28,8 +28,8 @@ bool TrackingSettings::init(QString configurationFileName, SetupType::Enum setup
     TrackingRoutineSettingsPtr settings = TrackerFactory::createTrackingRoutineSettings(trackingRoutineType, setupType);
     m_trackingRoutineSettings.insert(setupType, settings);
 
-   // initialize settings
-   settingsAccepted = settings->init(configurationFileName);
+    // initialize settings
+    settingsAccepted = settings->init(configurationFileName);
 
     return settingsAccepted;
 }

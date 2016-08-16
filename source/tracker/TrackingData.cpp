@@ -46,7 +46,8 @@ TrackingData::TrackingData(SetupType::Enum setupType,
  */
 TrackingData::~TrackingData()
 {
-    m_trackingRoutine->stop();
+    if (!m_trackingRoutine.isNull())
+        m_trackingRoutine->stop();
 }
 
 /*!
@@ -81,4 +82,15 @@ TrackingRoutineType::Enum TrackingData::trackingType() const
         return settings->type();
     else
         return TrackingRoutineType::UNDEFINED;
+}
+
+/*!
+ * Returns a pointer to the tracking routine's debug queue.
+ */
+TimestampedFrameQueuePtr TrackingData::debugQueue() const
+{
+    if (!m_trackingRoutine.isNull())
+        return m_trackingRoutine->debugQueue();
+    else
+        return TimestampedFrameQueuePtr();
 }

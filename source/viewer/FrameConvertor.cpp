@@ -28,13 +28,17 @@ FrameConvertor::~FrameConvertor()
  */
 void FrameConvertor::process()
 {
-    m_stopped = false;
-    TimestampedFrame frame;
+    if (!m_inputQueue.isNull()) {
+        m_stopped = false;
+        TimestampedFrame frame;
 
-    while (!m_stopped) {
-        // Use the blocking with timeout version of dequeue
-        if (m_inputQueue->dequeue(frame))
-            emit newFrame(cvMatToQImage(frame.image()));
+        while (!m_stopped) {
+            // Use the blocking with timeout version of dequeue
+            if (m_inputQueue->dequeue(frame))
+                emit newFrame(cvMatToQImage(frame.image()));
+        }
+    } else {
+        qDebug() << Q_FUNC_INFO << "Input queue is not set, finishing.";
     }
 
     emit finished();
