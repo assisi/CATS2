@@ -8,11 +8,11 @@
 /*!
  * Initializes the parameters for the tracking setup of given type.
  */
-bool TrackingSetupSettings::init(SetupType::Enum setupType)
+bool TrackingSetupSettings::init(SetupType::Enum setupType, bool needCalibration)
 {
     QString configurationFilePath = CommandLineParameters::get().configurationFilePath();
     // first check that the calibration settings are initialized
-    if (CalibrationSettings::get().init(configurationFilePath, setupType)) {
+    if (CalibrationSettings::get().init(configurationFilePath, setupType) || (!needCalibration)) {
         // then check that the input stream is set
         if (CommandLineParameters::get().cameraDescriptor(setupType).isValid()) {
             // finally check that the tracking routine is set for given setup type
