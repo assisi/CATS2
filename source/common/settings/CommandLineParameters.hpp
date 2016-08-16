@@ -74,7 +74,7 @@ public:
     //! main camera parameter is found and there were no "-h" option.
     //! It receives also flags difining which command line parameters are considired essential
     //! so that the initialisation passes.
-    bool init(int argc, char** argv, bool needConfigFile = true, bool needMainCamera = true);
+    bool init(int argc, char** argv, bool needConfigFile = true, bool needMainCamera = true, bool needBelowCamera = false);
 
     // delete copy and move constructors and assign operators
     //! Copy constructor.

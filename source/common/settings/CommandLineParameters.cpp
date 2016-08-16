@@ -31,7 +31,7 @@ CommandLineParameters& CommandLineParameters::get()
  * This part is inspired by this stackoverflow post
  * http://stackoverflow.com/questions/865668/how-to-parse-command-line-arguments-in-c
  */
-bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, bool needMainCamera)
+bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, bool needMainCamera, bool needBelowCamera)
 {
     bool settingsAccepted = false;
 
@@ -55,6 +55,15 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, boo
     }
     settingsAccepted = (foundMainCameraParameters || (!needMainCamera));
 
+    // read the below camera parameters
+    bool foundBelowCameraParameters = (parseStreamArguments(argc, argv, "-bc", streamType, streamParameters)
+                                      || parseStreamArguments(argc, argv, "--belowcam", streamType, streamParameters));
+    if (foundBelowCameraParameters) {
+        // the below camera
+        m_cameraDescriptors[SetupType::CAMERA_BELOW] = StreamDescriptor(streamType, streamParameters);
+    }
+    settingsAccepted = (foundBelowCameraParameters || (!needBelowCamera));
+
     // get the configuration file path
     QString filePath;
     bool foundConfigFilePath = (parseConfigFilePath(argc, argv, "-c", filePath)
@@ -75,6 +84,7 @@ void CommandLineParameters::printSupportedArguments()
     qDebug() << "Video grabber usage";
     qDebug() << "\t -h --help\t\tShow this help message";
     qDebug() << "\t -mc --maincam\tDefines the video stream used to track agents. Format : -mc <StreamType> <parameters>";
+    qDebug() << "\t -bc --belowcam\tDefines the video stream used to track the robot under the aquarium. Format : -mc <StreamType> <parameters>";
     qDebug() << "\t -c --config\tThe configuration file. Format : -c <PathToFile>";
 }
 
