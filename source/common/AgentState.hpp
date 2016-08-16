@@ -1,6 +1,8 @@
 #ifndef CATS2_POSITION_HPP
 #define CATS2_POSITION_HPP
 
+#include <opencv2/core/types.hpp>
+
 #include <QtCore/QString>
 #include <QtCore/QObject>
 
@@ -114,6 +116,12 @@ public:
             return QObject::tr("- px, - px");
     }
 
+    //! Returns the position as cv::Point2f
+    cv::Point2f toCvPoint2f() const
+    {
+        return cv::Point2f(m_x, m_y);
+    }
+
 private:
     //! Position x.
     double m_x;  // [pixels]
@@ -170,13 +178,29 @@ public:
     {
     }
 
+    //! Invalidates the state.
+    void invalidateState()
+    {
+        m_positionPixels.setValid(false);
+        m_orientationRad.setValid(false);
+    }
+    //! Invalidates the orientation.
+    void invalidateOrientation()
+    {
+        m_orientationRad.setValid(false);
+    }
+
     //! Sets the position.
     void setPosition(PositionPixels position) { m_positionPixels = position; }
+    //! Sets the position from the cv::Point2f value.
+    void setPosition(cv::Point2f position) { m_positionPixels = PositionPixels(position.x, position.y); }
     //! Return the position.
     PositionPixels position() const { return m_positionPixels; }
 
     //! Sets the orientation.
     void setOrientation(OrientationRad orientationRad) { m_orientationRad = orientationRad; }
+    //! Sets the orientation from the double value.
+    void setOrientation(double orientationRad) { m_orientationRad = OrientationRad(orientationRad); }
     //! Return the orientation.
     OrientationRad orientation() const { return m_orientationRad; }
 
