@@ -3,9 +3,9 @@
     <mainCamera>
         <tracking>
             <trackingMethod>blobDetector</trackingMethod>
-            <numberOfAgents>2</numberOfAgents>
+            <numberOfAgents>6</numberOfAgents>
             <blobDetector>
-                <minBlobSizePx>15</minBlobSizePx>
+                <minBlobSizePx>0</minBlobSizePx>
                 <qualityLevel>0.01</qualityLevel>
                 <minDistance>20.0</minDistance>
                 <blockSize>5</blockSize>
@@ -15,5 +15,34 @@
         </tracking>
         <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
     </mainCamera>
+    <cameraBelow>
+        <tracking>
+            <trackingMethod>fishBotLedsTracking</trackingMethod>
+            <numberOfAgents>2</numberOfAgents>
+            <fishBotLedsTracking>
+                <!--
+                    TODO : consider moving this to the robot's specific section.
+                 -->
+                <fishBot_1>
+                    <id>H</id>
+                    <color>
+                        <r>185</r>
+                        <g>85</g>
+                        <b>100</b>
+                    </color>
+                    <threshold>25</threshold>
+                </fishBot_1>
+                <fishBot_2>
+                    <id>F</id>
+                    <color>
+                        <r>45</r>
+                        <g>130</g>
+                        <b>220</b>
+                    </color>
+                    <threshold>20</threshold>
+                </fishBot_2>
+            </fishBotLedsTracking>
+        </tracking>
+    </cameraBelow>
 </opencv_storage>
 
