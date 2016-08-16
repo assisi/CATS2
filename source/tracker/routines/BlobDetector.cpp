@@ -21,11 +21,13 @@ BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrame
     if (blobDetectorSettings != nullptr){
         // copy the parameters
         m_settings = blobDetectorSettings->data();
+    } else {
+        qDebug() << Q_FUNC_INFO << "Could not set the routune's settings";
     }
 
     // set the agents' list
     for (unsigned char id = 1; id <= m_settings.numberOfAgents(); id++) {
-        AgentDataImage agent(id);
+        AgentDataImage agent(QString::number(id));
         m_agents.append(agent);
     }
 }

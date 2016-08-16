@@ -24,13 +24,13 @@ class AgentDataImage
 {
 public:
     //! Constructor.
-    explicit AgentDataImage(unsigned char id,
+    explicit AgentDataImage(QString id,
                             AgentType type = AgentType::UNDEFINED,
                             StateImage stateImage = StateImage());
 
 public:
     //! Returns the agent's id.
-    unsigned char id() const { return m_id; }
+    QString id() const { return m_id; }
     //! Returns the agent's type.
     AgentType type() const { return m_type; }
 
@@ -44,7 +44,7 @@ public:
 
 private:
     //! Agent's id.
-    unsigned char m_id;
+    QString m_id;
     //! The type of image.
     AgentType m_type;
     //! The position of the agent (center) in [px], and it's orientation.
@@ -62,7 +62,7 @@ class AgentDataWorld
 {
 public:
     //! Constructor.
-    explicit AgentDataWorld(unsigned char id,
+    explicit AgentDataWorld(QString id,
                             AgentType type = AgentType::UNDEFINED,
                             StateWorld stateWorld = StateWorld());
 
@@ -71,7 +71,7 @@ public:
 
 private:
     //! Agent's id.
-    unsigned char m_id;
+    QString m_id;
     //! The type of image.
     AgentType m_type;
     //! The position of the agent, in [m].

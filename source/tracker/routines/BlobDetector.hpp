@@ -5,6 +5,9 @@
 #include "settings/BlobDetectorSettings.hpp"
 #include "TrackerPointerTypes.hpp"
 
+/*!
+ * A tracker inherited from the original CATS software. It uses the corner detection to find agents in the image.
+ */
 class BlobDetector : public TrackingRoutine
 {
     Q_OBJECT

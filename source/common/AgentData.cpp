@@ -3,7 +3,7 @@
 /*!
  * Constructor.
  */
-AgentDataWorld::AgentDataWorld(unsigned char id, AgentType type, StateWorld stateWorld) :
+AgentDataWorld::AgentDataWorld(QString id, AgentType type, StateWorld stateWorld) :
     m_id(id),
     m_type(type),
     m_stateWorld(stateWorld),
@@ -15,7 +15,7 @@ AgentDataWorld::AgentDataWorld(unsigned char id, AgentType type, StateWorld stat
 /*!
  * Constructor.
  */
-AgentDataImage::AgentDataImage(unsigned char id, AgentType type, StateImage stateImage) :
+AgentDataImage::AgentDataImage(QString id, AgentType type, StateImage stateImage) :
     m_id(id),
     m_type(type),
     m_stateImage(stateImage),
