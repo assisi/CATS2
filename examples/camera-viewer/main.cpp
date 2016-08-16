@@ -21,26 +21,27 @@ int main(int argc, char *argv[])
     QGst::init(&argc, &argv);
     QApplication app(argc, argv);
 
+    // specify the setup type
+    SetupType::Enum setupType = SetupType::CAMERA_BELOW;
+
     // parse input arguments to initialize the settings
-    if (CommandLineParameters::get().init(argc, argv)) {
+    if (CommandLineParameters::get().init(argc, argv, true, false, false)) {
+        CoordinatesConversionPtr coordinatesConversion;
         // check that the calibration settings are valid
-        if (CalibrationSettings::get().init(CommandLineParameters::get().configurationFilePath(), SetupType::MAIN_CAMERA)) {
+        if (CalibrationSettings::get().init(CommandLineParameters::get().configurationFilePath(), setupType)) {
             // create the camera calibration
-            CoordinatesConversionPtr coordinatesConversion = CoordinatesConversionPtr(new CoordinatesConversion(CalibrationSettings::get().calibrationFilePath(SetupType::MAIN_CAMERA)));
-
-            GrabberHandlerPtr grabberHandler;
-            if (CommandLineParameters::get().mainCameraDescriptor().isValid()){
-                grabberHandler = GrabberHandlerPtr(new GrabberHandler(SetupType::MAIN_CAMERA));
-            } else {
-                qDebug() << Q_FUNC_INFO << "Main camera descriptor is ill-defined";
-            }
-
-            ViewerWindow mainWindow(grabberHandler->inputQueue(), coordinatesConversion);
-            mainWindow.show();
-            return app.exec();
-        } else {
-            qDebug() << Q_FUNC_INFO << "Couldn't setup calibration settings, finished";
+            coordinatesConversion = CoordinatesConversionPtr(new CoordinatesConversion(CalibrationSettings::get().calibrationFilePath(setupType)));
         }
+        GrabberHandlerPtr grabberHandler;
+        if (CommandLineParameters::get().cameraDescriptor(setupType).isValid()){
+            grabberHandler = GrabberHandlerPtr(new GrabberHandler(setupType));
+        } else {
+            qDebug() << Q_FUNC_INFO << "Camera descriptor is ill-defined";
+        }
+
+        ViewerWindow mainWindow(grabberHandler->inputQueue(), coordinatesConversion);
+        mainWindow.show();
+        return app.exec();
     } else {
         qDebug() << Q_FUNC_INFO << "Couldn't find necessary input arguments, finished";
     }
