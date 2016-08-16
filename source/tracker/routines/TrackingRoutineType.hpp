@@ -11,6 +11,7 @@ class TrackingRoutineType
 public:
     enum Enum {
         BLOB_DETECTOR,
+        FISHBOT_LEDS_TRACKING,
         // to extend
         UNDEFINED
     };
@@ -20,6 +21,8 @@ public:
     {
         if (routineName.toLower() == "blobdetector")
             return TrackingRoutineType::BLOB_DETECTOR;
+        else if (routineName.toLower() == "fishbotledstracking")
+            return TrackingRoutineType::FISHBOT_LEDS_TRACKING;
         else
             return TrackingRoutineType::UNDEFINED;
     }
@@ -31,6 +34,9 @@ public:
         switch (setupType) {
         case BLOB_DETECTOR:
             string = "Basic blob detection";
+            break;
+        case FISHBOT_LEDS_TRACKING:
+            string = "FishBot LEDs tracker";
             break;
         default:
             break;

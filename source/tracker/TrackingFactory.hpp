@@ -4,8 +4,10 @@
 #include "routines/TrackingRoutineType.hpp"
 #include "routines/TrackingRoutine.hpp"
 #include "routines/BlobDetector.hpp"
+#include "routines/FishBotLedsTracking.hpp"
 #include "settings/TrackingRoutineSettings.hpp"
 #include "settings/BlobDetectorSettings.hpp"
+#include "settings/FishBotLedsTrackingSettings.hpp"
 #include "settings/TrackingSettings.hpp"
 #include <SetupType.hpp>
 
@@ -26,7 +28,10 @@ public:
             switch (settings->type()) {
             case TrackingRoutineType::BLOB_DETECTOR:
                 return TrackingRoutinePtr(new BlobDetector(settings, inputQueue, debugQueue), &QObject::deleteLater);
+            case TrackingRoutineType::FISHBOT_LEDS_TRACKING:
+                return TrackingRoutinePtr(new FishBotLedsTracking(settings, inputQueue, debugQueue), &QObject::deleteLater);
             default:
+                qDebug() << Q_FUNC_INFO << "Tracking routine could not be created.";
                 break;
             }
         }
@@ -41,7 +46,10 @@ public:
         switch (trackingType) {
         case TrackingRoutineType::BLOB_DETECTOR:
             return TrackingRoutineSettingsPtr(new BlobDetectorSettings(setupType));
+        case TrackingRoutineType::FISHBOT_LEDS_TRACKING:
+            return TrackingRoutineSettingsPtr(new FishBotLedsTrackingSettings(setupType));
         default:
+            qDebug() << Q_FUNC_INFO << "Tracking routine settings could not be created.";
             break;
         }
         return TrackingRoutineSettingsPtr();

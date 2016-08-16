@@ -1,9 +1,11 @@
 set(srcs
     routines/TrackingRoutine.cpp
     routines/BlobDetector.cpp
+    routines/FishBotLedsTracking.cpp
     settings/TrackingSettings.cpp
     settings/TrackingRoutineSettings.cpp
     settings/BlobDetectorSettings.cpp
+    settings/FishBotLedsTrackingSettings.cpp
     settings/TrackingSetupSettings.cpp
     TrackingData.cpp
     TrackingSetup.cpp
