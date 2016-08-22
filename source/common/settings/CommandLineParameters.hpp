@@ -13,6 +13,7 @@
 enum class StreamType
 {
     VIDEO_4_LINUX,
+    LOCAL_FILE,
     UNDEFINED
     // TODO : to be extended
 };
@@ -52,8 +53,9 @@ public:
 private:
     //! The type of the incoming video stream.
     StreamType m_streamType;
-    //! Additional parameters of the stream.
+    //! Additional parameters of the stream (e.g. device id for the camera, input file name, etc.).
     QString m_parameters;
+
     //! The map to translate the string stream type to the corresponding enum.
     static const QMap<QString, StreamType> m_streamTypeByName;
 };

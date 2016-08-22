@@ -9,7 +9,8 @@
 /*!
  * The map to translate the string stream type to the corresponding enum.
  */
-const QMap<QString, StreamType> StreamDescriptor::m_streamTypeByName = {{"v4l", StreamType::VIDEO_4_LINUX}};
+const QMap<QString, StreamType> StreamDescriptor::m_streamTypeByName = {{"v4l", StreamType::VIDEO_4_LINUX},
+                                                                        {"f", StreamType::LOCAL_FILE}};
 
 /*!
 * Constructor.
@@ -26,6 +27,15 @@ StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, TimestampedFra
             m_pipelineDescription = QString("v4l2src device=/dev/video%1 ! "
                                            "video/x-raw-rgb ! ffmpegcolorspace ! "
                                            "appsink name=queueingsink").arg(videoDeviceId);
+            break;
+        }
+        case StreamType::LOCAL_FILE:
+        {
+            m_pipelineDescription = QString("filesrc location=%1 ! qtdemux ! "
+                                            "ffdec_h264 ! ffmpegcolorspace ! "
+                                            "deinterlace ! "
+                                            "video/x-raw-rgb ! ffmpegcolorspace !"
+                                            "appsink name=queueingsink").arg(streamParameters.parameters());
             break;
         }
         case StreamType::UNDEFINED:
