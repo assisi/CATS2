@@ -6,11 +6,14 @@
 #include <QGst/Message>
 #include <QGlib/Error>
 
+#include <QtCore/QFileInfo>
+
 /*!
  * The map to translate the string stream type to the corresponding enum.
  */
 const QMap<QString, StreamType> StreamDescriptor::m_streamTypeByName = {{"v4l", StreamType::VIDEO_4_LINUX},
-                                                                        {"f", StreamType::LOCAL_FILE}};
+                                                                        {"vf", StreamType::LOCAL_VIDEO_FILE},
+                                                                        {"if", StreamType::LOCAL_IMAGE_FILE}};
 
 /*!
 * Constructor.
@@ -29,13 +32,28 @@ StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, TimestampedFra
                                            "appsink name=queueingsink").arg(videoDeviceId);
             break;
         }
-        case StreamType::LOCAL_FILE:
+        case StreamType::LOCAL_VIDEO_FILE:
         {
             m_pipelineDescription = QString("filesrc location=%1 ! qtdemux ! "
                                             "ffdec_h264 ! ffmpegcolorspace ! "
                                             "deinterlace ! "
                                             "video/x-raw-rgb ! ffmpegcolorspace !"
                                             "appsink name=queueingsink").arg(streamParameters.parameters());
+            break;
+        }
+        case StreamType::LOCAL_IMAGE_FILE:
+        {
+            QFileInfo fileInfo(streamParameters.parameters());
+            if (fileInfo.exists()) {
+                QString decoder;
+                if (fileInfo.suffix() == "png")
+                    decoder = "pngdec";
+                else if ((fileInfo.suffix() == "jpeg") || (fileInfo.suffix() == "jpg"))
+                    decoder = "jpegdec";
+                m_pipelineDescription = QString("filesrc location=%1 ! %2 ! "
+                                                "ffmpegcolorspace ! videoscale ! imagefreeze !"
+                                                "appsink name=queueingsink").arg(streamParameters.parameters()).arg(decoder);
+            }
             break;
         }
         case StreamType::UNDEFINED:
