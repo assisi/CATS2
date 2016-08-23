@@ -31,8 +31,8 @@ enum class CameraType
 class CameraCalibration
 {
 public:
-    //! Constructor.
-    explicit CameraCalibration(QString calibrationFileName);
+    //! Constructor. Gets the file name containing the camera calibration data.
+    explicit CameraCalibration(QString calibrationFileName, QSize targetFrameSize);
     //! Destructor.
     virtual ~CameraCalibration() final;
 
@@ -45,10 +45,9 @@ public:
 
 private:
     //! Sets the camera parameters based on the camera type.
-    bool setCameraParameters(QString cameraType, camera_parameters& cameraParameters);
 
     //! Initializes the calibration.
-    void calibrate(QString fileName);
+    void calibrate(QString fileName, QSize targetFrameSize);
     //! Camera is calibrated.
     bool m_calibrationInitialized;
     // members used for recalculation of world coordinates

@@ -4,6 +4,8 @@
 #include "CommonPointerTypes.hpp"
 #include "SetupType.hpp"
 
+#include <QtCore/QSize>
+
 /*!
  * Class-signleton that is used to store parameters of the calibration.
  * Their values are loaded from the configuration file.
@@ -34,6 +36,8 @@ public:
 public:
     //! Returns the path to the camera calibration file.
     QString calibrationFilePath(SetupType::Enum setupType) const { return m_calibrationFilePaths[setupType]; }
+    //! Returns the size of the video frames.
+    QSize frameSize(SetupType::Enum setupType) const { return m_videoFrameSizes[setupType]; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -44,6 +48,9 @@ private:
 private:
     //! Stores paths to calibration files for every available setup.
     QMap<SetupType::Enum, QString> m_calibrationFilePaths;
+    //! Stores video frame sizes for every available setup. It's used to interpolate the calibration
+    //! values if they were measured for another frame size.
+    QMap<SetupType::Enum, QSize> m_videoFrameSizes;
 };
 
 

@@ -3,12 +3,12 @@
 #include "AgentState.hpp"
 
 /*!
- * Constructor.
+ * Constructor. Gets the file name containing the camera calibration data.
  */
-CameraCalibration::CameraCalibration(QString calibrationFileName) :
+CameraCalibration::CameraCalibration(QString calibrationFileName, QSize targetFrameSize) :
     m_calibrationInitialized(false)
 {
-    calibrate(calibrationFileName);
+    calibrate(calibrationFileName, targetFrameSize);
 }
 
 /*!
@@ -22,11 +22,19 @@ CameraCalibration::~CameraCalibration()
 /*!
  * Initializes the calibration, compute coefficients
  */
-void CameraCalibration::calibrate(QString calibrationFileName)
+void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrameSize)
 {
-    // check first that the file exists
-    if (!QFileInfo(calibrationFileName).exists())
+    // check that the requested frame size is valid
+    if (!targetFrameSize.isValid()) {
+        qDebug() << Q_FUNC_INFO << "The requested target frame size is invalid.";
         return;
+    }
+
+    // check first that the file exists
+    if (!QFileInfo(calibrationFileName).exists()) {
+        qDebug() << Q_FUNC_INFO << "The provided calibration file is not correct.";
+        return;
+    }
 
     // read the XML file
     ReadSettingsHelper settings(calibrationFileName);
@@ -34,10 +42,27 @@ void CameraCalibration::calibrate(QString calibrationFileName)
     // read the camera type
     std::string cameraTypeString;
     settings.readVariable("cameraType", cameraTypeString);
-    if (!setCameraParameters(QString::fromUtf8(cameraTypeString.c_str()), m_cameraParameters)) { // could not find camera parameters
+    if (!setCameraParameters(QString::fromUtf8(cameraTypeString.c_str()), targetFrameSize, m_cameraParameters)) {
+        // could not find camera parameters
         return;
     }
 
+    // read the frame size that was used to set the calibration points
+    // (can be different from the target frame size)
+    // read the target image size
+    int width;
+    settings.readVariable(QString("imageSize/width"), width, -1); // default value to guarantee an
+                                                                  // invalid size if the correct valus is not read
+    int height;
+    settings.readVariable(QString("imageSize/height"), height, -1); // default value to guarantee an
+                                                                    // invalid size if the correct valus is not read
+    QSize calibrationFrameSize(width, height);
+    if (!calibrationFrameSize.isValid()) {
+        qDebug() << Q_FUNC_INFO << "The calibration frame size is invalid.";
+        return;
+    }
+
+    // read the number of points
     int numberOfPoints;
     settings.readVariable("calibrationPoints/numberOfPoints", numberOfPoints, 0);
     if (numberOfPoints == 0) {
@@ -51,14 +76,17 @@ void CameraCalibration::calibrate(QString calibrationFileName)
         return;
     }
 
+    float imageScaleCoefficientX = (float)targetFrameSize.width() / (float)calibrationFrameSize.width();
+    float imageScaleCoefficientY = (float)targetFrameSize.height() / (float)calibrationFrameSize.height();
     m_calibrationData.point_count = numberOfPoints;
     for(size_t i = 0; i < numberOfPoints; i++) {
-//        CalibrationPoint calibrationPoint;
         m_calibrationData.zw[i] = 0;
         settings.readVariable(QString("calibrationPoints/point_%1/xWorld").arg(i), m_calibrationData.xw[i]);
         settings.readVariable(QString("calibrationPoints/point_%2/yWorld").arg(i), m_calibrationData.yw[i]);
         settings.readVariable(QString("calibrationPoints/point_%1/xImage").arg(i), m_calibrationData.Xf[i]);
+        m_calibrationData.Xf[i] *= imageScaleCoefficientX;
         settings.readVariable(QString("calibrationPoints/point_%2/yImage").arg(i), m_calibrationData.Yf[i]);
+        m_calibrationData.Yf[i] *= imageScaleCoefficientY;
     }
 
     // Do the calibration
@@ -110,9 +138,9 @@ OrientationRad CameraCalibration::image2WorldOrientationRad(PositionPixels image
 /*!
  * Sets the camera parameters based on the camera type. Returns true if settings are set.
  */
-bool CameraCalibration::setCameraParameters(QString cameraType, camera_parameters& cameraParameters)
+bool CameraCalibration::setCameraParameters(QString cameraType, QSize frameSize, camera_parameters& cameraParameters)
 {
-    // FIXME HACK : redo it as the video is scaled so the values don't make sense
+    // FIXME TODO : get the correct values for the Chinese camera and for the Basler camera
     if (cameraType.toLower() == "c930e"){
         /* Given the ratio of dpx to dpy, simply pick some value for dpy, say 10um (or
             if you know it you can use the actual vertical pixel pitch) and use that to
@@ -122,8 +150,8 @@ bool CameraCalibration::setCameraParameters(QString cameraType, camera_parameter
             parameters. (http://imagelab.ing.unimore.it/visor_test/faq_calibration.txt)*/
         double width = 4.8;
         double height = 3.6;
-        double resX = 1920;
-        double resY = 1080;
+        double resX = frameSize.width();
+        double resY = frameSize.height();
         cameraParameters.Ncx = resX;
         cameraParameters.Nfx = resX;
         cameraParameters.Cx = cameraParameters.Ncx / 2.;
@@ -136,8 +164,8 @@ bool CameraCalibration::setCameraParameters(QString cameraType, camera_parameter
         return true;
     }
     if (cameraType.toLower() == "basler"){
-        double resX = 960;
-        double resY = 720;
+        double resX = frameSize.width();
+        double resY = frameSize.height();
         cameraParameters.Ncx = resX;
         cameraParameters.Nfx = resX;
         cameraParameters.Cx = cameraParameters.Ncx / 2.;

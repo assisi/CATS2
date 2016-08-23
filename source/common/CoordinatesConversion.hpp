@@ -19,7 +19,7 @@ class CoordinatesConversion
 {
 public:
     //! Constructor. Gets the file name containing the camera calibration data.
-    explicit CoordinatesConversion(QString calibrationFileName);
+    explicit CoordinatesConversion(QString calibrationFileName, QSize targetFrameSize);
     //! Destructor.
     virtual ~CoordinatesConversion();
 

@@ -3,10 +3,11 @@
 #include "CameraCalibration.hpp"
 
 /*!
- * Constructor. Gets the file name containing the camera calibration data.
+ * Constructor. Gets the file name containing the camera calibration data and the required video
+ * frames size.
  */
-CoordinatesConversion::CoordinatesConversion(QString calibrationFileName) :
-    m_cameraCalibration(new CameraCalibration(calibrationFileName))
+CoordinatesConversion::CoordinatesConversion(QString calibrationFileName, QSize targetFrameSize) :
+    m_cameraCalibration(new CameraCalibration(calibrationFileName, targetFrameSize))
 {
 
 }
