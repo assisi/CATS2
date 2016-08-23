@@ -62,7 +62,7 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, boo
         // the below camera
         m_cameraDescriptors[SetupType::CAMERA_BELOW] = StreamDescriptor(streamType, streamParameters);
     }
-    settingsAccepted = (foundBelowCameraParameters || (!needBelowCamera));
+    settingsAccepted = settingsAccepted && (foundBelowCameraParameters || (!needBelowCamera));
 
     // get the configuration file path
     QString filePath;
@@ -71,7 +71,7 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, boo
     if (foundConfigFilePath) {
         m_configurationFilePath = filePath;
     }
-    settingsAccepted = (foundConfigFilePath || (!needConfigFile));
+    settingsAccepted = settingsAccepted && (foundConfigFilePath || (!needConfigFile));
 
     return settingsAccepted;
 }
