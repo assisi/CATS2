@@ -34,18 +34,19 @@ TrackingRoutine::~TrackingRoutine()
  */
 void TrackingRoutine::process()
 {
-//    cv::namedWindow("Background");
     m_stopped = false;
     TimestampedFrame frame;
-
     while (!m_stopped) {
         if (m_inputQueue->dequeue(frame)) {
             m_currentTimestamp = frame.timestamp();
-            doTracking(frame);
+            if (!frame.image().isNull()) {
+                doTracking(frame);
+                emit trackedAgents(m_agents);
+            }
+            else
+                qDebug() << Q_FUNC_INFO << "Input image does not exist";
         }
-        emit trackedAgents(m_agents);
     }
-
     emit finished();
 }
 
