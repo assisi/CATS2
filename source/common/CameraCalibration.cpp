@@ -62,6 +62,19 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
         return;
     }
 
+    // read the units used for the calibration
+    std::string units;
+    int worldScaleCoefficient;
+    settings.readVariable(QString("worldUnits"), units);
+    if (units.empty()) {
+        qDebug() << Q_FUNC_INFO << "Undefined the world units";
+        return;
+    } else {
+        worldScaleCoefficient = getWorldScaleCoefficient(units);
+        if (worldScaleCoefficient == 0)
+            return;
+    }
+
     // read the number of points
     int numberOfPoints;
     settings.readVariable("calibrationPoints/numberOfPoints", numberOfPoints, 0);
@@ -82,7 +95,9 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
     for(size_t i = 0; i < numberOfPoints; i++) {
         m_calibrationData.zw[i] = 0;
         settings.readVariable(QString("calibrationPoints/point_%1/xWorld").arg(i), m_calibrationData.xw[i]);
+        m_calibrationData.xw[i] *= worldScaleCoefficient;
         settings.readVariable(QString("calibrationPoints/point_%2/yWorld").arg(i), m_calibrationData.yw[i]);
+        m_calibrationData.yw[i] *= worldScaleCoefficient;
         settings.readVariable(QString("calibrationPoints/point_%1/xImage").arg(i), m_calibrationData.Xf[i]);
         m_calibrationData.Xf[i] *= imageScaleCoefficientX;
         settings.readVariable(QString("calibrationPoints/point_%2/yImage").arg(i), m_calibrationData.Yf[i]);
@@ -175,9 +190,27 @@ bool CameraCalibration::setCameraParameters(QString cameraType, QSize frameSize,
         cameraParameters.dy = 0.003;
         cameraParameters.dpy = cameraParameters.dy;
         cameraParameters.sx = 1.0;
-
         return true;
     }
-    qDebug() << Q_FUNC_INFO << "Unknown camera type";
+    qDebug() << Q_FUNC_INFO << "Unknown camera type " << cameraType;
     return false;
+}
+
+/*!
+ * Computes the linear coefficient to convert the calibratin
+ * values to mm based on the present data units. Returns 0 if the units are not known / supported.
+ */
+int CameraCalibration::getWorldScaleCoefficient(std::string units)
+{
+    float coefficient = 0;
+    if (units.compare("mm") == 0) { // 0 means that the strings coinside
+        coefficient = 1;
+    } else if (units.compare("cm") == 0) {
+        coefficient = 10;
+    } else if (units.compare("m") == 0) {
+        coefficient = 100;
+    } else {
+        qDebug() << Q_FUNC_INFO << "Unknown world units " << units.data();
+    }
+    return coefficient;
 }

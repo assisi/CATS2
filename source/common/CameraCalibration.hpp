@@ -46,6 +46,9 @@ public:
 private:
     //! Sets the camera parameters based on the camera type.
     bool setCameraParameters(QString cameraType, QSize frameSize, camera_parameters& cameraParameters);
+    //! Computes the linear coefficient to convert the calibratin values to mm based on the
+    //! present data units. Returns 0 if the units are not known / supported.
+    int getWorldScaleCoefficient(std::string units);
 
     //! Initializes the calibration.
     void calibrate(QString fileName, QSize targetFrameSize);
