@@ -1,9 +1,10 @@
 <?xml version="1.0"?>
 <opencv_storage>
-    <cameraType>basler</cameraType>
+    <!-- fixme : to put a correct camera type.  -->
+    <cameraType>c930e</cameraType>
     <imageSize>
-        <width>2048</width>
-        <height>2048</height>
+        <width>640</width>
+        <height>480</height>
     </imageSize>
     <worldUnits>cm</worldUnits>
     <calibrationPoints>
@@ -11,128 +12,128 @@
         <point_0>
             <xWorld>-13.6</xWorld>
             <yWorld>0</yWorld>
-            <xImage>588</xImage>
-            <yImage>1265</yImage>
+            <xImage>495</xImage>
+            <yImage>330</yImage>
         </point_0>
         <point_1>
             <xWorld>0</xWorld>
             <yWorld>0</yWorld>
-            <xImage>843</xImage>
-            <yImage>1280</yImage>
+            <xImage>403</xImage>
+            <yImage>339</yImage>
         </point_1>
         <point_2>
             <xWorld>13.6</xWorld>
             <yWorld>0</yWorld>
-            <xImage>1084</xImage>
-            <yImage>1294</yImage>
+            <xImage>298</xImage>
+            <yImage>346</yImage>
         </point_2>
         <point_3>
             <xWorld>27.2</xWorld>
             <yWorld>0</yWorld>
-            <xImage>1328</xImage>
-            <yImage>1311</yImage>
+            <xImage>197</xImage>
+            <yImage>344</yImage>
         </point_3>
         <point_4>
             <xWorld>40.8</xWorld>
             <yWorld>0</yWorld>
-            <xImage>1572</xImage>
-            <yImage>1330</yImage>
+            <xImage>112</xImage>
+            <yImage>340</yImage>
         </point_4>
         <point_5>
             <xWorld>-13.6</xWorld>
             <yWorld>13.6</yWorld>
-            <xImage>604	</xImage>
-            <yImage>1016</yImage>
+            <xImage>497</xImage>
+            <yImage>231</yImage>
         </point_5>
         <point_6>
             <xWorld>0</xWorld>
             <yWorld>13.6</yWorld>
-            <xImage>852</xImage>
-            <yImage>1033</yImage>
+            <xImage>401</xImage>
+            <yImage>236</yImage>
         </point_6>
         <point_7>
             <xWorld>13.6</xWorld>
             <yWorld>13.6</yWorld>
-            <xImage>1096</xImage>
-            <yImage>1048</yImage>
+            <xImage>293</xImage>
+            <yImage>240</yImage>
         </point_7>
         <point_8>
             <xWorld>27.2</xWorld>
             <yWorld>13.6</yWorld>
-            <xImage>1339</xImage>
-            <yImage>1066</yImage>
+            <xImage>189</xImage>
+            <yImage>244</yImage>
         </point_8>
         <point_9>
             <xWorld>40.8</xWorld>
             <yWorld>13.6</yWorld>
-            <xImage>1594</xImage>
-            <yImage>1082</yImage>
+            <xImage>102</xImage>
+            <yImage>246</yImage>
         </point_9>
         <point_10>
             <xWorld>-13.6</xWorld>
             <yWorld>27.2</yWorld>
-            <xImage>621</xImage>
-            <yImage>773</yImage>
+            <xImage>489</xImage>
+            <yImage>134</yImage>
         </point_10>
         <point_11>
             <xWorld>0</xWorld>
             <yWorld>27.2</yWorld>
-            <xImage>869</xImage>
-            <yImage>789</yImage>
+            <xImage>396</xImage>
+            <yImage>132</yImage>
         </point_11>
         <point_12>
             <xWorld>13.6</xWorld>
             <yWorld>27.2</yWorld>
-            <xImage>1113</xImage>
-            <yImage>800</yImage>
+            <xImage>291</xImage>
+            <yImage>133</yImage>
         </point_12>
         <point_13>
             <xWorld>27.2</xWorld>
             <yWorld>27.2</yWorld>
-            <xImage>1349</xImage>
-            <yImage>838</yImage>
+            <xImage>188</xImage>
+            <yImage>141</yImage>
         </point_13>
         <point_14>
             <xWorld>40.8</xWorld>
             <yWorld>27.2</yWorld>
-            <xImage>1607</xImage>
-            <yImage>843</yImage>
+            <xImage>104</xImage>
+            <yImage>153</yImage>
         </point_14>
         <point_15>
             <xWorld>0</xWorld>
             <yWorld>40.8</yWorld>
-            <xImage>880</xImage>
-            <yImage>534</yImage>
+            <xImage>387</xImage>
+            <yImage>41</yImage>
         </point_15>
         <point_16>
             <xWorld>13.6</xWorld>
             <yWorld>40.8</yWorld>
-            <xImage>1134</xImage>
-            <yImage>556</yImage>
+            <xImage>288</xImage>
+            <yImage>41</yImage>
         </point_16>
         <point_17>
             <xWorld>27.2</xWorld>
             <yWorld>40.8</yWorld>
-            <xImage>1370</xImage>
-            <yImage>572</yImage>
+            <xImage>193</xImage>
+            <yImage>51</yImage>
         </point_17>
         <point_18>
             <xWorld>0</xWorld>
             <yWorld>-13.6</yWorld>
-            <xImage>827</xImage>
-            <yImage>1527</yImage>
+            <xImage>399</xImage>
+            <yImage>428</yImage>
         </point_18>
         <point_19>
             <xWorld>13.6</xWorld>
             <yWorld>-13.6</yWorld>
-            <xImage>1065</xImage>
-            <yImage>1537</yImage>
+            <xImage>303</xImage>
+            <yImage>436</yImage>
         </point_19>
         <point_20>
             <xWorld>27.2</xWorld>
             <yWorld>-13.6</yWorld>
-            <xImage>1313</xImage>
-            <yImage>1553</yImage>
+            <xImage>208</xImage>
+            <yImage>433</yImage>
         </point_20>
     </calibrationPoints>
 </opencv_storage>
