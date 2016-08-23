@@ -34,7 +34,7 @@ void FrameConvertor::process()
 
         while (!m_stopped) {
             // Use the blocking with timeout version of dequeue
-            if (m_inputQueue->dequeue(frame))
+            if (m_inputQueue->dequeue(frame) && (!frame.image().isNull()))
                 emit newFrame(cvMatToQImage(frame.image()));
         }
     } else {

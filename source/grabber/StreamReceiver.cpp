@@ -81,12 +81,21 @@ void StreamReceiver::process()
     if (m_pipelineDescription.isEmpty())
         return;
 
-    m_pipeline = QGst::Parse::launch(m_pipelineDescription).dynamicCast<QGst::Pipeline>();
-    m_sink.setElement(m_pipeline->getElementByName("queueingsink"));
-    QGlib::connect(m_pipeline->bus(), "message::error", this, &StreamReceiver::onError);
+    try {
+        m_pipeline = QGst::Parse::launch(m_pipelineDescription).dynamicCast<QGst::Pipeline>();
+        m_sink.setElement(m_pipeline->getElementByName("queueingsink"));
+        QGlib::connect(m_pipeline->bus(), "message::error", this, &StreamReceiver::onError);
+//        QGlib::connect(m_pipeline->bus(), "message::eos", this, &StreamReceiver::onError);
+//        QGlib::connect(m_pipeline->bus(), "message::state-changed", this, &StreamReceiver::onError);
+//        QGlib::connect(m_pipeline->bus(), "message::application", this, &StreamReceiver::onError);
 
-    // start the pipeline
-    m_pipeline->setState(QGst::StatePlaying);
+        // start the pipeline
+        m_pipeline->setState(QGst::StatePlaying);
+    }
+    catch (...) {
+        qDebug() << Q_FUNC_INFO << "Exception while launching the pipeline, stopped";
+        return;
+    }
 }
 
 /*!
