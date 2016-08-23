@@ -1,6 +1,15 @@
 <?xml version="1.0"?>
 <opencv_storage>
     <mainCamera>
+        <!--
+            TODO : consider adding here the camera type or id to compare with the
+            value in the calibration file.
+        -->
+        <imageSize>
+            <width>500</width>
+            <height>500</height>
+        </imageSize>
+        <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
         <tracking>
             <trackingMethod>blobDetector</trackingMethod>
             <numberOfAgents>6</numberOfAgents>
@@ -13,16 +22,18 @@
                 <k>0.04</k>
         </blobDetector>
         </tracking>
-        <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
     </mainCamera>
     <cameraBelow>
+        <imageSize>
+            <width>640</width>
+            <height>480</height>
+        </imageSize>
+        <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-below-camera.xml</cameraCalibrationFile>
         <tracking>
             <trackingMethod>fishBotLedsTracking</trackingMethod>
             <numberOfAgents>2</numberOfAgents>
             <fishBotLedsTracking>
-                <!--
-                    TODO : consider moving this to the robot's specific section.
-                 -->
+                <!-- TODO : consider moving this to the robot's specific section. -->
                 <fishBot_1>
                     <id>H</id>
                     <color>

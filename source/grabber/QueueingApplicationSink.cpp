@@ -18,9 +18,11 @@
 /*!
  * Constructor. Gets a queue to put the frames in.
  */
-QueueingApplicationSink::QueueingApplicationSink(TimestampedFrameQueuePtr outputQueue):
+QueueingApplicationSink::QueueingApplicationSink(TimestampedFrameQueuePtr outputQueue, QSize targetFrameSize):
      QGst::Utils::ApplicationSink(),
-    m_outputQueue(outputQueue)
+    m_outputQueue(outputQueue),
+    m_convertFrames(targetFrameSize.isValid()),
+    m_targetFrameSize(targetFrameSize.width(), targetFrameSize.height())
 {
 }
 
@@ -42,12 +44,17 @@ QGst::FlowReturn QueueingApplicationSink::newBuffer()
 
         //    qDebug() << Q_FUNC_INFO << "Sample caps:" << structure->toString();
 
-        // create the image from the buffer data
+        // create the image from the buffer data (it makes a pointer to the data in buffer)
         cv::Mat image(height, width, CV_8UC3, const_cast<uchar*>(buffer->data()));
 
-        // copy the image to be placed in the queue
+        // copy / resize the image to be placed in the queue (to have data in the image out of the buffer)
         cv::Mat* frameImage = new cv::Mat(height, width, CV_8UC3);
-        image.copyTo(*frameImage);
+        // resize the image if necessary
+        if (m_convertFrames) {
+            cv::resize(image, *frameImage, m_targetFrameSize, 0, 0, cv::INTER_AREA);
+        } else {
+            image.copyTo(*frameImage);
+        }
 
         // and push it to the queue
         std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());

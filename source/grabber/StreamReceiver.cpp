@@ -7,6 +7,7 @@
 #include <QGlib/Error>
 
 #include <QtCore/QFileInfo>
+#include <QtCore/QSize>
 
 /*!
  * The map to translate the string stream type to the corresponding enum.
@@ -18,10 +19,10 @@ const QMap<QString, StreamType> StreamDescriptor::m_streamTypeByName = {{"v4l", 
 /*!
 * Constructor.
 */
-StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, TimestampedFrameQueuePtr outputQueue) :
+StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, QSize targetFrameSize, TimestampedFrameQueuePtr outputQueue) :
     QObject(nullptr),
     m_pipelineDescription(),
-    m_sink(outputQueue)
+    m_sink(outputQueue, targetFrameSize)
 {
     switch (streamParameters.streamType()) {
         case StreamType::VIDEO_4_LINUX:

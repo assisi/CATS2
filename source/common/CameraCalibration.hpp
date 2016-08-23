@@ -45,6 +45,7 @@ public:
 
 private:
     //! Sets the camera parameters based on the camera type.
+    bool setCameraParameters(QString cameraType, QSize frameSize, camera_parameters& cameraParameters);
 
     //! Initializes the calibration.
     void calibrate(QString fileName, QSize targetFrameSize);

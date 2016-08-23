@@ -19,7 +19,7 @@ class StreamReceiver : public QObject
     Q_OBJECT
 public:
     //! Constructor for a typified input stream.
-    explicit StreamReceiver(StreamDescriptor parameters, TimestampedFrameQueuePtr outputQueue);
+    explicit StreamReceiver(StreamDescriptor parameters, QSize targetFrameSize, TimestampedFrameQueuePtr outputQueue);
 
     //! Destructor.
     virtual ~StreamReceiver();

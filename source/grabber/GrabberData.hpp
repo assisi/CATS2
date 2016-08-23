@@ -17,8 +17,8 @@ class GrabberData : public QObject
 {
     Q_OBJECT
 public:
-    //! Constructor.
-    explicit GrabberData(StreamDescriptor parameters, TimestampedFrameQueuePtr outputQueue);
+    //! Constructor. The target frame size defines the expected video frame resolution.
+    explicit GrabberData(StreamDescriptor parameters, QSize targetFrameSize, TimestampedFrameQueuePtr outputQueue);
     //! Destructor.
     virtual ~GrabberData();
 

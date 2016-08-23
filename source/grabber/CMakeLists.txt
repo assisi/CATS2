@@ -3,6 +3,7 @@ set(srcs
     GrabberHandler.cpp
     StreamReceiver.cpp
     QueueingApplicationSink.cpp
+    settings/GrabberSettings.cpp
 )
 
 set(hdrs
