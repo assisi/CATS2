@@ -8,7 +8,7 @@
 #include <CoordinatesConversion.hpp>
 #include <TimestampedFrame.hpp>
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class TrackingRoutineWidget;
 

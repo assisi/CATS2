@@ -8,7 +8,7 @@
 #include <CommonPointerTypes.hpp>
 #include <SetupType.hpp>
 
-#include <QObject>
+#include <QtCore/QObject>
 
 class AgentDataWorld;
 class AgentDataImage;

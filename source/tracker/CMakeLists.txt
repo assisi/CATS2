@@ -8,15 +8,16 @@ set(srcs
     settings/FishBotLedsTrackingSettings.cpp
     settings/TrackingSetupSettings.cpp
     TrackingData.cpp
+    TrackingDataManager.cpp
     TrackingSetup.cpp
     TrackingHandler.cpp
-    TrackerPointerTypes.hpp
     gui/TrackingRoutineWidget.cpp
 )
 
 set(hdrs
     TrackingFactory.hpp
     routines/TrackingRoutineType.hpp
+    TrackerPointerTypes.hpp
 )
 
 qt5_add_resources(resources icons.qrc)
