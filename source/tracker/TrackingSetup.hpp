@@ -6,6 +6,7 @@
 
 #include <CommonPointerTypes.hpp>
 #include <GrabberPointerTypes.hpp>
+#include <HubPointerTypes.hpp>
 
 #include <gui/TrackingRoutineWidget.hpp>
 
@@ -20,8 +21,9 @@
 class TrackingSetup
 {
 public:
-    //! Constructor.
-    TrackingSetup(SetupType::Enum setupType);
+    //! Constructor. The needOutputQueue specifies if this class needs to provide
+    //! an queue with the camera images to be shown on an external GUI.
+    TrackingSetup(SetupType::Enum setupType, bool needOutputQueue = false);
 
 public:
     //! Returns the pointer to the tracking routine gui.
@@ -39,6 +41,10 @@ private:
     GrabberHandlerPtr m_grabber;
     //! The tracker that detects and tracks agents in the income stream.
     TrackingHandlerPtr m_tracking;
+
+    //! The queue hub to duplicate the frames from the input queue to several output queues. It's created only when
+    //! it's requested with a specific flag in the constructor.
+    QueueHubPtr m_queueHub;
 };
 
 #endif // CATS2_TRACKING_SETUP_HPP

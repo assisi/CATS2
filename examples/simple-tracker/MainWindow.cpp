@@ -16,7 +16,8 @@ MainWindow::MainWindow(SetupType::Enum setupType, QWidget *parent) :
     m_ui->setupUi(this);
 //    setWindowIcon(QIcon(":/images/mobots_logo.png"));
 
-    m_cameraSetup = TrackingSetupPtr(new TrackingSetup(setupType));
+    bool needOutputQueue = true;
+    m_cameraSetup = TrackingSetupPtr(new TrackingSetup(setupType, needOutputQueue));
 
     setCentralWidget(m_cameraSetup->trackingWidget());
 }
