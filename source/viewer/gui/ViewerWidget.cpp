@@ -16,14 +16,17 @@
 /*!
  * Constructor.
  */
-ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QWidget *parent) :
+ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *parent) :
     QWidget(parent),
     m_data(viewerData),
+    m_frameSize(frameSize),
     m_uiViewer(new Ui::ViewerWidget)
 {
     m_uiViewer->setupUi(this);
     // always receive mouse events
     m_uiViewer->view->setMouseTracking(true);
+    // set the size of the view
+    m_uiViewer->view->resize(frameSize.width(), frameSize.height());
 
     // create the scene
     m_scene = new FrameScene(this);

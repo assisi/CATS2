@@ -24,7 +24,7 @@ class ViewerWidget : public QWidget
     Q_OBJECT
 public:
     //! Constructor.
-    explicit ViewerWidget(ViewerDataPtr data, QWidget *parent = nullptr);
+    explicit ViewerWidget(ViewerDataPtr data, QSize frameSize, QWidget *parent = nullptr);
     //! Destructor.
     virtual ~ViewerWidget() final;
 
@@ -50,6 +50,8 @@ protected slots:
 protected:
     //! The data object that provides the frames and agent's positions to show.
     ViewerDataPtr m_data;
+    //! The frame size.
+    QSize m_frameSize;
     //! The form.
     Ui::ViewerWidget* m_uiViewer;
     //! The graphics scene to show the video stream and agents.

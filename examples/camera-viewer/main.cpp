@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
                                             setupType, needTargetFrameSize)) {
                 grabberHandler = GrabberHandlerPtr(new GrabberHandler(setupType));
 
-                ViewerWindow mainWindow(grabberHandler->inputQueue(), coordinatesConversion);
+                ViewerWindow mainWindow(setupType, grabberHandler->inputQueue(), coordinatesConversion);
                 mainWindow.show();
                 return app.exec();
             } else {

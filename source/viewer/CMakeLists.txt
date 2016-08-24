@@ -5,6 +5,7 @@ set(srcs
     gui/ViewerWidget.cpp
     gui/FrameScene.cpp
     gui/ViewerWindow.cpp
+    settings/ViewerSettings.cpp
 )
 
 set(hdrs

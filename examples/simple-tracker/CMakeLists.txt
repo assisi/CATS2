@@ -11,6 +11,7 @@ include_directories(${CMAKE_SOURCE_DIR}/source/viewer)
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 include_directories(${CMAKE_SOURCE_DIR}/source/hub)
 include_directories(${CMAKE_SOURCE_DIR}/source/tracker)
+
 add_executable(simple-tracker ${srcs} ${uis_hdrs})
 target_link_libraries(simple-tracker common grabber tracker viewer hub Qt5::Core Qt5::Widgets Qt5::Gui
                         ${QTGSTREAMER_LIBRARY} ${QTGSTREAMER_LIBRARIES}

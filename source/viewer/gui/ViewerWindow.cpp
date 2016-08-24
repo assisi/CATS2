@@ -13,7 +13,10 @@
 /*!
  * Constructor.
  */
-ViewerWindow::ViewerWindow(TimestampedFrameQueuePtr queuePtr, CoordinatesConversionPtr coordinatesConversion, QWidget *parent) :
+ViewerWindow::ViewerWindow(SetupType::Enum setupType,
+                           TimestampedFrameQueuePtr queuePtr,
+                           CoordinatesConversionPtr coordinatesConversion,
+                           QWidget *parent) :
     QMainWindow(parent),
     m_ui(new Ui::ViewerWindow)
 {
@@ -21,7 +24,7 @@ ViewerWindow::ViewerWindow(TimestampedFrameQueuePtr queuePtr, CoordinatesConvers
 //	setWindowIcon(QIcon(":/images/mobots_logo.png"));
 
     // and the viewer handler
-    m_viewerHandler = ViewerHandlerPtr(new  ViewerHandler(queuePtr, coordinatesConversion), &QObject::deleteLater);
+    m_viewerHandler = ViewerHandlerPtr(new ViewerHandler(setupType, queuePtr, coordinatesConversion), &QObject::deleteLater);
     m_viewerHandler->data()->blockSignals(true);
     // make the frame viewer the central widget
     setCentralWidget(m_viewerHandler->widget());

@@ -25,7 +25,7 @@ int main(int argc, char *argv[])
     // parse input arguments to initialize the grabber
     if (CommandLineParameters::get().init(argc, argv)) {
         GrabberHandlerPtr grabberHandler;
-        if (CommandLineParameters::get().mainCameraDescriptor().isValid()){
+        if (CommandLineParameters::get().cameraDescriptor(setupType).isValid()){
             bool needTargetFrameSize = true;
             if (GrabberSettings::get().init(CommandLineParameters::get().configurationFilePath(),
                                             setupType, needTargetFrameSize)) {

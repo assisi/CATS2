@@ -4,6 +4,7 @@
 #include "ViewerPointerTypes.hpp"
 
 #include <CommonPointerTypes.hpp>
+#include <SetupType.hpp>
 
 #include <QtCore/QObject>
 
@@ -20,7 +21,8 @@ class ViewerHandler : public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    explicit ViewerHandler(TimestampedFrameQueuePtr inputQueue,
+    explicit ViewerHandler(SetupType::Enum setupType,
+                           TimestampedFrameQueuePtr inputQueue,
                            CoordinatesConversionPtr coordinatesConversion = CoordinatesConversionPtr());
     //! Destructor.
     virtual ~ViewerHandler();

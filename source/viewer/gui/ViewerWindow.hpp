@@ -7,6 +7,7 @@
 
 #include "ViewerPointerTypes.hpp"
 
+#include <SetupType.hpp>
 #include <TimestampedFrame.hpp>
 #include <CommonPointerTypes.hpp>
 
@@ -26,7 +27,8 @@ class ViewerWindow : public QMainWindow
     Q_OBJECT
 public:
     //! Constructor. Gets the income frames queue and the optional coordinates conversion class.
-    explicit ViewerWindow (TimestampedFrameQueuePtr queuePtr,
+    explicit ViewerWindow (SetupType::Enum setupType,
+                           TimestampedFrameQueuePtr queuePtr,
                            CoordinatesConversionPtr coordinatesConversion = CoordinatesConversionPtr(),
                            QWidget *parent = nullptr);
     //! Destructor.
