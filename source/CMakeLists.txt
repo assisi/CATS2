@@ -3,4 +3,5 @@ add_subdirectory(grabber)
 add_subdirectory(viewer)
 add_subdirectory(tracker)
 add_subdirectory(hub)
+add_subdirectory(cats)
 

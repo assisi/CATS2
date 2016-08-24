@@ -29,6 +29,12 @@ public:
     //! Returns the pointer to the tracking routine gui.
     QWidget* trackingWidget() { return m_tracking->widget(); }
 
+    //! Returns the pointer to the hub's output queue.
+    TimestampedFrameQueuePtr viewerQueue();
+
+    //! Returns the pointer to the coordinates transformation.
+    CoordinatesConversionPtr coordinatesConversion() { return m_coordinatesConversion; }
+
 private:
     //! The type of setup, for instance, main camera or the camera below.
     SetupType::Enum m_setupType;

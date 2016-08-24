@@ -25,3 +25,14 @@ TrackingSetup::TrackingSetup(SetupType::Enum setupType, bool needOutputQueue) :
         m_tracking = TrackingHandlerPtr(new TrackingHandler(setupType, m_coordinatesConversion, m_queueHub->addOutputQueue()));
     }
 }
+
+/*!
+ * Returns the pointer to the hub's output queue.
+ */
+TimestampedFrameQueuePtr TrackingSetup::viewerQueue()
+{
+    if (!m_queueHub.isNull())
+        return m_queueHub->addOutputQueue();
+    else
+        return TimestampedFrameQueuePtr();
+}

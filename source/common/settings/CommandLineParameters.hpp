@@ -92,10 +92,10 @@ public:
 public:
     //! Returns the parameters of the given setup.
     StreamDescriptor cameraDescriptor(SetupType::Enum setupType) const { return m_cameraDescriptors[setupType]; }
-    //! Returns the parameters of the main camera.
-    StreamDescriptor mainCameraDescriptor() const { return m_cameraDescriptors[SetupType::MAIN_CAMERA]; }
     //! Return the path to the configuration file.
     QString configurationFilePath() const { return m_configurationFilePath; }
+    //! Returns the list of the setup types correspondign to provided input streams.
+    QList<SetupType::Enum> availableSetups() const { return m_cameraDescriptors.keys(); }
 
 private:
     //! Constructor. Defining it here prevents construction.
