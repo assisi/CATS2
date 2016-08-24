@@ -21,7 +21,7 @@ public:
     static GrabberSettings& get();
 
     //! Initializes the parameters from the configuration file.
-    bool init(QString configurationFileName, SetupType::Enum setupType, bool needTargetFrameSize = false);
+    bool init(QString configurationFileName, SetupType::Enum setupType, bool needTargetFrameSize = true);
 
     // delete copy and move constructors and assign operators
     //! Copy constructor.
