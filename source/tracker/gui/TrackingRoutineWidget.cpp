@@ -16,8 +16,10 @@ TrackingRoutineWidget::TrackingRoutineWidget(TrackingDataPtr trackingData, QWidg
 {
     m_ui->setupUi(this);
 
-    m_ui->setupLabel->setText(SetupType::toString(m_data->setupType()));
-    m_ui->trackingTypeLabel->setText(TrackingRoutineType::toString(m_data->trackingType()));
+    if (!m_data.isNull()) {
+        m_ui->setupLabel->setText(SetupType::toString(m_data->setupType()));
+        m_ui->trackingTypeLabel->setText(TrackingRoutineType::toString(m_data->trackingType()));
+    }
 
     // show the debug viewer window
     connect(m_ui->showViewerButton, &QPushButton::toggled, this, &TrackingRoutineWidget::onShowDebugViewer);
@@ -43,16 +45,18 @@ TrackingRoutineWidget::~TrackingRoutineWidget()
  */
 void TrackingRoutineWidget::onShowDebugViewer(bool showWindow)
 {
-    if (showWindow) {
-        m_viewerWindow = new ViewerWindow(m_data->debugQueue(), m_data->coordinatesConversion(), this);
-        m_viewerWindow->setAttribute(Qt::WA_DeleteOnClose, true); // delete the window once it is closed
-        // when the window is about to be deleted we clean the pointer and uncheck the button
-        connect(m_viewerWindow, &ViewerWindow::destroyed, [this](QObject *object) {
-            m_viewerWindow = nullptr;
-            m_ui->showViewerButton->setChecked(false);
-        });
-        m_viewerWindow->show();
-    } else {
-        m_viewerWindow->deleteLater();
+    if (!m_data.isNull()) {
+        if (showWindow) {
+            m_viewerWindow = new ViewerWindow(m_data->setupType(), m_data->debugQueue(), m_data->coordinatesConversion(), this);
+            m_viewerWindow->setAttribute(Qt::WA_DeleteOnClose, true); // delete the window once it is closed
+            // when the window is about to be deleted we clean the pointer and uncheck the button
+            connect(m_viewerWindow, &ViewerWindow::destroyed, [this](QObject *object) {
+                m_viewerWindow = nullptr;
+                m_ui->showViewerButton->setChecked(false);
+            });
+            m_viewerWindow->show();
+        } else {
+            m_viewerWindow->deleteLater();
+        }
     }
 }
