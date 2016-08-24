@@ -108,3 +108,17 @@ void ViewerWidget::onMouseMoved(QPointF scenePosition)
         }
     }
 }
+
+/*!
+ * Scale to the available area.
+ */
+void ViewerWidget::adjust()
+{
+    QSize availableArea = m_uiViewer->view->size();
+    float width = m_uiViewer->view->transform().m11() * m_frameSize.width();
+    float height = m_uiViewer->view->transform().m22() * m_frameSize.height();
+    double scaleCoefficient = qMin(availableArea.width() / width,
+                                   availableArea.height() / height);
+    m_uiViewer->view->scale(scaleCoefficient, scaleCoefficient);
+}
+

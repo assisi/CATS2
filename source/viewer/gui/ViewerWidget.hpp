@@ -40,6 +40,8 @@ public slots:
     void onZoomOut();
     //! Save current frame.
     void saveCurrentFrameToFile();
+    //! Scale to the available area.
+    void adjust();
 
 protected slots:
     //! A new frame arrived.
