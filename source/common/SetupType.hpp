@@ -11,7 +11,8 @@ class SetupType
 public:
     enum Enum {
         MAIN_CAMERA, // camera fixed above the setup
-        CAMERA_BELOW // camera below the robot's support
+        CAMERA_BELOW, // camera below the robot's support
+        UNDEFINED
     };
 
     //! Returns that setup type string that is used to look for settings values
@@ -34,7 +35,7 @@ public:
 
     //! Returns that setup type string in human friendly format.
     static QString toString(Enum setupType) {
-        QString string = "Undefined";
+        QString string;
 
         switch (setupType) {
         case MAIN_CAMERA:
@@ -43,7 +44,9 @@ public:
         case CAMERA_BELOW:
             string = "Camera below";
             break;
+        case UNDEFINED:
         default:
+            string = "Undefined";
             break;
         }
         return string;
