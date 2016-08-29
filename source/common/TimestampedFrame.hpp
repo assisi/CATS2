@@ -56,8 +56,8 @@ public:
     //! The queue became too big.
     bool isOutgrown() const { return (m_queue.size_approx() > m_maxSize); }
 
-    //! Drops one element from the tail.
-    void dropTail()
+    //! Drops one element from the head.
+    void dropHead()
     {
         TimestampedFrame frameToForget;
         m_queue.try_dequeue(frameToForget);
@@ -78,33 +78,24 @@ public:
     {
         // first check if there is allows place in the queue otherwise remove the tail element
         if (isOutgrown() && m_dropTailWhenOutgrown) {
-            dropTail();
+            dropHead();
         }
 
         // enqueue the new element
         if (!m_queue.try_enqueue(frame))
             qDebug() << Q_FUNC_INFO << "Could not enqueue new element, skipping";
-//        qDebug() <<  Q_FUNC_INFO << QString("Frames queue contains %1 elements").arg(_queue.size_approx());
     }
 
     //! Gets an element from the queue, returns true if succeded.
     bool dequeue(TimestampedFrame& frame)
     {
-        bool result = m_queue.try_dequeue(frame);
-        // if nothing in the queue then wait a bit
-        if (!result) {
-//            qDebug() << Q_FUNC_INFO << "Failed to get an element from the queue, is it empty?";
-            std::this_thread::sleep_for( std::chrono::milliseconds(TimeOutMs));
-        }
-//        } else
-//            qDebug() << Q_FUNC_INFO << "Took one element from the queue";
-
+        bool result = m_queue.wait_dequeue_timed(frame, std::chrono::milliseconds(TimeOutMs));
         return result;
     }
 
 private:
     //! The queue to store data.
-    moodycamel::ReaderWriterQueue<TimestampedFrame> m_queue;
+    moodycamel::BlockingReaderWriterQueue<TimestampedFrame> m_queue;
     //! The max number of elements that can be put to the queue. Since it seems to be
     //! not supported by the "moodycamel::ReaderWriterQueue" to limit the size of the queue
     //! we need to store it separately.
