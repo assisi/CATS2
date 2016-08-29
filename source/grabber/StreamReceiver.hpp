@@ -32,11 +32,15 @@ public slots:
 
 private slots:
     //! Called when an error is detected in the input pipelile.
-    void onError(const QGst::MessagePtr& message);
+    void onMessage(const QGst::MessagePtr& message);
 
 signals:
     //! Emitted when an error is encountered.
     void error(QString errorMessage);
+
+private:
+    //! Tries to restart the video stream.
+    void restart();
 
 private:
     //! The pipeline description to set the gstreamer.
@@ -45,6 +49,10 @@ private:
     QGst::PipelinePtr m_pipeline;
     //! The sink that recieives frames.
     QueueingApplicationSink m_sink;
+
+    //! The flag that specifies if the video stream should be restarted when
+    //! an "end-of-stream" message is received.
+    bool m_restartOnEos;
 };
 
 #endif // CATS2_STREAM_RECEIVER_H

@@ -4,6 +4,7 @@
 #include <QGlib/Connect>
 #include <QGst/Bus>
 #include <QGst/Message>
+#include <QGst/Event>
 #include <QGlib/Error>
 
 #include <QtCore/QFileInfo>
@@ -22,7 +23,8 @@ const QMap<QString, StreamType> StreamDescriptor::m_streamTypeByName = {{"v4l", 
 StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, QSize targetFrameSize, TimestampedFrameQueuePtr outputQueue) :
     QObject(nullptr),
     m_pipelineDescription(),
-    m_sink(outputQueue, targetFrameSize)
+    m_sink(outputQueue, targetFrameSize),
+    m_restartOnEos(false)
 {
     switch (streamParameters.streamType()) {
         case StreamType::VIDEO_4_LINUX:
@@ -40,6 +42,7 @@ StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, QSize targetFr
                                             "deinterlace ! "
                                             "video/x-raw-rgb ! ffmpegcolorspace !"
                                             "appsink name=queueingsink").arg(streamParameters.parameters());
+            m_restartOnEos = true;
             break;
         }
         case StreamType::LOCAL_IMAGE_FILE:
@@ -84,11 +87,9 @@ void StreamReceiver::process()
     try {
         m_pipeline = QGst::Parse::launch(m_pipelineDescription).dynamicCast<QGst::Pipeline>();
         m_sink.setElement(m_pipeline->getElementByName("queueingsink"));
-        QGlib::connect(m_pipeline->bus(), "message::error", this, &StreamReceiver::onError);
-//        QGlib::connect(m_pipeline->bus(), "message::eos", this, &StreamReceiver::onError);
-//        QGlib::connect(m_pipeline->bus(), "message::state-changed", this, &StreamReceiver::onError);
-//        QGlib::connect(m_pipeline->bus(), "message::application", this, &StreamReceiver::onError);
+        QGlib::connect(m_pipeline->bus(), "message", this, &StreamReceiver::onMessage);
 
+        m_pipeline->bus()->addSignalWatch();
         // start the pipeline
         m_pipeline->setState(QGst::StatePlaying);
     }
@@ -107,25 +108,40 @@ void StreamReceiver::stop()
 }
 
 /*!
+ * Tries to restart the video stream.
+ */
+void StreamReceiver::restart()
+{
+    QGst::SeekEventPtr event = QGst::SeekEvent::create(1.0, QGst::FormatTime,
+                                                       QGst::SeekFlagFlush,
+                                                       QGst::SeekTypeSet, 0.,
+                                                       QGst::SeekTypeNone,
+                                                       QGst::ClockTime::None);
+    m_pipeline->sendEvent(event);
+}
+
+/*!
  * Called when an error is detected in the input pipelile. At the moment the behavior is very basic:
  * in case of any error the pipeline is stopped and never restarted.
  */
-void StreamReceiver::onError(const QGst::MessagePtr & message)
+void StreamReceiver::onMessage(const QGst::MessagePtr & message)
 {
-    QString errorMessage;
+    QString informationMessage;
     switch (message->type()) {
         case QGst::MessageEos:
-            errorMessage = "End of stream ";
+            informationMessage = "End of stream ";
+            if (m_restartOnEos)
+                restart();
             break;
         case QGst::MessageError:
-            errorMessage = message.staticCast<QGst::ErrorMessage>()->error().message();
+            informationMessage = message.staticCast<QGst::ErrorMessage>()->error().message();
+            qCritical() << informationMessage;
+            stop();
+            emit error(informationMessage);
             break;
         default:
             break;
     }
-    qCritical() << errorMessage;
-    stop();
-    emit error(errorMessage);
 }
 
 
