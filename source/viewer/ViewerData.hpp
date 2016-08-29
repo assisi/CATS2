@@ -6,6 +6,7 @@
 #include <CommonPointerTypes.hpp>
 
 #include <QtCore/QObject>
+#include <QtGui/QPixmap>
 
 /*!
  * \brief The data class that provides the video frames for the GUI.
@@ -32,7 +33,7 @@ public:
 
 signals:
     //! Transfers the new frame further.
-    void newFrame(QSharedPointer<QImage> frame);
+    void newFrame(QSharedPointer<QPixmap> frame);
 
 private:
     //! The frame convertor that receives frame images and converts them to the Qt image format.

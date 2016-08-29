@@ -41,7 +41,7 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     m_scene->addItem(m_videoFrame);
 
     // connect to the data class
-    qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QImage>");
+    qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QPixmap>");
     connect(m_data.data(), &ViewerData::newFrame, this, &ViewerWidget::onNewFrame);
 }
 
@@ -69,11 +69,12 @@ void ViewerWidget::onZoomOut()
     m_uiViewer->view->scale(1/1.2, 1/1.2);
 }
 
-void ViewerWidget::onNewFrame(QSharedPointer<QImage> frame)
+void ViewerWidget::onNewFrame(QSharedPointer<QPixmap> pixmap)
 {
     if (parent()) { // doesn't make sense to update the widget that belongs nowhere
-        if (!frame.isNull())
-            m_videoFrame->setPixmap(QPixmap::fromImage(*frame.data()));
+        if (!pixmap.isNull()) {
+            m_videoFrame->setPixmap(*pixmap.data());
+        }
     }
 }
 

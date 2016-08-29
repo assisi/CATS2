@@ -6,6 +6,7 @@
 #include <opencv2/core/core.hpp>
 
 #include <QtCore/QObject>
+#include <QtGui/QPixmap>
 
 #include <atomic>
 
@@ -24,7 +25,7 @@ public:
 
 signals:
     //! Sends out the new frame received.
-    void newFrame(QSharedPointer<QImage> frame);
+    void newFrame(QSharedPointer<QPixmap> frame);
     //! Notifies that the convertor is stopped.
     void finished();
 
@@ -36,7 +37,7 @@ public slots:
 
 private:
     //! Converts from openCV Mat to QImage.
-    QSharedPointer<QImage> cvMatToQImage(const QSharedPointer<cv::Mat>& imageCv);
+    QSharedPointer<QPixmap> cvMatToQPixmap(const QSharedPointer<cv::Mat>& imageCv);
 
 private:
     //! The queue containing frames to convert.

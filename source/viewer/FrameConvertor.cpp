@@ -3,6 +3,7 @@
 #include <TimestampedFrame.hpp>
 
 #include <QtGui/QImage>
+#include <QtGui/QPixmap>
 
 /*!
 * Constructor.
@@ -12,7 +13,7 @@ FrameConvertor::FrameConvertor(TimestampedFrameQueuePtr inputQueue) :
     m_inputQueue(inputQueue),
     m_stopped(false)
 {
-    qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QImage>");
+    qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QPixmap>");
 }
 
 /*!
@@ -35,7 +36,7 @@ void FrameConvertor::process()
         while (!m_stopped) {
             // Use the blocking with timeout version of dequeue
             if (m_inputQueue->dequeue(frame) && (!frame.image().isNull()))
-                emit newFrame(cvMatToQImage(frame.image()));
+                emit newFrame(cvMatToQPixmap(frame.image()));
         }
     } else {
         qDebug() << Q_FUNC_INFO << "Input queue is not set, finishing.";
@@ -56,9 +57,10 @@ void FrameConvertor::stop()
  * Converts from openCV Mat to QImage.
  * Inspired by https://asmaloney.com/2013/11/code/converting-between-cvmat-and-qimage-or-qpixmap/
  */
-QSharedPointer<QImage> FrameConvertor::cvMatToQImage(const QSharedPointer<cv::Mat>& imageCv)
+QSharedPointer<QPixmap> FrameConvertor::cvMatToQPixmap(const QSharedPointer<cv::Mat>& imageCv)
 {
     QImage* imageQt = nullptr;
+    QPixmap* pixmapQt = nullptr;
     switch (imageCv->type()) {
         case CV_8UC4: // 8-bit, 4 channel
         {
@@ -81,6 +83,9 @@ QSharedPointer<QImage> FrameConvertor::cvMatToQImage(const QSharedPointer<cv::Ma
             break;
     }
 
-    return  QSharedPointer<QImage>(imageQt);
+    if (imageQt != nullptr)
+        pixmapQt = new QPixmap(QPixmap::fromImage(*imageQt));
+
+    return  QSharedPointer<QPixmap>(pixmapQt);
 }
 

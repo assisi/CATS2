@@ -7,6 +7,7 @@
 
 #include <QtCore/QObject>
 #include <QtWidgets/QWidget>
+#include <QtGui/QPixmap>
 
 class FrameScene;
 class QGraphicsPixmapItem;
@@ -50,7 +51,7 @@ public slots:
 
 protected slots:
     //! A new frame arrived.
-    void onNewFrame(QSharedPointer<QImage> frame);
+    void onNewFrame(QSharedPointer<QPixmap> pixmap);
     //! Triggered when a new mouse position is received from the scene.
     void onMouseMoved(QPointF scenePosition);
 
