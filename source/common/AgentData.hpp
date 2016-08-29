@@ -14,7 +14,8 @@ enum class AgentType
 {
     FISH_CASU,
     FISH,
-    UNDEFINED
+    GENERIC,    // any type of the agent, different from UNDEFINED
+    UNDEFINED   // unknown, no data
 };
 
 /*!
@@ -35,12 +36,14 @@ public:
     AgentType type() const { return m_type; }
 
     //! Constant getter for the agent's state.
-    const StateImage& state() const { return m_stateImage; }
+    const StateImage& state() const { return m_state; }
     //! Mutable getter for the agent's state.
-    StateImage* mutableState() { return &m_stateImage; }
+    StateImage* mutableState() { return &m_state; }
 
     //! Sets the timestamp.
     void setTimestamp(std::chrono::milliseconds timestamp) { m_timestamp = timestamp; }
+    //! Returns the timastamp.
+    std::chrono::milliseconds timestamp() const { return m_timestamp; }
 
 private:
     //! Agent's id.
@@ -48,15 +51,18 @@ private:
     //! The type of image.
     AgentType m_type;
     //! The position of the agent (center) in [px], and it's orientation.
-    StateImage m_stateImage;
+    StateImage m_state;
     //! The corresponding timestamp, in number of milliseconds since 1970-01-01T00:00:00
-    //! Universal Coordinated Time. The timestamp is used to combine the tracking results
-    //! from different concurrent trackers.
+    //! Universal Coordinated Time. The timestamp is to be used to detect the
+    //! outdated data when tracking (assigning ids) to the agents.
     std::chrono::milliseconds m_timestamp;
 };
 
 /*!
  * \brief The class that contains states of agents on the arena.
+ * NOTE : this class doesn't contain the timastamp because world positions
+ * are always secondary to the image positions, and thus are not directly used
+ * in the tracking routines.
  */
 class AgentDataWorld
 {
@@ -67,7 +73,18 @@ public:
                             StateWorld stateWorld = StateWorld());
 
 public:
-    // TODO : add setters and getters
+    //! Returns the agent's id.
+    QString id() const { return m_id; }
+    //! Returns the label corresponding to this agent.
+    QString label() const;
+
+    //! Returns the agent's type.
+    AgentType type() const { return m_type; }
+    //! Set the agent's type.
+    void setType(AgentType type) { m_type = type; }
+
+    //! Constant getter for the agent's state.
+    const StateWorld& state() const { return m_state; }
 
 private:
     //! Agent's id.
@@ -75,11 +92,16 @@ private:
     //! The type of image.
     AgentType m_type;
     //! The position of the agent, in [m].
-    StateWorld m_stateWorld;
+    StateWorld m_state;
+};
+
+struct TimestampedWorldAgentData
+{
+    //! The agent's data.
+    QList<AgentDataWorld> agentsData;
     //! The corresponding timestamp, in number of milliseconds since 1970-01-01T00:00:00
     //! Universal Coordinated Time. The timestamp is used to combine the tracking results
     //! from different concurrent trackers.
-    std::chrono::milliseconds m_timestamp;
+    std::chrono::milliseconds timestamp;
 };
-
 #endif // CATS2_AGENT_DATA_HPP

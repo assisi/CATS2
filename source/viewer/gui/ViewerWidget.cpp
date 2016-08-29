@@ -2,6 +2,7 @@
 #include "ViewerWidget.hpp"
 #include "ViewerData.hpp"
 #include "FrameScene.hpp"
+#include "AgentItem.hpp"
 
 #include <CoordinatesConversion.hpp>
 
@@ -120,5 +121,41 @@ void ViewerWidget::adjust()
     double scaleCoefficient = qMin(availableArea.width() / width,
                                    availableArea.height() / height);
     m_uiViewer->view->scale(scaleCoefficient, scaleCoefficient);
+}
+
+/*!
+ * Triggered on arrival of the new data.
+ */
+void ViewerWidget::showAgents(QList<AgentDataWorld> agentDataList)
+{
+    // first hide all the items on the scene
+    foreach (AgentItem* agentItem, m_agents.values()) {
+        agentItem->hide();
+    }
+    // update the item's positions, the map itself by adding new
+    // items
+    foreach (AgentDataWorld agentData, agentDataList) {
+        QString id = agentData.id();
+        // if an item corresponding to the agent is not yet in the list
+        // then add it
+        if (! m_agents.contains(id)) {
+            m_agents[id] = new AgentItem(agentData.label());
+            m_scene->addItem(m_agents[id]);
+        }
+        // set the position
+        if (agentData.state().position().isValid()) {
+            // convert the position
+            CoordinatesConversionPtr coordinatesConversion = m_data->coordinatesConversion();
+            if (!coordinatesConversion.isNull()) {
+                PositionPixels imagePosition = coordinatesConversion->worldToImagePosition(agentData.state().position());
+                m_agents[id]->setPos(imagePosition.x(), imagePosition.y());
+                m_agents[id]->setVisible(true);
+            } else {
+                qDebug() << Q_FUNC_INFO << "Unable to convert agent's world position to the image position";
+            }
+        } else {
+            qDebug() << Q_FUNC_INFO << QString("The postion of %1 is invalid").arg(agentData.label());
+        }
+    }
 }
 

@@ -35,6 +35,20 @@ PositionMeters CoordinatesConversion::imageToWorldPosition(PositionPixels imageC
 }
 
 /*!
+ * Converts the position in meters to the position in pixels.
+ */
+PositionPixels CoordinatesConversion::worldToImagePosition(PositionMeters worldCoordinates) const
+{
+    PositionPixels imagePosition;
+    if (m_cameraCalibration->isInitialized() && worldCoordinates.isValid())
+        imagePosition = m_cameraCalibration->world2Image(worldCoordinates);
+    else
+        imagePosition.setValid(false);
+
+    return imagePosition;
+}
+
+/*!
  * Converts the orientation from image to world.
  */
 OrientationRad CoordinatesConversion::image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientation) const

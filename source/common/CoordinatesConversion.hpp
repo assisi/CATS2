@@ -28,6 +28,9 @@ public:
     bool isValid();
     //! Converts the position in pixels to the position in meters.
     PositionMeters imageToWorldPosition(PositionPixels imageCoordinates) const;
+    //! Converts the position in meters to the position in pixels.
+    PositionPixels worldToImagePosition(PositionMeters worldCoordinates) const;
+
     //! Converts the orientation from image to world.
     //! FIXME : this method calls imageToWorldPosition() and so it is not optimal to call both methods, need to be merged somehow
     OrientationRad image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientation) const;

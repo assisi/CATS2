@@ -5,6 +5,7 @@
 
 #include <QtCore/QString>
 #include <QtCore/QObject>
+#include <QtCore/QtMath>
 
 /*
  * The position and orientation classes that define the agent's state.
@@ -56,6 +57,11 @@ public:
     //! Return the y coordinate.
     double y() const { return m_y; }
 
+    //! Sets the z coordinate.
+    void setZ(double z) { m_z = z; }
+    //! Return the z coordinate.
+    double z() const { return m_z; }
+
     //! Set the validity status.
     void setValid(bool valid) { m_valid = valid; }
     //! Return the position validity status.
@@ -68,6 +74,13 @@ public:
             return QObject::tr("%1 m, %2 m").arg(m_x, 0, 'f', 3).arg(m_y, 0, 'f', 3);
         else
             return QObject::tr("- m, - m");
+    }
+
+    double distanceTo(const PositionMeters& other)
+    {
+        return qSqrt((m_x - other.x()) * (m_x - other.x()) +
+                     (m_y - other.y()) * (m_y - other.y()) +
+                     (m_z - other.z()) * (m_z - other.z()));
     }
 
 private:

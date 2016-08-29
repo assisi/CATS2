@@ -10,6 +10,7 @@
 
 class FrameScene;
 class QGraphicsPixmapItem;
+class AgentItem;
 
 namespace Ui
 {
@@ -32,6 +33,10 @@ signals:
     //! Notifies that the mouse position has changed and sends it out in both
     //! image and world coordinates.
     void mousePosition(PositionPixels imagePosition, PositionMeters worldPosition);
+
+public slots:
+    //! Triggered on arrival of the new data.
+    void showAgents(QList<AgentDataWorld> agentsData);
 
 public slots:
     //! Zoom on the video.
@@ -60,7 +65,13 @@ protected:
     FrameScene* m_scene;
     //! The item used to show the video stream.
     QGraphicsPixmapItem* m_videoFrame;
-    // TODO add the agents here
+
+    //! The agents maps, contains the agent's id's with corresponding
+    //! graphics items.
+    // FIXME : at the moment that agent's id is copied as it is without taking
+    // into account that theoretically two agents coming from different sources
+    // can have the same id.
+    QMap<QString, AgentItem*> m_agents;
 };
 
 #endif // CATS2_VIEWER_WIDGET_HPP

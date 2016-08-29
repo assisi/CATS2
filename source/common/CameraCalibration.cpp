@@ -133,6 +133,18 @@ PositionMeters CameraCalibration::image2World(PositionPixels imageCoordinates)
 }
 
 /*!
+ * Converts the position in meters to the position in pixels.
+ */
+PositionPixels CameraCalibration::world2Image(PositionMeters worldCoordinates)
+{
+    double ix, iy;
+    world_coord_to_image_coord(m_calibrationConstants, m_cameraParameters,
+                               worldCoordinates.x() * 1000, worldCoordinates.y() * 1000,
+                               worldCoordinates.z() * 1000, &ix, &iy); // the calibration data is set in mm, hence the division
+    return PositionPixels(ix, iy);
+}
+
+/*!
  * Converts the orientation at given position from image to world.
  */
 OrientationRad CameraCalibration::image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad)
