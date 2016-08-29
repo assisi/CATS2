@@ -145,14 +145,12 @@ void FishBotLedsTracking::detectLeds(const cv::Mat& image, size_t robotIndex)
         // set the position and orientation
         robot.mutableState()->setPosition(agentPosition);
         robot.mutableState()->setOrientation(agentOrientation);
+        robot.setTimestamp(m_currentTimestamp);
     } else if (contours.size() == 1){
-        // if the only blob is detected, then we take its position as the robot's position
+        // if only one blob is detected, then we take its position as the robot's position
         cv::Moments moments = cv::moments(contours[0]);
         agentPosition = cv::Point2f((float)(moments.m10/moments.m00+0.5),(float)(moments.m01/moments.m00+0.5));
         robot.mutableState()->setPosition(agentPosition);
-        robot.mutableState()->invalidateOrientation();
-    } else {
-        // nothing is found
-        robot.mutableState()->invalidateState();
+        robot.setTimestamp(m_currentTimestamp);
     }
 }

@@ -12,6 +12,9 @@ set(srcs
     TrackingSetup.cpp
     TrackingHandler.cpp
     gui/TrackingRoutineWidget.cpp
+    gui/BlobDetectorWidget.cpp
+    gui/FishBotLedsTrackingWidget.cpp
+    gui/TrackingUiFactory.cpp
 )
 
 set(hdrs
@@ -21,7 +24,10 @@ set(hdrs
 )
 
 qt5_add_resources(resources icons.qrc)
-qt5_wrap_ui(uis_hdrs gui/TrackingRoutineWidget.ui)
+qt5_wrap_ui(uis_hdrs
+            gui/TrackingRoutineWidget.ui
+            gui/BlobDetectorWidget.ui
+            gui/FishBotLedsTrackingWidget.ui)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 include_directories(${CMAKE_SOURCE_DIR}/source/grabber)

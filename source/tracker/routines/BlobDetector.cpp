@@ -6,7 +6,8 @@
 #include <TimestampedFrame.hpp>
 #include <AgentData.hpp>
 
-#include <QtMath>
+#include <QtCore/QtMath>
+#include <QtCore/QMutexLocker>
 
 /*!
  * Constructor. Gets the settings, the input queue to process and a queue to place debug images on request.
@@ -37,6 +38,7 @@ BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrame
  */
 BlobDetector::~BlobDetector()
 {
+
 }
 
 /*!
@@ -67,6 +69,8 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
     cv::dilate(m_foregroundImage, m_foregroundImage, element);
     cv::erode(m_foregroundImage, m_foregroundImage, element);
 
+    // lock the mutex
+    m_settingsMutex.lock();
     // filter out small blobs on the mask image
     if (m_settings.minBlobSizePx() > 0)
     {
@@ -80,16 +84,24 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
     // corners that are inside the detected objects
     std::vector<std::vector<cv::Point2f>> cornersInContours;
 
-    // find the most prominent corners in the image
-    cv::goodFeaturesToTrack(m_grayscaleImage,               // input
-                            corners,                      // output
-                            m_settings.numberOfAgents(),    // max number of corners to search
-                            m_settings.qualityLevel(),
-                            m_settings.minDistance(),
-                            m_foregroundImage,              // mask
-                            m_settings.blockSize(),
-                            m_settings.useHarrisDetector(),
-                            m_settings.k());
+    try {
+        // find the most prominent corners in the image
+        cv::goodFeaturesToTrack(m_grayscaleImage,               // input
+                                corners,                      // output
+                                m_settings.numberOfAgents(),    // max number of corners to search
+                                m_settings.qualityLevel(),
+                                m_settings.minDistance(),
+                                m_foregroundImage,              // mask
+                                m_settings.blockSize(),
+                                m_settings.useHarrisDetector(),
+                                m_settings.k());
+    }
+    catch(cv::Exception& e) {
+        qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
+    }
+
+    // unlock the mutex
+    m_settingsMutex.unlock();
 
     // find the contours in the image containing the detected corners
     detectContours(m_foregroundImage, corners, centers, cornersInContours);
@@ -128,12 +140,10 @@ void BlobDetector::removeSmallBlobs(cv::Mat& image, int minSize)
                             // source image thus modifying it.
 
     image.copyTo(contoursImage);
-    try
-    {
+    try {
         cv::findContours(contoursImage, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
     }
-    catch(cv::Exception& e)
-    {
+    catch(cv::Exception& e) {
         qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
     }
 
@@ -160,7 +170,10 @@ void BlobDetector::removeSmallBlobs(cv::Mat& image, int minSize)
 /*!
  * Finds the contours in the image.
  */
-void BlobDetector::detectContours(cv::Mat& image, const std::vector<cv::Point2f>& corners, std::vector<cv::Point2f>& centers, std::vector<std::vector<cv::Point2f>>& cornersInContours)
+void BlobDetector::detectContours(cv::Mat& image,
+                                  const std::vector<cv::Point2f>& corners,
+                                  std::vector<cv::Point2f>& centers,
+                                  std::vector<std::vector<cv::Point2f>>& cornersInContours)
 {
     std::vector<std::vector<cv::Point>> contours;
     std::vector<cv::Vec4i> hierarchy;
@@ -199,3 +212,11 @@ void BlobDetector::detectContours(cv::Mat& image, const std::vector<cv::Point2f>
     }
 }
 
+/*!
+ * Updates the settings.
+ */
+void BlobDetector::setSettings(const BlobDetectorSettingsData& settings)
+{
+    QMutexLocker locker(&m_settingsMutex);
+    m_settings = settings;
+}

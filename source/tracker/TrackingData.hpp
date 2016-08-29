@@ -4,6 +4,7 @@
 #include "routines/TrackingRoutine.hpp"
 #include "routines/TrackingRoutineType.hpp"
 #include "TrackerPointerTypes.hpp"
+#include "gui/TrackingUiFactory.hpp"
 
 #include <CommonPointerTypes.hpp>
 #include <SetupType.hpp>
@@ -24,6 +25,8 @@ class TrackingData : public QObject
 {
     Q_OBJECT
 public:
+    friend class TrackingUiFactory;
+
     //! Constructor.
     explicit TrackingData(SetupType::Enum setupType,
                           CoordinatesConversionPtr coordinatesConversion,

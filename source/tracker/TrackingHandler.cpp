@@ -31,4 +31,3 @@ TrackingHandler::~TrackingHandler()
     if (m_widget && m_widget->parent() == nullptr)
         delete m_widget;
 }
-

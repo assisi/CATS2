@@ -5,6 +5,8 @@
 #include "settings/BlobDetectorSettings.hpp"
 #include "TrackerPointerTypes.hpp"
 
+#include <QtCore/QMutex>
+
 /*!
  * A tracker inherited from the original CATS software. It uses the corner detection to find agents in the image.
  */
@@ -16,6 +18,11 @@ public:
     explicit BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrameQueuePtr inputQueue, TimestampedFrameQueuePtr debugQueue);
     //! Destructor.
     virtual ~BlobDetector();
+
+    //! Getter for the settings.
+    const BlobDetectorSettingsData& settings() const { return m_settings; }
+    //! Updates the settings.
+    void setSettings(const BlobDetectorSettingsData& settings);
 
 protected:
     //! The tracking routine excecuted. Gets the original frame, detects
@@ -36,6 +43,8 @@ private:
     static const size_t BackgroundCalculationSufficientNumber = 100;
     //! The tracking settings.
     BlobDetectorSettingsData m_settings;
+    //! The mutex to protect settings.
+    QMutex m_settingsMutex;
 
 private:
     //! The backgound model.

@@ -2,6 +2,7 @@
 #include "ui_TrackingRoutineWidget.h"
 
 #include "TrackingData.hpp"
+#include "TrackingUiFactory.hpp"
 
 #include <SetupType.hpp>
 
@@ -25,6 +26,19 @@ TrackingRoutineWidget::TrackingRoutineWidget(TrackingDataPtr trackingData, QWidg
     connect(m_ui->showViewerButton, &QPushButton::toggled, this, &TrackingRoutineWidget::onShowDebugViewer);
     // request to start feeding the debug queue
     connect(m_ui->showViewerButton, &QPushButton::toggled, m_data.data(), &TrackingData::sendDebugImages);
+
+    // create the specific settings widget
+    QWidget* specificWidget = TrackingUiFactory::createWidget(trackingData);
+    if (specificWidget) {
+        if (!m_ui->settingsWidget->layout()) {
+            QHBoxLayout* layout = new QHBoxLayout(m_ui->settingsWidget);
+            layout->setContentsMargins(0, 0, 0, 0);
+            layout->setSpacing(3);
+        }
+        m_ui->settingsWidget->layout()->addWidget(specificWidget);
+        m_ui->settingsWidget->hide();
+        connect(m_ui->showDetailsButton, &QPushButton::toggled, [=](bool checked){ m_ui->settingsWidget->setVisible(checked); });
+    }
 }
 
 /*!
@@ -52,7 +66,9 @@ void TrackingRoutineWidget::onShowDebugViewer(bool showWindow)
             // when the window is about to be deleted we clean the pointer and uncheck the button
             connect(m_viewerWindow, &ViewerWindow::destroyed, [this](QObject *object) {
                 m_viewerWindow = nullptr;
+                m_ui->showViewerButton->blockSignals(true);
                 m_ui->showViewerButton->setChecked(false);
+                m_ui->showViewerButton->blockSignals(false);
             });
             m_viewerWindow->show();
         } else {
