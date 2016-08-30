@@ -2,6 +2,7 @@
 #include "FrameConvertor.hpp"
 
 #include <QtCore/QThread>
+#include <QtCore/QDebug>
 #include <QtGui/QImage>
 
 /*!
@@ -32,6 +33,7 @@ ViewerData::ViewerData(TimestampedFrameQueuePtr inputQueue,
  */
 ViewerData::~ViewerData()
 {
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
     m_frameConvertor->stop();
 }
 

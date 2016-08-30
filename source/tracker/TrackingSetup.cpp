@@ -27,6 +27,15 @@ TrackingSetup::TrackingSetup(SetupType::Enum setupType, bool needOutputQueue) :
 }
 
 /*!
+ * Destructor.
+ */
+TrackingSetup::~TrackingSetup()
+{
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
+}
+
+
+/*!
  * Returns the pointer to the hub's output queue.
  */
 TimestampedFrameQueuePtr TrackingSetup::viewerQueue()

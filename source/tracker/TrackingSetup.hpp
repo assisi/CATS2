@@ -25,6 +25,9 @@ public:
     //! an queue with the camera images to be shown on an external GUI.
     TrackingSetup(SetupType::Enum setupType, bool needOutputQueue = false);
 
+    //! Destructor.
+    virtual ~TrackingSetup() final;
+
 public:
     //! Returns the pointer to the tracking routine gui.
     QWidget* trackingWidget() { return m_tracking->widget(); }

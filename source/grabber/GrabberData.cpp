@@ -27,6 +27,7 @@ GrabberData::GrabberData(StreamDescriptor parameters, QSize targetFrameSize, Tim
 */
 GrabberData::~GrabberData()
 {
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
     if (!m_streamReceiver.isNull())
         m_streamReceiver->stop();
 }

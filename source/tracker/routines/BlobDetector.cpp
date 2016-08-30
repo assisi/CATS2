@@ -38,7 +38,7 @@ BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrame
  */
 BlobDetector::~BlobDetector()
 {
-
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
 
 /*!

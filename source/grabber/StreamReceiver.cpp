@@ -72,6 +72,7 @@ StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, QSize targetFr
 */
 StreamReceiver::~StreamReceiver()
 {
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
     stop();
 }
 

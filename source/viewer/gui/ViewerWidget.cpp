@@ -50,6 +50,7 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
  */
 ViewerWidget::~ViewerWidget()
 {
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
     delete m_uiViewer;
 }
 

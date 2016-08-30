@@ -37,6 +37,7 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings, Ti
  */
 FishBotLedsTracking::~FishBotLedsTracking()
 {
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
 
 /*!

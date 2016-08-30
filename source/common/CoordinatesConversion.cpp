@@ -17,7 +17,7 @@ CoordinatesConversion::CoordinatesConversion(QString calibrationFileName, QSize 
  */
 CoordinatesConversion::~CoordinatesConversion()
 {
-
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
 
 /*!

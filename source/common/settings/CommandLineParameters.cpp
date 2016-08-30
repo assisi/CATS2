@@ -14,7 +14,7 @@ CommandLineParameters::CommandLineParameters()
  */
 CommandLineParameters::~CommandLineParameters()
 {
-
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
 
 /*!

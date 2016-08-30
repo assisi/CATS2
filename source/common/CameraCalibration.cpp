@@ -16,7 +16,7 @@ CameraCalibration::CameraCalibration(QString calibrationFileName, QSize targetFr
  */
 CameraCalibration::~CameraCalibration()
 {
-
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
 
 /*!

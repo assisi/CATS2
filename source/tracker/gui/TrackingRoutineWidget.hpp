@@ -1,7 +1,8 @@
 #ifndef CATS2_TRACKING_ROUTINE_WIDGET_HPP
 #define CATS2_TRACKING_ROUTINE_WIDGET_HPP
 
-#include <TrackerPointerTypes.hpp>
+#include "TrackerPointerTypes.hpp"
+
 #include <gui/ViewerWindow.hpp>
 
 #include <QtWidgets/QWidget>

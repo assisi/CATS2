@@ -46,6 +46,7 @@ TrackingData::TrackingData(SetupType::Enum setupType,
  */
 TrackingData::~TrackingData()
 {
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
     if (!m_trackingRoutine.isNull())
         m_trackingRoutine->stop();
 }

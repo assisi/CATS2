@@ -21,4 +21,5 @@ GrabberHandler::GrabberHandler(SetupType::Enum setupType) :
 */
 GrabberHandler::~GrabberHandler()
 {
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }

@@ -5,6 +5,7 @@
 #include <routines/BlobDetector.hpp>
 
 #include <QtWidgets/QSpinBox>
+#include <QtCore/QDebug>
 
 /*!
  * Constructor.
@@ -42,6 +43,7 @@ BlobDetectorWidget::BlobDetectorWidget(BlobDetector* routine, QWidget *parent) :
  */
 BlobDetectorWidget::~BlobDetectorWidget()
 {
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
     delete m_ui;
 }
 

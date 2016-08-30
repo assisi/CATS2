@@ -5,6 +5,7 @@
 #include "settings/ViewerSettings.hpp"
 
 #include <QtGui/QImage>
+#include <QtCore/QDebug>
 
 /*!
 * Constructor.
@@ -25,6 +26,7 @@ ViewerHandler::ViewerHandler(SetupType::Enum setupType,
 */
 ViewerHandler::~ViewerHandler()
 {
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
     // if the viewer widget's parent is not set then delete it, otherwise it will stay forever
     if (m_widget && m_widget->parent() == nullptr)
         m_widget->deleteLater();

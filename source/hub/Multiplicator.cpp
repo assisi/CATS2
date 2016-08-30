@@ -19,7 +19,7 @@ Multiplicator::Multiplicator(TimestampedFrameQueuePtr inputQueue) :
 */
 Multiplicator::~Multiplicator()
 {
-
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
 
 /*!

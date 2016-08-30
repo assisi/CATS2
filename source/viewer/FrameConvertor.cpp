@@ -21,7 +21,7 @@ FrameConvertor::FrameConvertor(TimestampedFrameQueuePtr inputQueue) :
 */
 FrameConvertor::~FrameConvertor()
 {
-
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
 
 /*!

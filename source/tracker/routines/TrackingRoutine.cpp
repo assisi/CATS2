@@ -26,7 +26,7 @@ TrackingRoutine::TrackingRoutine(TimestampedFrameQueuePtr inputQueue, Timestampe
 */
 TrackingRoutine::~TrackingRoutine()
 {
-
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
 
 /*!

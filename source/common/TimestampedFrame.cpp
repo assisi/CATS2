@@ -18,5 +18,5 @@ TimestampedFrame::TimestampedFrame(cv::Mat* image, std::chrono::milliseconds tim
  */
 TimestampedFrame::~TimestampedFrame()
 {
-
+//    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
