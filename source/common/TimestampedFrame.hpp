@@ -19,19 +19,19 @@ class TimestampedFrame
 {
 public:
     //! Constructor.
-    explicit TimestampedFrame(cv::Mat* image = nullptr, std::chrono::milliseconds timestamp = std::chrono::milliseconds());
+    explicit TimestampedFrame(cv::Mat image = cv::Mat(), std::chrono::milliseconds timestamp = std::chrono::milliseconds());
     //! Destructor.
     virtual ~TimestampedFrame() final;
 
 public:
     //! Returns the frame image.
-    QSharedPointer<cv::Mat> image() const { return m_image; }
+    cv::Mat image() const { return m_image; }
     //! Returns the time stamp.
     std::chrono::milliseconds timestamp() const { return m_timestamp; }
 
 private:
     //! The frame image.
-    QSharedPointer<cv::Mat> m_image;
+    cv::Mat m_image;
     //! The corresponding timestamp, in number of milliseconds since 1970-01-01T00:00:00
     //! Universal Coordinated Time.
     std::chrono::milliseconds m_timestamp;

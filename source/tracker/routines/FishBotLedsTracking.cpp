@@ -45,13 +45,13 @@ FishBotLedsTracking::~FishBotLedsTracking()
  */
 void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
 {
-    QSharedPointer<cv::Mat> image = frame.image();
+    cv::Mat image = frame.image();
 
     // limit the image format to three channels color images
-    if (image.data()->type() == CV_8UC3) {
+    if (image.type() == CV_8UC3) {
         // detect robots
         for (size_t robotIndex = 0; robotIndex < m_settings.numberOfAgents(); robotIndex++) {
-            detectLeds(*image.data(), robotIndex);
+            detectLeds(image, robotIndex);
 
             // debug for the first robot
             if (robotIndex == 1)
@@ -59,7 +59,7 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
         }
     }
     else
-        qDebug() << Q_FUNC_INFO << "Unsupported image format" << image.data()->type();
+        qDebug() << Q_FUNC_INFO << "Unsupported image format" << image.type();
 }
 
 /*!

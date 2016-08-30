@@ -49,14 +49,14 @@ QGst::FlowReturn QueueingApplicationSink::newBuffer()
             cv::Mat image(height, width, CV_8UC3, const_cast<uchar*>(buffer->data()));
 
             // copy / resize the image to be placed in the queue (to have data in the image out of the buffer)
-            cv::Mat* frameImage = new cv::Mat(height, width, CV_8UC3);
+            cv::Mat frameImage(height, width, CV_8UC3);
             // resize the image if necessary
             if (m_convertFrames) {
-                cv::resize(image, *frameImage, m_targetFrameSize, 0, 0, cv::INTER_AREA);
+                cv::resize(image, frameImage, m_targetFrameSize, 0, 0, cv::INTER_AREA);
             } else {
-                image.copyTo(*frameImage);
+                image.copyTo(frameImage);
             }
-
+//            buffer.clear();
             // and push it to the queue
             std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());
             TimestampedFrame frame(frameImage, ms);

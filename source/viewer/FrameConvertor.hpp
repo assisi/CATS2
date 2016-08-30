@@ -37,7 +37,7 @@ public slots:
 
 private:
     //! Converts from openCV Mat to QImage.
-    QSharedPointer<QPixmap> cvMatToQPixmap(const QSharedPointer<cv::Mat>& imageCv);
+    QSharedPointer<QPixmap> cvMatToQPixmap(const cv::Mat& imageCv);
 
 private:
     //! The queue containing frames to convert.

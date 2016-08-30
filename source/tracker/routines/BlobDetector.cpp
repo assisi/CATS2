@@ -48,10 +48,10 @@ BlobDetector::~BlobDetector()
  */
 void BlobDetector::doTracking(const TimestampedFrame& frame)
 {
-    QSharedPointer<cv::Mat> image = frame.image();
+    cv::Mat image = frame.image();
 
     // convert the image to grayscale
-    cv::cvtColor(*image.data(), m_grayscaleImage, CV_RGB2GRAY);
+    cv::cvtColor(image, m_grayscaleImage, CV_RGB2GRAY);
     // learn the background
     if (m_backgroundCalculationStepCounter < BackgroundCalculationSufficientNumber) {
         // update the background

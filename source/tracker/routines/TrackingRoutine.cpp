@@ -39,12 +39,8 @@ void TrackingRoutine::process()
     while (!m_stopped) {
         if (m_inputQueue->dequeue(frame)) {
             m_currentTimestamp = frame.timestamp();
-            if (!frame.image().isNull()) {
-                doTracking(frame);
-                emit trackedAgents(m_agents);
-            }
-            else
-                qDebug() << Q_FUNC_INFO << "Input image does not exist";
+            doTracking(frame);
+            emit trackedAgents(m_agents);
         }
     }
     emit finished();
@@ -79,8 +75,8 @@ void TrackingRoutine::enqueueDebugImage(const cv::Mat& image)
     if (m_enqueueDebugFrames) {
 //        cv::imshow("Background", image);
         // copy the image to be placed in the queue
-        cv::Mat* debugImage = new cv::Mat(image.rows, image.cols, image.type());
-        image.copyTo(*debugImage);
+        cv::Mat debugImage(image.rows, image.cols, image.type());
+        image.copyTo(debugImage);
 
         // and push it to the queue
         std::chrono::milliseconds ms = std::chrono::milliseconds();

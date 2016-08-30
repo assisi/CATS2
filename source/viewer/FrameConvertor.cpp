@@ -35,7 +35,7 @@ void FrameConvertor::process()
 
         while (!m_stopped) {
             // Use the blocking with timeout version of dequeue
-            if (m_inputQueue->dequeue(frame) && (!frame.image().isNull()))
+            if (m_inputQueue->dequeue(frame))
                 emit newFrame(cvMatToQPixmap(frame.image()));
         }
     } else {
@@ -57,34 +57,33 @@ void FrameConvertor::stop()
  * Converts from openCV Mat to QImage.
  * Inspired by https://asmaloney.com/2013/11/code/converting-between-cvmat-and-qimage-or-qpixmap/
  */
-QSharedPointer<QPixmap> FrameConvertor::cvMatToQPixmap(const QSharedPointer<cv::Mat>& imageCv)
+QSharedPointer<QPixmap> FrameConvertor::cvMatToQPixmap(const cv::Mat& imageCv)
 {
-    QImage* imageQt = nullptr;
+    QImage* imageQt;
     QPixmap* pixmapQt = nullptr;
-    switch (imageCv->type()) {
+    switch (imageCv.type()) {
         case CV_8UC4: // 8-bit, 4 channel
         {
-            imageQt = new QImage(imageCv->data, imageCv->cols, imageCv->rows, imageCv->step, QImage::Format_RGB32);
+            imageQt = new QImage(imageCv.data, imageCv.cols, imageCv.rows, imageCv.step, QImage::Format_RGB32);
             break;
         }
         case CV_8UC3: // 8-bit, 3 channel
         {
-            imageQt = new QImage(imageCv->data, imageCv->cols, imageCv->rows, imageCv->step, QImage::Format_RGB888);
+            imageQt = new QImage(imageCv.data, imageCv.cols, imageCv.rows, imageCv.step, QImage::Format_RGB888);
             break;
         }
         case CV_8UC1: // 8-bit, 1 channel
         {
-            imageQt = new QImage(imageCv->data, imageCv->cols, imageCv->rows, imageCv->step, QImage::Format_Grayscale8);
+            imageQt = new QImage(imageCv.data, imageCv.cols, imageCv.rows, imageCv.step, QImage::Format_Grayscale8);
             break;
         }
         default: // unsupported format
-            imageQt = new QImage(imageCv->cols, imageCv->rows, QImage::Format_RGB888);
+            imageQt = new QImage(imageCv.cols, imageCv.rows, QImage::Format_RGB888);
             imageQt->fill(Qt::black);
             break;
     }
 
-    if (imageQt != nullptr)
-        pixmapQt = new QPixmap(QPixmap::fromImage(*imageQt));
+    pixmapQt = new QPixmap(QPixmap::fromImage(*imageQt));
 
     return  QSharedPointer<QPixmap>(pixmapQt);
 }
