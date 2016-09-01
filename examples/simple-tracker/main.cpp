@@ -33,6 +33,8 @@ int main(int argc, char *argv[])
             } else {
                 qDebug() << Q_FUNC_INFO << "Couldn't setup the camera, finished";
             }
+        } else {
+            qDebug() << Q_FUNC_INFO << "Invalid camera descriptor" << CommandLineParameters::get().cameraDescriptor(setupType).parameters();
         }
     } else {
         qDebug() << Q_FUNC_INFO << "Couldn't find necessary input arguments, finished";

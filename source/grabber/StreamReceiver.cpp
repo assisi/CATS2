@@ -86,6 +86,7 @@ void StreamReceiver::process()
         return;
 
     try {
+        qDebug() << Q_FUNC_INFO << "Launching pipeline" << m_pipelineDescription;
         m_pipeline = QGst::Parse::launch(m_pipelineDescription).dynamicCast<QGst::Pipeline>();
         m_sink.setElement(m_pipeline->getElementByName("queueingsink"));
         QGlib::connect(m_pipeline->bus(), "message", this, &StreamReceiver::onMessage);

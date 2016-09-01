@@ -7,5 +7,6 @@
         <file>resources/icons/ic_visibility_black_24dp.png</file>
         <file>resources/icons/ic_visibility_off_black_24dp.png</file>
         <file>resources/icons/ic_settings_overscan_black_24dp.png</file>
+        <file>resources/icons/ic_save_black_24dp.png</file>
     </qresource>
 </RCC>
