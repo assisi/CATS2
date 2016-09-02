@@ -38,7 +38,7 @@ StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, QSize targetFr
         case StreamType::LOCAL_VIDEO_FILE:
         {
             m_pipelineDescription = QString("filesrc location=%1 ! qtdemux ! "
-                                            "ffdec_h264 ! ffmpegcolorspace ! "
+                                            "decodebin ! ffmpegcolorspace ! "
                                             "deinterlace ! "
                                             "video/x-raw-rgb ! ffmpegcolorspace !"
                                             "appsink name=queueingsink").arg(streamParameters.parameters());
