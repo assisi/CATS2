@@ -1,11 +1,12 @@
 <?xml version="1.0"?>
 <opencv_storage>
     <cameraType>basler</cameraType>
+    <worldUnits>cm</worldUnits>
+    <agentHeight>3</agentHeight>
     <imageSize>
         <width>2048</width>
         <height>2048</height>
     </imageSize>
-    <worldUnits>cm</worldUnits>
     <calibrationPoints>
         <numberOfPoints>21</numberOfPoints>
         <point_0>

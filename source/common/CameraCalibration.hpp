@@ -52,6 +52,8 @@ private:
     //! Computes the linear coefficient to convert the calibratin values to mm based on the
     //! present data units. Returns 0 if the units are not known / supported.
     int getWorldScaleCoefficient(std::string units);
+    //! The (average) altitude of the agents with respect to the calibration data.
+    double m_height; // [mm]
 
     //! Initializes the calibration.
     void calibrate(QString fileName, QSize targetFrameSize);

@@ -2,11 +2,12 @@
 <opencv_storage>
     <!-- fixme : to put a correct camera type.  -->
     <cameraType>c930e</cameraType>
+    <worldUnits>cm</worldUnits>
+    <agentHeight>0.</agentHeight>
     <imageSize>
         <width>640</width>
         <height>480</height>
     </imageSize>
-    <worldUnits>cm</worldUnits>
     <calibrationPoints>
         <numberOfPoints>21</numberOfPoints>
         <point_0>

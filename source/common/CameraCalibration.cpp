@@ -6,6 +6,7 @@
  * Constructor. Gets the file name containing the camera calibration data.
  */
 CameraCalibration::CameraCalibration(QString calibrationFileName, QSize targetFrameSize) :
+    m_height(0.),
     m_calibrationInitialized(false)
 {
     calibrate(calibrationFileName, targetFrameSize);
@@ -75,6 +76,10 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
             return;
     }
 
+    // read the agents' altitude
+    settings.readVariable(QString("agentHeight"), m_height, 0.);
+    m_height *= worldScaleCoefficient; // in mm
+
     // read the number of points
     int numberOfPoints;
     settings.readVariable("calibrationPoints/numberOfPoints", numberOfPoints, 0);
@@ -123,8 +128,8 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
  */
 PositionMeters CameraCalibration::image2World(PositionPixels imageCoordinates)
 {
-    double wz = 0;
-    double wx,wy;
+    double wz = m_height;
+    double wx, wy;
     image_coord_to_world_coord(m_calibrationConstants, m_cameraParameters,
                                imageCoordinates.x(), imageCoordinates.y(),
                                wz, &wx, &wy);
