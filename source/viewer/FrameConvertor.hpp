@@ -9,6 +9,7 @@
 #include <QtGui/QPixmap>
 
 #include <atomic>
+#include <chrono>
 
 /*!
 * \brief This class receives frames from a queue in openCV Mat format and converts it to Qt image.
@@ -25,7 +26,7 @@ public:
 
 signals:
     //! Sends out the new frame received.
-    void newFrame(QSharedPointer<QPixmap> frame);
+    void newFrame(QSharedPointer<QPixmap> frame, int fps);
     //! Notifies that the convertor is stopped.
     void finished();
 
@@ -44,6 +45,8 @@ private:
     TimestampedFrameQueuePtr m_inputQueue;
     //! The flag that defines if the convertor is to be stopped.
     std::atomic_bool m_stopped;
+    //! Previous timestamp to compute the framerate.
+    std::chrono::milliseconds m_previousTimestamp;
 };
 
 #endif // CATS2_FRAME_CONVERTOR_HPP

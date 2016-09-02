@@ -7,8 +7,10 @@
 #include <CoordinatesConversion.hpp>
 
 #include <QtWidgets/QGraphicsPixmapItem>
+#include <QtWidgets/QGraphicsTextItem>
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
+#include <QtCore/QtMath>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDateTime>
 #include <QtWidgets/QFileDialog>
@@ -21,7 +23,8 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     QWidget(parent),
     m_data(viewerData),
     m_frameSize(frameSize),
-    m_uiViewer(new Ui::ViewerWidget)
+    m_uiViewer(new Ui::ViewerWidget),
+    m_averageFps(0.)
 {
     m_uiViewer->setupUi(this);
     // always receive mouse events
@@ -39,6 +42,13 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     m_videoFrame->setZValue(0);
     m_videoFrame->setPos(0,0);
     m_scene->addItem(m_videoFrame);
+
+    // create the frame rate item
+    m_frameRate = new QGraphicsTextItem();
+    m_frameRate->setFont(QFont("Times", 12, QFont::Bold));
+    m_frameRate->setDefaultTextColor(Qt::white);
+    m_scene->addItem(m_frameRate);
+    m_frameRate->setPos(20,30);
 
     // connect to the data class
     qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QPixmap>");
@@ -70,13 +80,36 @@ void ViewerWidget::onZoomOut()
     m_uiViewer->view->scale(1/1.2, 1/1.2);
 }
 
-void ViewerWidget::onNewFrame(QSharedPointer<QPixmap> pixmap)
+/*!
+ * A new frame arrived.
+ */
+void ViewerWidget::onNewFrame(QSharedPointer<QPixmap> pixmap, int fps)
 {
     if (parent()) { // doesn't make sense to update the widget that belongs nowhere
         if (!pixmap.isNull()) {
             m_videoFrame->setPixmap(*pixmap.data());
+            updateFrameRate(fps);
         }
     }
+}
+
+/*!
+ * Computes new average frame rate value as exponential moving average.
+ * https://en.wikipedia.org/wiki/Moving_average#Exponential_moving_average
+ */
+void ViewerWidget::updateFrameRate(int fps)
+{
+    if (m_averageFps > 0)
+    {
+        // set the smoothing factor
+        double alpha = 0.25;
+        m_averageFps = alpha * fps + (1 - alpha) * m_averageFps;
+    }
+    else {
+        // initialize the filter
+        m_averageFps = fps;
+    }
+    m_frameRate->setPlainText(QString::number(qFloor(m_averageFps + 0.5)) +" fps");
 }
 
 /*!

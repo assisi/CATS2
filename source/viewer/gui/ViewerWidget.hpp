@@ -11,6 +11,7 @@
 
 class FrameScene;
 class QGraphicsPixmapItem;
+class QGraphicsTextItem;
 class AgentItem;
 
 namespace Ui
@@ -51,9 +52,13 @@ public slots:
 
 protected slots:
     //! A new frame arrived.
-    void onNewFrame(QSharedPointer<QPixmap> pixmap);
+    void onNewFrame(QSharedPointer<QPixmap> pixmap, int fps);
     //! Triggered when a new mouse position is received from the scene.
     void onMouseMoved(QPointF scenePosition);
+
+protected:
+    //! Computes new average frame rate value as exponential moving average.
+    void updateFrameRate(int fps);
 
 protected:
     //! The data object that provides the frames and agent's positions to show.
@@ -66,6 +71,10 @@ protected:
     FrameScene* m_scene;
     //! The item used to show the video stream.
     QGraphicsPixmapItem* m_videoFrame;
+    //! The item used to show the video's frame rate.
+    QGraphicsTextItem* m_frameRate;
+    //! The average frame rate.
+    double m_averageFps;
 
     //! The agents maps, contains the agent's id's with corresponding
     //! graphics items.

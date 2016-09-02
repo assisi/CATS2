@@ -4,6 +4,7 @@
 
 #include <QtGui/QImage>
 #include <QtGui/QPixmap>
+#include <QtCore/QtMath>
 
 /*!
 * Constructor.
@@ -11,7 +12,8 @@
 FrameConvertor::FrameConvertor(TimestampedFrameQueuePtr inputQueue) :
     QObject(),
     m_inputQueue(inputQueue),
-    m_stopped(false)
+    m_stopped(false),
+    m_previousTimestamp(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()))
 {
     qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QPixmap>");
 }
@@ -35,8 +37,13 @@ void FrameConvertor::process()
 
         while (!m_stopped) {
             // Use the blocking with timeout version of dequeue
-            if (m_inputQueue->dequeue(frame))
-                emit newFrame(cvMatToQPixmap(frame.image()));
+            if (m_inputQueue->dequeue(frame)) {
+                // compute the frame rate
+                std::chrono::milliseconds timeFromPreviousFrameMs = frame.timestamp() - m_previousTimestamp;
+                m_previousTimestamp = frame.timestamp();
+                // send the data
+                emit newFrame(cvMatToQPixmap(frame.image()), qFloor(1000./timeFromPreviousFrameMs.count()) + 0.5);
+            }
         }
     } else {
         qDebug() << Q_FUNC_INFO << "Input queue is not set, finishing.";

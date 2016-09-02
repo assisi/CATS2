@@ -73,13 +73,12 @@ void TrackingRoutine::onSendDebugImages(bool send)
 void TrackingRoutine::enqueueDebugImage(const cv::Mat& image)
 {
     if (m_enqueueDebugFrames) {
-//        cv::imshow("Background", image);
         // copy the image to be placed in the queue
         cv::Mat debugImage(image.rows, image.cols, image.type());
         image.copyTo(debugImage);
 
         // and push it to the queue
-        std::chrono::milliseconds ms = std::chrono::milliseconds();
+        std::chrono::milliseconds ms(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()));
         TimestampedFrame frame(debugImage, ms);
         m_debugQueue->enqueue(frame);
     }

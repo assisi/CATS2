@@ -32,8 +32,8 @@ public:
     CoordinatesConversionPtr coordinatesConversion() { return m_coordinatesConversion; }
 
 signals:
-    //! Transfers the new frame further.
-    void newFrame(QSharedPointer<QPixmap> frame);
+    //! Transfers the new frame further (with the corresponding frame rate.
+    void newFrame(QSharedPointer<QPixmap> frame, int fps);
 
 private:
     //! The frame convertor that receives frame images and converts them to the Qt image format.
