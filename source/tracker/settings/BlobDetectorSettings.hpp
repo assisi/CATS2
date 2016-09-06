@@ -78,11 +78,11 @@ public:
     virtual bool init(QString configurationFileName) override;
 
     //! Provides a copy of the settings data.
-    BlobDetectorSettingsData data() { return _data; }
+    BlobDetectorSettingsData data() { return m_data; }
 
 private:
     //! The settings data.
-    BlobDetectorSettingsData _data;
+    BlobDetectorSettingsData m_data;
 };
 
 #endif // CATS2_BLOB_DETECTOR_SETTINGS_HPP

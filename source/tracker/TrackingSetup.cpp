@@ -1,10 +1,13 @@
 #include "TrackingSetup.hpp"
+#include "TrackingData.hpp"
+#include "TrackingDataManager.hpp"
 
 #include <TimestampedFrame.hpp>
 #include <CoordinatesConversion.hpp>
 #include <settings/CalibrationSettings.hpp>
 #include <GrabberHandler.hpp>
 #include <QueueHub.hpp>
+#include <AgentData.hpp>
 
 /*!
  * Constructor.
@@ -44,4 +47,13 @@ TimestampedFrameQueuePtr TrackingSetup::viewerQueue()
         return m_queueHub->addOutputQueue();
     else
         return TimestampedFrameQueuePtr();
+}
+
+/*!
+ * Registers the data source in the data manager and makes the necessary connections.
+ */
+void TrackingSetup::connectToDataManager(TrackingDataManagerPtr& trackingDataManager)
+{
+    trackingDataManager->addNewDataSource(m_setupType, m_tracking->data()->routineCapabilities());
+    QObject::connect(m_tracking->data().data(), &TrackingData::trackedAgents, trackingDataManager.data(), &TrackingDataManager::onNewData);
 }

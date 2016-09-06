@@ -3,6 +3,7 @@
 #include "settings/Settings.hpp"
 
 #include <TrackingSetup.hpp>
+#include <TrackingDataManager.hpp>
 #include <ViewerHandler.hpp>
 #include <ViewerData.hpp>
 #include <gui/ViewerWidget.hpp>
@@ -23,6 +24,10 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     m_ui->setupUi(this);
 
+    // create the tracking data manager
+    m_trackingDataManager = TrackingDataManagerPtr(new TrackingDataManager(), &QObject::deleteLater);
+
+    // create setups
     if (Settings::get().isAvailable(SetupType::MAIN_CAMERA)) {
         createSetup(SetupType::MAIN_CAMERA);
         addTrackingSettingsWidget(SetupType::MAIN_CAMERA);
@@ -62,6 +67,9 @@ void MainWindow::createSetup(SetupType::Enum setupType)
                                                                      m_trackingSetups[setupType]->viewerQueue(),
                                                                      m_trackingSetups[setupType]->coordinatesConversion()),
                                             &QObject::deleteLater);
+
+    // connect the tracker to the tracking data manager
+    m_trackingSetups[setupType]->connectToDataManager(m_trackingDataManager);
 }
 
 /*!
@@ -118,16 +126,20 @@ void MainWindow::setSecondaryView(SetupType::Enum setupType)
 void MainWindow::connectPrimaryView()
 {
     if (m_primarySetupType != SetupType::UNDEFINED) {
-        ViewerHandlerPtr viewerHandler = m_viewerHandlers[m_primarySetupType];
-        connect(viewerHandler->widget(), &ViewerWidget::mousePosition, [this](PositionPixels imagePosition, PositionMeters worldPosition) {
+        ViewerWidget* viewerWidget = m_viewerHandlers[m_primarySetupType]->widget();
+        connect(viewerWidget, &ViewerWidget::mousePosition, [this](PositionPixels imagePosition, PositionMeters worldPosition) {
             statusBar()->showMessage(tr("Image position: %1, world position: %2").arg(imagePosition.toString()).arg(worldPosition.toString()));
         });
 
         // connect the window's actions
-        connect(m_ui->actionZoomIn, &QAction::triggered, viewerHandler->widget(), &ViewerWidget::onZoomIn);
-        connect(m_ui->actionZoomOut, &QAction::triggered, viewerHandler->widget(), &ViewerWidget::onZoomOut);
-        connect(m_ui->actionSaveCurrentView, &QAction::triggered, viewerHandler->widget(), &ViewerWidget::saveCurrentFrameToFile);
-        connect(m_ui->actionAdjustView, &QAction::triggered, viewerHandler->widget(), &ViewerWidget::adjust);
+        connect(m_ui->actionZoomIn, &QAction::triggered, viewerWidget, &ViewerWidget::onZoomIn);
+        connect(m_ui->actionZoomOut, &QAction::triggered, viewerWidget, &ViewerWidget::onZoomOut);
+        connect(m_ui->actionSaveCurrentView, &QAction::triggered, viewerWidget, &ViewerWidget::saveCurrentFrameToFile);
+        connect(m_ui->actionAdjustView, &QAction::triggered, viewerWidget, &ViewerWidget::adjust);
+
+        // connect to the tracking data manager
+        connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataMerged,
+                viewerWidget, &ViewerWidget::showAgents);
     }
 }
 

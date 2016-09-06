@@ -40,6 +40,7 @@ void TrackingRoutine::process()
         if (m_inputQueue->dequeue(frame)) {
             m_currentTimestamp = frame.timestamp();
             doTracking(frame);
+            invalidateAgentsState();
             emit trackedAgents(m_agents);
         }
     }
@@ -85,6 +86,18 @@ void TrackingRoutine::enqueueDebugImage(const cv::Mat& image)
 }
 
 /*!
+ * Sets the states of all agents as invalid. The goal is to prevent the outdated
+ * data from poping; it's up to the specific routine to set the agent's state as
+ * valid if it is detected.
+ */
+void TrackingRoutine::invalidateAgentsState()
+{
+    for (size_t i = 0; i < m_agents.size(); i++) {
+        m_agents[i].mutableState()->invalidateState();
+    }
+}
+
+/*!
  * Assign detected objects to ids.
  */
 void TrackingRoutine::assingIds(IdsAssignmentMethod method, std::vector<cv::Point2f>& centers, std::vector<float> directions)
@@ -110,7 +123,7 @@ void TrackingRoutine::naiveClosestNeighbour(std::vector<cv::Point2f>& centers, s
         remainingAgents[i] = i;
 
     for (size_t i = 0; i < centers.size(); ++i) {
-        float minDistance = std::numeric_limits<float>::max();
+        double minDistance = std::numeric_limits<double>::max();
         size_t agentIndex = 0;
         bool detected = false;
         for (size_t j = 0; j < remainingAgents.size(); ++j) {
@@ -121,10 +134,11 @@ void TrackingRoutine::naiveClosestNeighbour(std::vector<cv::Point2f>& centers, s
             if (distance < minDistance) {
                 minDistance = distance;
                 agentIndex = remainingAgents[j];
+                detected = true;
             }
-            detected = true;
         }
 
+        // update the position of the agent if it's detected
         if (detected) {
             AgentDataImage& agent = m_agents[agentIndex];
             if (directions.size() > 0) {
@@ -140,10 +154,5 @@ void TrackingRoutine::naiveClosestNeighbour(std::vector<cv::Point2f>& centers, s
             // remove this agent's index from the list
             remainingAgents.erase(std::remove(remainingAgents.begin(), remainingAgents.end(), agentIndex), remainingAgents.end()); // https://en.wikipedia.org/wiki/Erase–remove_idiom
         }
-    }
-
-    // invalidate the state for agents whose positions were not updated
-    for(size_t j = 0; j < remainingAgents.size(); ++j) {
-        m_agents[remainingAgents[j]].mutableState()->invalidateState();
     }
 }

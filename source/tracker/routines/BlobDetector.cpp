@@ -28,7 +28,7 @@ BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrame
 
     // set the agents' list
     for (unsigned char id = 1; id <= m_settings.numberOfAgents(); id++) {
-        AgentDataImage agent(QString::number(id));
+        AgentDataImage agent(QString::number(id), AgentType::GENERIC);
         m_agents.append(agent);
     }
 }
@@ -95,8 +95,7 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
                                 m_settings.blockSize(),
                                 m_settings.useHarrisDetector(),
                                 m_settings.k());
-    }
-    catch(cv::Exception& e) {
+    } catch(cv::Exception& e) {
         qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
     }
 
@@ -142,8 +141,7 @@ void BlobDetector::removeSmallBlobs(cv::Mat& image, int minSize)
     image.copyTo(contoursImage);
     try {
         cv::findContours(contoursImage, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
-    }
-    catch(cv::Exception& e) {
+    } catch(cv::Exception& e) {
         qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
     }
 
@@ -210,6 +208,14 @@ void BlobDetector::detectContours(cv::Mat& image,
             cornersInContours.push_back(cornersInContour);
         }
     }
+}
+
+/*!
+ * Reports on what type of agent can be tracked by this routine.
+ */
+QList<AgentType> BlobDetector::capabilities() const
+{
+    return QList<AgentType>({AgentType::GENERIC});
 }
 
 /*!

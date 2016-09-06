@@ -33,5 +33,11 @@ using TrackingDataPtr = QSharedPointer<TrackingData>;
 class TrackingSetup;
 using TrackingSetupPtr = QSharedPointer<TrackingSetup>;
 
+/*!
+ * The alias for the shared pointer to the tracking data manager.
+ */
+class TrackingDataManager;
+using TrackingDataManagerPtr = QSharedPointer<TrackingDataManager>;
+
 #endif // CATS2_TRACKER_POINTER_TYPES_HPP
 

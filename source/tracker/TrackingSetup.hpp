@@ -13,6 +13,8 @@
 #include <QtCore/QSharedPointer>
 #include <QtCore/QMap>
 
+enum class AgentType;
+
 /*!
  * \brief The TrackingSetup class corresponds to a arena tracking procedures, it brings together
  * a video grabber attached to a tracker and sends out the detected agents' positions converted to
@@ -37,6 +39,10 @@ public:
 
     //! Returns the pointer to the coordinates transformation.
     CoordinatesConversionPtr coordinatesConversion() { return m_coordinatesConversion; }
+
+    //! Registers the data source in the data manager and makes the necessary
+    //! connections.
+    void connectToDataManager(TrackingDataManagerPtr& trackingDataManager);
 
 private:
     //! The type of setup, for instance, main camera or the camera below.

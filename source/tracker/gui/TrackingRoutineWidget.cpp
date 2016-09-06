@@ -69,6 +69,7 @@ void TrackingRoutineWidget::onShowDebugViewer(bool showWindow)
                 m_viewerWindow = nullptr;
                 m_ui->showViewerButton->blockSignals(true);
                 m_ui->showViewerButton->setChecked(false);
+                m_data.data()->sendDebugImages(false);
                 m_ui->showViewerButton->blockSignals(false);
             });
             m_viewerWindow->show();

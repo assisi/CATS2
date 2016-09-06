@@ -73,11 +73,11 @@ public:
     virtual bool init(QString configurationFileName) override;
 
     //! Provides a copy of the settings data.
-    FishBotLedsTrackingSettingsData data() { return _data; }
+    FishBotLedsTrackingSettingsData data() { return m_data; }
 
 private:
     //! The settings data.
-    FishBotLedsTrackingSettingsData _data;
+    FishBotLedsTrackingSettingsData m_data;
 };
 
 #endif // CATS2_FISHBOT_LEDS_TRACKING_SETTINGS_HPP

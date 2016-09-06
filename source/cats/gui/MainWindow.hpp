@@ -55,6 +55,9 @@ private:
     QMap<SetupType::Enum, TrackingSetupPtr> m_trackingSetups;
     //! The viewers for the corresponding setups.
     QMap<SetupType::Enum, ViewerHandlerPtr> m_viewerHandlers;
+
+    //! The tracking data manager.
+    TrackingDataManagerPtr m_trackingDataManager;
 };
 
 #endif // CATS2_MAIN_WINDOW_HPP

@@ -11,6 +11,7 @@
 #include <QtCore/QObject>
 
 class TrackingRoutineWidget;
+enum class AgentType;
 
 /*!
 * \brief This class manages the tracking process. It binds together the data and GUI.
@@ -31,6 +32,11 @@ public:
 public:
     //! Returns the pointer to the tracking widget.
     TrackingRoutineWidget* widget() { return m_widget; }
+    //! Returns the pointer to the tracking data.
+    TrackingDataPtr data() const { return m_data; } // NOTE : this is done for the
+                                                    // sake of time and is not correct
+                                                    // from the corrent incapsulation
+                                                    // point of view
 
 private:
     //! Debug queue for the tracker.

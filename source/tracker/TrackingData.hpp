@@ -38,16 +38,22 @@ public:
 public:
     //! Returns a pointer to the tracking routine's debug queue.
     TimestampedFrameQueuePtr debugQueue() const;
+
     //! The type of setup for which this tracking is used.
     SetupType::Enum setupType() const { return m_setupType; }
+
     //! The type of the tracking routine.
     TrackingRoutineType::Enum trackingType() const;
+
     //! Getter for the pointer to the coordinates conversion.
     CoordinatesConversionPtr coordinatesConversion() const { return m_coordinatesConversion; }
 
+    //! Reports on what type of agent can be tracked by this routine.
+    QList<AgentType> routineCapabilities() const { return m_trackingRoutine->capabilities(); }
+
 signals:
     //! Sends out the tracked agents in world coordinates. Also the setup type is send to "sign" the signal.
-    void trackedAgents(SetupType::Enum setupType, QList<AgentDataWorld> worldAgents);
+    void trackedAgents(SetupType::Enum setupType, TimestampedWorldAgentData worldAgents);
     //! Request to start/stop enqueueing the debug images to the debug queue.
     void sendDebugImages(bool send);
 

@@ -39,8 +39,7 @@ bool FishBotLedsTrackingSettings::init(QString configurationFileName)
         robotDescription.ledColor = QColor(red, green, blue);
         // read the color threshold
         settings.readVariable(QString("%1/tracking/fishBotLedsTracking/fishBot_%2/threshold").arg(m_settingPathPrefix).arg(robotIndex), robotDescription.colorThreshold);
-
-        _data.addRobotDescription(robotDescription);
+        m_data.addRobotDescription(robotDescription);
     }
 
     return (numberOfRobots > 0);

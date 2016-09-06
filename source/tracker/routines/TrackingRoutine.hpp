@@ -38,6 +38,8 @@ public:
 public:
     //! Returns a pointer to the debug queue.
     TimestampedFrameQueuePtr debugQueue() { return m_debugQueue; }
+    //! Reports on what type of agent can be tracked by this routine.
+    virtual QList<AgentType> capabilities() const = 0;
 
 signals:
     //! Sends out the tracked agents.
@@ -62,6 +64,10 @@ protected:
     virtual void doTracking(const TimestampedFrame& frame) = 0;
     //! Puts an image to the debug queue.
     void enqueueDebugImage(const cv::Mat& image);
+    //! Sets the states of all agents as invalid. The goal is to prevent the
+    //! outdated data from poping; it's up to the specific routine to set
+    //! the agent's state as valid if it is detected.
+    void invalidateAgentsState();
 
 protected:
     //! Assign detected objects to ids.

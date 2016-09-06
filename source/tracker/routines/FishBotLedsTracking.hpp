@@ -20,6 +20,9 @@ public:
     //! Destructor.
     virtual ~FishBotLedsTracking();
 
+    //! Reports on what type of agent can be tracked by this routine.
+    virtual QList<AgentType> capabilities() const override;
+
 protected:
     //! The tracking routine excecuted. Gets the original frame, detects
     //! agents, eventually associates them with the trajectories and

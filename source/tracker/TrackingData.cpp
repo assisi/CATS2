@@ -58,14 +58,25 @@ TrackingData::~TrackingData()
 void TrackingData::onTrackedAgents(QList<AgentDataImage> imageAgents)
 {
     if (!m_coordinatesConversion.isNull() && m_coordinatesConversion->isValid()) {
-        QList<AgentDataWorld> worldAgents;
+        TimestampedWorldAgentData timestampedAgentsData;
         foreach (AgentDataImage imageAgent, imageAgents) {
-            PositionMeters worldPosition = m_coordinatesConversion->imageToWorldPosition(imageAgent.state().position());
-            OrientationRad worldOrientation = m_coordinatesConversion->image2WorldOrientationRad(imageAgent.state().position(), imageAgent.state().orientation());
-            AgentDataWorld worldAgent(imageAgent.id(), imageAgent.type(), StateWorld(worldPosition, worldOrientation));
-            worldAgents.append(worldAgent);
+            // only agents with valid positions are sent further
+            if (imageAgent.state().position().isValid()) {
+                PositionMeters worldPosition = m_coordinatesConversion->imageToWorldPosition(imageAgent.state().position());
+                OrientationRad worldOrientation = m_coordinatesConversion->image2WorldOrientationRad(imageAgent.state().position(),
+                                                                                                     imageAgent.state().orientation());
+                AgentDataWorld worldAgent(imageAgent.id(),
+                                          imageAgent.type(),
+                                          StateWorld(worldPosition, worldOrientation));
+                timestampedAgentsData.agentsData.append(worldAgent);
+                // all agents with valid positions must share the same timestamp
+                timestampedAgentsData.timestamp = imageAgent.timestamp();
+            }
         }
-        emit trackedAgents(m_setupType, worldAgents);
+        if (!timestampedAgentsData.agentsData.isEmpty())
+            emit trackedAgents(m_setupType, timestampedAgentsData);
+        else
+            qDebug() << Q_FUNC_INFO << "Among received agents there is no one with valid position";
     } else {
         qDebug() << Q_FUNC_INFO << "Unable to convert the image coordinates to the world coordinates";
     }

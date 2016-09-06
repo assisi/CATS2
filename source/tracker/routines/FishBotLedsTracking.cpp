@@ -155,3 +155,11 @@ void FishBotLedsTracking::detectLeds(const cv::Mat& image, size_t robotIndex)
         robot.setTimestamp(m_currentTimestamp);
     }
 }
+
+/*!
+ * Reports on what type of agent can be tracked by this routine.
+ */
+QList<AgentType> FishBotLedsTracking::capabilities() const
+{
+    return QList<AgentType>({AgentType::FISH_CASU});
+}

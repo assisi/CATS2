@@ -19,6 +19,9 @@ public:
     //! Destructor.
     virtual ~BlobDetector();
 
+    //! Reports on what type of agent can be tracked by this routine.
+    virtual QList<AgentType> capabilities() const override;
+
     //! Getter for the settings.
     const BlobDetectorSettingsData& settings() const { return m_settings; }
     //! Updates the settings.
