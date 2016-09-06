@@ -27,7 +27,7 @@ public:
                              CoordinatesConversionPtr coordinatesConversion,
                              TimestampedFrameQueuePtr inputQueue);
     //! Destructor.
-    virtual ~TrackingHandler();
+    virtual ~TrackingHandler() final;
 
 public:
     //! Returns the pointer to the tracking widget.

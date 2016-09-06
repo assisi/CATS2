@@ -94,8 +94,8 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
         return;
     }
 
-    float imageScaleCoefficientX = (float)targetFrameSize.width() / (float)calibrationFrameSize.width();
-    float imageScaleCoefficientY = (float)targetFrameSize.height() / (float)calibrationFrameSize.height();
+    float imageScaleCoefficientX = static_cast<float>(targetFrameSize.width()) / static_cast<float>(calibrationFrameSize.width());
+    float imageScaleCoefficientY = static_cast<float>(targetFrameSize.height()) / static_cast<float>(calibrationFrameSize.height());
     m_calibrationData.point_count = numberOfPoints;
     for(size_t i = 0; i < numberOfPoints; i++) {
         m_calibrationData.zw[i] = 0;

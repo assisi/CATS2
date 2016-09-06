@@ -15,7 +15,7 @@ public:
     //! Constructor.
     explicit QueueHub(TimestampedFrameQueuePtr inputQueue);
     //! Destructor.
-    virtual ~QueueHub();
+    virtual ~QueueHub() final;
 
 public:
     //! Creates new queue, add it to the dispatcher output list and returns the pointer.

@@ -21,7 +21,7 @@ public:
     //! Constructor. Gets the file name containing the camera calibration data.
     explicit CoordinatesConversion(QString calibrationFileName, QSize targetFrameSize);
     //! Destructor.
-    virtual ~CoordinatesConversion();
+    virtual ~CoordinatesConversion() final;
 
 public:
     //! Returns the status of the calibration initialization.

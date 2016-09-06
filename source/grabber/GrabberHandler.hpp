@@ -17,7 +17,7 @@ public:
     //! Constructor.
     explicit GrabberHandler(SetupType::Enum setupType);
     //! Destructor.
-    virtual ~GrabberHandler();
+    virtual ~GrabberHandler() final;
 
 public:
     //! Returns the shared pointer to the data.
