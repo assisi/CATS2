@@ -51,11 +51,15 @@ public:
         m_robotsDescriptions.append(description);
     }
 
+    std::string maskFilePath() const { return m_maskFilePath; }
+    void setMaskFilePath(std::string maskFilePath) { m_maskFilePath = maskFilePath; }
+
 protected:
     //! The parameters of all robots to track.
     QList<FishBotDescription> m_robotsDescriptions;
+    //! The arena mask file, an optional parameter.
+    std::string m_maskFilePath;
     // TODO : add the rest of parameters
-    // TODO : add the arena mask file, as a optional parameter
 };
 
 /*!

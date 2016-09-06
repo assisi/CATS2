@@ -4,6 +4,9 @@
 #include <TimestampedFrame.hpp>
 #include <AgentData.hpp>
 
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+
 #include <QtCore/QtMath>
 
 #include <cmath>
@@ -22,6 +25,9 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings, Ti
     } else {
         qDebug() << Q_FUNC_INFO << "Could not set the routune's settings";
     }
+
+    // set the mask file
+    m_maskImage = cv::imread(m_settings.maskFilePath()/*, cv::IMREAD_GRAYSCALE*/);
 
     // set the agents' list
     FishBotLedsTrackingSettingsData::FishBotDescription robotDescription;
@@ -49,13 +55,22 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
 
     // limit the image format to three channels color images
     if (image.type() == CV_8UC3) {
+        // first blur the image
+        cv::blur(image, m_blurredImage, cv::Size(3, 3));
+        // apply the mask if defined
+        // TODO : to add support for different types of masks to be less picky
+        if ((m_maskImage.data != nullptr) && (m_blurredImage.type() == m_maskImage.type()))
+            m_blurredImage = m_blurredImage & m_maskImage;
+        else
+            qDebug() << Q_FUNC_INFO << "The mask's type is not compatible with the image";
+
         // detect robots
         for (size_t robotIndex = 0; robotIndex < m_settings.numberOfAgents(); robotIndex++) {
-            detectLeds(image, robotIndex);
+            detectLeds(robotIndex);
 
             // debug for the first robot
-            if (robotIndex == 1)
-                enqueueDebugImage(m_binaryImage);
+            if (robotIndex == 0)
+                enqueueDebugImage(m_blurredImage);
         }
     }
     else
@@ -65,14 +80,12 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
 /*!
  * Searches for the given robot's leds on the image.
 */
-void FishBotLedsTracking::detectLeds(const cv::Mat& image, size_t robotIndex)
+void FishBotLedsTracking::detectLeds(size_t robotIndex)
 {
     int h,s,v;
     m_settings.robotDescription(robotIndex).ledColor.getHsv(&h, &s, &v);
     int tolerance = m_settings.robotDescription(robotIndex).colorThreshold;
 
-    // first blur the image
-    cv::blur(image, m_blurredImage, cv::Size(3, 3));
     // convert to hsv
     cv::cvtColor(m_blurredImage, m_hsvImage, CV_RGB2HSV);
     // threshold the image in the HSV color space
@@ -93,11 +106,7 @@ void FishBotLedsTracking::detectLeds(const cv::Mat& image, size_t robotIndex)
     cv::dilate(m_binaryImage, m_binaryImage, element);
     cv::erode(m_binaryImage, m_binaryImage, element);
 
-    // TODO: apply binary mask here if necessary
-    //    cvAnd(binaryImage, arenaMaskImage, binaryImage);
-
     // TODO : make a devoted method
-
     // detect the leds as contours, normally only two should be found
     std::vector<std::vector<cv::Point>> contours;
     try { // TODO : to check if this try-catch can be removed or if it should be used everywhere where opencv methods are used.

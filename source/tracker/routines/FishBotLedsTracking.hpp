@@ -33,10 +33,12 @@ private:
     //! The tracking settings.
     FishBotLedsTrackingSettingsData m_settings;
     //! Searches for the given robot's leds on the image.
-    void detectLeds(const cv::Mat& image, size_t robotIndex);
+    void detectLeds(size_t robotIndex);
 
 private:
     //! The intermediate data.
+    //! The binary mask image.
+    cv::Mat m_maskImage;
     //! The image after blurring.
     cv::Mat m_blurredImage;
     //! The image in HSV format.

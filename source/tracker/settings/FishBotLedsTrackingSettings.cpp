@@ -22,7 +22,12 @@ bool FishBotLedsTrackingSettings::init(QString configurationFileName)
     // read the number of robots to track
     int numberOfRobots;
     settings.readVariable(QString("%1/tracking/numberOfAgents").arg(m_settingPathPrefix), numberOfRobots);
+    // read the mask file path
+    std::string maskFilePath;
+    settings.readVariable(QString("%1/tracking/maskFile").arg(m_settingPathPrefix), maskFilePath);
+    m_data.setMaskFilePath(maskFilePath);
 
+    // read the robot specific settings
     for (int robotIndex = 1; robotIndex <= numberOfRobots; ++robotIndex) {
         FishBotLedsTrackingSettingsData::FishBotDescription robotDescription;
         // read the robot's id
