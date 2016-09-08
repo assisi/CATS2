@@ -1,9 +1,14 @@
 #include "TrackingDataManager.hpp"
 
 #include <QtCore/QDebug>
+#include <QtCore/QPair>
 
 constexpr std::chrono::duration<double> TrackingDataManager::MaxTimeDifferenceMs;
-constexpr double TrackingDataManager::IdentityDistanceThresholdMeters;
+constexpr float TrackingDataManager::IdentityDistanceThresholdMeters;
+constexpr float TrackingDataManager::OrientationThresholdRad;
+constexpr float TrackingDataManager::OrientationWeightCoefficient;
+constexpr float TrackingDataManager::WeightedThreshold;
+constexpr float TrackingDataManager::InvalidOrientationPenaltyRad;
 
 /*!
  * Constructor.
@@ -27,7 +32,7 @@ void TrackingDataManager::addNewDataSource(SetupType::Enum setupType,
     // add new data source
     m_trackingData[setupType] = QQueue<TimestampedWorldAgentData>();
 
-    // update the primary data source if necessary
+    // update the primary data source if necessary (smaller value means more data)
     foreach (AgentType capability, capabilities) {
         if (capability < m_primaryDataSourceCapability) {
             m_primaryDataSourceCapability = capability;
@@ -50,7 +55,8 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
         }
     } else {
         // if the data comes from the primary source then it needs to be treated right away
-        QList<AgentDataWorld> mergedAgentData = timestampedAgentsData.agentsData;
+        QList<AgentDataWorld> agentData = timestampedAgentsData.agentsData;
+        QList<AgentDataWorld> mergedAgentData;
         // get the new data's timestamp
         std::chrono::milliseconds timestamp = timestampedAgentsData.timestamp;
         // look throught data from other sources to make a merge
@@ -62,13 +68,7 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
                 if (getDataByTimestamp(timestamp, m_trackingData[dataSource], closestAgentData)) {
                     // if the data list is found than we take the agent from this list that are not
                     // yet in the final list
-                    QList<AgentDataWorld> newAgentData;
-                    foreach (AgentDataWorld agentData, closestAgentData.agentsData) {
-                        if (! findAgentInList(agentData, mergedAgentData)) {
-                            newAgentData.append(agentData);
-                        }
-                    }
-                    mergedAgentData.append(newAgentData);
+                    matchAgents(agentData, closestAgentData.agentsData, mergedAgentData);
                 } else {
                     sendData = false; // i.e. we consider that all sources should contribute
                     // TODO : this parameter should be a flat in the configuration file
@@ -143,22 +143,143 @@ bool TrackingDataManager::getDataByTimestamp(std::chrono::milliseconds timestamp
 }
 
 /*!
- * Checks if the agent's position and orientation correspond to another agent
- * in the list.
+ * Merges together two data sets by adding newly received agents to already
+ * available and removing the duplicates.
  */
-bool TrackingDataManager::findAgentInList(AgentDataWorld agentToFind, QList<AgentDataWorld> agentDataList)
+void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QList<AgentDataWorld>& agentsToJoin, QList<AgentDataWorld>& joinedAgentsList)
 {
-    // we need to compare the positions and orientations when available wiht
-    // the thresholds that would be hardcoded at the moment but that will need
-    // to be set in the configuration file and throught the GUI
-    bool agentFound = false;
-    foreach (AgentDataWorld agent, agentDataList) {
-        if (agent.state().position().distanceTo(agentToFind.state().position()) < IdentityDistanceThresholdMeters) {
-            agentFound = true;
-            break;
-            // TODO : to add the orientation comparison
+    // set the aliases
+    QList<AgentDataWorld>& listOne(currentAgents.size() < agentsToJoin.size() ? currentAgents : agentsToJoin);
+    QList<AgentDataWorld>& listTwo(currentAgents.size() < agentsToJoin.size() ? agentsToJoin : currentAgents);
+    // result : list one is never longer than list two
+
+    // cost matrices
+    QVector<QVector<float>> costMatrix(listOne.size());
+    float maxCost = initializeCostMatrices(listOne, listTwo, costMatrix);
+
+    // find best match
+    QVector<bool> usedIndices(listTwo.size(), false);
+    QVector<int> combination(listOne.size(), -1);
+    QVector<int> bestCombination(listOne.size(), -1);
+    float minCost = maxCost;
+    searchBestMatch(0, listOne.size(), listTwo.size(), usedIndices, combination, bestCombination,  minCost, costMatrix);
+
+    qDebug() << bestCombination;
+    // generate the joined list
+    // first add duplicated agents to the output list
+    QList<QPair<int, int>> indecesToRemove;
+    for (int i1 = 0; i1 < listOne.size(); i1++) {
+        // analyse the winning combination to remove elements that are too far
+        if (costMatrix[i1][bestCombination[i1]] < WeightedThreshold) { // i.e. the elements are close enough
+            const AgentDataWorld& agentOne = listOne.at(i1);
+            const AgentDataWorld& agentTwo = listTwo.at(bestCombination[i1]);
+            // keep the agent with the smaller type (i.e. containing more information)
+            if (agentOne.type() < agentTwo.type())
+                joinedAgentsList.append(agentOne);
+            else
+                joinedAgentsList.append(agentTwo);
+            indecesToRemove.append(qMakePair(i1, bestCombination[i1]));
+        }
+    }
+    // remove duplicated elements from both input lists
+    for (int i = 0; i < indecesToRemove.size(); i++) {
+        // remove these agents from both lists
+        listOne.removeAt(indecesToRemove[i].first);
+        listTwo.removeAt(indecesToRemove[i].second);s
+    }
+
+    // add remaining items
+    joinedAgentsList.append(listOne);
+    joinedAgentsList.append(listTwo);
+}
+
+/*!
+ * Computes the distances and angles between the agents while analyzing this
+ * values to remove the impossible combinations.
+ */
+float TrackingDataManager::initializeCostMatrices(const QList<AgentDataWorld>& listOne,
+                                                 const QList<AgentDataWorld>& listTwo,
+                                                 QVector<QVector<float>>& costMatrix)
+{
+    // set sizes
+    for (int i = 0; i < listOne.size(); i++)
+        costMatrix[i].fill(0, listTwo.size());
+
+    float angle;
+    float distance;
+    float maxCost = 0;
+    // fill the costs matrices
+    for(int i1 = 0; i1 < listOne.size(); i1++){
+        for(int i2 = 0; i2 < listTwo.size(); i2++) {
+            // compute the distance
+            distance = listOne[i1].state().position().distanceTo(listTwo[i2].state().position());
+
+            // compute the minimal angle between two agents
+            if (listOne[i1].state().orientation().isValid() && listTwo[i2].state().orientation().isValid()) {
+                angle = listOne[i1].state().orientation().angle() - listTwo[i2].state().orientation().angle();
+                // normalize to [-pi;pi]
+                if (angle < -M_PI)
+                    angle += M_PI;
+                // map to [-pi/2;pi/2]
+                if (angle > M_PI_2)
+                    angle -= M_PI;
+                if (angle < -M_PI_2)
+                    angle += M_PI;
+
+                angle = qAbs(angle);
+            } else
+                angle = InvalidOrientationPenaltyRad;
+
+            costMatrix[i1][i2] = distance + OrientationWeightCoefficient * angle;
+            // increas the max cost value
+            maxCost += costMatrix[i1][i2];
         }
     }
 
-    return agentFound;
+    return maxCost;
+}
+
+/*!
+ * Generates all the possible ordered combinations k indices (shorter list one)
+ * out of n indices (longer list two), taking into account which combinations
+ * make sense.
+ */
+void TrackingDataManager::searchBestMatch(int depth,  // depth of the recursion = current elemetn in the combination
+                                           int k, int n, // we compute A{^k}{_n}
+                                           QVector<bool>& usedIndices,  // tells which values are already used in the combination
+                                           QVector<int>& combination,  // the combination that is constructed
+                                           QVector<int>& bestCombination,  // the combination that is constructed
+                                           float& minCost,
+                                           const QVector<QVector<float>>& costMatrix)
+{
+    if (depth == k) {
+        float cost = getCombinationCost(combination, costMatrix);
+        if (cost < minCost) {
+            bestCombination = combination;
+            minCost = cost;
+        }
+        return;
+    }
+
+    for (int i = 0; i < n; i++) {
+        if (! usedIndices[i]) {
+            usedIndices[i] = true;
+            combination[depth] = i;
+            searchBestMatch(depth + 1, k, n, usedIndices, combination, bestCombination, minCost, costMatrix);
+            usedIndices[i] = false;
+        }
+    }
+}
+
+
+/*!
+ * Computes the costs of the given combination.
+ */
+float TrackingDataManager::getCombinationCost(const QVector<int>& combination,
+                                             const QVector<QVector<float>>& costMatrix)
+{
+    float cost = 0;
+    for (int i1 = 0; i1 < combination.size(); i1++)
+        cost += costMatrix[i1][combination[i1]];
+    return cost;
 }

@@ -164,7 +164,7 @@ OrientationRad CameraCalibration::image2WorldOrientationRad(PositionPixels image
     image_coord_to_world_coord(m_calibrationConstants, m_cameraParameters, ix, iy, wz, &wx, &wy);
     image_coord_to_world_coord(m_calibrationConstants, m_cameraParameters, imageCoordinates.x(), imageCoordinates.y(), wz, &wox, &woy);
 
-    return OrientationRad(atan2(wy-woy, wx-wox));
+    return OrientationRad(atan2(wy - woy, wx - wox));
 }
 
 /*!

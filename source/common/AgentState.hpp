@@ -11,7 +11,7 @@
  * The position and orientation classes that define the agent's state.
  */
 /*!
- * \brief The class that stores the orientation in radians.
+ * \brief The class that stores the orientation in the interval [-pi,+pi] radians.
  * NOTE : it would me ideologically more correct to have two classes : OrientationImageRad and
  * OrientationWorldRad to not eventually mix the things up.
  */
@@ -23,7 +23,7 @@ public:
 
     //! Sets the x coordinate.
     void setAngle(double angle) { m_angle = angle; }
-    //! Return the x coordinate.
+    //! Return the x coordinate ([-pi,+pi] radians).
     double angle() const { return m_angle; }
 
     //! Set the validity status.
@@ -33,7 +33,7 @@ public:
 
 private:
     //! The angle value.
-    double m_angle;  // [Rad]
+    double m_angle;  // [-pi,+pi] radians.
     //! The angle validity, set to false when the angle could not be determined.
     bool m_valid;
 };
