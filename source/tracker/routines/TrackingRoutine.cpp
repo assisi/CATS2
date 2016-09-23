@@ -39,8 +39,13 @@ void TrackingRoutine::process()
     while (!m_stopped) {
         if (m_inputQueue->dequeue(frame)) {
             m_currentTimestamp = frame.timestamp();
-            doTracking(frame);
             invalidateAgentsState();
+            // NOTE : OpenCV throws exceptions, so we need to be ready
+            try {
+                doTracking(frame);
+            } catch(cv::Exception& e) {
+                qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
+            }
             emit trackedAgents(m_agents);
         }
     }
