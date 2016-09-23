@@ -63,6 +63,7 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
     // subract the background
     m_backgroundSubtractor.get()->apply(m_grayscaleImage, m_foregroundImage, 0.0);
 
+
     // dilate and erode directly after
     int an = 1;
     cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(an*2+1, an*2+1), cv::Point(an, an));
@@ -107,15 +108,13 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
 
     // submit the debug image
     if (m_enqueueDebugFrames) {
-        for(auto center: centers) {
-            cv::circle(m_grayscaleImage, center, 2, 255);
-        }
-        enqueueDebugImage(m_grayscaleImage);
+        enqueueDebugImage(m_foregroundImage);
     }
 
     // compute the agents orientations
     std::vector<float> directions(centers.size());
     for (size_t i = 0; i < directions.size(); ++i) {
+        // FIXME : clean this logics of using only one contour
         cv::Point2f head = cornersInContours[i][0];
         cv::Point2f center = centers[i];
         directions[i] = qAtan2(head.y - center.y, head.x - center.x);
@@ -177,24 +176,32 @@ void BlobDetector::detectContours(cv::Mat& image,
     std::vector<cv::Vec4i> hierarchy;
     try {
         // retrieve contours from the binary image
-        cv::findContours(image, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
+        cv::findContours(image, contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
     } catch(cv::Exception& e) {
         qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
     }
 
-    //! Radiuses of enclosing circles for detected objects.
-    std::vector<float> radius(contours.size());
+    // draw the contours on the original image
+    // TODO : rewrite it to fit the general style
+    int idx = 0;
+    cv::Scalar color(255, 255, 255);
+    for(; idx >= 0; idx = hierarchy[idx][0] )
+    {
+        cv::drawContours(image, contours, idx, color, CV_FILLED, 8, hierarchy);
+    }
+
+    // Enclosing ellipses for detected objects
+    std::vector<cv::RotatedRect> ellipses;
     std::vector<std::vector<cv::Point>> contoursPoly;
     contoursPoly.resize(contours.size());
 
-    // center of the contour
-    cv::Point2f center;
+    // contour's moment;
+    cv::Moments moments;
     // all corners that are inside the contour
     std::vector<cv::Point2f> cornersInContour;
 
     for(size_t i = 0; i < contours.size(); ++i) {
         cv::approxPolyDP(cv::Mat(contours[i]), contoursPoly[i], 3, true);
-        cv::minEnclosingCircle(contoursPoly[i], center, radius[i]);
 
         cornersInContour.clear();
         for(auto corner: corners) {
@@ -202,11 +209,22 @@ void BlobDetector::detectContours(cv::Mat& image,
                 cornersInContour.push_back(corner);
             }
         }
+
         // take only the contours that contain corners
         if (cornersInContour.size() > 0) {
-            centers.push_back(center);
+            moments = cv::moments(contours[i]);
+            centers.push_back(cv::Point2f((float)(moments.m10/moments.m00+0.5),(float)(moments.m01/moments.m00+0.5)));
             cornersInContours.push_back(cornersInContour);
         }
+    }
+
+    // draw corners that are inside the contours and inclosing circles
+    // and the corresponding countours' centers
+    color = cv::Scalar(100, 100, 100);
+    int r = 3;
+    for( int i = 0; i < cornersInContours.size(); i++ ) {
+        cv::circle(image, cornersInContours[i][0], r, color, -1, 8, 0);
+        cv::circle(image, centers[i], r, color, -1, 8, 0);
     }
 }
 
