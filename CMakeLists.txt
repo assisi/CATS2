@@ -50,6 +50,5 @@ elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
 #elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "MSVC")
 endif()
 
-
 add_subdirectory(source)
 add_subdirectory(examples)

@@ -164,7 +164,6 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     float minCost = maxCost;
     searchBestMatch(0, listOne.size(), listTwo.size(), usedIndices, combination, bestCombination,  minCost, costMatrix);
 
-    qDebug() << bestCombination;
     // generate the joined list
     // first add duplicated agents to the output list
     QList<QPair<int, int>> indecesToRemove;
@@ -179,13 +178,15 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
             else
                 joinedAgentsList.append(agentTwo);
             indecesToRemove.append(qMakePair(i1, bestCombination[i1]));
+        } else {
+            qDebug() << costMatrix[i1][bestCombination[i1]] << WeightedThreshold;
         }
     }
     // remove duplicated elements from both input lists
     for (int i = 0; i < indecesToRemove.size(); i++) {
         // remove these agents from both lists
         listOne.removeAt(indecesToRemove[i].first);
-        listTwo.removeAt(indecesToRemove[i].second);s
+        listTwo.removeAt(indecesToRemove[i].second);
     }
 
     // add remaining items
