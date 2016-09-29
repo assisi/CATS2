@@ -64,5 +64,8 @@
             </fishBotLedsTracking>
         </tracking>
     </cameraBelow>
+    <interSpecies>
+        <publisherAddress>tcp://*:5555</publisherAddress>
+    </interSpecies>
 </opencv_storage>
 

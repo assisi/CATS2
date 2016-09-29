@@ -18,6 +18,7 @@ find_package(GStreamer REQUIRED COMPONENTS base)
 find_package(Qt5GStreamer REQUIRED)
 find_package(GLIB2 REQUIRED)
 find_package(Libtsai REQUIRED)
+find_package(Protobuf REQUIRED)
 
 # SYSTEM is used to suppress GCC warnings in libraries headers
 include_directories(SYSTEM ${QT_INCLUDE_DIR})
@@ -29,6 +30,7 @@ include_directories(SYSTEM ${GLIB2_MAIN_INCLUDE_DIR})
 include_directories(SYSTEM ${OpenCV_INCLUDE_DIR})
 include_directories(SYSTEM ${READERWRITERQUEUE_INCLUDE_DIRS})
 include_directories(SYSTEM ${LIBTSAI_INCLUDE_DIRS})
+include_directories(SYSTEM ${PROTOBUF_INCLUDE_DIRS})
 
 #add_definitions(${QTGSTREAMER_DEFINITIONS}) # defines QT_NO_KEYWORDS that demands replacing all "signals" by "Q_SIGNALS"
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${QTGSTREAMER_FLAGS}")

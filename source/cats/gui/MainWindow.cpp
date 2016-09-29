@@ -1,6 +1,7 @@
 #include "ui_MainWindow.h"
 #include "MainWindow.hpp"
 #include "settings/Settings.hpp"
+#include <settings/InterSpeciesSettings.hpp>
 
 #include <TrackingSetup.hpp>
 #include <TrackingDataManager.hpp>
@@ -26,6 +27,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // create the tracking data manager
     m_trackingDataManager = TrackingDataManagerPtr(new TrackingDataManager(), &QObject::deleteLater);
+
+    // create the inter-species data manager
+    m_interSpeciesDataManager = InterSpeciesDataManagerPtr(new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress()), &QObject::deleteLater);
+    connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataMerged,
+               m_interSpeciesDataManager.data(), &InterSpeciesDataManager::publishAgentData);
 
     // create setups
     if (Settings::get().isAvailable(SetupType::MAIN_CAMERA)) {

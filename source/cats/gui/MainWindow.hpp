@@ -5,6 +5,8 @@
 #include <ViewerPointerTypes.hpp>
 #include <SetupType.hpp>
 
+#include <InterSpeciesDataManager.hpp>
+
 #include <QtCore>
 #include <QtGui>
 #include <QtWidgets/QMainWindow>
@@ -58,6 +60,8 @@ private:
 
     //! The tracking data manager.
     TrackingDataManagerPtr m_trackingDataManager;
+    //! The inter-species data manager.
+    InterSpeciesDataManagerPtr m_interSpeciesDataManager;
 };
 
 #endif // CATS2_MAIN_WINDOW_HPP

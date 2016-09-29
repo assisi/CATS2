@@ -5,6 +5,7 @@
 #include <settings/TrackingSetupSettings.hpp>
 #include <settings/GrabberSettings.hpp>
 #include <settings/ViewerSettings.hpp>
+#include <settings/InterSpeciesSettings.hpp>
 #include <RunTimer.h>
 
 #include <QtCore/QDebug>
@@ -23,7 +24,8 @@ Settings& Settings::get()
  */
 bool Settings::init(int argc, char *argv[],
                     bool needConfigFile, bool needCalibration,
-                    bool needMainCamera, bool needBelowCamera)
+                    bool needMainCamera, bool needBelowCamera,
+                    bool needPublisherAddress)
 {
     // initialize the run timer class
     RunTimer::get().init();
@@ -64,6 +66,12 @@ bool Settings::init(int argc, char *argv[],
             qDebug() << Q_FUNC_INFO << "Could not initialize the main camera viewer";
             return false;
         }
+    }
+
+    // initialize the inter-species module settings
+    if (!InterSpeciesSettings::get().init(CommandLineParameters::get().configurationFilePath(), needPublisherAddress)) {
+        qDebug() << Q_FUNC_INFO << "Could not initialize the inter-species module";
+        return false;
     }
 
     return true;

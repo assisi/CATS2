@@ -22,7 +22,10 @@ public:
     static Settings& get();
 
     //! Initializes the parameters from the configuration file.
-    bool init(int argc, char *argv[], bool needConfigFile = true, bool needCalibration = true, bool hasMainCamera = true, bool hasBelowCamera = false);
+    bool init(int argc, char *argv[],
+              bool needConfigFile = true, bool needCalibration = true,
+              bool hasMainCamera = true, bool hasBelowCamera = false,
+              bool needPublisherAddress = false);
 
     // delete copy and move constructors and assign operators
     //! Copy constructor.

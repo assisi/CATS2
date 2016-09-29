@@ -1,0 +1,27 @@
+syntax = "proto2";
+
+package CatsMessages;
+
+message State {
+    // The angle value.
+    optional double angle = 1;  // [-pi,+pi] radians.
+    // Position x.
+    optional double x = 2;  // [m]
+    // Position y.
+    optional double y = 3;  // [m]
+}
+
+message AgentData {
+    // Agent's id.
+    optional string id = 1;
+    // The type of agent.
+    optional string type = 2;
+    // The position of the agent, in [m].
+    optional State state = 3;
+}
+
+message AgentDataList
+{
+    // The agent's data.
+    repeated AgentData agentsData = 1;
+}
