@@ -16,6 +16,5 @@ add_executable(simple-tracker ${srcs} ${uis_hdrs})
 target_link_libraries(simple-tracker common grabber tracker viewer hub Qt5::Core Qt5::Widgets Qt5::Gui
                         ${QTGSTREAMER_LIBRARY} ${QTGSTREAMER_LIBRARIES}
                         ${QTGSTREAMER_UTILS_LIBRARY} ${QTGSTREAMER_UTILS_LIBRARIES}
-                        ${QTGSTREAMER_UTILS_LIBRARY} ${QTGSTREAMER_UTILS_LIBRARIES}
                         ${QTGLIB_LIBRARIES} ${QTGSTREAMER_UI_LIBRARY} ${QTGSTREAMER_UI_LIBRARIES}
                         ${GSTREAMER_LIBRARY} ${GSTREAMER_VIDEO_LIBRARY})

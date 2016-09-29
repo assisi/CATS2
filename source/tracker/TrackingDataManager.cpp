@@ -1,7 +1,5 @@
 #include "TrackingDataManager.hpp"
-
-#include <QtCore/QDebug>
-#include <QtCore/QPair>
+#include "settings/TrackingSettings.hpp"
 
 constexpr std::chrono::duration<double> TrackingDataManager::MaxTimeDifferenceMs;
 constexpr float TrackingDataManager::IdentityDistanceThresholdMeters;
@@ -17,7 +15,16 @@ TrackingDataManager::TrackingDataManager() :
     QObject(nullptr),
     m_primaryDataSource(SetupType::UNDEFINED),
     m_primaryDataSourceCapability(AgentType::UNDEFINED),
-    m_typeForGenericAgents(AgentType::FISH) // TODO : find a better way to do this?
+    m_typeForGenericAgents(AgentType::FISH), // TODO : find a better way to do this(?)
+    m_trajectoryWriter()
+{
+
+}
+
+/*!
+ * Destructor.
+ */
+TrackingDataManager::~TrackingDataManager()
 {
 
 }
@@ -84,7 +91,10 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
             }
 
             // send the results
-            notifyAgentDataMerged(mergedAgentData);
+            emit notifyAgentDataMerged(mergedAgentData);
+
+            // save the results to a file
+            m_trajectoryWriter.writeData(timestamp, mergedAgentData);
         }
     }
 }

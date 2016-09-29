@@ -48,7 +48,7 @@ public:
 private:
     //! Agent's id.
     QString m_id;
-    //! The type of image.
+    //! The type of agent.
     AgentType m_type;
     //! The position of the agent (center) in [px], and it's orientation.
     StateImage m_state;
@@ -89,7 +89,7 @@ public:
 private:
     //! Agent's id.
     QString m_id;
-    //! The type of image.
+    //! The type of agent.
     AgentType m_type;
     //! The position of the agent, in [m].
     StateWorld m_state;

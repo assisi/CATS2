@@ -75,8 +75,9 @@ void TrackingData::onTrackedAgents(QList<AgentDataImage> imageAgents)
         }
         if (!timestampedAgentsData.agentsData.isEmpty())
             emit trackedAgents(m_setupType, timestampedAgentsData);
-        else
-            qDebug() << Q_FUNC_INFO << "Among received agents there is no one with valid position";
+        else {
+//            qDebug() << Q_FUNC_INFO << "Among received agents there is no one with valid position";
+        }
     } else {
         qDebug() << Q_FUNC_INFO << "Unable to convert the image coordinates to the world coordinates";
     }

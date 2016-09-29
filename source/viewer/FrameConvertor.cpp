@@ -15,7 +15,7 @@ FrameConvertor::FrameConvertor(TimestampedFrameQueuePtr inputQueue) :
     m_stopped(false),
     m_previousTimestamp(std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch()))
 {
-    qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QPixmap>");
+    qRegisterMetaType<QSharedPointer<QPixmap>>("QSharedPointer<QPixmap>");
 }
 
 /*!

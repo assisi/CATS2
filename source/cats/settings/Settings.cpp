@@ -5,6 +5,7 @@
 #include <settings/TrackingSetupSettings.hpp>
 #include <settings/GrabberSettings.hpp>
 #include <settings/ViewerSettings.hpp>
+#include <RunTimer.h>
 
 #include <QtCore/QDebug>
 
@@ -24,6 +25,9 @@ bool Settings::init(int argc, char *argv[],
                     bool needConfigFile, bool needCalibration,
                     bool needMainCamera, bool needBelowCamera)
 {
+    // initialize the run timer class
+    RunTimer::get().init();
+
     // first check the command line parameters
     if (! CommandLineParameters::get().init(argc, argv, needConfigFile, needMainCamera, needBelowCamera)) {
         qDebug() << Q_FUNC_INFO << "Couldn't find necessary input arguments, finished";

@@ -11,6 +11,7 @@ set(srcs
     TrackingDataManager.cpp
     TrackingSetup.cpp
     TrackingHandler.cpp
+    TrajectoryWriter.cpp
     gui/TrackingRoutineWidget.cpp
     gui/BlobDetectorWidget.cpp
     gui/FishBotLedsTrackingWidget.cpp

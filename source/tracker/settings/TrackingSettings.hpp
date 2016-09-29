@@ -42,6 +42,13 @@ public:
         return m_trackingRoutineSettings.value(type);
     }
 
+    //! The experiment name (used to write the tracking results to a file).
+    QString experimentName() const { return m_experimentName; }
+    //! Return the number of robots used in the experiment.
+    int numberOfRobots() const { return m_numberOfRobots; }
+    //! Return the number of animals used in the experiment.
+    int numberOfAnimals() const { return m_numberOfAnimals; }
+
 private:
     //! Constructor. Defining it here prevents construction.
     TrackingSettings() {}
@@ -56,6 +63,13 @@ private:
 private:
     //! The settings for the tracking routine used in various setups.
     QMap<SetupType::Enum, TrackingRoutineSettingsPtr> m_trackingRoutineSettings;
+
+    //! The experiment name (used to write the tracking results to a file).
+    QString m_experimentName;
+    //! The number of robots used in the experiment.
+    int m_numberOfRobots;
+    //! The number of animals used in the experiment.
+    int m_numberOfAnimals;
 };
 
 #endif // CATS2_TRACKING_SETTINGS_HPP

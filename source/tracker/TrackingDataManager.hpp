@@ -1,6 +1,8 @@
 #ifndef CATS2_TRACKING_DATA_MANAGER_HPP
 #define CATS2_TRACKING_DATA_MANAGER_HPP
 
+#include "TrajectoryWriter.hpp"
+
 #include <SetupType.hpp>
 #include <AgentData.hpp>
 
@@ -21,6 +23,8 @@ class TrackingDataManager : public QObject
 public:
     //! Constructor.
     explicit TrackingDataManager();
+    //! Destructor.
+    virtual ~TrackingDataManager() final;
 
     //! Adds new data source to the list. Also defines what kind of objects this source
     //! is able to track.
@@ -82,6 +86,9 @@ private:
     static constexpr float WeightedThreshold = IdentityDistanceThresholdMeters + OrientationThresholdRad * OrientationWeightCoefficient;
     //! The penalty for the invalid orientation.
     static constexpr float InvalidOrientationPenaltyRad = M_PI / 16; // i.e. 11.25 degrees
+
+    //! Writes down the tracking results to the file.
+    TrajectoryWriter m_trajectoryWriter;
 };
 
 #endif // CATS2_TRACKING_DATA_MANAGER_HPP

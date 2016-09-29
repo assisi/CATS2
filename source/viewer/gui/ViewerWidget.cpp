@@ -51,7 +51,7 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     m_frameRate->setPos(20,30);
 
     // connect to the data class
-    qRegisterMetaType<QSharedPointer<QImage>>("QSharedPointer<QPixmap>");
+    qRegisterMetaType<QSharedPointer<QPixmap>>("QSharedPointer<QPixmap>");
     connect(m_data.data(), &ViewerData::newFrame, this, &ViewerWidget::onNewFrame);
 }
 

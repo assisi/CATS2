@@ -19,17 +19,29 @@ bool TrackingSettings::init(QString configurationFileName, SetupType::Enum setup
 {
     bool settingsAccepted = true;
 
+    // FIXME : these variables are read several times (every time the setup is initialized), consider moving this code
+    // to a separated function
+    // first read the generic settings
+    ReadSettingsHelper settings(configurationFileName);
+    std::string experimentName;
+    settings.readVariable("experiment/name", experimentName, std::string("Experiment"));
+    m_experimentName = QString::fromUtf8(experimentName.c_str());
+
+    settings.readVariable("experiment/agents/numberOfRobots", m_numberOfRobots, 0);
+    settings.readVariable("experiment/agents/numberOfAnimals", m_numberOfAnimals, 0);
+
+    // and now read the settings specific for given setup type
     // get the tracking routine type
     TrackingRoutineType::Enum trackingRoutineType = readTrackingRoutineType(configurationFileName, setupType);
     if (trackingRoutineType == TrackingRoutineType::UNDEFINED)
         return false;
 
     // create corresponding settings
-    TrackingRoutineSettingsPtr settings = TrackerFactory::createTrackingRoutineSettings(trackingRoutineType, setupType);
-    m_trackingRoutineSettings.insert(setupType, settings);
+    TrackingRoutineSettingsPtr routineSettings = TrackerFactory::createTrackingRoutineSettings(trackingRoutineType, setupType);
+    m_trackingRoutineSettings.insert(setupType, routineSettings);
 
     // initialize settings
-    settingsAccepted = settings->init(configurationFileName);
+    settingsAccepted = routineSettings->init(configurationFileName);
 
     return settingsAccepted;
 }

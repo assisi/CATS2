@@ -3,6 +3,7 @@ set(srcs
     AgentData.cpp
     CameraCalibration.cpp
     CoordinatesConversion.cpp
+    RunTimer.cpp
     settings/CommandLineParameters.cpp
     settings/CalibrationSettings.cpp
 )
