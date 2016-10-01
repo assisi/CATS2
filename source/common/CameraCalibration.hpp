@@ -11,6 +11,8 @@ class PositionPixels;
 class PositionMeters;
 class OrientationRad;
 
+// TODO : needs unit testing.
+
 /*!
  * \brief The type of the camera.
  */
@@ -37,12 +39,15 @@ public:
     virtual ~CameraCalibration() final;
 
     //! Converts the position in pixels to the position in meters.
-    PositionMeters image2World(PositionPixels imageCoordinates);
+    PositionMeters imageToWorld(PositionPixels imageCoordinates);
     //! Converts the position in meters to the position in pixels.
-    PositionPixels world2Image(PositionMeters worldCoordinates);
+    PositionPixels worldToImage(PositionMeters worldCoordinates);
 
     //! Converts the orientation at given position from image to world.
-    OrientationRad image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad);
+    //! FIXME : this method calls imageToWorldPosition() and so it is not optimal to call both methods, need to be merged somehow.
+    OrientationRad imageToWorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad);
+    //! Converts the orientation at given position from world to image.
+    OrientationRad worldToImageOrientationRad(PositionMeters worldCoordinates, OrientationRad worldOrientationRad);
 
     bool isInitialized() const { return m_calibrationInitialized; }
 

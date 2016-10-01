@@ -32,8 +32,9 @@ public:
     PositionPixels worldToImagePosition(PositionMeters worldCoordinates) const;
 
     //! Converts the orientation from image to world.
-    //! FIXME : this method calls imageToWorldPosition() and so it is not optimal to call both methods, need to be merged somehow
-    OrientationRad image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientation) const;
+    OrientationRad imageToWorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientation) const;
+    //! Converts the orientation from world to image.
+    OrientationRad worldToImageOrientationRad(PositionMeters worldCoordinates, OrientationRad worldOrientation) const;
 
 private:
     //! The object that calibrates the camera and basically makes the job of coordinates conversion.

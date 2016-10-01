@@ -126,7 +126,7 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
 /*!
  * Converts the position in pixels to the position in meters. The z is considered equal to zero.
  */
-PositionMeters CameraCalibration::image2World(PositionPixels imageCoordinates)
+PositionMeters CameraCalibration::imageToWorld(PositionPixels imageCoordinates)
 {
     double wz = m_height;
     double wx, wy;
@@ -140,19 +140,19 @@ PositionMeters CameraCalibration::image2World(PositionPixels imageCoordinates)
 /*!
  * Converts the position in meters to the position in pixels.
  */
-PositionPixels CameraCalibration::world2Image(PositionMeters worldCoordinates)
+PositionPixels CameraCalibration::worldToImage(PositionMeters worldCoordinates)
 {
     double ix, iy;
     world_coord_to_image_coord(m_calibrationConstants, m_cameraParameters,
                                worldCoordinates.x() * 1000, worldCoordinates.y() * 1000,
-                               worldCoordinates.z() * 1000, &ix, &iy); // the calibration data is set in mm, hence the division
+                               worldCoordinates.z() * 1000, &ix, &iy); // the calibration data is set in mm, hence the multiplication to change from meters
     return PositionPixels(ix, iy);
 }
 
 /*!
  * Converts the orientation at given position from image to world.
  */
-OrientationRad CameraCalibration::image2WorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad)
+OrientationRad CameraCalibration::imageToWorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad)
 {
     double vectorLength = m_cameraParameters.Ncx / 20; // empirical constant
     double ix = imageCoordinates.x() + vectorLength * cos(imageOrientationRad.angle()); // a vector in  image coordinates
@@ -165,6 +165,25 @@ OrientationRad CameraCalibration::image2WorldOrientationRad(PositionPixels image
     image_coord_to_world_coord(m_calibrationConstants, m_cameraParameters, imageCoordinates.x(), imageCoordinates.y(), wz, &wox, &woy);
 
     return OrientationRad(atan2(wy - woy, wx - wox));
+}
+
+/*!
+ * Converts the orientation at given position from world to image.
+ */
+OrientationRad CameraCalibration::worldToImageOrientationRad(PositionMeters worldCoordinates, OrientationRad worldOrientationRad)
+{
+    double vectorLengthMm = 100; // mm, empirical constant
+    double wx = worldCoordinates.x() * 1000 + vectorLengthMm * cos(worldOrientationRad.angle()); // a vector in  image coordinates
+    double wy = worldCoordinates.y() * 1000 + vectorLengthMm * sin(worldOrientationRad.angle());
+
+    double ix,iy;						// corresponding image coordinates
+    double iox,ioy;						// image coordinates of agent's position
+
+    world_coord_to_image_coord(m_calibrationConstants, m_cameraParameters, wx, wy, worldCoordinates.z() * 1000, &ix, &iy);
+    world_coord_to_image_coord(m_calibrationConstants, m_cameraParameters, worldCoordinates.x() * 1000,
+                               worldCoordinates.y() * 1000, worldCoordinates.z() * 1000, &iox, &ioy);
+
+    return OrientationRad(atan2(iy - ioy, ix - iox));
 }
 
 /*!

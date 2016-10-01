@@ -282,7 +282,6 @@ void TrackingDataManager::searchBestMatch(int depth,  // depth of the recursion 
     }
 }
 
-
 /*!
  * Computes the costs of the given combination.
  */
