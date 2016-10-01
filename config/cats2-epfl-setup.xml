@@ -65,7 +65,7 @@
         </tracking>
     </cameraBelow>
     <interSpecies>
-        <publisherAddress>tcp://*:5555</publisherAddress>
+        <publisherAddress>tcp://127.0.0.1:50001</publisherAddress>
     </interSpecies>
 </opencv_storage>
 

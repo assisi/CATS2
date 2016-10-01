@@ -12,7 +12,7 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress) :
     m_context (1),
     m_publisher (m_context, ZMQ_PUB)
 {
-    m_publisher.bind(publisherAddress.toStdString());
+    m_publisher.bind(publisherAddress.toStdString().data());
 }
 
 /*!
