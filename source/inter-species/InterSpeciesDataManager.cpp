@@ -26,18 +26,20 @@ void InterSpeciesDataManager::publishMessage(std::string& name,std::string& devi
 /*!
  * Triggered when new agent data is to be published.
  */
-void InterSpeciesDataManager::publishAgentData(QList<AgentDataWorld> agentDataList)
+void InterSpeciesDataManager::publishAgentData(QList<AgentDataImage> agentDataList)
 {
     // convert the data to a message
     CatsMessages::AgentDataList agentDataToPublish;
 
-    foreach (AgentDataWorld agentData, agentDataList) {
+    foreach (AgentDataImage agentData, agentDataList) {
         CatsMessages::AgentData* agentDataMessage = agentDataToPublish.add_agentsdata();
         agentDataMessage->set_id(agentData.id().toStdString());
         agentDataMessage->set_type(agentTypeToString(agentData.type()));
         agentDataMessage->mutable_state()->set_angle(agentData.state().orientation().angle());
         agentDataMessage->mutable_state()->set_x(agentData.state().position().x());
         agentDataMessage->mutable_state()->set_y(agentData.state().position().y());
+
+        //qDebug() << agentData.id() << agentData.state().position().toString();
     }
 
     // send the data

@@ -1,6 +1,8 @@
 #include "TrackingDataManager.hpp"
 #include "settings/TrackingSettings.hpp"
 
+#include <CoordinatesConversion.hpp>
+
 constexpr std::chrono::duration<double> TrackingDataManager::MaxTimeDifferenceMs;
 constexpr float TrackingDataManager::IdentityDistanceThresholdMeters;
 constexpr float TrackingDataManager::OrientationThresholdRad;
@@ -33,7 +35,7 @@ TrackingDataManager::~TrackingDataManager()
  * Adds new data source to the list. Also defines what kind of objects this
  * source is able to track.
  */
-void TrackingDataManager::addNewDataSource(SetupType::Enum setupType,
+void TrackingDataManager::addDataSource(SetupType::Enum setupType,
                                            QList<AgentType> capabilities)
 {
     // add new data source
@@ -46,6 +48,14 @@ void TrackingDataManager::addNewDataSource(SetupType::Enum setupType,
             m_primaryDataSource = setupType;
         }
     }
+}
+
+/*!
+ * Adds new coordinates conversion.
+ */
+void TrackingDataManager::addCoordinatesConversion(SetupType::Enum setupType, CoordinatesConversionPtr coordinatesConversion)
+{
+    m_coordinatesConversions.insert(setupType, coordinatesConversion);
 }
 
 /*!
@@ -62,8 +72,8 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
         }
     } else {
         // if the data comes from the primary source then it needs to be treated right away
-        QList<AgentDataWorld> agentData = timestampedAgentsData.agentsData;
-        QList<AgentDataWorld> mergedAgentData;
+        QList<AgentDataWorld> agentDataList = timestampedAgentsData.agentsData;
+        QList<AgentDataWorld> mergedAgentDataList;
         // get the new data's timestamp
         std::chrono::milliseconds timestamp = timestampedAgentsData.timestamp;
         // look throught data from other sources to make a merge
@@ -75,7 +85,7 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
                 if (getDataByTimestamp(timestamp, m_trackingData[dataSource], closestAgentData)) {
                     // if the data list is found than we take the agent from this list that are not
                     // yet in the final list
-                    matchAgents(agentData, closestAgentData.agentsData, mergedAgentData);
+                    matchAgents(agentDataList, closestAgentData.agentsData, mergedAgentDataList);
                 } else {
                     sendData = false; // i.e. we consider that all sources should contribute
                     // TODO : this parameter should be a flat in the configuration file
@@ -85,16 +95,21 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
 
         if (sendData) {
             // set the type of all the agent of the undefined type to the specified type
-            for (size_t i = 0; i < mergedAgentData.size(); i++) {
-                if (mergedAgentData[i].type() == AgentType::GENERIC)
-                    mergedAgentData[i].setType(m_typeForGenericAgents);
+            for (size_t i = 0; i < mergedAgentDataList.size(); i++) {
+                if (mergedAgentDataList[i].type() == AgentType::GENERIC)
+                    mergedAgentDataList[i].setType(m_typeForGenericAgents);
             }
 
             // send the results
-            emit notifyAgentDataMerged(mergedAgentData);
+            emit notifyAgentDataWorldMerged(mergedAgentDataList);
+
+            // sends results in main setup image coordinates
+            // NOTE : this is a temporary code to share results with CATS
+            QList<AgentDataImage> agentDataListImage = convertToFrameCoordinates(SetupType::MAIN_CAMERA, mergedAgentDataList);
+            emit notifyAgentDataImageMerged(agentDataListImage);
 
             // save the results to a file
-            m_trajectoryWriter.writeData(timestamp, mergedAgentData);
+            m_trajectoryWriter.writeData(timestamp, mergedAgentDataList);
         }
     }
 }
@@ -166,6 +181,13 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     // cost matrices
     QVector<QVector<float>> costMatrix(listOne.size());
     float maxCost = initializeCostMatrices(listOne, listTwo, costMatrix);
+
+//    // TODO : uncomment to debug agent matching
+//    qDebug() << Q_FUNC_INFO;
+//    qDebug() << "Cost matrix" ;
+//    qDebug() << "Threshold" << WeightedThreshold;
+//    for (int i = 0; i < listOne.size(); i++)
+//        qDebug() << costMatrix[i];
 
     // find best match
     QVector<bool> usedIndices(listTwo.size(), false);
@@ -292,4 +314,23 @@ float TrackingDataManager::getCombinationCost(const QVector<int>& combination,
     for (int i1 = 0; i1 < combination.size(); i1++)
         cost += costMatrix[i1][combination[i1]];
     return cost;
+}
+
+/*!
+ * Converts a list of agent data objects from world to image coordinates.
+ */
+QList<AgentDataImage> TrackingDataManager::convertToFrameCoordinates(SetupType::Enum setupType, QList<AgentDataWorld> mergedAgentDataList)
+{
+    QList<AgentDataImage> agentsDataImageList;
+    // if the conversion is available
+    if (m_coordinatesConversions.contains(setupType)) {
+        // convert all agents
+        foreach (AgentDataWorld agentDataWorld, mergedAgentDataList) {
+            PositionPixels imagePosition = m_coordinatesConversions[setupType]->worldToImagePosition(agentDataWorld.state().position());
+            OrientationRad imageOrientation = m_coordinatesConversions[setupType]->worldToImageOrientationRad(agentDataWorld.state().position(),
+                                                                                                              agentDataWorld.state().orientation());
+            agentsDataImageList.append(AgentDataImage(agentDataWorld.id(), agentDataWorld.type(), StateImage(imagePosition, imageOrientation)));
+        }
+    }
+    return agentsDataImageList;
 }

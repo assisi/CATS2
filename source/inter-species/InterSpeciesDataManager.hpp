@@ -26,7 +26,7 @@ public:
 
 public slots:
     //! Triggered when new agent data is to be published.
-    void publishAgentData(QList<AgentDataWorld> agentDataList);
+    void publishAgentData(QList<AgentDataImage> agentDataList);
 
 private:
     //! Publishes the message.

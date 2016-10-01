@@ -54,6 +54,7 @@ TimestampedFrameQueuePtr TrackingSetup::viewerQueue()
  */
 void TrackingSetup::connectToDataManager(TrackingDataManagerPtr& trackingDataManager)
 {
-    trackingDataManager->addNewDataSource(m_setupType, m_tracking->data()->routineCapabilities());
+    trackingDataManager->addDataSource(m_setupType, m_tracking->data()->routineCapabilities());
+    trackingDataManager->addCoordinatesConversion(m_setupType, m_coordinatesConversion);
     QObject::connect(m_tracking->data().data(), &TrackingData::trackedAgents, trackingDataManager.data(), &TrackingDataManager::onNewData);
 }

@@ -30,7 +30,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // create the inter-species data manager
     m_interSpeciesDataManager = InterSpeciesDataManagerPtr(new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress()), &QObject::deleteLater);
-    connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataMerged,
+    connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataImageMerged,
                m_interSpeciesDataManager.data(), &InterSpeciesDataManager::publishAgentData);
 
     // create setups
@@ -144,7 +144,7 @@ void MainWindow::connectPrimaryView()
         connect(m_ui->actionAdjustView, &QAction::triggered, viewerWidget, &ViewerWidget::adjust);
 
         // connect to the tracking data manager
-        connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataMerged,
+        connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
                 viewerWidget, &ViewerWidget::showAgents);
     }
 }

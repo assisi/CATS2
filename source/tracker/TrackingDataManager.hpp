@@ -2,6 +2,7 @@
 #define CATS2_TRACKING_DATA_MANAGER_HPP
 
 #include "TrajectoryWriter.hpp"
+#include <CommonPointerTypes.hpp>
 
 #include <SetupType.hpp>
 #include <AgentData.hpp>
@@ -28,11 +29,16 @@ public:
 
     //! Adds new data source to the list. Also defines what kind of objects this source
     //! is able to track.
-    void addNewDataSource(SetupType::Enum setupType, QList<AgentType> capabilities);
+    void addDataSource(SetupType::Enum setupType, QList<AgentType> capabilities);
+    //! Adds new coordinates conversion.
+    void addCoordinatesConversion(SetupType::Enum setupType, CoordinatesConversionPtr coordinatesConversion);
 
 signals:
     //! The results of merging the data from various sources.
-    void notifyAgentDataMerged(QList<AgentDataWorld> agentsData);
+    void notifyAgentDataWorldMerged(QList<AgentDataWorld> agentsDataList);
+    //! The results of merging the data from various sources,
+    //! converted to main setup's frame coordinates.
+    void notifyAgentDataImageMerged(QList<AgentDataImage> agentsDataList);
 
 public slots:
     //! New tracking results arrive.
@@ -56,6 +62,8 @@ private:
     //! Computes the costs of the given combination.
     float getCombinationCost(const QVector<int>& combination,
                                                  const QVector<QVector<float>>& costMatrix);
+    //! Converts a list of agent data objects from world to image coordinates.
+    QList<AgentDataImage> convertToFrameCoordinates(SetupType::Enum setupType, QList<AgentDataWorld> mergedAgentDataList);
 
 private:
     //! The tracking results recieved from various sources.
@@ -73,7 +81,7 @@ private:
     AgentType m_typeForGenericAgents;
 
     //! Max acceptable time difference to search for the corresponding timestamps.
-    static constexpr std::chrono::duration<double> MaxTimeDifferenceMs = std::chrono::milliseconds(100);
+    static constexpr std::chrono::duration<double> MaxTimeDifferenceMs = std::chrono::milliseconds(50);
 
     // TODO : to move this values out to the settings
     //! If two agents are closer than this value they are considered as the same.
@@ -89,6 +97,10 @@ private:
 
     //! Writes down the tracking results to the file.
     TrajectoryWriter m_trajectoryWriter;
+
+    //! Keeps the coordinates conversion map in case if we need to export results in
+    //! the image coordinates.
+    QMap<SetupType::Enum, CoordinatesConversionPtr> m_coordinatesConversions;
 };
 
 #endif // CATS2_TRACKING_DATA_MANAGER_HPP
