@@ -9,6 +9,10 @@
 #include <ViewerData.hpp>
 #include <gui/ViewerWidget.hpp>
 
+#include <RobotsHandler.hpp>
+#include <ControlLoop.hpp>
+#include <settings/RobotControlSettings.hpp>
+
 #include <QtCore/QCoreApplication>
 #include <QtGui/QtGui>
 #include <QtCore/QTimer>
@@ -32,6 +36,15 @@ MainWindow::MainWindow(QWidget *parent) :
     m_interSpeciesDataManager = InterSpeciesDataManagerPtr(new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress()), &QObject::deleteLater);
     connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataImageMerged,
                m_interSpeciesDataManager.data(), &InterSpeciesDataManager::publishAgentData);
+
+    // create the robot control handler
+    m_robotsHandler = RobotsHandlerPtr(new RobotsHandler());
+    if (RobotControlSettings::get().numberOfRobots() > 0) {
+        // add a layout
+        new QGridLayout(m_ui->robotsControllerWidget);
+        // and place a robot controller widget on this layout
+        m_ui->robotsControllerWidget->layout()->addWidget(m_robotsHandler->widget());
+    }
 
     // create setups
     if (Settings::get().isAvailable(SetupType::MAIN_CAMERA)) {
@@ -85,7 +98,7 @@ void MainWindow::setPrimaryView(SetupType::Enum setupType)
 {
     // create the layout if it does not exist
     if (!m_ui->primaryViewerWidget->layout()) {
-        QGridLayout *layout = new QGridLayout(m_ui->primaryViewerWidget);
+        new QGridLayout(m_ui->primaryViewerWidget);
     }
     // if there is another primary view then disonnect its signals and slots
     disconnectPrimaryView();
@@ -110,7 +123,7 @@ void MainWindow::setSecondaryView(SetupType::Enum setupType)
 {
     // create the layout if it does not exist
     if (!m_ui->secondaryViewerWidget->layout()) {
-        QGridLayout *layout = new QGridLayout(m_ui->secondaryViewerWidget);
+        new QGridLayout(m_ui->secondaryViewerWidget);
     }
     // set new secondary view
     if (m_viewerHandlers.contains(setupType)) {
@@ -146,6 +159,9 @@ void MainWindow::connectPrimaryView()
         // connect to the tracking data manager
         connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
                 viewerWidget, &ViewerWidget::showAgents);
+        // connect to the robots controller
+        connect(viewerWidget, &ViewerWidget::notifyRightButtonClick,
+                m_robotsHandler->contolLoop().data(), &ControlLoop::goToPosition);
     }
 }
 
@@ -155,14 +171,19 @@ void MainWindow::connectPrimaryView()
 void MainWindow::disconnectPrimaryView()
 {
     if (m_primarySetupType != SetupType::UNDEFINED) {
-        ViewerHandlerPtr viewerHandler = m_viewerHandlers[m_primarySetupType];
-        viewerHandler->widget()->disconnect();
+        ViewerWidget* viewerWidget = m_viewerHandlers[m_primarySetupType]->widget();
+        // disconnect all signals comming from the viewer
+        viewerWidget->disconnect();
 
         // disconnect the window's actions
-        disconnect(m_ui->actionZoomIn, &QAction::triggered, viewerHandler->widget(), &ViewerWidget::onZoomIn);
-        disconnect(m_ui->actionZoomOut, &QAction::triggered, viewerHandler->widget(), &ViewerWidget::onZoomOut);
-        disconnect(m_ui->actionSaveCurrentView, &QAction::triggered, viewerHandler->widget(), &ViewerWidget::saveCurrentFrameToFile);
-        disconnect(m_ui->actionAdjustView, &QAction::triggered, viewerHandler->widget(), &ViewerWidget::adjust);
+        disconnect(m_ui->actionZoomIn, &QAction::triggered, viewerWidget, &ViewerWidget::onZoomIn);
+        disconnect(m_ui->actionZoomOut, &QAction::triggered, viewerWidget, &ViewerWidget::onZoomOut);
+        disconnect(m_ui->actionSaveCurrentView, &QAction::triggered, viewerWidget, &ViewerWidget::saveCurrentFrameToFile);
+        disconnect(m_ui->actionAdjustView, &QAction::triggered, viewerWidget, &ViewerWidget::adjust);
+
+        // disconnect from the tracking data manager
+        disconnect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
+                viewerWidget, &ViewerWidget::showAgents);
     }
 }
 

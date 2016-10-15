@@ -14,11 +14,13 @@ include_directories(${CMAKE_SOURCE_DIR}/source/hub)
 include_directories(${CMAKE_SOURCE_DIR}/source/tracker)
 include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/source/messages)
 include_directories(${CMAKE_SOURCE_DIR}/source/inter-species)
+include_directories(${CMAKE_SOURCE_DIR}/source/robot-control)
 
 add_executable(cats  ${srcs} ${uis_hdrs} ${resources})
 
-target_link_libraries(cats common grabber tracker viewer hub messages inter-species
-                        Qt5::Core Qt5::Widgets Qt5::Gui
+target_link_libraries(cats common grabber tracker viewer hub
+                        messages inter-species robot-control
+                        Qt5::Core Qt5::Widgets Qt5::Gui Qt5::DBus
                         ${QTGSTREAMER_LIBRARY} ${QTGSTREAMER_LIBRARIES}
                         ${QTGSTREAMER_UTILS_LIBRARY} ${QTGSTREAMER_UTILS_LIBRARIES}
                         ${QTGSTREAMER_UTILS_LIBRARY} ${QTGSTREAMER_UTILS_LIBRARIES}

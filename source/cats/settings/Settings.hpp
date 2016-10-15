@@ -25,7 +25,7 @@ public:
     bool init(int argc, char *argv[],
               bool needConfigFile = true, bool needCalibration = true,
               bool hasMainCamera = true, bool hasBelowCamera = false,
-              bool needPublisherAddress = false);
+              bool needPublisherAddress = false, bool needRobots = false);
 
     // delete copy and move constructors and assign operators
     //! Copy constructor.

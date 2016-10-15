@@ -3,6 +3,7 @@
 
 #include <TrackerPointerTypes.hpp>
 #include <ViewerPointerTypes.hpp>
+#include <RobotControlPointerTypes.hpp>
 #include <SetupType.hpp>
 
 #include <InterSpeciesDataManager.hpp>
@@ -62,6 +63,9 @@ private:
     TrackingDataManagerPtr m_trackingDataManager;
     //! The inter-species data manager.
     InterSpeciesDataManagerPtr m_interSpeciesDataManager;
+
+    //! The robots controller.
+    RobotsHandlerPtr m_robotsHandler;
 };
 
 #endif // CATS2_MAIN_WINDOW_HPP

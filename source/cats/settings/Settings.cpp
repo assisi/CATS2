@@ -6,6 +6,7 @@
 #include <settings/GrabberSettings.hpp>
 #include <settings/ViewerSettings.hpp>
 #include <settings/InterSpeciesSettings.hpp>
+#include <settings/RobotControlSettings.hpp>
 #include <RunTimer.h>
 
 #include <QtCore/QDebug>
@@ -25,7 +26,7 @@ Settings& Settings::get()
 bool Settings::init(int argc, char *argv[],
                     bool needConfigFile, bool needCalibration,
                     bool needMainCamera, bool needBelowCamera,
-                    bool needPublisherAddress)
+                    bool needPublisherAddress, bool needRobots)
 {
     // initialize the run timer class
     RunTimer::get().init();
@@ -71,6 +72,12 @@ bool Settings::init(int argc, char *argv[],
     // initialize the inter-species module settings
     if (!InterSpeciesSettings::get().init(CommandLineParameters::get().configurationFilePath(), needPublisherAddress)) {
         qDebug() << Q_FUNC_INFO << "Could not initialize the inter-species module";
+        return false;
+    }
+
+    // initialize the robot controller settings
+    if ((!RobotControlSettings::get().init(CommandLineParameters::get().configurationFilePath())) && needRobots) {
+        qDebug() << Q_FUNC_INFO << "Could not initialize the robot controllers";
         return false;
     }
 
