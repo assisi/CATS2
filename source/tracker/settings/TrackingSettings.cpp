@@ -27,7 +27,7 @@ bool TrackingSettings::init(QString configurationFileName, SetupType::Enum setup
     settings.readVariable("experiment/name", experimentName, std::string("Experiment"));
     m_experimentName = QString::fromUtf8(experimentName.c_str());
 
-    settings.readVariable("experiment/agents/numberOfRobots", m_numberOfRobots, 0);
+    settings.readVariable("robots/numberOfRobots", m_numberOfRobots, 0);
     settings.readVariable("experiment/agents/numberOfAnimals", m_numberOfAnimals, 0);
 
     // and now read the settings specific for given setup type

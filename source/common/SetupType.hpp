@@ -30,7 +30,7 @@ public:
         default:
             break;
         }
-        return string;
+        return "setups/" + string;
     }
 
     //! Returns that setup type string in human friendly format.

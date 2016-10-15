@@ -5,65 +5,73 @@
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
             <numberOfAnimals>5</numberOfAnimals>
-            <numberOfRobots>2</numberOfRobots>
         </agents>
     </experiment>
-    <mainCamera>
-        <!--
-            TODO : consider adding here the camera type or id to compare with the
-            value in the calibration file.
-        -->
-        <imageSize>
-            <width>500</width>
-            <height>500</height>
-        </imageSize>
-        <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
-        <tracking>
-            <trackingMethod>blobDetector</trackingMethod>
-            <numberOfAgents>7</numberOfAgents>
-            <blobDetector>
-                <minBlobSizePx>0</minBlobSizePx>
-                <qualityLevel>0.01</qualityLevel>
-                <minDistance>20.0</minDistance>
-                <blockSize>5</blockSize>
-                <useHarrisDetector>0</useHarrisDetector>
-                <k>0.04</k>
-        </blobDetector>
-        </tracking>
-    </mainCamera>
-    <cameraBelow>
-        <imageSize>
-            <width>640</width>
-            <height>480</height>
-        </imageSize>
-        <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-below-camera.xml</cameraCalibrationFile>
-        <tracking>
-            <trackingMethod>fishBotLedsTracking</trackingMethod>
-            <numberOfAgents>2</numberOfAgents>
-            <maskFile>/home/gribovsk/Software/CATS2/config/bottom-camera-mask.png</maskFile>
-            <fishBotLedsTracking>
-                <!-- TODO : consider moving this to the robot's specific section. -->
-                <fishBot_1>
-                    <id>H</id>
-                    <color>
-                        <r>185</r>
-                        <g>85</g>
-                        <b>100</b>
-                    </color>
-                    <threshold>25</threshold>
-                </fishBot_1>
-                <fishBot_2>
-                    <id>F</id>
-                    <color>
-                        <r>45</r>
-                        <g>130</g>
-                        <b>220</b>
-                    </color>
-                    <threshold>20</threshold>
-                </fishBot_2>
-            </fishBotLedsTracking>
-        </tracking>
-    </cameraBelow>
+    <robots>
+        <numberOfRobots>1</numberOfRobots>
+        <controlFrequencyHz>20</controlFrequencyHz>
+        <fishBot_1>
+            <id>D</id>
+        </fishBot_1>
+        <fishBot_2>
+            <id>F</id>
+        </fishBot_2>
+    </robots>
+    <setups>
+        <mainCamera>
+            <!--
+                TODO : consider adding here the camera type or id to compare with the
+                value in the calibration file.
+            -->
+            <imageSize>
+                <width>500</width>
+                <height>500</height>
+            </imageSize>
+            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
+            <tracking>
+                <trackingMethod>blobDetector</trackingMethod>
+                <numberOfAgents>7</numberOfAgents>
+                <blobDetector>
+                    <minBlobSizePx>0</minBlobSizePx>
+                    <qualityLevel>0.01</qualityLevel>
+                    <minDistance>20.0</minDistance>
+                    <blockSize>5</blockSize>
+                    <useHarrisDetector>0</useHarrisDetector>
+                    <k>0.04</k>
+            </blobDetector>
+            </tracking>
+        </mainCamera>
+        <cameraBelow>
+            <imageSize>
+                <width>640</width>
+                <height>480</height>
+            </imageSize>
+            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-below-camera.xml</cameraCalibrationFile>
+            <tracking>
+                <trackingMethod>fishBotLedsTracking</trackingMethod>
+                <maskFile>/home/gribovsk/Software/CATS2/config/bottom-camera-mask.png</maskFile>
+                <fishBotLedsTracking>
+                    <!-- TODO : consider moving this to the robot's specific section. -->
+                    <fishBot_H>
+                        <color>
+                            <r>185</r>
+                            <g>85</g>
+                            <b>100</b>
+                        </color>
+                        <threshold>25</threshold>
+                    </fishBot_H>
+                    <fishBot_F>
+                        <color>
+                            <r>45</r>
+                            <g>130</g>
+                            <b>220</b>
+                        </color>
+                        <threshold>20</threshold>
+                    </fishBot_F>
+                </fishBotLedsTracking>
+            </tracking>
+        </cameraBelow>
+    </setups>
     <interSpecies>
         <publisherAddress>tcp://127.0.0.1:50001</publisherAddress>
     </interSpecies>
