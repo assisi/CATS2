@@ -140,7 +140,8 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
         cv::Moments moments;
         for (size_t i = 0; i < 2; ++i) {
             moments = cv::moments(contours[i]);
-            contourCenters.push_back(cv::Point2f((float)(moments.m10/moments.m00+0.5),(float)(moments.m01/moments.m00+0.5)));
+            contourCenters.push_back(cv::Point2f(static_cast<float>(moments.m10/moments.m00+0.5),
+                                                 static_cast<float>(moments.m01/moments.m00+0.5)));
         }
         // compute the agent's position that is between two contours, and the orientation
         agentPosition = ((contourCenters[0] + contourCenters[1]) / 2);
@@ -163,7 +164,8 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
     } else if (contours.size() == 1){
         // if only one blob is detected, then we take its position as the robot's position
         cv::Moments moments = cv::moments(contours[0]);
-        agentPosition = cv::Point2f((float)(moments.m10/moments.m00+0.5),(float)(moments.m01/moments.m00+0.5));
+        agentPosition = cv::Point2f(static_cast<float>(moments.m10/moments.m00+0.5),
+                                    static_cast<float>(moments.m01/moments.m00+0.5));
         robot.mutableState()->setPosition(agentPosition);
         robot.setTimestamp(m_currentTimestamp);
     }
