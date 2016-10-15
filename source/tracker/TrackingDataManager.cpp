@@ -95,9 +95,9 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
 
         if (sendData) {
             // set the type of all the agent of the undefined type to the specified type
-            for (size_t i = 0; i < mergedAgentDataList.size(); i++) {
-                if (mergedAgentDataList[i].type() == AgentType::GENERIC)
-                    mergedAgentDataList[i].setType(m_typeForGenericAgents);
+            for (auto& agentData : mergedAgentDataList) {
+                if (agentData.type() == AgentType::GENERIC)
+                    agentData.setType(m_typeForGenericAgents);
             }
 
             // send the results
@@ -242,8 +242,8 @@ float TrackingDataManager::initializeCostMatrices(const QList<AgentDataWorld>& l
     float distance;
     float maxCost = 0;
     // fill the costs matrices
-    for(int i1 = 0; i1 < listOne.size(); i1++){
-        for(int i2 = 0; i2 < listTwo.size(); i2++) {
+    for (int i1 = 0; i1 < listOne.size(); i1++){
+        for (int i2 = 0; i2 < listTwo.size(); i2++) {
             // compute the distance
             distance = listOne[i1].state().position().distanceTo(listTwo[i2].state().position());
 

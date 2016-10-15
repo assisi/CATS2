@@ -71,7 +71,7 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
 
         // submit the debug image
         if (m_enqueueDebugFrames) {
-            for(auto agent: m_agents) {
+            for (auto& agent: m_agents) {
                 cv::circle(m_blurredImage, cv::Point(agent.state().position().x(), agent.state().position().y()), 2, cv::Scalar(255, 255, 255));
             }
             enqueueDebugImage(m_blurredImage);
@@ -138,7 +138,7 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
         std::vector<cv::Point2f> contourCenters;
         // contour's moments
         cv::Moments moments;
-        for(size_t i = 0; i < 2; ++i) {
+        for (size_t i = 0; i < 2; ++i) {
             moments = cv::moments(contours[i]);
             contourCenters.push_back(cv::Point2f((float)(moments.m10/moments.m00+0.5),(float)(moments.m01/moments.m00+0.5)));
         }

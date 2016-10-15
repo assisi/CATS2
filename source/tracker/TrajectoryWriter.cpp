@@ -29,12 +29,12 @@ TrajectoryWriter::TrajectoryWriter()
         m_resultsStream.setDevice(&m_resultsFile);
         // write the header
         m_resultsStream << "timeStep" << "\t";
-        for(int i = 0; i < TrackingSettings::get().numberOfRobots(); ++i) {
+        for (int i = 0; i < TrackingSettings::get().numberOfRobots(); ++i) {
             m_resultsStream << "robot" << i << "X" << "\t";
             m_resultsStream << "robot" << i << "Y" << "\t";
             m_resultsStream << "robot" << i << "Direction" << "\t";
         }
-        for(int i = 0; i < TrackingSettings::get().numberOfAnimals(); ++i) {
+        for (int i = 0; i < TrackingSettings::get().numberOfAnimals(); ++i) {
             m_resultsStream << "fish" << i << "X" << "\t";
             m_resultsStream << "fish" << i << "Y" << "\t";
             m_resultsStream << "fish" << i << "Direction" << "\t";
@@ -65,7 +65,7 @@ void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp, const QLis
     m_resultsStream << QString::number(timeFromStartSec, 'f', 3) << "\t";
 
     // first write all the robots
-    for(int i = 0; i < TrackingSettings::get().numberOfRobots(); ++i) {
+    for (int i = 0; i < TrackingSettings::get().numberOfRobots(); ++i) {
         const AgentDataWorld* robotData = getAgentData(i, AgentType::FISH_CASU, m_robotsIndexToId, agentsData);
         if (robotData) {
             m_resultsStream << robotData->state().position().x() << "\t";
@@ -79,7 +79,7 @@ void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp, const QLis
     }
 
     // then write the fish
-    for(int i = 0; i < TrackingSettings::get().numberOfAnimals(); ++i) {
+    for (int i = 0; i < TrackingSettings::get().numberOfAnimals(); ++i) {
         const AgentDataWorld* animalData = getAgentData(i, AgentType::FISH, m_fishIndexToId, agentsData);
         if (animalData) {
             m_resultsStream << animalData->state().position().x() << "\t";

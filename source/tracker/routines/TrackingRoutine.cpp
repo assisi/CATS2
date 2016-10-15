@@ -97,9 +97,8 @@ void TrackingRoutine::enqueueDebugImage(const cv::Mat& image)
  */
 void TrackingRoutine::invalidateAgentsState()
 {
-    for (size_t i = 0; i < m_agents.size(); i++) {
-        m_agents[i].mutableState()->invalidateState();
-    }
+    for (auto& agent : m_agents)
+        agent.mutableState()->invalidateState();
 }
 
 /*!

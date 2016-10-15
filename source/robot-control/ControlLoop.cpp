@@ -40,8 +40,8 @@ ControlLoop::~ControlLoop()
     m_controlLoopTimer.stop();
 
     // stop the robots before shutting down
-    for (int index = 0; index < m_robots.size(); ++index) {
-        m_robots[index]->setControlMode(ControlModeType::IDLE);
+    for (auto& robot : m_robots) {
+        robot->setControlMode(ControlModeType::IDLE);
     }
     // step the control
     step();
@@ -52,8 +52,8 @@ ControlLoop::~ControlLoop()
  */
 void ControlLoop::step()
 {
-    for (int index = 0; index < m_robots.size(); ++index) {
-        m_robots[index]->stepControl();
+    for (auto& robot : m_robots) {
+        robot->stepControl();
     }
 }
 
@@ -86,9 +86,9 @@ void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
         }
     }
     // transfers the data to all robots
-    for (int index = 0; index < m_robots.size(); ++index) {
-        m_robots[index]->setRobotsData(robotsData);
-        m_robots[index]->setFishStates(fishStates);
+    for (auto& robot : m_robots) {
+        robot->setRobotsData(robotsData);
+        robot->setFishStates(fishStates);
     }
 }
 
@@ -97,10 +97,10 @@ void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
  */
 void ControlLoop::selectRobot(QString name)
 {
-    for (int index = 0; index < m_robots.size(); ++index) {
-        if (m_robots[index]->name() == name) {
+    for (auto& robot : m_robots) {
+        if (robot->name() == name) {
             qDebug() << Q_FUNC_INFO << name << "is selected";
-            m_selectedRobot = m_robots[index];
+            m_selectedRobot = robot;
             break;
         }
     }

@@ -97,7 +97,7 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
     float imageScaleCoefficientX = static_cast<float>(targetFrameSize.width()) / static_cast<float>(calibrationFrameSize.width());
     float imageScaleCoefficientY = static_cast<float>(targetFrameSize.height()) / static_cast<float>(calibrationFrameSize.height());
     m_calibrationData.point_count = numberOfPoints;
-    for(size_t i = 0; i < numberOfPoints; i++) {
+    for (size_t i = 0; i < numberOfPoints; i++) {
         m_calibrationData.zw[i] = 0;
         settings.readVariable(QString("calibrationPoints/point_%1/xWorld").arg(i), m_calibrationData.xw[i]);
         m_calibrationData.xw[i] *= worldScaleCoefficient;

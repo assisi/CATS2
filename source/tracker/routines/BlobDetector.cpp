@@ -146,12 +146,12 @@ void BlobDetector::removeSmallBlobs(cv::Mat& image, int minSize)
 
     // check them one by one to find those that are smaller than minSize
     std::vector<std::vector<cv::Point>> smallContours;
-    for(size_t i = 0; i < contours.size(); ++i)
+    for (auto& contour : contours)
     {
-        if (cv::contourArea(contours[i]) < minSize)
+        if (cv::contourArea(contour) < minSize)
         {
             // keep small contours to remove them later
-            smallContours.push_back(contours[i]);
+            smallContours.push_back(contour);
         }
     }
 
@@ -185,10 +185,8 @@ void BlobDetector::detectContours(cv::Mat& image,
     // TODO : rewrite it to fit the general style
     int idx = 0;
     cv::Scalar color(255, 255, 255);
-    for(; idx >= 0; idx = hierarchy[idx][0] )
-    {
+    for (; idx >= 0; idx = hierarchy[idx][0] )
         cv::drawContours(image, contours, idx, color, CV_FILLED, 8, hierarchy);
-    }
 
     // Enclosing ellipses for detected objects
     std::vector<cv::RotatedRect> ellipses;
@@ -200,11 +198,11 @@ void BlobDetector::detectContours(cv::Mat& image,
     // all corners that are inside the contour
     std::vector<cv::Point2f> cornersInContour;
 
-    for(size_t i = 0; i < contours.size(); ++i) {
+    for (size_t i = 0; i < contours.size(); ++i) {
         cv::approxPolyDP(cv::Mat(contours[i]), contoursPoly[i], 3, true);
 
         cornersInContour.clear();
-        for(auto corner: corners) {
+        for (auto& corner: corners) {
             if(cv::pointPolygonTest(contours[i], corner, false) >= 0) {
                 cornersInContour.push_back(corner);
             }
@@ -222,7 +220,7 @@ void BlobDetector::detectContours(cv::Mat& image,
     // and the corresponding countours' centers
     color = cv::Scalar(100, 100, 100);
     int r = 3;
-    for( int i = 0; i < cornersInContours.size(); i++ ) {
+    for (int i = 0; i < cornersInContours.size(); ++i) {
         cv::circle(image, cornersInContours[i][0], r, color, -1, 8, 0);
         cv::circle(image, centers[i], r, color, -1, 8, 0);
     }
