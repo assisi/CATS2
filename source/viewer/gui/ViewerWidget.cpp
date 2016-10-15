@@ -35,6 +35,7 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     // create the scene
     m_scene = new FrameScene(this);
     connect(m_scene, &FrameScene::mouseMoved, this, &ViewerWidget::onMouseMoved);
+    connect(m_scene, &FrameScene::rightButtonClicked, this, &ViewerWidget::onRightButtonClicked);
     m_uiViewer->view->setScene(m_scene);
 
     // create the video frame item
@@ -135,14 +136,10 @@ void ViewerWidget::saveCurrentFrameToFile()
  */
 void ViewerWidget::onMouseMoved(QPointF scenePosition)
 {
-    if (!m_data.isNull()) {
-        CoordinatesConversionPtr coordinatesConversion = m_data->coordinatesConversion();
-        if (!coordinatesConversion.isNull()){
-            PositionPixels imagePosition(scenePosition.x(), scenePosition.y());
-            PositionMeters worldPosition = coordinatesConversion->imageToWorldPosition(imagePosition);
-            emit mousePosition(imagePosition, worldPosition);
-        }
-    }
+    PositionPixels imagePosition(scenePosition.x(), scenePosition.y());
+    PositionMeters worldPosition;
+    if (convertScenePosition(imagePosition, worldPosition))
+        emit mousePosition(imagePosition, worldPosition);
 }
 
 /*!
@@ -194,3 +191,29 @@ void ViewerWidget::showAgents(QList<AgentDataWorld> agentDataList)
     }
 }
 
+/*!
+ * Triggered when a right button click is received from the scene.
+ */
+void ViewerWidget::onRightButtonClicked(QPointF scenePosition)
+{
+    PositionPixels imagePosition(scenePosition.x(), scenePosition.y());
+    PositionMeters worldPosition;
+    if (convertScenePosition(imagePosition, worldPosition))
+        emit notifyRightButtonClick(worldPosition);
+}
+
+/*!
+ * Converts the scene position to PositionPixels and PositionMeters.
+ */
+bool ViewerWidget::convertScenePosition(const PositionPixels& imagePosition,
+                                        PositionMeters& worldPosition)
+{
+    if (!m_data.isNull()) {
+        CoordinatesConversionPtr coordinatesConversion = m_data->coordinatesConversion();
+        if (!coordinatesConversion.isNull()){
+            worldPosition = coordinatesConversion->imageToWorldPosition(imagePosition);
+            return true;
+        }
+    }
+    return false;
+}

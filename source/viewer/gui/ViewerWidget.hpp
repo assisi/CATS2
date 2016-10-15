@@ -35,6 +35,9 @@ signals:
     //! Notifies that the mouse position has changed and sends it out in both
     //! image and world coordinates.
     void mousePosition(PositionPixels imagePosition, PositionMeters worldPosition);
+    //! Notifies that the right mouse button was clicked on the scene, and sends
+    //! its position out in world coordinates.
+    void notifyRightButtonClick(PositionMeters worldPosition);
 
 public slots:
     //! Triggered on arrival of the new data.
@@ -55,10 +58,15 @@ protected slots:
     void onNewFrame(QSharedPointer<QPixmap> pixmap, int fps);
     //! Triggered when a new mouse position is received from the scene.
     void onMouseMoved(QPointF scenePosition);
+    //! Triggered when a right button click is received from the scene.
+    void onRightButtonClicked(QPointF scenePosition);
 
 protected:
     //! Computes new average frame rate value as exponential moving average.
     void updateFrameRate(int fps);
+    //! Converts the scene position to PositionPixels and PositionMeters.
+    bool convertScenePosition(const PositionPixels& imagePosition,
+                              PositionMeters& worldPosition);
 
 protected:
     //! The data object that provides the frames and agent's positions to show.

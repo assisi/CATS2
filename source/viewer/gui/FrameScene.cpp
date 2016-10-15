@@ -20,3 +20,14 @@ void FrameScene::mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent )
     emit mouseMoved(mouseEvent->scenePos());
 }
 
+/*!
+ * Triggered when the mouse is clicked on the scene. If it's a right click then
+ * it's transfered futher.
+ */
+void FrameScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
+{
+    if (mouseEvent->button() == Qt::RightButton) {
+        emit rightButtonClicked(mouseEvent->scenePos());
+    }
+    QGraphicsScene::mousePressEvent(mouseEvent);
+}
