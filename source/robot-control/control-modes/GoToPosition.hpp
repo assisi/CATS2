@@ -22,9 +22,8 @@ public:
     //! is activated
     virtual void finish() override { m_targetPosition.setValid(false); }
 
-
     //! Sets the target position.
-    void setTargetPosition(PositionMeters position) { m_targetPosition = position; }
+    void setTargetPosition(PositionMeters position);
 
 private:
     //! The target position.

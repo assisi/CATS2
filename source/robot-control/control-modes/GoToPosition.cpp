@@ -34,3 +34,12 @@ ControlTargetPtr GoToPosition::step()
         return ControlTargetPtr(new TargetPosition(m_targetPosition));
     }
 }
+
+/*!
+ * Sets the target position.
+ */
+void GoToPosition::setTargetPosition(PositionMeters position)
+{
+    m_targetPosition = position;
+    qDebug() << Q_FUNC_INFO << m_robot->name() << "got new target position" << position.toString();
+}

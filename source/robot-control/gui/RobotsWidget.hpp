@@ -18,14 +18,14 @@ class RobotsWidget : public QWidget
 
 public:
     //! Constructor.
-    explicit RobotsWidget(QList<FishBotPtr> robots, QWidget *parent = nullptr);
+    explicit RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent = nullptr);
     //! Destructor.
     virtual ~RobotsWidget() final;
 
 signals:
     //! When a tab is changed the corresponding robot is considered as
     //! selected.
-    void selectRobot(QString robotName);
+    void notifyCurrentRobotChanged(QString robotName);
 
 private:
     //! The gui form.

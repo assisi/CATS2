@@ -2,6 +2,7 @@
 #include "ui_RobotsWidget.h"
 
 #include "FishBot.hpp"
+#include "ControlLoop.hpp"
 #include "gui/RobotControlWidget.hpp"
 
 #include <QtCore/QDebug>
@@ -9,24 +10,28 @@
 /*!
  * Constructor.
  */
-RobotsWidget::RobotsWidget(QList<FishBotPtr> robots, QWidget *parent) :
+RobotsWidget::RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent) :
     QWidget(parent),
     m_ui(new Ui::RobotsWidget)
 {
     m_ui->setupUi(this);
 
-    // populate the tabs with the robots' information
-    foreach (FishBotPtr robot, robots) {
-        m_ui->robotsTabWidget->addTab(new RobotControlWidget(robot), robot->name());
-    }
+    // connect tab change with the robot selection
+    connect(this, &RobotsWidget::notifyCurrentRobotChanged, contolLoop.data(), &ControlLoop::selectRobot);
+
     // select a robot when a tab is changed
     connect(m_ui->robotsTabWidget, &QTabWidget::currentChanged,
             [=](int index) {
-                emit selectRobot(m_ui->robotsTabWidget->tabText(index));
+                emit notifyCurrentRobotChanged(m_ui->robotsTabWidget->tabText(index));
             });
+    // populate the tabs with the robots' information
+    for (auto& robot : contolLoop->robots()) {
+        m_ui->robotsTabWidget->addTab(new RobotControlWidget(robot), robot->name());
+    }
     // select the first tab
-    if (m_ui->robotsTabWidget->count() > 0)
+    if (m_ui->robotsTabWidget->count() > 0) {
         m_ui->robotsTabWidget->setCurrentIndex(0);
+    }
 }
 
 /*!

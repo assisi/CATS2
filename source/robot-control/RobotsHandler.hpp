@@ -23,6 +23,8 @@ public:
     virtual ~RobotsHandler() final;
 
 public:
+    //! Return the pointer of the data.
+    ControlLoopPtr contolLoop() { return m_contolLoop; }
     //! Returns the pointer to the robots widget.
     QWidget* widget();
 
