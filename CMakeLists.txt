@@ -1,5 +1,5 @@
 project(CATS2)
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.2.0)
 enable_testing()
 
 #set(CMAKE_POSITION_INDEPENDENT_CODE ON)
@@ -11,6 +11,7 @@ set(ENV{CATS2_DIR} ${CMAKE_SOURCE_DIR})
 
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Widgets REQUIRED)
+find_package(Qt5DBus REQUIRED)
 find_package(ReaderWriterQueue REQUIRED)
 find_package(OpenCV 3 REQUIRED)
 find_package(LibXml2 2.6.0 REQUIRED)
