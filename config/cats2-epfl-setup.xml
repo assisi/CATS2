@@ -11,7 +11,7 @@
         <numberOfRobots>1</numberOfRobots>
         <controlFrequencyHz>20</controlFrequencyHz>
         <fishBot_1>
-            <id>D</id>
+            <id>H</id>
         </fishBot_1>
         <fishBot_2>
             <id>F</id>
@@ -54,9 +54,9 @@
                     <!-- TODO : consider moving this to the robot's specific section. -->
                     <fishBot_H>
                         <color>
-                            <r>185</r>
-                            <g>85</g>
-                            <b>100</b>
+                            <r>80</r>
+                            <g>150</g>
+                            <b>210</b>
                         </color>
                         <threshold>25</threshold>
                     </fishBot_H>
