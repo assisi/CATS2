@@ -182,18 +182,19 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     QVector<QVector<float>> costMatrix(listOne.size());
     float maxCost = initializeCostMatrices(listOne, listTwo, costMatrix);
 
-//    // TODO : uncomment to debug agent matching
-//    qDebug() << Q_FUNC_INFO;
-//    qDebug() << "Cost matrix" ;
-//    qDebug() << "Threshold" << WeightedThreshold;
-//    for (int i = 0; i < listOne.size(); i++)
-//        qDebug() << costMatrix[i];
+    // TODO : uncomment to debug agent matching
+    qDebug() << Q_FUNC_INFO;
+    qDebug() << "Cost matrix" ;
+    qDebug() << "Threshold" << WeightedThreshold;
+    qDebug() << "Max cost" << maxCost;
+    for (int i = 0; i < listOne.size(); i++)
+        qDebug() << costMatrix[i];
 
     // find best match
     QVector<bool> usedIndices(listTwo.size(), false);
     QVector<int> combination(listOne.size(), -1);
     QVector<int> bestCombination(listOne.size(), -1);
-    float minCost = maxCost;
+    float minCost = maxCost + 1; // +1 to make it work for single agent case when minCost is equal to maxCost
     searchBestMatch(0, listOne.size(), listTwo.size(), usedIndices, combination, bestCombination,  minCost, costMatrix);
 
     // generate the joined list
