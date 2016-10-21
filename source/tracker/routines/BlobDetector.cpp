@@ -181,12 +181,17 @@ void BlobDetector::detectContours(cv::Mat& image,
         qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
     }
 
-    // draw the contours on the original image
-    // TODO : rewrite it to fit the general style
-    int idx = 0;
-    cv::Scalar color(255, 255, 255);
-    for (; idx >= 0; idx = hierarchy[idx][0] )
-        cv::drawContours(image, contours, idx, color, CV_FILLED, 8, hierarchy);
+    if (hierarchy.size() > 0)
+    {
+        int idx = 0;
+        cv::Scalar color(255, 255, 255);
+        // draw the contours on the original image
+        // TODO : rewrite it to fit the general style
+        for (; idx >= 0; idx = hierarchy[idx][0] )
+        {
+            cv::drawContours(image, contours, idx, color, CV_FILLED, 8, hierarchy);
+        }
+    }
 
     // Enclosing ellipses for detected objects
     std::vector<cv::RotatedRect> ellipses;
@@ -218,7 +223,7 @@ void BlobDetector::detectContours(cv::Mat& image,
 
     // draw corners that are inside the contours and inclosing circles
     // and the corresponding countours' centers
-    color = cv::Scalar(100, 100, 100);
+    cv::Scalar color = cv::Scalar(100, 100, 100);
     int r = 3;
     for (int i = 0; i < cornersInContours.size(); ++i) {
         cv::circle(image, cornersInContours[i][0], r, color, -1, 8, 0);
