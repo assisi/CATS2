@@ -25,6 +25,9 @@ public:
     QList<ControlModeType::Enum> supportedControlModes() const { return m_controlModes.keys(); }
     //! Return the current control mode.
     ControlModeType::Enum currentControlMode() const { return m_currentControlMode; }
+    //! Checks that the current control modes can generate targets with
+    //! different motion patterns.
+    bool supportsMotionPatterns();
 
     //! Sets the target position for the go-to-position control mode.
     void setTargetPosition(PositionMeters targetPosition);

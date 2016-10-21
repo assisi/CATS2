@@ -9,6 +9,7 @@
 #include <QtCore/QSharedPointer>
 
 class FishBot;
+enum class ControlTargetType;
 
 /*!
  * The parent class for the control mode.
@@ -30,6 +31,9 @@ public:
     virtual ControlTargetPtr step() { return ControlTargetPtr(); }
     //! Called when the control mode is disactivated. Makes a cleanup if necessary.
     virtual void finish() {}
+
+    //! Informs on what kind of control targets this control mode generates.
+    virtual QList<ControlTargetType> supportedTargets();
 
 signals:
     //! Requests to change the control mode.

@@ -16,3 +16,11 @@ ControlTargetPtr GoStraight::step()
 {
     return ControlTargetPtr(new TargetSpeed(Speed, Speed));
 }
+
+/*!
+ * Informs on what kind of control targets this control mode generates.
+ */
+QList<ControlTargetType> GoStraight::supportedTargets()
+{
+    return QList<ControlTargetType>({ControlTargetType::SPEED});
+}

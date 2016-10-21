@@ -138,6 +138,15 @@ void FishBot::goToPosition(PositionMeters position)
 }
 
 /*!
+ * Checks that the current control modes can generate targets with
+ * different motion patterns.
+ */
+bool FishBot::supportsMotionPatterns()
+{
+    return m_controlStateMachine.supportsMotionPatterns();
+}
+
+/*!
  * Sets the motion pattern.
  */
 void FishBot::setMotionPattern(MotionPatternType::Enum type)

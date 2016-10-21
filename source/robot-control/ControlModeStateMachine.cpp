@@ -98,3 +98,12 @@ void ControlModeStateMachine::setTargetPosition(PositionMeters position)
     if (m_controlModes.contains(ControlModeType::GO_TO_POSITION))
         dynamic_cast<GoToPosition*>(m_controlModes[ControlModeType::GO_TO_POSITION].data())->setTargetPosition(position);
 }
+
+/*!
+ * Checks that the current control modes can generate targets with different
+ *  motion patterns. At the moment the only such target is the position target.
+ */
+bool ControlModeStateMachine::supportsMotionPatterns()
+{
+    return m_controlModes[m_currentControlMode]->supportedTargets().contains(ControlTargetType::POSITION);
+}

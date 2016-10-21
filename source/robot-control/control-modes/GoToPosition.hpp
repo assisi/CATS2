@@ -22,6 +22,9 @@ public:
     //! is activated
     virtual void finish() override { m_targetPosition.setValid(false); }
 
+    //! Informs on what kind of control targets this control mode generates.
+    virtual QList<ControlTargetType> supportedTargets() override;
+
     //! Sets the target position.
     void setTargetPosition(PositionMeters position);
 

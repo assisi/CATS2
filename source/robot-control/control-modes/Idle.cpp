@@ -14,3 +14,11 @@ ControlTargetPtr Idle::step()
 {
     return ControlTargetPtr(new TargetSpeed(0.0, 0.0));
 }
+
+/*!
+ * Informs on what kind of control targets this control mode generates.
+ */
+QList<ControlTargetType> Idle::supportedTargets()
+{
+    return QList<ControlTargetType>({ControlTargetType::SPEED});
+}

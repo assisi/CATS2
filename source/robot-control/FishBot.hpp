@@ -47,6 +47,9 @@ public:
     //! Return the control mode.
     ControlModeType::Enum currentControlMode() const { return m_controlStateMachine.currentControlMode(); }
 
+    //! Checks that the current control modes can generate targets with
+    //! different motion patterns.
+    bool supportsMotionPatterns();
     //! Sets the motion pattern.
     void setMotionPattern(MotionPatternType::Enum type);
     //! Return the motion pattern.

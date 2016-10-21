@@ -1,6 +1,7 @@
 #include "RobotControlWidget.hpp"
 #include "ui_RobotControlWidget.h"
 #include "control-modes/ControlModeType.hpp"
+#include "MotionPatternType.hpp"
 #include "FishBot.hpp"
 
 #include <QtCore/QDebug>
@@ -19,19 +20,21 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
     m_ui->robotNameLabel->setText(robot->name());
 
     // set the controls
-    m_ui->controlMapCheckBox->setEnabled(false); // temporary until it's implemented
+    m_ui->controlMapCheckBox->setEnabled(false); // FIXME : temporary unactive until it's implemented
     // disable controls when the map-based control is active
     connect(m_ui->controlMapCheckBox, &QCheckBox::toggled, [=](bool checked){ m_ui->controlModeComboBox->setEnabled(!checked);
                                                                               m_ui->navigationComboBox->setEnabled(!checked);});
 
-    // fill the control modes
-    QList<ControlModeType::Enum> controlModeTypes = robot->supportedControlModes();
-    foreach (ControlModeType::Enum type, controlModeTypes) {
-        m_ui->controlModeComboBox->addItem(ControlModeType::toString(type), type);
-    }
     // set the robot's control mode when it is changed in the combobox
     connect(m_ui->controlModeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
-            [=](int index){ m_robot->setControlMode(static_cast<ControlModeType::Enum>(m_ui->controlModeComboBox->currentData().toInt())); });
+            [=](int index)
+            {
+                m_robot->setControlMode(static_cast<ControlModeType::Enum>(m_ui->controlModeComboBox->currentData().toInt()));
+                // show the navigation pattern choice when it's supported or
+                // hide when it is not supported
+                m_ui->navigationComboBox->setVisible(m_robot->supportsMotionPatterns());
+                m_ui->navigationLabel->setVisible(m_robot->supportsMotionPatterns());
+            });
     // set the control mode from the robot
     connect(m_robot.data(), &FishBot::notifyControlModeChanged,
             [=](ControlModeType::Enum type)
@@ -40,9 +43,17 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
                 if (m_ui->controlModeComboBox->currentText() != controlModeString)
                     m_ui->controlModeComboBox->setCurrentText(controlModeString);
             });
-
+    // fill the control modes
+    QList<ControlModeType::Enum> controlModeTypes = robot->supportedControlModes();
+    foreach (ControlModeType::Enum type, controlModeTypes) {
+        m_ui->controlModeComboBox->addItem(ControlModeType::toString(type), type);
+    }
+    m_ui->controlModeComboBox->setCurrentText(ControlModeType::toString(m_robot->currentControlMode()));
     // fill the navigation type
-    // TODO : to implement
+    for (int type = MotionPatternType::PID; type < MotionPatternType::UNDEFINED; ++type) {
+        m_ui->navigationComboBox->addItem(MotionPatternType::toString(static_cast<MotionPatternType::Enum>(type)), type);
+    }
+    m_ui->navigationComboBox->setCurrentText(MotionPatternType::toString(m_robot->currentMotionPattern()));
 }
 
 /*!

@@ -14,6 +14,9 @@ public:
 
     //! The step of the control mode, generates the zero speed control target.
     virtual ControlTargetPtr step() override;
+
+    //! Informs on what kind of control targets this control mode generates.
+    virtual QList<ControlTargetType> supportedTargets() override;
 };
 
 #endif // CATS2_IDLE_HPP

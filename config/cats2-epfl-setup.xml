@@ -10,6 +10,16 @@
     <robots>
         <numberOfRobots>1</numberOfRobots>
         <controlFrequencyHz>20</controlFrequencyHz>
+        <fishMotionPattern>
+            <distanceCm>25</distanceCm>
+            <speedCmSec>15</speedCmSec>
+        </fishMotionPattern>
+        <pid>
+            <kp>1.10</kp>
+            <ki>0.03</ki>
+            <kd>0.00</kd>
+        </pid>
+        <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
         <fishBot_1>
             <id>D</id>
         </fishBot_1>
