@@ -9,16 +9,14 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 set(ENV{CATS2_DIR} ${CMAKE_SOURCE_DIR}) 
 
-find_package(Qt5Core REQUIRED)
-find_package(Qt5Widgets REQUIRED)
-find_package(Qt5DBus REQUIRED)
+find_package(Qt5 REQUIRED Core Widgets DBus)
 find_package(ReaderWriterQueue REQUIRED)
 find_package(OpenCV 3 REQUIRED)
 find_package(LibXml2 2.6.0 REQUIRED)
 find_package(GStreamer REQUIRED COMPONENTS base)
 find_package(Qt5GStreamer REQUIRED)
 find_package(GLIB2 REQUIRED)
-find_package(Libtsai REQUIRED)
+#find_package(Libtsai REQUIRED)
 find_package(Protobuf REQUIRED)
 
 # SYSTEM is used to suppress GCC warnings in libraries headers
@@ -30,7 +28,7 @@ include_directories(SYSTEM ${GLIB2_INTERNAL_INCLUDE_DIR})
 include_directories(SYSTEM ${GLIB2_MAIN_INCLUDE_DIR})
 include_directories(SYSTEM ${OpenCV_INCLUDE_DIR})
 include_directories(SYSTEM ${READERWRITERQUEUE_INCLUDE_DIRS})
-include_directories(SYSTEM ${LIBTSAI_INCLUDE_DIRS})
+#include_directories(SYSTEM ${LIBTSAI_INCLUDE_DIRS})
 include_directories(SYSTEM ${PROTOBUF_INCLUDE_DIRS})
 
 #add_definitions(${QTGSTREAMER_DEFINITIONS}) # defines QT_NO_KEYWORDS that demands replacing all "signals" by "Q_SIGNALS"

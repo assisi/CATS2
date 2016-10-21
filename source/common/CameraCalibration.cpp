@@ -6,10 +6,11 @@
  * Constructor. Gets the file name containing the camera calibration data.
  */
 CameraCalibration::CameraCalibration(QString calibrationFileName, QSize targetFrameSize) :
-    m_height(0.),
+    m_agentHeight(0.),
     m_calibrationInitialized(false)
 {
-    calibrate(calibrationFileName, targetFrameSize);
+    if (readParameters(calibrationFileName))
+        calibrate(calibrationFileName, targetFrameSize);
 }
 
 /*!
@@ -31,54 +32,8 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
         return;
     }
 
-    // check first that the file exists
-    if (!QFileInfo(calibrationFileName).exists()) {
-        qDebug() << Q_FUNC_INFO << "The provided calibration file is not correct.";
-        return;
-    }
-
     // read the XML file
     ReadSettingsHelper settings(calibrationFileName);
-
-    // read the camera type
-    std::string cameraTypeString;
-    settings.readVariable("cameraType", cameraTypeString);
-    if (!setCameraParameters(QString::fromUtf8(cameraTypeString.c_str()), targetFrameSize, m_cameraParameters)) {
-        // could not find camera parameters
-        return;
-    }
-
-    // read the frame size that was used to set the calibration points
-    // (can be different from the target frame size)
-    // read the target image size
-    int width;
-    settings.readVariable(QString("imageSize/width"), width, -1); // default value to guarantee an
-                                                                  // invalid size if the correct valus is not read
-    int height;
-    settings.readVariable(QString("imageSize/height"), height, -1); // default value to guarantee an
-                                                                    // invalid size if the correct valus is not read
-    QSize calibrationFrameSize(width, height);
-    if (!calibrationFrameSize.isValid()) {
-        qDebug() << Q_FUNC_INFO << "The calibration frame size is invalid.";
-        return;
-    }
-
-    // read the units used for the calibration
-    std::string units;
-    int worldScaleCoefficient;
-    settings.readVariable(QString("worldUnits"), units);
-    if (units.empty()) {
-        qDebug() << Q_FUNC_INFO << "Undefined the world units";
-        return;
-    } else {
-        worldScaleCoefficient = getWorldScaleCoefficient(units);
-        if (worldScaleCoefficient == 0)
-            return;
-    }
-
-    // read the agents' altitude
-    settings.readVariable(QString("agentHeight"), m_height, 0.);
-    m_height *= worldScaleCoefficient; // in mm
 
     // read the number of points
     int numberOfPoints;
@@ -88,36 +43,74 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
         return;
     }
 
-    // Put the points into the matrix
-    if (numberOfPoints > TSAI_MAX_POINTS) {
-        qDebug() << Q_FUNC_INFO << "There are more calibration points than accepted by the Tsai calibration library";
-        return;
-    }
+    // calibration points
+    std::vector<cv::Point3f> worldPoints;
+    std::vector<cv::Point2f> imagePoints;
 
-    float imageScaleCoefficientX = static_cast<float>(targetFrameSize.width()) / static_cast<float>(calibrationFrameSize.width());
-    float imageScaleCoefficientY = static_cast<float>(targetFrameSize.height()) / static_cast<float>(calibrationFrameSize.height());
-    m_calibrationData.point_count = numberOfPoints;
     for (size_t i = 0; i < numberOfPoints; i++) {
-        m_calibrationData.zw[i] = 0;
-        settings.readVariable(QString("calibrationPoints/point_%1/xWorld").arg(i), m_calibrationData.xw[i]);
-        m_calibrationData.xw[i] *= worldScaleCoefficient;
-        settings.readVariable(QString("calibrationPoints/point_%2/yWorld").arg(i), m_calibrationData.yw[i]);
-        m_calibrationData.yw[i] *= worldScaleCoefficient;
-        settings.readVariable(QString("calibrationPoints/point_%1/xImage").arg(i), m_calibrationData.Xf[i]);
-        m_calibrationData.Xf[i] *= imageScaleCoefficientX;
-        settings.readVariable(QString("calibrationPoints/point_%2/yImage").arg(i), m_calibrationData.Yf[i]);
-        m_calibrationData.Yf[i] *= imageScaleCoefficientY;
+        float zw = m_cameraHeight; // i.e. the camera is at z = 0
+        float xw;
+        settings.readVariable(QString("calibrationPoints/point_%1/xWorld").arg(i), xw);
+        xw *= m_worldScaleCoefficient;
+        float yw;
+        settings.readVariable(QString("calibrationPoints/point_%2/yWorld").arg(i), yw);
+        yw *= m_worldScaleCoefficient;
+        worldPoints.push_back(cv::Point3f(m_xInversionCoefficient * xw,
+                                          m_yInversionCoefficient * yw, zw));
+        float xi;
+        settings.readVariable(QString("calibrationPoints/point_%1/xImage").arg(i), xi);
+        float yi;
+        settings.readVariable(QString("calibrationPoints/point_%2/yImage").arg(i), yi);
+        imagePoints.push_back(cv::Point2f(xi, yi));
     }
 
-    // Do the calibration
-    try {
-        m_calibrationInitialized = false;
-        //noncoplanar_calibration_with_full_optimization(&calibrationData,&calibrationConstants,&cameraParameters);
-        coplanar_calibration_with_full_optimization(&m_calibrationData, &m_calibrationConstants, &m_cameraParameters);
-    }
-    catch (...) {
-        return;
-    }
+    // undistort the calibration points
+    std::vector<cv::Point2f> undistortedImagePoints;
+    cv::undistortPoints(imagePoints, undistortedImagePoints, m_cameraMatrix, m_distortionCoefficients, cv::Mat(), m_optimalCameraMatrix);
+
+    // set the initial values for translation and rotation
+    // we suppose the camera to be in the origin and no rotation
+    m_rvec = cv::Mat::zeros(3, 1, cv::DataType<double>::type);
+    m_tvec = cv::Mat::zeros(3, 1, cv::DataType<double>::type);
+
+    // run the calibration on the undistorted points
+    double rms = cv::solvePnP(worldPoints, undistortedImagePoints, m_optimalCameraMatrix, cv::Mat(), m_rvec, m_tvec, true, CV_ITERATIVE);
+//    qDebug() << Q_FUNC_INFO << "Calibrarion error" << rms;
+    // get the rotation matrix
+    cv::Mat rotationMatrix(3, 3, cv::DataType<double>::type);
+    cv::Rodrigues(m_rvec, rotationMatrix);
+
+//    // uncomment to compute and print the reprojection error
+//    std::vector<cv::Point2f> projectedPoints;
+//    cv::projectPoints(worldPoints, m_rvec, m_tvec, m_optimalCameraMatrix, cv::Mat(), projectedPoints);
+//    double error = 0;
+//    for(unsigned int i = 0; i < projectedPoints.size(); ++i)
+//    {
+//        qDebug() << Q_FUNC_INFO
+//                 << QString("World point (%1, %2, %3)")
+//                    .arg(worldPoints[i].x)
+//                    .arg(worldPoints[i].y)
+//                    .arg(worldPoints[i].z)
+//                 << QString("(corresponds to image point (%1, %2))")
+//                    .arg(undistortedImagePoints[i].x)
+//                    .arg(undistortedImagePoints[i].y)
+//                 << QString("is projected to (%1, %2)")
+//                    .arg(projectedPoints[i].x)
+//                    .arg(projectedPoints[i].y)
+//                 << QString("; error is %1 pixels")
+//                    .arg(cv::norm(undistortedImagePoints[i] - projectedPoints[i]));
+//        error += cv::norm(undistortedImagePoints[i] - projectedPoints[i]);
+//    }
+//    error /= projectedPoints.size();
+//    qDebug() << Q_FUNC_INFO  << "average reprojection error is" << error;
+
+    // TODO : to add an analysis on the error to decide if the calibration succeeded
+
+    // compute all the stuff that is need to make the converions
+    m_imageScaleCoefficientX = static_cast<double>(targetFrameSize.width()) / static_cast<double>(m_calibrationFrameSize.width());
+    m_imageScaleCoefficientY = static_cast<double>(targetFrameSize.height()) / static_cast<double>(m_calibrationFrameSize.height());
+    m_rotationMatrixInvCameraMatrixInv = rotationMatrix.inv() * m_optimalCameraMatrix.inv();
+    m_rotationMatrixInvTranslationVector = rotationMatrix.inv() * m_tvec;
 
     //return true;
     m_calibrationInitialized = true;
@@ -128,12 +121,33 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
  */
 PositionMeters CameraCalibration::imageToWorld(PositionPixels imageCoordinates)
 {
-    double wz = m_height;
-    double wx, wy;
-    image_coord_to_world_coord(m_calibrationConstants, m_cameraParameters,
-                               imageCoordinates.x(), imageCoordinates.y(),
-                               wz, &wx, &wy);
-    PositionMeters worldCoordinates(wx / 1000., wy / 1000.); // the calibration data is set in mm, hence the division
+    // find the undistorted image position
+    std::vector<cv::Point2f> imagePoint;
+    // we scale the image point to correspond to the calibration data
+    imagePoint.push_back(cv::Point2f(imageCoordinates.x() / m_imageScaleCoefficientX,
+                                     imageCoordinates.y() / m_imageScaleCoefficientY));
+    std::vector<cv::Point2f> undistortedImagePoint;
+    cv::undistortPoints(imagePoint, undistortedImagePoint,
+                        m_cameraMatrix, m_distortionCoefficients,
+                        cv::Mat(), m_optimalCameraMatrix);
+
+    cv::Mat uvPoint = cv::Mat::ones(3, 1, cv::DataType<double>::type); //u,v,1
+    uvPoint.at<double>(0,0) = undistortedImagePoint.at(0).x;
+    uvPoint.at<double>(1,0) = undistortedImagePoint.at(0).y;
+
+    // s * a = [wx wy wz]' + b, where a = R^{-1}*M^{-1}*[u v 1]', b = R^{-1}*t
+    cv::Mat vectorA = m_rotationMatrixInvCameraMatrixInv * uvPoint;
+    // TODO : to check if it works better when the height of the agent is taken into account
+    double wz = m_cameraHeight /*- m_agentHeight*/;
+    double s = wz + m_rotationMatrixInvTranslationVector.at<double>(2, 0);
+    s /= vectorA.at<double>(2, 0);
+
+    double wx = s * vectorA.at<double>(0, 0) - m_rotationMatrixInvTranslationVector.at<double>(0, 0);
+    double wy = s * vectorA.at<double>(1, 0) - m_rotationMatrixInvTranslationVector.at<double>(1, 0);
+
+    // NOTE : the Z-coordinate is not set is we work in 2D world
+    PositionMeters worldCoordinates(m_xInversionCoefficient * wx / 1000., m_yInversionCoefficient * wy / 1000.); // the calibration data is set in mm, hence the division
+
     return worldCoordinates;
 }
 
@@ -142,11 +156,18 @@ PositionMeters CameraCalibration::imageToWorld(PositionPixels imageCoordinates)
  */
 PositionPixels CameraCalibration::worldToImage(PositionMeters worldCoordinates)
 {
-    double ix, iy;
-    world_coord_to_image_coord(m_calibrationConstants, m_cameraParameters,
-                               worldCoordinates.x() * 1000, worldCoordinates.y() * 1000,
-                               worldCoordinates.z() * 1000, &ix, &iy); // the calibration data is set in mm, hence the multiplication to change from meters
-    return PositionPixels(ix, iy);
+    std::vector<cv::Point2f> projectedPoint;
+    std::vector<cv::Point3f> worldPoint;
+    // HACK : since only "x" and "y" are sinchronized between the top and bottom setus,
+    // the "z" value is to be set  to the "agent height" specific for this setup
+    // TODO : to check if it works better when the height of the agent is taken into account
+    worldCoordinates.setZ(m_cameraHeight /*- m_agentHeight*/);
+    // the calibration data is set in mm, hence the multiplication to change from meters
+    worldPoint.push_back(cv::Point3f(m_xInversionCoefficient * worldCoordinates.x() * 1000,
+                                     m_yInversionCoefficient * worldCoordinates.y() * 1000,
+                                     worldCoordinates.z()/* * 1000*/));
+    cv::projectPoints(worldPoint, m_rvec, m_tvec, m_cameraMatrix, m_distortionCoefficients, projectedPoint);
+    return PositionPixels(projectedPoint[0].x, projectedPoint[0].y);
 }
 
 /*!
@@ -154,17 +175,16 @@ PositionPixels CameraCalibration::worldToImage(PositionMeters worldCoordinates)
  */
 OrientationRad CameraCalibration::imageToWorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad)
 {
-    double vectorLength = m_cameraParameters.Ncx / 20; // empirical constant
-    double ix = imageCoordinates.x() + vectorLength * cos(imageOrientationRad.angle()); // a vector in  image coordinates
-    double iy = imageCoordinates.y() + vectorLength * sin(imageOrientationRad.angle());
-    double wz = 0;
-    double wx,wy;						// corresponding world coordinates
-    double wox,woy;						// world coordinates of agent's position
+    double vectorLength = 50; // px, empirical constant
+    double u = imageCoordinates.x() + vectorLength * cos(imageOrientationRad.angle()); // a vector in  image coordinates
+    double v = imageCoordinates.y() + vectorLength * sin(imageOrientationRad.angle());
+    PositionPixels imageEndPoint(u, v);
 
-    image_coord_to_world_coord(m_calibrationConstants, m_cameraParameters, ix, iy, wz, &wx, &wy);
-    image_coord_to_world_coord(m_calibrationConstants, m_cameraParameters, imageCoordinates.x(), imageCoordinates.y(), wz, &wox, &woy);
+    PositionMeters worldCoordinates = imageToWorld(imageCoordinates);
+    PositionMeters worldEndPoint = imageToWorld(imageEndPoint);
 
-    return OrientationRad(atan2(wy - woy, wx - wox));
+    return OrientationRad(atan2(worldEndPoint.y() - worldCoordinates.y(),
+                                worldEndPoint.x() - worldCoordinates.x()));
 }
 
 /*!
@@ -176,60 +196,13 @@ OrientationRad CameraCalibration::worldToImageOrientationRad(PositionMeters worl
     double wx = worldCoordinates.x() * 1000 + vectorLengthMm * cos(worldOrientationRad.angle()); // a vector in  image coordinates
     double wy = worldCoordinates.y() * 1000 + vectorLengthMm * sin(worldOrientationRad.angle());
 
-    double ix,iy;						// corresponding image coordinates
-    double iox,ioy;						// image coordinates of agent's position
+    PositionMeters worldEndPoint(wx, wy, worldCoordinates.z());
 
-    world_coord_to_image_coord(m_calibrationConstants, m_cameraParameters, wx, wy, worldCoordinates.z() * 1000, &ix, &iy);
-    world_coord_to_image_coord(m_calibrationConstants, m_cameraParameters, worldCoordinates.x() * 1000,
-                               worldCoordinates.y() * 1000, worldCoordinates.z() * 1000, &iox, &ioy);
+    PositionPixels imageCoordinates = worldToImage(worldCoordinates);
+    PositionPixels imageEndPoint = worldToImage(worldEndPoint);
 
-    return OrientationRad(atan2(iy - ioy, ix - iox));
-}
-
-/*!
- * Sets the camera parameters based on the camera type. Returns true if settings are set.
- */
-bool CameraCalibration::setCameraParameters(QString cameraType, QSize frameSize, camera_parameters& cameraParameters)
-{
-    // FIXME TODO : get the correct values for the Chinese camera and for the Basler camera
-    if (cameraType.toLower() == "c930e"){
-        /* Given the ratio of dpx to dpy, simply pick some value for dpy, say 10um (or
-            if you know it you can use the actual vertical pixel pitch) and use that to
-            back calculate dpx, dx, and dy. Set Ncx = Nfx, sx = 1.0, and Cx and Cy to
-            be the center of the frame buffer.  When you calibrate the model the
-            algorithm will adjust sx, Cx, and Cy to give a best fit set of intrinsic
-            parameters. (http://imagelab.ing.unimore.it/visor_test/faq_calibration.txt)*/
-        double width = 4.8;
-        double height = 3.6;
-        double resX = frameSize.width();
-        double resY = frameSize.height();
-        cameraParameters.Ncx = resX;
-        cameraParameters.Nfx = resX;
-        cameraParameters.Cx = cameraParameters.Ncx / 2.;
-        cameraParameters.Cy = resY / 2.;
-        cameraParameters.dx = width / resX;
-        cameraParameters.dpx = cameraParameters.dx * cameraParameters.Ncx / cameraParameters.Nfx;
-        cameraParameters.dy = height / resY;
-        cameraParameters.dpy = cameraParameters.dy;
-        cameraParameters.sx = 1.0;
-        return true;
-    }
-    if (cameraType.toLower() == "basler"){
-        double resX = frameSize.width();
-        double resY = frameSize.height();
-        cameraParameters.Ncx = resX;
-        cameraParameters.Nfx = resX;
-        cameraParameters.Cx = cameraParameters.Ncx / 2.;
-        cameraParameters.Cy = resY / 2.;
-        cameraParameters.dx = 0.003;
-        cameraParameters.dpx = cameraParameters.dx * cameraParameters.Ncx / cameraParameters.Nfx;
-        cameraParameters.dy = 0.003;
-        cameraParameters.dpy = cameraParameters.dy;
-        cameraParameters.sx = 1.0;
-        return true;
-    }
-    qDebug() << Q_FUNC_INFO << "Unknown camera type " << cameraType;
-    return false;
+    return OrientationRad(atan2(imageEndPoint.y() - imageCoordinates.y(),
+                                imageEndPoint.x() - imageCoordinates.x()));
 }
 
 /*!
@@ -249,4 +222,84 @@ int CameraCalibration::getWorldScaleCoefficient(std::string units)
         qDebug() << Q_FUNC_INFO << "Unknown world units " << units.data();
     }
     return coefficient;
+}
+
+/*!
+ * Read parameters for the calibration procedure. Returns true if all necessary
+ * data is there.
+ */
+bool CameraCalibration::readParameters(QString calibrationFileName)
+{
+    // check first that the file exists
+    if (!QFileInfo(calibrationFileName).exists()) {
+        qDebug() << Q_FUNC_INFO << "The provided calibration file is not correct.";
+        return false;
+    }
+
+    // read the XML file
+    ReadSettingsHelper settings(calibrationFileName);
+
+    // read the frame size that was used to set the calibration points
+    // (can be different from the target frame size)
+    // read the target image size
+    int width;
+    settings.readVariable(QString("imageSize/width"), width, -1); // default value to guarantee an
+                                                                  // invalid size if the correct valus is not read
+    int height;
+    settings.readVariable(QString("imageSize/height"), height, -1); // default value to guarantee an
+                                                                    // invalid size if the correct valus is not read
+    m_calibrationFrameSize = QSize(width, height);
+    if (!m_calibrationFrameSize.isValid()) {
+        qDebug() << Q_FUNC_INFO << "The calibration frame size is invalid.";
+        return false;
+    }
+
+    // read the units used for the calibration
+    std::string units;
+    m_worldScaleCoefficient;
+    settings.readVariable(QString("worldUnits"), units);
+    if (units.empty()) {
+        qDebug() << Q_FUNC_INFO << "Undefined the world units";
+        return false;
+    } else {
+        m_worldScaleCoefficient = getWorldScaleCoefficient(units);
+        if (m_worldScaleCoefficient == 0)
+            return false;
+    }
+
+    // read the agents' altitude
+    settings.readVariable(QString("agentHeight"), m_agentHeight, 0.);
+    m_agentHeight *= m_worldScaleCoefficient; // in mm
+
+    // read the camera's height
+    settings.readVariable(QString("cameraHeight"), m_cameraHeight, 0.);
+    m_cameraHeight *= m_worldScaleCoefficient; // in mm
+
+    // read the inversion flags
+    bool invertY;
+    settings.readVariable(QString("invertY"), invertY, false);
+    if (invertY)
+        m_yInversionCoefficient = -1;
+    else
+        m_yInversionCoefficient = 1;
+
+    bool invertX;
+    settings.readVariable(QString("invertY"), invertX, false);
+    if (invertX)
+        m_xInversionCoefficient = -1;
+    else
+        m_xInversionCoefficient = 1;
+
+    // read the camera matrix
+    settings.readVariable("cameraMatrix", m_cameraMatrix);
+    std::cout << m_cameraMatrix << std::endl;
+
+    // read the distortion coefficients
+    settings.readVariable("distortionCoefficients", m_distortionCoefficients);
+    std::cout << m_distortionCoefficients << std::endl;
+
+    // compute the optimal new camera matrix
+    m_optimalCameraMatrix = cv::getOptimalNewCameraMatrix(m_cameraMatrix, m_distortionCoefficients, cv::Size(width, height), 1.0);
+
+    return true;
 }

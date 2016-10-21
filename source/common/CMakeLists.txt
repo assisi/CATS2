@@ -16,5 +16,5 @@ set(hdrs
 )
 
 add_library(common SHARED ${srcs} ${hdrs})
-target_link_libraries(common Qt5::Core Qt5::Widgets ${OpenCV_LIBS} ${LIBTSAI_LIBRARY})
+target_link_libraries(common Qt5::Core Qt5::Widgets ${OpenCV_LIBS}) #${LIBTSAI_LIBRARY})
 

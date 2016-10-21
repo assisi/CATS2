@@ -3,11 +3,30 @@
     <!-- fixme : to put a correct camera type.  -->
     <cameraType>c930e</cameraType>
     <worldUnits>cm</worldUnits>
+    <cameraHeight>45</cameraHeight>
     <agentHeight>0.</agentHeight>
     <imageSize>
         <width>640</width>
         <height>480</height>
     </imageSize>
+    <cameraMatrix type_id="opencv-matrix">
+        <rows>3</rows>
+        <cols>3</cols>
+        <dt>d</dt>
+        <data>
+            3.662076342322143887e+02 0.000000000000000000e+00 3.177431109236638918e+02 0.000000000000000000e+00 3.655636280877824333e+02 2.339131504229659981e+02 0.000000000000000000e+00 0.000000000000000000e+00 1.000000000000000000e+00
+        </data>
+    </cameraMatrix>
+    <distortionCoefficients type_id="opencv-matrix">
+        <rows>1</rows>
+        <cols>5</cols>
+        <dt>d</dt>
+        <data>
+            -3.272193592615184055e-01 1.255145508456591563e-01 5.283443455522879913e-04 1.362864486125701848e-03 -2.327340374412180043e-02
+        </data>
+    </distortionCoefficients>
+    <invertX>1</invertX>
+    <invertY>1</invertY>
     <calibrationPoints>
         <numberOfPoints>21</numberOfPoints>
         <point_0>
