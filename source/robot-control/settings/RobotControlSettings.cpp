@@ -44,5 +44,31 @@ bool RobotControlSettings::init(QString configurationFileName)
         settingsAccepted = settingsAccepted && (id.size() > 0);
     }
 
+    // read the fish motion pattern settings
+    int distanceCm = 0;
+    settings.readVariable("robots/fishMotionPattern/distanceCm", distanceCm, distanceCm);
+    m_fishMotionPatternSettings.setDistanceCm(distanceCm);
+    int speedCmSec = 0;
+    settings.readVariable("robots/fishMotionPattern/speedCmSec", speedCmSec, speedCmSec);
+    m_fishMotionPatternSettings.setSpeedCmSec(speedCmSec);
+    settingsAccepted = settingsAccepted && m_fishMotionPatternSettings.isValid();
+
+    // read the pid controller settings
+    double kp = 0;
+    settings.readVariable("robots/pid/kp", kp, kp);
+    m_pidControllerSettings.setKp(kp);
+    double ki = 0;
+    settings.readVariable("robots/pid/ki", ki, ki);
+    m_pidControllerSettings.setKi(ki);
+    double kd = 0;
+    settings.readVariable("robots/pid/kd", kd, kd);
+    m_pidControllerSettings.setKd(kd);
+    settingsAccepted = settingsAccepted && (m_pidControllerSettings.kp() != 0);
+
+    // read the default linear speed
+    m_defaultLinearSpeedCmSec = 0;
+    settings.readVariable("robots/defaultLinearSpeedCmSec", m_defaultLinearSpeedCmSec);
+    settingsAccepted = settingsAccepted && (m_defaultLinearSpeedCmSec > 0);
+
     return settingsAccepted;
 }

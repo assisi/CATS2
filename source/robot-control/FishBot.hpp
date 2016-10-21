@@ -3,6 +3,9 @@
 
 #include "RobotControlPointerTypes.hpp"
 #include "ControlModeStateMachine.hpp"
+#include "control-modes/ControlTarget.hpp"
+#include "MotionPatternType.hpp"
+#include "Navigation.hpp"
 
 #include <AgentState.hpp>
 
@@ -30,6 +33,8 @@ public:
 
     //! Sets the robot's interface.
     void setRobotInterface(Aseba::DBusInterfacePtr robotInterface);
+    //! Returns the robot's interface.
+    Aseba::DBusInterfacePtr robotInterface() { return m_robotInterface; }
     //! Inititialises the robot's firmware. The robot's index is used to
     //! initilize the robot's id in its firmware.
     void setupConnection(int robotIndex);
@@ -39,6 +44,13 @@ public:
     QList<ControlModeType::Enum> supportedControlModes();
     //! Sets the control mode.
     void setControlMode(ControlModeType::Enum type);
+    //! Return the control mode.
+    ControlModeType::Enum currentControlMode() const { return m_controlStateMachine.currentControlMode(); }
+
+    //! Sets the motion pattern.
+    void setMotionPattern(MotionPatternType::Enum type);
+    //! Return the motion pattern.
+    MotionPatternType::Enum currentMotionPattern() const { return m_navigation.motionPattern(); }
 
     //! Steps the control for the robot.
     void stepControl();
@@ -64,8 +76,12 @@ public:
 signals:
     //! Informs that the robot's control mode was modified.
     void notifyControlModeChanged(ControlModeType::Enum type);
+    //! Informs that the robot's motion pattern was changed.
+    void notifyMotionPatternChanged(MotionPatternType::Enum type);
 
-public slots:
+public:
+    //! Distance between robot's wheels.
+    static constexpr double InterWheelsDistanceCm = 1.8;
 
 private:
     //! The robot's id.
@@ -86,7 +102,8 @@ private:
     //! The states of fish.
     QList<StateWorld> m_fishStates;
 
-    // TODO : to add the locomotion pattern
+    //! Navigates the robot to a target.
+    Navigation m_navigation;
 
     // TODO : to add the interface with the RiBot lure
 };

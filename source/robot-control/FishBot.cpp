@@ -18,10 +18,13 @@ FishBot::FishBot(QString id) :
     m_name(QString("Fish_bot_%1").arg(m_id)),
     m_state(),
     m_robotInterface(nullptr),
-    m_controlStateMachine(this)
+    m_controlStateMachine(this),
+    m_navigation(this)
 {
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);
+    connect(&m_navigation, &Navigation::notifyMotionPatternChanged,
+            this, &FishBot::notifyMotionPatternChanged);
 }
 
 /*!
@@ -29,6 +32,7 @@ FishBot::FishBot(QString id) :
  */
 FishBot::~FishBot()
 {
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
     // TODO : to remove the callback, dbus interface must be modified for this.
 }
 
@@ -131,4 +135,12 @@ void FishBot::goToPosition(PositionMeters position)
     if (m_controlStateMachine.currentControlMode() == ControlModeType::GO_TO_POSITION) {
         m_controlStateMachine.setTargetPosition(position);
     }
+}
+
+/*!
+ * Sets the motion pattern.
+ */
+void FishBot::setMotionPattern(MotionPatternType::Enum type)
+{
+    m_navigation.setMotionPattern(type);
 }

@@ -2,11 +2,11 @@
 #define CATS2_CONTROL_LOOP_HPP
 
 #include "RobotControlPointerTypes.hpp"
-#include "dbusinterface.h"
 
 #include <AgentData.hpp>
 
 #include <QtCore/QObject>
+#include <QtCore/QTimer>
 
 /*!
  * The main control class. Manages the interfaces to the robots, robot classes,

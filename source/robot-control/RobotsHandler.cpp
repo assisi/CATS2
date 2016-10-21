@@ -3,6 +3,8 @@
 #include "gui/RobotsWidget.hpp"
 #include "ControlLoop.hpp"
 
+#include <QtCore/QDebug>
+
 /*!
  * Constructor.
  */

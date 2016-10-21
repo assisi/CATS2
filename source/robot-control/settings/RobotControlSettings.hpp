@@ -23,6 +23,68 @@ private:
 };
 
 /*!
+ * Stores settings of fish motion pattern.
+ */
+class FishMotionPatternSettings
+{
+public:
+    //! Constructor.
+    explicit FishMotionPatternSettings() { }
+
+    //! Sets distance to accelerate.
+    void setDistanceCm(int distance) { m_distanceCm = distance; }
+    //! Returns distance to accelerate.
+    int distanceCm() const { return m_distanceCm; }
+
+    //! Sets the speed to go after acceleration.
+    void setSpeedCmSec(int speed) { m_speedCmSec = speed; }
+    //! Returns distance to accelerate.
+    int speedCmSec() const { return m_speedCmSec; }
+
+    //! Checks the validity.
+    bool isValid() const { return (m_distanceCm > 0) && (m_speedCmSec > 0); }
+
+private:
+    //! Distance to accelerate.
+    int m_distanceCm; // [cm]
+    //! Speed to keep after accelerating.
+    int m_speedCmSec; // [cm/sec]
+};
+
+/*!
+ * Stores settings of PID controller.
+ */
+class PidControllerSettings
+{
+public:
+    //! Constructor.
+    explicit PidControllerSettings() { }
+
+    //! Sets proportional coefficient.
+    void setKp(double kp) { m_kp = kp; }
+    //! Returns proportional coefficient.
+    int kp() const { return m_kp; }
+
+    //! Sets integral coefficient.
+    void setKi(double ki) { m_ki = ki; }
+    //! Returns integral coefficient.
+    int ki() const { return m_ki; }
+
+    //! Sets derivative coefficient.
+    void setKd(double kd) { m_kd = kd; }
+    //! Returns derivative coefficient.
+    int kd() const { return m_kd; }
+
+private:
+    //! Proportional coefficient.
+    double m_kp;
+    //! Integral coefficient.
+    double m_ki;
+    //! Derivative coefficient.
+    double m_kd;
+};
+
+/*!
  * Class-signleton that is used to store parameters of the robot control system.
  * Their values are loaded from the configuration file.
  * NOTE : All the settings are made as singltons to simplify the access to them;
@@ -53,11 +115,18 @@ public:
     int numberOfRobots() const { return m_numberOfRobots; }
     //! Returns the contol loop frequency.
     int controlFrequencyHz() const { return m_controlFrequencyHz; }
+    //! Gives the reference to the fish motion pattern settngs.
+    const FishMotionPatternSettings& fishMotionPatternSettings() const { return m_fishMotionPatternSettings; }
+    //! Gives the reference to the PID controller settngs.
+    const PidControllerSettings& pidControllerSettings() const { return m_pidControllerSettings; }
 
     //! Returns the settings for given robot.
     RobotSettings robotSettings(QString id) const { return m_robotsSettings[id]; }
     //! Returns the list of all robot ids.
     QList<QString > ids() const { return m_robotsSettings.keys(); }
+
+    //! Returns the default linear speed.
+    int defaultLinearSpeedCmSec() const { return m_defaultLinearSpeedCmSec; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -72,6 +141,13 @@ private:
     int m_controlFrequencyHz;
     //! Maps robot's id to individual robots settings.
     QMap<QString, RobotSettings> m_robotsSettings;
+    //! Fish motion pattern settings; at the moment they are shared
+    //! by all robots.
+    FishMotionPatternSettings m_fishMotionPatternSettings;
+    //! PID controller settings.
+    PidControllerSettings m_pidControllerSettings;
+    //! Default linear speed of the robot.
+    int m_defaultLinearSpeedCmSec;
     // TODO : this class must keep the following data
     // (*) number of agents
     // (*) id of every agent

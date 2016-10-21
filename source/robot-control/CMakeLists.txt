@@ -21,12 +21,14 @@ set(srcs
     gui/RobotControlWidget.cpp
     gui/RobotsWidget.cpp
     RobotsHandler.cpp
+    Navigation.cpp
 )
 
 set(hdrs
     control-modes/ControlTarget.hpp
     dbusinterface.h
     RobotControlPointerTypes.hpp
+    MotionPatternType.hpp
     control-modes/ControlModeType.hpp
 )
 

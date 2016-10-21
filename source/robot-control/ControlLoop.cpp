@@ -1,6 +1,7 @@
 #include "ControlLoop.hpp"
 #include "settings/RobotControlSettings.hpp"
 #include "FishBot.hpp"
+#include "dbusinterface.h"
 
 /*!
  * Constructor.
@@ -36,6 +37,8 @@ ControlLoop::ControlLoop() :
  */
 ControlLoop::~ControlLoop()
 {
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
+
     // stop the timer
     m_controlLoopTimer.stop();
 
