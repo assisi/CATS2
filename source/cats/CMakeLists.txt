@@ -18,6 +18,8 @@ include_directories(${CMAKE_SOURCE_DIR}/source/robot-control)
 
 add_executable(cats  ${srcs} ${uis_hdrs} ${resources})
 
+# TODO : add step to copy .aesl scripts
+
 target_link_libraries(cats common grabber tracker viewer hub
                         messages inter-species robot-control
                         Qt5::Core Qt5::Widgets Qt5::Gui Qt5::DBus
