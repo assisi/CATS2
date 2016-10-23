@@ -212,7 +212,7 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
                 joinedAgentsList.append(agentTwo);
             indecesToRemove.append(qMakePair(i1, bestCombination[i1]));
         } else {
-            qDebug() << costMatrix[i1][bestCombination[i1]] << WeightedThreshold;
+//            qDebug() <<  Q_FUNC_INFO << costMatrix[i1][bestCombination[i1]] << WeightedThreshold;
         }
     }
     // remove duplicated elements from both input lists

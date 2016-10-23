@@ -39,15 +39,18 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     if (CMAKE_CXX_COMPILER_VERSION VERSION_LESS 4.4)
         message(FATAL_ERROR "GCC version must be at least 4.4")
     else()
-        set(CATS2_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Wformat=2 \
-        -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Woverloaded-virtual \
-        -Wredundant-decls -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default \
-        -Wno-unused-parameter -Wold-style-cast -Wfloat-equal -Wundef -Wshadow")
         if (CMAKE_CXX_COMPILER_VERSION VERSION_GREATER 5.0)
             message("GCC version is later than 5.0")
-            set(CATS2_CXX_FLAGS ${CATS2_CXX_FLAGS} "-Wsuggest-override -Wsuggest-final-methods")
+            set(CATS2_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Wformat=2 \
+            -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Woverloaded-virtual \
+            -Wredundant-decls -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default \
+            -Wno-unused-parameter -Wold-style-cast -Wfloat-equal -Wundef -Wshadow -Wsuggest-override -Wsuggest-final-methods")
         else()
             message("GCC version is earlier than 5.0")
+            set(CATS2_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Wformat=2 \
+            -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Woverloaded-virtual \
+            -Wredundant-decls -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default \
+            -Wno-unused-parameter -Wold-style-cast -Wfloat-equal -Wundef -Wshadow")
         endif()
     endif()
 #elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")
