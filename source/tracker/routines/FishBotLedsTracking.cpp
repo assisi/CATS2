@@ -8,6 +8,7 @@
 #include <opencv2/highgui/highgui.hpp>
 
 #include <QtCore/QtMath>
+#include <QtCore/QMutex>
 
 #include <cmath>
 
@@ -62,11 +63,14 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
         if ((m_maskImage.data != nullptr) && (m_blurredImage.type() == m_maskImage.type()))
             m_blurredImage = m_blurredImage & m_maskImage;
         else {
-//            qDebug() << Q_FUNC_INFO << "The mask's type is not compatible with the image";
+            qDebug() << Q_FUNC_INFO << "The mask's type is not compatible with the image";
         }
 
         // detect robots
-        for (size_t robotIndex = 0; robotIndex < m_settings.numberOfAgents(); robotIndex++) {
+        m_settingsMutex.lock();
+        int numberOfAgents = m_settings.numberOfAgents();
+        m_settingsMutex.unlock();
+        for (size_t robotIndex = 0; robotIndex < numberOfAgents; robotIndex++) {
             detectLeds(robotIndex);
         }
 
@@ -88,8 +92,10 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
 void FishBotLedsTracking::detectLeds(size_t robotIndex)
 {
     int h,s,v;
+    m_settingsMutex.lock();
     m_settings.robotDescription(robotIndex).ledColor.getHsv(&h, &s, &v);
     int tolerance = m_settings.robotDescription(robotIndex).colorThreshold;
+    m_settingsMutex.unlock();
 
     // convert to hsv
     cv::cvtColor(m_blurredImage, m_hsvImage, CV_RGB2HSV);
@@ -178,4 +184,13 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
 QList<AgentType> FishBotLedsTracking::capabilities() const
 {
     return QList<AgentType>({AgentType::FISH_CASU});
+}
+
+/*!
+ * Updates the settings.
+ */
+void FishBotLedsTracking::setSettings(const FishBotLedsTrackingSettingsData& settings)
+{
+    QMutexLocker locker(&m_settingsMutex);
+    m_settings = settings;
 }

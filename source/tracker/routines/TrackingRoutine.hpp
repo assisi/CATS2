@@ -4,10 +4,11 @@
 #include <CommonPointerTypes.hpp>
 #include <AgentData.hpp>
 
-#include <QtCore/QObject>
-
 #include <opencv2/video.hpp>
 #include <opencv2/video/background_segm.hpp>
+
+#include <QtCore/QObject>
+#include <QtCore/QMutex>
 
 #include <atomic>
 
@@ -91,6 +92,9 @@ protected:
 
     //! The tracked agents.
     QList<AgentDataImage> m_agents;
+
+    //! The mutex to protect settings.
+    QMutex m_settingsMutex;
 };
 
 #endif // CATS2_TRACKING_ROUTINE_HPP
