@@ -1,0 +1,56 @@
+<?xml version="1.0"?>
+<opencv_storage>
+    <experiment>
+        <name>TestExperiment</name>
+        <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
+    </experiment>
+    <setups>
+        <mainCamera>
+            <!--
+                TODO : consider adding here the camera type or id to compare with the
+                value in the calibration file.
+            -->
+            <imageSize>
+                <width>500</width>
+                <height>500</height>
+            </imageSize>
+            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
+            <tracking>
+                <trackingMethod>blobDetector</trackingMethod>
+                <numberOfAgents>7</numberOfAgents>
+                <blobDetector>
+                    <minBlobSizePx>0</minBlobSizePx>
+                    <qualityLevel>0.01</qualityLevel>
+                    <minDistance>20.0</minDistance>
+                    <blockSize>5</blockSize>
+                    <useHarrisDetector>0</useHarrisDetector>
+                    <k>0.04</k>
+            </blobDetector>
+            </tracking>
+        </mainCamera>
+        <cameraBelow>
+            <imageSize>
+                <width>640</width>
+                <height>480</height>
+            </imageSize>
+            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-below-camera.xml</cameraCalibrationFile>
+            <tracking>
+                <trackingMethod>colorDetector</trackingMethod>
+                <maskFile>/home/gribovsk/Software/CATS2/config/bottom-camera-mask.png</maskFile>
+                <numberOfAgents>30</numberOfAgents>
+                <colorDetector>
+                    <color>
+                        <r>100</r>
+                        <g>180</g>
+                        <b>75</b>
+                    </color>
+                    <threshold>15</threshold>
+                </colorDetector>
+            </tracking>
+        </cameraBelow>
+    </setups>
+    <interSpecies>
+        <publisherAddress>tcp://127.0.0.1:50001</publisherAddress>
+    </interSpecies>
+</opencv_storage>
+
