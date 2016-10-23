@@ -46,8 +46,6 @@ private:
     static const size_t BackgroundCalculationSufficientNumber = 100;
     //! The tracking settings.
     BlobDetectorSettingsData m_settings;
-    //! The mutex to protect settings.
-    QMutex m_settingsMutex;
 
 private:
     //! The backgound model.

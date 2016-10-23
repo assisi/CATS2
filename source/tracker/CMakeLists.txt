@@ -1,12 +1,14 @@
 set(srcs
     routines/TrackingRoutine.cpp
     routines/BlobDetector.cpp
+    routines/ColorDetector.cpp
     routines/FishBotLedsTracking.cpp
     settings/TrackingSettings.cpp
     settings/TrackingRoutineSettings.cpp
     settings/BlobDetectorSettings.cpp
     settings/FishBotLedsTrackingSettings.cpp
     settings/TrackingSetupSettings.cpp
+    settings/ColorDetectorSettings.cpp
     TrackingData.cpp
     TrackingDataManager.cpp
     TrackingSetup.cpp
@@ -15,6 +17,7 @@ set(srcs
     gui/TrackingRoutineWidget.cpp
     gui/BlobDetectorWidget.cpp
     gui/FishBotLedsTrackingWidget.cpp
+    gui/ColorDetectorWidget.cpp
     gui/TrackingUiFactory.cpp
 )
 
@@ -28,7 +31,8 @@ qt5_add_resources(resources icons.qrc)
 qt5_wrap_ui(uis_hdrs
             gui/TrackingRoutineWidget.ui
             gui/BlobDetectorWidget.ui
-            gui/FishBotLedsTrackingWidget.ui)
+            gui/FishBotLedsTrackingWidget.ui
+            gui/ColorDetectorWidget.ui)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 include_directories(${CMAKE_SOURCE_DIR}/source/grabber)

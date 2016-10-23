@@ -4,10 +4,12 @@
 #include "routines/TrackingRoutineType.hpp"
 #include "routines/TrackingRoutine.hpp"
 #include "routines/BlobDetector.hpp"
+#include "routines/ColorDetector.hpp"
 #include "routines/FishBotLedsTracking.hpp"
 #include "settings/TrackingRoutineSettings.hpp"
 #include "settings/BlobDetectorSettings.hpp"
 #include "settings/FishBotLedsTrackingSettings.hpp"
+#include "settings/ColorDetectorSettings.hpp"
 #include "settings/TrackingSettings.hpp"
 #include <SetupType.hpp>
 
@@ -28,6 +30,8 @@ public:
             switch (settings->type()) {
             case TrackingRoutineType::BLOB_DETECTOR:
                 return TrackingRoutinePtr(new BlobDetector(settings, inputQueue, debugQueue), &QObject::deleteLater);
+            case TrackingRoutineType::COLOR_DETECTOR:
+                return TrackingRoutinePtr(new ColorDetector(settings, inputQueue, debugQueue), &QObject::deleteLater);
             case TrackingRoutineType::FISHBOT_LEDS_TRACKING:
                 return TrackingRoutinePtr(new FishBotLedsTracking(settings, inputQueue, debugQueue), &QObject::deleteLater);
             default:
@@ -46,6 +50,8 @@ public:
         switch (trackingType) {
         case TrackingRoutineType::BLOB_DETECTOR:
             return TrackingRoutineSettingsPtr(new BlobDetectorSettings(setupType));
+        case TrackingRoutineType::COLOR_DETECTOR:
+            return TrackingRoutineSettingsPtr(new ColorDetectorSettings(setupType));
         case TrackingRoutineType::FISHBOT_LEDS_TRACKING:
             return TrackingRoutineSettingsPtr(new FishBotLedsTrackingSettings(setupType));
         default:

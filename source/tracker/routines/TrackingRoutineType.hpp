@@ -10,6 +10,7 @@ class TrackingRoutineType
 {
 public:
     enum Enum {
+        COLOR_DETECTOR,
         BLOB_DETECTOR,
         FISHBOT_LEDS_TRACKING,
         // to extend
@@ -23,6 +24,8 @@ public:
             return TrackingRoutineType::BLOB_DETECTOR;
         else if (routineName.toLower() == "fishbotledstracking")
             return TrackingRoutineType::FISHBOT_LEDS_TRACKING;
+        else if (routineName.toLower() == "colordetector")
+            return TrackingRoutineType::COLOR_DETECTOR;
         else
             return TrackingRoutineType::UNDEFINED;
     }
@@ -32,6 +35,9 @@ public:
         QString string = "Undefined";
 
         switch (setupType) {
+        case COLOR_DETECTOR:
+            string = "Color spots detection";
+            break;
         case BLOB_DETECTOR:
             string = "Basic blob detection";
             break;
