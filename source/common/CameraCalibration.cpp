@@ -80,29 +80,27 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
     cv::Mat rotationMatrix(3, 3, cv::DataType<double>::type);
     cv::Rodrigues(m_rvec, rotationMatrix);
 
-//    // uncomment to compute and print the reprojection error
-//    std::vector<cv::Point2f> projectedPoints;
-//    cv::projectPoints(worldPoints, m_rvec, m_tvec, m_optimalCameraMatrix, cv::Mat(), projectedPoints);
-//    double error = 0;
-//    for(unsigned int i = 0; i < projectedPoints.size(); ++i)
-//    {
-//        qDebug() << Q_FUNC_INFO
-//                 << QString("World point (%1, %2, %3)")
-//                    .arg(worldPoints[i].x)
-//                    .arg(worldPoints[i].y)
-//                    .arg(worldPoints[i].z)
-//                 << QString("(corresponds to image point (%1, %2))")
-//                    .arg(undistortedImagePoints[i].x)
-//                    .arg(undistortedImagePoints[i].y)
-//                 << QString("is projected to (%1, %2)")
-//                    .arg(projectedPoints[i].x)
-//                    .arg(projectedPoints[i].y)
-//                 << QString("; error is %1 pixels")
-//                    .arg(cv::norm(undistortedImagePoints[i] - projectedPoints[i]));
-//        error += cv::norm(undistortedImagePoints[i] - projectedPoints[i]);
-//    }
-//    error /= projectedPoints.size();
-//    qDebug() << Q_FUNC_INFO  << "average reprojection error is" << error;
+    // uncomment to compute and print the reprojection error
+    std::vector<cv::Point2f> projectedPoints;
+    cv::projectPoints(worldPoints, m_rvec, m_tvec, m_optimalCameraMatrix, cv::Mat(), projectedPoints);
+    double error = 0;
+    for(unsigned int i = 0; i < projectedPoints.size(); ++i)
+    {
+        qDebug() << Q_FUNC_INFO
+                 << QString("World point (%1, %2, %3)mm (corresponds (%4, %5)px) is projected to (%6, %7)px; error is %8 px")
+                    .arg(worldPoints[i].x)
+                    .arg(worldPoints[i].y)
+                    .arg(worldPoints[i].z)
+                    .arg(undistortedImagePoints[i].x)
+                    .arg(undistortedImagePoints[i].y)
+                    .arg(projectedPoints[i].x)
+                    .arg(projectedPoints[i].y)
+                    .arg(cv::norm(undistortedImagePoints[i] - projectedPoints[i]));
+        error += cv::norm(undistortedImagePoints[i] - projectedPoints[i]);
+    }
+    error /= projectedPoints.size();
+    qDebug() << Q_FUNC_INFO  << QString("Average projection error (world->image) is %1 pixels").arg(error);
+
 
     // TODO : to add an analysis on the error to decide if the calibration succeeded
 
@@ -111,6 +109,21 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
     m_imageScaleCoefficientY = static_cast<double>(targetFrameSize.height()) / static_cast<double>(m_calibrationFrameSize.height());
     m_rotationMatrixInvCameraMatrixInv = rotationMatrix.inv() * m_optimalCameraMatrix.inv();
     m_rotationMatrixInvTranslationVector = rotationMatrix.inv() * m_tvec;
+
+    // image to world error
+    error = 0;
+    for (int i = 0; i < imagePoints.size(); i++) {
+        PositionMeters projectedPositionMeters = imageToWorld(PositionPixels(imagePoints.at(i)));
+        PositionMeters originalPositionMeters(m_xInversionCoefficient * worldPoints.at(i).x / 1000.,
+                                              m_yInversionCoefficient * worldPoints.at(i).y / 1000.,
+                                              worldPoints.at(i).z / 1000);
+        qDebug() << originalPositionMeters.toString()
+                 << projectedPositionMeters.toString()
+                 << originalPositionMeters.distance2DTo(projectedPositionMeters);
+        error += originalPositionMeters.distance2DTo(projectedPositionMeters);
+    }
+    error /= imagePoints.size();
+    qDebug() << Q_FUNC_INFO  << QString("Average reprojection error (image->world) is %1 m").arg(error);
 
     //return true;
     m_calibrationInitialized = true;
