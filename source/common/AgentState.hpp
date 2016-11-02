@@ -111,6 +111,8 @@ class PositionPixels
 {
 public:
     //! Constructor.
+    PositionPixels(cv::Point2f point, bool valid = true) : m_x(point.x), m_y(point.y), m_valid(valid) { }
+    //! Constructor.
     PositionPixels(double x = 0, double y = 0, bool valid = true) : m_x(x), m_y(y), m_valid(valid) { }
 
     //! Sets the x coordinate.
