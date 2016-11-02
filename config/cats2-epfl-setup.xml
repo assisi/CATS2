@@ -34,10 +34,10 @@
                 value in the calibration file.
             -->
             <imageSize>
-                <width>500</width>
-                <height>500</height>
+                <width>512</width>
+                <height>512</height>
             </imageSize>
-            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
+            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
                 <numberOfAgents>7</numberOfAgents>
@@ -56,7 +56,7 @@
                 <width>640</width>
                 <height>480</height>
             </imageSize>
-            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera_calibration/cats2-epfl-180-angle-below-camera.xml</cameraCalibrationFile>
+            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera-calibration/epfl-setup-180/cats2-epfl-180-angle-below-camera.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>fishBotLedsTracking</trackingMethod>
                 <maskFile>/home/gribovsk/Software/CATS2/config/bottom-camera-mask.png</maskFile>

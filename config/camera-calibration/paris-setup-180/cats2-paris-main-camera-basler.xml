@@ -1,0 +1,111 @@
+<?xml version="1.0"?>
+<opencv_storage>
+    <cameraType>basler</cameraType>
+    <worldUnits>cm</worldUnits>
+    <agentHeight>3</agentHeight>
+    <imageSize>
+        <width>2048</width>
+        <height>2048</height>
+    </imageSize>
+    <calibrationPoints>
+        <numberOfPoints>16</numberOfPoints>
+        <point_0>
+            <xWorld>0</xWorld>
+            <yWorld>0</yWorld>
+            <xImage>444.155	</xImage>
+            <yImage>1638.21	</yImage>
+        </point_0>
+        <point_1>
+            <xWorld>20</xWorld>
+            <yWorld>0</yWorld>
+            <xImage>837.674</xImage>
+            <yImage>1634.84</yImage>
+            
+        </point_1>
+        <point_2>
+            <xWorld>40</xWorld>
+            <yWorld>0</yWorld>
+            <xImage>1227.33	</xImage>
+            <yImage>1629.53	</yImage>
+        </point_2>
+        <point_3>
+            <xWorld>60</xWorld>
+            <yWorld>0</yWorld>
+            <xImage>1620.85	</xImage>
+            <yImage>1620.37	</yImage>
+        </point_3>
+        <point_4>
+            <xWorld>0</xWorld>
+            <yWorld>20</yWorld>
+            <xImage>436.921	</xImage>
+            <yImage>1247.11	</yImage>
+        </point_4>
+        <point_5>
+            <xWorld>20</xWorld>
+            <yWorld>20</yWorld>
+            <xImage>828.511	</xImage>
+            <yImage>1245.66	</yImage>
+        </point_5>
+        <point_6>
+            <xWorld>40</xWorld>
+            <yWorld>20</yWorld>
+            <xImage>1220.58	</xImage>
+            <yImage>1232.64	</yImage>
+        </point_6>
+        <point_7>
+            <xWorld>60</xWorld>
+            <yWorld>20</yWorld>
+            <xImage>1612.17	</xImage>
+            <yImage>1229.26	</yImage>
+        </point_7>
+        <point_8>
+            <xWorld>0</xWorld>
+            <yWorld>40</yWorld>
+            <xImage>432.099	</xImage>
+            <yImage>859.375	</yImage>
+        </point_8>
+        <point_9>
+            <xWorld>20</xWorld>
+            <yWorld>40</yWorld>
+            <xImage>823.206	</xImage>
+            <yImage>849.73</yImage>
+        </point_9>
+        <point_10>
+            <xWorld>40</xWorld>
+            <yWorld>40</yWorld>
+            <xImage>1216.72	</xImage>
+            <yImage>844.425	</yImage>
+        </point_10>
+        <point_11>
+            <xWorld>60</xWorld>
+            <yWorld>40</yWorld>
+            <xImage>1604.46	</xImage>
+            <yImage>837.191	</yImage>
+        </point_11>
+        <point_12>
+            <xWorld>0</xWorld>
+            <yWorld>60</yWorld>
+            <xImage>423.9</xImage>
+            <yImage>467.785	</yImage>
+        </point_12>
+        <point_13>
+            <xWorld>20</xWorld>
+            <yWorld>60</yWorld>
+            <xImage>817.901	</xImage>
+            <yImage>462.481	</yImage>	
+        </point_13>
+        <point_14>
+            <xWorld>40</xWorld>
+            <yWorld>60</yWorld>
+            <xImage>1208.04	</xImage>
+            <yImage>453.8</yImage>
+        </point_14>
+        <point_15>
+            <xWorld>60</xWorld>
+            <yWorld>60</yWorld>
+            <xImage>1594.81</xImage>
+            <yImage>451.389</yImage>
+        </point_15>
+    </calibrationPoints>
+</opencv_storage>
+
