@@ -19,7 +19,7 @@ class QueueingApplicationSink : public QGst::Utils::ApplicationSink
 {
 public:
     //! Constructor. Gets a queue to put the frames in.
-    explicit QueueingApplicationSink(TimestampedFrameQueuePtr outputQueue, QSize targetFrameSize);
+    explicit QueueingApplicationSink(TimestampedFrameQueuePtr outputQueue, QSize expectedFrameSize);
 
 protected:
     //! Called when a new sample arrives
@@ -28,10 +28,8 @@ protected:
 private:
     //! The queue to put incoming frames.
     TimestampedFrameQueuePtr m_outputQueue;
-    //! A flag that defines if the input frames are to be converted.
-    bool m_convertFrames;
     //! The target frame size.
-    cv::Size m_targetFrameSize;
+    cv::Size m_expectedFrameSize;
 };
 
 
