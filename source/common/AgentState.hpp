@@ -67,7 +67,7 @@ public:
     //! Return the position validity status.
     bool isValid() const { return m_valid; }
 
-    //! Returns the position as text.
+    //! Returns the position as text. Only x and y coordinates are shown.
     QString toString()
     {
         if (m_valid)
@@ -81,6 +81,14 @@ public:
         return qSqrt((m_x - other.x()) * (m_x - other.x()) +
                      (m_y - other.y()) * (m_y - other.y()) +
                      (m_z - other.z()) * (m_z - other.z()));
+    }
+    /*!
+     * Only x and y coordinates are taken into account.
+     */
+    double distance2DTo(const PositionMeters& other)
+    {
+        return qSqrt((m_x - other.x()) * (m_x - other.x()) +
+                     (m_y - other.y()) * (m_y - other.y()));
     }
 
 private:
