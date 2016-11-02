@@ -74,7 +74,7 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
     m_tvec = cv::Mat::zeros(3, 1, cv::DataType<double>::type);
 
     // run the calibration on the undistorted points
-    double rms = cv::solvePnP(worldPoints, undistortedImagePoints, m_optimalCameraMatrix, cv::Mat(), m_rvec, m_tvec, true,  cv::SOLVEPNP_ITERATIVE);
+    double rms = cv::solvePnP(worldPoints, undistortedImagePoints, m_optimalCameraMatrix, cv::Mat(), m_rvec, m_tvec, true,  cv::SOLVEPNP_EPNP);
 //    qDebug() << Q_FUNC_INFO << "Calibrarion error" << rms;
 
     std::cout << m_rvec << std::endl;
