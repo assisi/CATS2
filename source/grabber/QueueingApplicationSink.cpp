@@ -18,11 +18,10 @@
 /*!
  * Constructor. Gets a queue to put the frames in.
  */
-QueueingApplicationSink::QueueingApplicationSink(TimestampedFrameQueuePtr outputQueue, QSize targetFrameSize):
+QueueingApplicationSink::QueueingApplicationSink(TimestampedFrameQueuePtr outputQueue, QSize expectedFrameSize):
      QGst::Utils::ApplicationSink(),
     m_outputQueue(outputQueue),
-    m_convertFrames(targetFrameSize.isValid()),
-    m_targetFrameSize(targetFrameSize.width(), targetFrameSize.height())
+    m_expectedFrameSize(expectedFrameSize.width(), expectedFrameSize.height())
 {
 }
 
@@ -43,19 +42,26 @@ QGst::FlowReturn QueueingApplicationSink::newBuffer()
             width = structure->value("width").get<int>();
             height = structure->value("height").get<int>();
 
-            //    qDebug() << Q_FUNC_INFO << "Sample caps:" << structure->toString();
+//            qDebug() << Q_FUNC_INFO << "Sample caps:" << structure->toString();
+
+            // check the size of the incoming frames, if it's not as expected
+            // then return an error to the pipeline
+            if (width != m_expectedFrameSize.width || height != m_expectedFrameSize.height) {
+                qDebug() << Q_FUNC_INFO << QString("Video resolution %1x%2 is not as expected %3x%4")
+                            .arg(width)
+                            .arg(height)
+                            .arg(m_expectedFrameSize.width)
+                            .arg(m_expectedFrameSize.height);
+                return QGst::FlowNotSupported;
+            }
 
             // create the image from the buffer data (it makes a pointer to the data in buffer)
             cv::Mat image(height, width, CV_8UC3, const_cast<uchar*>(buffer->data()));
 
-            // copy / resize the image to be placed in the queue (to have data in the image out of the buffer)
+            // copy the image to be placed in the queue (to have data in the image out of the buffer)
             cv::Mat frameImage(height, width, CV_8UC3);
-            // resize the image if necessary
-            if (m_convertFrames) {
-                cv::resize(image, frameImage, m_targetFrameSize, 0, 0, cv::INTER_AREA);
-            } else {
-                image.copyTo(frameImage);
-            }
+            image.copyTo(frameImage);
+
 //            buffer.clear();
             // and push it to the queue
             std::chrono::milliseconds ms = std::chrono::duration_cast<std::chrono::milliseconds>(std::chrono::system_clock::now().time_since_epoch());

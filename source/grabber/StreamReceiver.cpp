@@ -13,11 +13,12 @@
 /*!
 * Constructor.
 */
-StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, QSize targetFrameSize, TimestampedFrameQueuePtr outputQueue) :
+StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, QSize expectedFrameSize, TimestampedFrameQueuePtr outputQueue) :
     QObject(nullptr),
     m_pipelineDescription(),
-    m_sink(outputQueue, targetFrameSize),
-    m_restartOnEos(false)
+    m_sink(outputQueue, expectedFrameSize),
+    m_restartOnEos(false),
+    m_expectedFrameSize(expectedFrameSize)
 {
     switch (streamParameters.streamType()) {
         case StreamType::VIDEO_4_LINUX:
@@ -83,6 +84,10 @@ void StreamReceiver::process()
         m_pipeline = QGst::Parse::launch(m_pipelineDescription).dynamicCast<QGst::Pipeline>();
         m_sink.setElement(m_pipeline->getElementByName("queueingsink"));
         QGlib::connect(m_pipeline->bus(), "message", this, &StreamReceiver::onMessage);
+
+        // set the specific resolution on the video
+        QString capsString = QString("video/x-raw-rgb, width=%1, height=%2").arg(m_expectedFrameSize.width()).arg(m_expectedFrameSize.height());
+        m_pipeline->getElementByName("queueingsink")->setProperty("caps", QGst::Caps::fromString(capsString));
 
         m_pipeline->bus()->addSignalWatch();
         // start the pipeline

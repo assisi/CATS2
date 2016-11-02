@@ -9,6 +9,7 @@
 
 #include <QtCore/QMap>
 #include <QtCore/QObject>
+#include <QtCore/QSize>
 
 /*!
 * \brief This class manages the video stream reception from a specific source.
@@ -19,7 +20,7 @@ class StreamReceiver : public QObject
     Q_OBJECT
 public:
     //! Constructor for a typified input stream.
-    explicit StreamReceiver(StreamDescriptor parameters, QSize targetFrameSize, TimestampedFrameQueuePtr outputQueue);
+    explicit StreamReceiver(StreamDescriptor parameters, QSize expectedFrameSize, TimestampedFrameQueuePtr outputQueue);
 
     //! Destructor.
     virtual ~StreamReceiver();
@@ -53,6 +54,9 @@ private:
     //! The flag that specifies if the video stream should be restarted when
     //! an "end-of-stream" message is received.
     bool m_restartOnEos;
+
+    //! The expected image size.
+    QSize m_expectedFrameSize;
 };
 
 #endif // CATS2_STREAM_RECEIVER_H
