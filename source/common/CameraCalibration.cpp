@@ -302,7 +302,7 @@ bool CameraCalibration::readParameters(QString calibrationFileName)
         m_yInversionCoefficient = 1;
 
     bool invertX;
-    settings.readVariable(QString("invertY"), invertX, false);
+    settings.readVariable(QString("invertX"), invertX, false);
     if (invertX)
         m_xInversionCoefficient = -1;
     else
