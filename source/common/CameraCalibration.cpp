@@ -32,6 +32,15 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
         return;
     }
 
+    // check that the target size is compatible with the calibration size
+    // meaning that the target size must be a scale of the calibration size
+    m_imageScaleCoefficientX = static_cast<double>(targetFrameSize.width()) / static_cast<double>(m_calibrationFrameSize.width());
+    m_imageScaleCoefficientY = static_cast<double>(targetFrameSize.height()) / static_cast<double>(m_calibrationFrameSize.height());
+    if (! qFuzzyCompare(m_imageScaleCoefficientX, m_imageScaleCoefficientY)) {
+        qDebug() << Q_FUNC_INFO << "The requested target frame size is not compatible with the size used to generate the calibration data.";
+        return;
+    }
+
     // read the XML file
     ReadSettingsHelper settings(calibrationFileName);
 
@@ -109,8 +118,6 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
     // TODO : to add an analysis on the error to decide if the calibration succeeded
 
     // compute all the stuff that is need to make the converions
-    m_imageScaleCoefficientX = static_cast<double>(targetFrameSize.width()) / static_cast<double>(m_calibrationFrameSize.width());
-    m_imageScaleCoefficientY = static_cast<double>(targetFrameSize.height()) / static_cast<double>(m_calibrationFrameSize.height());
     m_rotationMatrixInvCameraMatrixInv = rotationMatrix.inv() * m_optimalCameraMatrix.inv();
     m_rotationMatrixInvTranslationVector = rotationMatrix.inv() * m_tvec;
 
