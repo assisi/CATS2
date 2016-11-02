@@ -74,8 +74,12 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
     m_tvec = cv::Mat::zeros(3, 1, cv::DataType<double>::type);
 
     // run the calibration on the undistorted points
-    double rms = cv::solvePnP(worldPoints, undistortedImagePoints, m_optimalCameraMatrix, cv::Mat(), m_rvec, m_tvec, true, CV_ITERATIVE);
+    double rms = cv::solvePnP(worldPoints, undistortedImagePoints, m_optimalCameraMatrix, cv::Mat(), m_rvec, m_tvec, true,  cv::SOLVEPNP_ITERATIVE);
 //    qDebug() << Q_FUNC_INFO << "Calibrarion error" << rms;
+
+    std::cout << m_rvec << std::endl;
+    std::cout << m_tvec << std::endl;
+
     // get the rotation matrix
     cv::Mat rotationMatrix(3, 3, cv::DataType<double>::type);
     cv::Rodrigues(m_rvec, rotationMatrix);
@@ -117,13 +121,14 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
         PositionMeters originalPositionMeters(m_xInversionCoefficient * worldPoints.at(i).x / 1000.,
                                               m_yInversionCoefficient * worldPoints.at(i).y / 1000.,
                                               worldPoints.at(i).z / 1000);
-        qDebug() << originalPositionMeters.toString()
-                 << projectedPositionMeters.toString()
-                 << originalPositionMeters.distance2DTo(projectedPositionMeters);
+        qDebug() << QString("%1 becomes %2, error is %3 mm")
+                    .arg(originalPositionMeters.toString())
+                    .arg(projectedPositionMeters.toString())
+                    .arg(1000 * originalPositionMeters.distance2DTo(projectedPositionMeters));
         error += originalPositionMeters.distance2DTo(projectedPositionMeters);
     }
     error /= imagePoints.size();
-    qDebug() << Q_FUNC_INFO  << QString("Average reprojection error (image->world) is %1 m").arg(error);
+    qDebug() << Q_FUNC_INFO  << QString("Average reprojection error (image->world) is %1 mm").arg(1000 * error);
 
     //return true;
     m_calibrationInitialized = true;
