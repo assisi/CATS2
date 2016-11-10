@@ -73,11 +73,11 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
     } else {
         // if the data comes from the primary source then it needs to be treated right away
         QList<AgentDataWorld> agentDataList = timestampedAgentsData.agentsData;
-        QList<AgentDataWorld> mergedAgentDataList;
         // get the new data's timestamp
         std::chrono::milliseconds timestamp = timestampedAgentsData.timestamp;
+        // the flag that defines if all data sources could be merged together
+        bool allDataMerged = true;
         // look throught data from other sources to make a merge
-        bool sendData = true;
         foreach (SetupType::Enum dataSource, m_trackingData.keys()) {
             if (dataSource != m_primaryDataSource) {
                 // we look for the data with the closest timestamp.
@@ -85,32 +85,33 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
                 if (getDataByTimestamp(timestamp, m_trackingData[dataSource], closestAgentData)) {
                     // if the data list is found than we take the agent from this list that are not
                     // yet in the final list
+                    QList<AgentDataWorld> mergedAgentDataList;
                     matchAgents(agentDataList, closestAgentData.agentsData, mergedAgentDataList);
+                    // update the agent data list with the newly merged data
+                    agentDataList = mergedAgentDataList;
                 } else {
-                    sendData = false; // i.e. we consider that all sources should contribute
-                    // TODO : this parameter should be a flat in the configuration file
+                    allDataMerged = false;
                 }
             }
         }
 
-        if (sendData) {
-            // set the type of all the agent of the undefined type to the specified type
-            for (auto& agentData : mergedAgentDataList) {
-                if (agentData.type() == AgentType::GENERIC)
-                    agentData.setType(m_typeForGenericAgents);
-            }
-
-            // send the results
-            emit notifyAgentDataWorldMerged(mergedAgentDataList);
-
-            // sends results in main setup image coordinates
-            // NOTE : this is a temporary code to share results with CATS
-            QList<AgentDataImage> agentDataListImage = convertToFrameCoordinates(SetupType::MAIN_CAMERA, mergedAgentDataList);
-            emit notifyAgentDataImageMerged(agentDataListImage);
-
-            // save the results to a file
-            m_trajectoryWriter.writeData(timestamp, mergedAgentDataList);
+        // set the type of all the agent of the undefined type to the specified type
+        for (auto& agentData : agentDataList) {
+            if (agentData.type() == AgentType::GENERIC)
+                agentData.setType(m_typeForGenericAgents);
         }
+
+        // send the results
+        emit notifyAgentDataWorldMerged(agentDataList);
+
+        // sends results in main setup image coordinates
+        // NOTE : this is a temporary code to share results with CATS
+        QList<AgentDataImage> agentDataListImage = convertToFrameCoordinates(SetupType::MAIN_CAMERA, agentDataList);
+        emit notifyAgentDataImageMerged(agentDataListImage);
+
+        // save the results to a file only if all the data could be merged
+        if (allDataMerged)
+            m_trajectoryWriter.writeData(timestamp, agentDataList);
     }
 }
 
