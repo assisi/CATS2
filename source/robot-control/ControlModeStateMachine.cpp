@@ -45,7 +45,6 @@ void ControlModeStateMachine::setControlMode(ControlModeType::Enum type)
                     .arg(ControlModeType::toString(type));
     }
 
-
     if (type != m_currentControlMode) {
         qDebug() << QString("Changing the control mode from %1 to %2 for %3")
                     .arg(ControlModeType::toString(m_currentControlMode))

@@ -105,6 +105,11 @@ QList<ControlModeType::Enum> FishBot::supportedControlModes()
 void FishBot::setControlMode(ControlModeType::Enum type)
 {
     m_controlStateMachine.setControlMode(type);
+
+    // a check for a special case - joystick controlled manual mode, only one
+    // robot can be controlled, hence other robots in manual mode switch to idle
+    if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
+        emit notifyInManualMode(m_id);
 }
 
 /*! Received positions of all tracked robots, finds and sets the one
