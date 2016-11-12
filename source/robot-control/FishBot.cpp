@@ -54,11 +54,15 @@ void FishBot::setupConnection(int robotIndex)
         if (m_robotInterface->nodeList.contains(m_name)) {
             QString scriptDirPath = QCoreApplication::applicationDirPath() + QDir::separator() + "aesl";
             QString scriptPath = scriptDirPath + QDir::separator() + m_name + ".aesl";
-            m_robotInterface->loadScript(scriptPath);
-            // set the robots id
-            Values data;
-            data.append(robotIndex);
-            m_robotInterface->setVariable(m_name, "IDControl", data);
+            if (QFileInfo(scriptPath).exists()) {
+                m_robotInterface->loadScript(scriptPath);
+                // set the robots id
+                Values data;
+                data.append(robotIndex);
+                m_robotInterface->setVariable(m_name, "IDControl", data);
+            } else {
+                qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
+            }
         }
     } else {
         qDebug() << Q_FUNC_INFO << "The robot's interface is not set";
