@@ -8,6 +8,7 @@
  */
 class Idle : public ControlMode
 {
+    Q_OBJECT
 public:
     //! Constructor.
     Idle(FishBot* robot);
