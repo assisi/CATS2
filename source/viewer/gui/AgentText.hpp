@@ -4,13 +4,13 @@
 #include <QtWidgets/QGraphicsItem>
 #include <QtCore/QString>
 
-class AgentItem : public QGraphicsItem
+class AgentText : public QGraphicsItem
 {
 public:
     enum { Type = UserType + 16 };
 
     //! Constructor.
-    AgentItem(QString text) { setLabel(text); }
+    AgentText(QString text) { setLabel(text); }
 
 public:
     //! Set label.

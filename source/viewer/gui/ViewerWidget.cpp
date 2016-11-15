@@ -2,7 +2,7 @@
 #include "ViewerWidget.hpp"
 #include "ViewerData.hpp"
 #include "FrameScene.hpp"
-#include "AgentItem.hpp"
+#include "AgentText.hpp"
 
 #include <CoordinatesConversion.hpp>
 
@@ -161,7 +161,7 @@ void ViewerWidget::adjust()
 void ViewerWidget::showAgents(QList<AgentDataWorld> agentDataList)
 {
     // first hide all the items on the scene
-    foreach (AgentItem* agentItem, m_agents.values()) {
+    foreach (AgentText* agentItem, m_agents.values()) {
         agentItem->hide();
     }
     // update the item's positions, the map itself by adding new
@@ -171,7 +171,7 @@ void ViewerWidget::showAgents(QList<AgentDataWorld> agentDataList)
         // if an item corresponding to the agent is not yet in the list
         // then add it
         if (! m_agents.contains(id)) {
-            m_agents[id] = new AgentItem(agentData.label());
+            m_agents[id] = new AgentText(agentData.label());
             m_scene->addItem(m_agents[id]);
         }
         // set the position

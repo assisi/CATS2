@@ -12,7 +12,7 @@
 class FrameScene;
 class QGraphicsPixmapItem;
 class QGraphicsTextItem;
-class AgentItem;
+class AgentText;
 
 namespace Ui
 {
@@ -89,7 +89,7 @@ protected:
     // FIXME : at the moment that agent's id is copied as it is without taking
     // into account that theoretically two agents coming from different sources
     // can have the same id.
-    QMap<QString, AgentItem*> m_agents;
+    QMap<QString, AgentText*> m_agents;
 };
 
 #endif // CATS2_VIEWER_WIDGET_HPP
