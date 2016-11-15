@@ -7,6 +7,7 @@ set(srcs
     gui/ViewerWindow.cpp
     settings/ViewerSettings.cpp
     gui/AgentText.cpp
+    gui/AgentItem.cpp
 )
 
 set(hdrs

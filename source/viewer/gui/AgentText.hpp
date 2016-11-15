@@ -4,6 +4,10 @@
 #include <QtWidgets/QGraphicsItem>
 #include <QtCore/QString>
 
+/*!
+ * This class with show on the graphics scene a label corresponding to the
+ * detected agent.
+ */
 class AgentText : public QGraphicsItem
 {
 public:
