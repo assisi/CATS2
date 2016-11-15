@@ -134,7 +134,6 @@ void Navigation::fishMotionToTargetPosition(TargetPosition* targetPostion)
 {
     double dx = targetPostion->position().x() - m_robot->state().position().x();
     double dy = targetPostion->position().y() - m_robot->state().position().y();
-
     double angleToTarget = qAtan2(dy, dx);
 
     double angleToTurn = m_robot->state().orientation().angleRad() - angleToTarget;

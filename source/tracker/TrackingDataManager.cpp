@@ -337,7 +337,7 @@ QList<AgentDataImage> TrackingDataManager::convertToFrameCoordinates(SetupType::
         // convert all agents
         foreach (AgentDataWorld agentDataWorld, mergedAgentDataList) {
             PositionPixels imagePosition = m_coordinatesConversions[setupType]->worldToImagePosition(agentDataWorld.state().position());
-            OrientationRad imageOrientation = m_coordinatesConversions[setupType]->worldToImageOrientationRad(agentDataWorld.state().position(),
+            OrientationRad imageOrientation = m_coordinatesConversions[setupType]->worldToImageOrientation(agentDataWorld.state().position(),
                                                                                                               agentDataWorld.state().orientation());
             agentsDataImageList.append(AgentDataImage(agentDataWorld.id(), agentDataWorld.type(), StateImage(imagePosition, imageOrientation)));
         }

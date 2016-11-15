@@ -32,9 +32,9 @@ public:
     PositionPixels worldToImagePosition(PositionMeters worldCoordinates) const;
 
     //! Converts the orientation from image to world.
-    OrientationRad imageToWorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientation) const;
+    OrientationRad imageToWorldOrientation(PositionPixels imageCoordinates, OrientationRad imageOrientation) const;
     //! Converts the orientation from world to image.
-    OrientationRad worldToImageOrientationRad(PositionMeters worldCoordinates, OrientationRad worldOrientation) const;
+    OrientationRad worldToImageOrientation(PositionMeters worldCoordinates, OrientationRad worldOrientation) const;
 
 private:
     //! The object that calibrates the camera and basically makes the job of coordinates conversion.

@@ -198,11 +198,11 @@ PositionPixels CameraCalibration::worldToImage(PositionMeters worldCoordinates)
 /*!
  * Converts the orientation at given position from image to world.
  */
-OrientationRad CameraCalibration::imageToWorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad)
+OrientationRad CameraCalibration::imageToWorldOrientation(PositionPixels imageCoordinates, OrientationRad imageOrientation)
 {
     double vectorLength = 50; // px, empirical constant
-    double u = imageCoordinates.x() + vectorLength * cos(imageOrientationRad.angleRad()); // a vector in  image coordinates
-    double v = imageCoordinates.y() + vectorLength * sin(imageOrientationRad.angleRad());
+    double u = imageCoordinates.x() + vectorLength * cos(imageOrientation.angleRad()); // a vector in  image coordinates
+    double v = imageCoordinates.y() + vectorLength * sin(imageOrientation.angleRad());
     PositionPixels imageEndPoint(u, v);
 
     PositionMeters worldCoordinates = imageToWorld(imageCoordinates);
@@ -215,11 +215,11 @@ OrientationRad CameraCalibration::imageToWorldOrientationRad(PositionPixels imag
 /*!
  * Converts the orientation at given position from world to image.
  */
-OrientationRad CameraCalibration::worldToImageOrientationRad(PositionMeters worldCoordinates, OrientationRad worldOrientationRad)
+OrientationRad CameraCalibration::worldToImageOrientation(PositionMeters worldCoordinates, OrientationRad worldOrientation)
 {
-    double vectorLengthMm = 100; // mm, empirical constant
-    double wx = worldCoordinates.x() * 1000 + vectorLengthMm * cos(worldOrientationRad.angleRad()); // a vector in  image coordinates
-    double wy = worldCoordinates.y() * 1000 + vectorLengthMm * sin(worldOrientationRad.angleRad());
+    double vectorLength = 0.1; // [m], empirical constant
+    double wx = worldCoordinates.x() + vectorLength * cos(worldOrientation.angleRad()); // a vector in  image coordinates
+    double wy = worldCoordinates.y() + vectorLength * sin(worldOrientation.angleRad());
 
     PositionMeters worldEndPoint(wx, wy, worldCoordinates.z());
 

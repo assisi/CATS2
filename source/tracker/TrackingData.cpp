@@ -63,7 +63,7 @@ void TrackingData::onTrackedAgents(QList<AgentDataImage> imageAgents)
             // only agents with valid positions are sent further
             if (imageAgent.state().position().isValid()) {
                 PositionMeters worldPosition = m_coordinatesConversion->imageToWorldPosition(imageAgent.state().position());
-                OrientationRad worldOrientation = m_coordinatesConversion->imageToWorldOrientationRad(imageAgent.state().position(),
+                OrientationRad worldOrientation = m_coordinatesConversion->imageToWorldOrientation(imageAgent.state().position(),
                                                                                                      imageAgent.state().orientation());
                 AgentDataWorld worldAgent(imageAgent.id(),
                                           imageAgent.type(),

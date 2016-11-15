@@ -4,8 +4,6 @@
 
 #include <opencv2/opencv.hpp>
 
-//#include <libtsai.h>
-
 #include <QtCore>
 #include <QtGui>
 #include <QtXml/QDomDocument>
@@ -38,9 +36,9 @@ public:
 
     //! Converts the orientation at given position from image to world.
     //! FIXME : this method calls imageToWorldPosition() and so it is not optimal to call both methods, need to be merged somehow.
-    OrientationRad imageToWorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad);
+    OrientationRad imageToWorldOrientation(PositionPixels imageCoordinates, OrientationRad imageOrientationRad);
     //! Converts the orientation at given position from world to image.
-    OrientationRad worldToImageOrientationRad(PositionMeters worldCoordinates, OrientationRad worldOrientationRad);
+    OrientationRad worldToImageOrientation(PositionMeters worldCoordinates, OrientationRad worldOrientationRad);
 
     bool isInitialized() const { return m_calibrationInitialized; }
 
