@@ -137,7 +137,7 @@ void Navigation::fishMotionToTargetPosition(TargetPosition* targetPostion)
 
     double angleToTarget = qAtan2(dy, dx);
 
-    double angleToTurn = m_robot->state().orientation().angle() - angleToTarget;
+    double angleToTurn = m_robot->state().orientation().angleRad() - angleToTarget;
     // normalize to [-pi;pi]
     if (angleToTarget < - M_PI)
         angleToTarget += M_PI;
@@ -158,7 +158,7 @@ void Navigation::pidControlToTargetPosition(TargetPosition* targetPostion)
     double dx = targetPostion->position().x() - m_robot->state().position().x();
     double dy = targetPostion->position().y() - m_robot->state().position().y();
 
-    double robotOrientation = m_robot->state().orientation().angle();
+    double robotOrientation = m_robot->state().orientation().angleRad();
     double robotCenteredTargetPositionX = qCos(robotOrientation) * dx - qSin(robotOrientation) * dy;
     double robotCenteredTargetPositionY = qSin(robotOrientation) * dx + qCos(robotOrientation) * dy;
 

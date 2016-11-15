@@ -159,8 +159,8 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
         cv::Point2f agentVector = contourCenters[1] - contourCenters[0]; // the agent body
         // first we try to define the correct orientation with the previous orientation
         if (robot.state().orientation().isValid()) {
-            cv::Point2f previousAgentUnitVector(qCos(robot.state().orientation().angle()),
-                                                qSin(robot.state().orientation().angle()));
+            cv::Point2f previousAgentUnitVector(qCos(robot.state().orientation().angleRad()),
+                                                qSin(robot.state().orientation().angleRad()));
             // if vectors are oppositely directed then we correct the orientation
             if (agentVector.dot(previousAgentUnitVector) < 0)
                 agentOrientation += M_PI;

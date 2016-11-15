@@ -70,7 +70,7 @@ void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp, const QLis
         if (robotData) {
             m_resultsStream << robotData->state().position().x() << "\t";
             m_resultsStream << robotData->state().position().y() << "\t";
-            m_resultsStream << robotData->state().orientation().angle() << "\t";
+            m_resultsStream << robotData->state().orientation().angleRad() << "\t";
         } else {
             m_resultsStream << "NaN\t";
             m_resultsStream << "NaN\t";
@@ -84,7 +84,7 @@ void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp, const QLis
         if (animalData) {
             m_resultsStream << animalData->state().position().x() << "\t";
             m_resultsStream << animalData->state().position().y() << "\t";
-            m_resultsStream << animalData->state().orientation().angle() << "\t";
+            m_resultsStream << animalData->state().orientation().angleRad() << "\t";
         } else {
             m_resultsStream << "NaN\t";
             m_resultsStream << "NaN\t";

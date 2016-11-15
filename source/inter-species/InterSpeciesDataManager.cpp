@@ -35,7 +35,7 @@ void InterSpeciesDataManager::publishAgentData(QList<AgentDataImage> agentDataLi
         CatsMessages::AgentData* agentDataMessage = agentDataToPublish.add_agentsdata();
         agentDataMessage->set_id(agentData.id().toStdString());
         agentDataMessage->set_type(agentTypeToString(agentData.type()));
-        agentDataMessage->mutable_state()->set_angle(agentData.state().orientation().angle());
+        agentDataMessage->mutable_state()->set_angle(agentData.state().orientation().angleRad());
         agentDataMessage->mutable_state()->set_x(agentData.state().position().x());
         agentDataMessage->mutable_state()->set_y(agentData.state().position().y());
 

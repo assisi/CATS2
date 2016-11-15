@@ -201,8 +201,8 @@ PositionPixels CameraCalibration::worldToImage(PositionMeters worldCoordinates)
 OrientationRad CameraCalibration::imageToWorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad)
 {
     double vectorLength = 50; // px, empirical constant
-    double u = imageCoordinates.x() + vectorLength * cos(imageOrientationRad.angle()); // a vector in  image coordinates
-    double v = imageCoordinates.y() + vectorLength * sin(imageOrientationRad.angle());
+    double u = imageCoordinates.x() + vectorLength * cos(imageOrientationRad.angleRad()); // a vector in  image coordinates
+    double v = imageCoordinates.y() + vectorLength * sin(imageOrientationRad.angleRad());
     PositionPixels imageEndPoint(u, v);
 
     PositionMeters worldCoordinates = imageToWorld(imageCoordinates);
@@ -218,8 +218,8 @@ OrientationRad CameraCalibration::imageToWorldOrientationRad(PositionPixels imag
 OrientationRad CameraCalibration::worldToImageOrientationRad(PositionMeters worldCoordinates, OrientationRad worldOrientationRad)
 {
     double vectorLengthMm = 100; // mm, empirical constant
-    double wx = worldCoordinates.x() * 1000 + vectorLengthMm * cos(worldOrientationRad.angle()); // a vector in  image coordinates
-    double wy = worldCoordinates.y() * 1000 + vectorLengthMm * sin(worldOrientationRad.angle());
+    double wx = worldCoordinates.x() * 1000 + vectorLengthMm * cos(worldOrientationRad.angleRad()); // a vector in  image coordinates
+    double wy = worldCoordinates.y() * 1000 + vectorLengthMm * sin(worldOrientationRad.angleRad());
 
     PositionMeters worldEndPoint(wx, wy, worldCoordinates.z());
 

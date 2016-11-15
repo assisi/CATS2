@@ -19,12 +19,14 @@ class OrientationRad
 {
 public:
     //! Constructor.
-    explicit OrientationRad(double angle = 0, bool valid = true): m_angle(angle), m_valid(valid) { }
+    explicit OrientationRad(double angleRad = 0, bool valid = true): m_angleRad(angleRad), m_valid(valid) { }
 
-    //! Sets the x coordinate.
-    void setAngle(double angle) { m_angle = angle; }
-    //! Return the x coordinate ([-pi,+pi] radians).
-    double angle() const { return m_angle; }
+    //! Sets the angle.
+    void setAngleRad(double angleRad) { m_angleRad = angleRad; }
+    //! Return the angle ([-pi,+pi] radians).
+    double angleRad() const { return m_angleRad; }
+    //! Return the angle ([-180,+180] degrees).
+    double angleDeg() const { return m_angleRad * 180 / M_PI; }
 
     //! Set the validity status.
     void setValid(bool valid) { m_valid = valid; }
@@ -33,7 +35,7 @@ public:
 
 private:
     //! The angle value.
-    double m_angle;  // [-pi,+pi] radians.
+    double m_angleRad;  // [-pi,+pi] radians.
     //! The angle validity, set to false when the angle could not be determined.
     bool m_valid;
 };

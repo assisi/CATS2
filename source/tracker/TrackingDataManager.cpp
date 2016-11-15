@@ -251,7 +251,7 @@ float TrackingDataManager::initializeCostMatrices(const QList<AgentDataWorld>& l
 
             // compute the minimal angle between two agents
             if (listOne[i1].state().orientation().isValid() && listTwo[i2].state().orientation().isValid()) {
-                angle = listOne[i1].state().orientation().angle() - listTwo[i2].state().orientation().angle();
+                angle = listOne[i1].state().orientation().angleRad() - listTwo[i2].state().orientation().angleRad();
                 // normalize to [-pi;pi]
                 if (angle < -M_PI)
                     angle += M_PI;
