@@ -37,6 +37,10 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings, Ti
         AgentDataImage agent(robotDescription.id, AgentType::FISH_CASU);
         m_agents.append(agent);
     }
+
+    // initialize the previous states
+    for (const auto& agent : m_agents)
+        m_previousStates.append(agent.state());
 }
 
 /*!
@@ -73,6 +77,11 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
         for (size_t robotIndex = 0; robotIndex < numberOfAgents; robotIndex++) {
             detectLeds(robotIndex);
         }
+
+        // copy the states for the next iteration
+        m_previousStates.clear();
+        for (const auto& agent : m_agents)
+            m_previousStates.append(agent.state());
 
         // submit the debug image
         if (m_enqueueDebugFrames) {
@@ -136,6 +145,8 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
 
     // current agent
     AgentDataImage& robot = m_agents[robotIndex];
+    // previous state
+    StateImage& previousState = m_previousStates[robotIndex];
 
     // if the size is correct then get two biggest contours
     cv::Point2f agentPosition;
@@ -157,27 +168,30 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
                                   contourCenters[1].x - contourCenters[0].x);
         // define the direction
         cv::Point2f agentVector = contourCenters[1] - contourCenters[0]; // the agent body
-        // first we try to define the correct orientation with the previous orientation
-        if (robot.state().orientation().isValid()) {
-            cv::Point2f previousAgentUnitVector(qCos(robot.state().orientation().angleRad()),
-                                                qSin(robot.state().orientation().angleRad()));
-            // if vectors are oppositely directed then we correct the orientation
-            if (agentVector.dot(previousAgentUnitVector) < 0)
-                agentOrientation += M_PI;
-            robot.mutableState()->setOrientation(agentOrientation);
-        } else if (robot.state().position().isValid()) { // otherwise we define the orientation with the displacement
-            cv::Point2f agentDisplacementVector = agentPosition - robot.state().position().toCvPoint2f(); // new postion minus previous position
+        cv::Point2f agentDisplacementVector = agentPosition - previousState.position().toCvPoint2f(); // new postion minus previous position
+        // first we define the orientation with the displacement, 0.1 px is an empirical parameter to
+        // decide that the robot moves
+         if (previousState.position().isValid() && (cv::norm(agentDisplacementVector) > 0.1)) {
             // if vectors are oppositely directed then we correct the orientation
             if (agentVector.dot(agentDisplacementVector) < 0)
                 agentOrientation += M_PI;
             robot.mutableState()->setOrientation(agentOrientation);
-        } else {
+        } // FIXME : debug this part asap
+         /*else if (previousState.orientation().isValid()) {
+            // otherwise we try to define the correct orientation with the previous orientation
+            cv::Point2f previousAgentUnitVector(qCos(previousState.orientation().angleRad()),
+                                                qSin(previousState.orientation().angleRad()));
+            // if vectors are oppositely directed then we correct the orientation
+            if (agentVector.dot(previousAgentUnitVector) < 0)
+                agentOrientation += M_PI;
+            robot.mutableState()->setOrientation(agentOrientation);
+        } */else {
             // the orientation can not be defined
             robot.mutableState()->setOrientation(agentOrientation);
             robot.mutableState()->invalidateOrientation();
         }
 
-        // set the position
+         // set the position
         robot.mutableState()->setPosition(agentPosition);
         robot.setTimestamp(m_currentTimestamp);
     } else if (contours.size() == 1){
