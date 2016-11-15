@@ -30,6 +30,8 @@ public:
 
     //! Return the robot's name.
     QString name() const { return m_name; }
+    //! Return the robot's id.
+    QString id() const { return m_id; }
 
     //! Sets the robot's interface.
     void setRobotInterface(Aseba::DBusInterfacePtr robotInterface);
@@ -81,6 +83,8 @@ signals:
     void notifyControlModeChanged(ControlModeType::Enum type);
     //! Informs that the robot's motion pattern was changed.
     void notifyMotionPatternChanged(MotionPatternType::Enum type);
+    //! Informs that the robot is in manual control mode.
+    void notifyInManualMode(QString id);
 
 public:
     //! Distance between robot's wheels.

@@ -15,6 +15,14 @@ ControlLoop::ControlLoop() :
     foreach (QString id, RobotControlSettings::get().ids()) {
         m_robots.append(FishBotPtr(new FishBot(id), &QObject::deleteLater));
         m_robots.last()->setRobotInterface(m_robotsInterface);
+        // ensure that only one robot can be in manual mode
+        connect(m_robots.last().data(), &FishBot::notifyInManualMode,
+                [=](QString id)
+                {
+                    for (auto& robot : m_robots)
+                        if ((robot->id() != id) && (robot->currentControlMode() == ControlModeType::MANUAL))
+                            robot->setControlMode(ControlModeType::IDLE);
+                });
     }
 
     // conect the robots
