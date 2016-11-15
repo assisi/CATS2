@@ -1,5 +1,5 @@
-﻿#ifndef CATS2_AGENT_ITEM_HPP
-#define CATS2_AGENT_ITEM_HPP
+﻿#ifndef CATS2_AGENT_TEXT_HPP
+#define CATS2_AGENT_TEXT_HPP
 
 #include <QtWidgets/QGraphicsItem>
 #include <QtCore/QString>
@@ -34,4 +34,4 @@ private:
     static constexpr int Size = 30;
 };
 
-#endif // CATS2_AGENT_ITEM_HPP
+#endif // CATS2_AGENT_TEXT_HPP
