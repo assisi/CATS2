@@ -145,6 +145,14 @@ public:
         return cv::Point2f(m_x, m_y);
     }
 
+    //! Returns the point rotates by theta radians.
+    PositionPixels rotated(double thetaRad, PositionPixels center) const
+    {
+        double rotated_x = (m_x - center.x()) * qCos(thetaRad) - (m_y - center.y() / 2) * qSin(thetaRad);
+        double rotated_y = (m_x - center.x()) * qSin(thetaRad) + (m_y - center.y() / 2) * qCos(thetaRad);
+        return PositionPixels(rotated_x + center.x(), rotated_y + center.y() / 2);
+    }
+
 private:
     //! Position x.
     double m_x;  // [pixels]

@@ -6,6 +6,7 @@ set(srcs
     gui/FrameScene.cpp
     gui/ViewerWindow.cpp
     settings/ViewerSettings.cpp
+    gui/AgentText.cpp
     gui/AgentItem.cpp
 )
 

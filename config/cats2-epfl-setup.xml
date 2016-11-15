@@ -64,11 +64,11 @@
                     <!-- TODO : consider moving this to the robot's specific section. -->
                     <fishBot_H>
                         <color>
-                            <r>80</r>
+                            <r>90</r>
                             <g>150</g>
-                            <b>210</b>
+                            <b>200</b>
                         </color>
-                        <threshold>25</threshold>
+                        <threshold>30</threshold>
                     </fishBot_H>
                     <fishBot_F>
                         <color>
