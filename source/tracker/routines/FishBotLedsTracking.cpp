@@ -152,21 +152,33 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
         }
         // compute the agent's position that is between two contours, and the orientation
         agentPosition = ((contourCenters[0] + contourCenters[1]) / 2);
+        // this orientation is still precise up to +180 degrees
         agentOrientation = qAtan2(contourCenters[1].y - contourCenters[0].y,
                                   contourCenters[1].x - contourCenters[0].x);
-        // check the direction
-        if (robot.state().position().isValid())
-        {
+        // define the direction
+        cv::Point2f agentVector = contourCenters[1] - contourCenters[0]; // the agent body
+        // first we try to define the correct orientation with the previous orientation
+        if (robot.state().orientation().isValid()) {
+            cv::Point2f previousAgentUnitVector(qCos(robot.state().orientation().angle()),
+                                                qSin(robot.state().orientation().angle()));
             // if vectors are oppositely directed then we correct the orientation
-            cv::Point2f agentVector = contourCenters[1] - contourCenters[0]; // the agent body
+            if (agentVector.dot(previousAgentUnitVector) < 0)
+                agentOrientation += M_PI;
+            robot.mutableState()->setOrientation(agentOrientation);
+        } else if (robot.state().position().isValid()) { // otherwise we define the orientation with the displacement
             cv::Point2f agentDisplacementVector = agentPosition - robot.state().position().toCvPoint2f(); // new postion minus previous position
+            // if vectors are oppositely directed then we correct the orientation
             if (agentVector.dot(agentDisplacementVector) < 0)
                 agentOrientation += M_PI;
+            robot.mutableState()->setOrientation(agentOrientation);
+        } else {
+            // the orientation can not be defined
+            robot.mutableState()->setOrientation(agentOrientation);
+            robot.mutableState()->invalidateOrientation();
         }
 
-        // set the position and orientation
+        // set the position
         robot.mutableState()->setPosition(agentPosition);
-        robot.mutableState()->setOrientation(agentOrientation);
         robot.setTimestamp(m_currentTimestamp);
     } else if (contours.size() == 1){
         // if only one blob is detected, then we take its position as the robot's position
@@ -175,6 +187,9 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
                                     static_cast<float>(moments.m01/moments.m00+0.5));
         robot.mutableState()->setPosition(agentPosition);
         robot.setTimestamp(m_currentTimestamp);
+    } else {
+        // TODO : add a Kalman here to avoid loosing the robot when sometimes
+        // it's hidden by other objects on the arena.
     }
 }
 
