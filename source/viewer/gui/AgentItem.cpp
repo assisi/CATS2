@@ -19,14 +19,14 @@ void AgentItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
     Q_UNUSED(widget);
 
-    QPen pen(QBrush(Qt::blue, Qt::SolidPattern), 2, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin);
+    QPen pen(QBrush(Qt::blue, Qt::SolidPattern), 1, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin);
     painter->setPen(pen);
 
     if (m_hasOrientation) {
         static const QPointF points[3] = {
-            QPointF(-Size,-Size),
-            QPointF(Size, -Size),
-            QPointF(0, 2 * Size)
+            QPointF(-Size, Size),
+            QPointF(-Size, -Size),
+            QPointF(2 * Size, 0)
         };
         painter->drawPolygon(points, 3);
     } else {
