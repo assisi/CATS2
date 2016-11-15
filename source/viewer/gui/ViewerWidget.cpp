@@ -223,7 +223,7 @@ void ViewerWidget::showAgents(QList<AgentDataWorld> agentDataList)
                 PositionPixels imagePosition = coordinatesConversion->worldToImagePosition(agentData.state().position());
                 m_agents[id]->setPos(imagePosition.x(), imagePosition.y());
 
-                OrientationRad orientation = coordinatesConversion->worldToImageOrientationRad(agentData.state().position(),
+                OrientationRad orientation = coordinatesConversion->worldToImageOrientation(agentData.state().position(),
                                                                                                agentData.state().orientation());
                 if (orientation.isValid()) {
                     m_agents[id]->setHasOrientation(true);
