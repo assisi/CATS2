@@ -206,11 +206,19 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
         if (costMatrix[i1][bestCombination[i1]] < WeightedThreshold) { // i.e. the elements are close enough
             const AgentDataWorld& agentOne = listOne.at(i1);
             const AgentDataWorld& agentTwo = listTwo.at(bestCombination[i1]);
+
             // keep the agent with the smaller type (i.e. containing more information)
-            if (agentOne.type() < agentTwo.type())
+            if (agentOne.type() < agentTwo.type()) {
                 joinedAgentsList.append(agentOne);
-            else
+                // repair the orientation if necessary
+                if (!agentOne.state().orientation().isValid() && agentTwo.state().orientation().isValid())
+                    joinedAgentsList.last().mutableState()->setOrientation(agentTwo.state().orientation());
+            } else {
                 joinedAgentsList.append(agentTwo);
+                // repair the orientation if necessary
+                if (!agentTwo.state().orientation().isValid() && agentOne.state().orientation().isValid())
+                    joinedAgentsList.last().mutableState()->setOrientation(agentOne.state().orientation());
+            }
             indecesToRemove.append(qMakePair(i1, bestCombination[i1]));
         } else {
 //            qDebug() <<  Q_FUNC_INFO << costMatrix[i1][bestCombination[i1]] << WeightedThreshold;

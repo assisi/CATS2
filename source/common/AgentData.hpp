@@ -85,6 +85,8 @@ public:
 
     //! Constant getter for the agent's state.
     const StateWorld& state() const { return m_state; }
+    //! Mutable getter for the agent's state.
+    StateWorld* mutableState() { return &m_state; }
 
 private:
     //! Agent's id.
