@@ -158,7 +158,7 @@ void MainWindow::connectPrimaryView()
 
         // connect to the tracking data manager
         connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
-                viewerWidget, &ViewerWidget::showAgents);
+                viewerWidget, &ViewerWidget::showAgentLabels);
         // connect to the robots controller
         connect(viewerWidget, &ViewerWidget::notifyRightButtonClick,
                 m_robotsHandler->contolLoop().data(), &ControlLoop::goToPosition);
@@ -183,7 +183,7 @@ void MainWindow::disconnectPrimaryView()
 
         // disconnect from the tracking data manager
         disconnect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
-                viewerWidget, &ViewerWidget::showAgents);
+                viewerWidget, &ViewerWidget::showAgentLabels);
     }
 }
 

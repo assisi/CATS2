@@ -21,6 +21,9 @@ void AgentText::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
         painter->drawText(Size, -Size / 3 - 2, m_text);
 }
 
+/*!
+ * Computes the bounding rectangle.
+ */
 QRectF AgentText::boundingRect() const
 {
     return QRectF(0, -2 * Size, Size + m_text.length() * 5.5, 2 * Size);
