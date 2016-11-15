@@ -91,11 +91,9 @@ void Navigation::sendMotorSpeed(int leftSpeed, int rightSpeed)
  */
 void Navigation::sendMotorSpeed(double angularSpeed)
 {
-    int leftSpeed = RobotControlSettings::get().defaultLinearSpeedCmSec() +
-            (angularSpeed * FishBot::InterWheelsDistanceCm) / 2.0;
-    int rightSpeed = RobotControlSettings::get().defaultLinearSpeedCmSec() -
-            (angularSpeed * FishBot::InterWheelsDistanceCm) / 2.0;
-
+    int linearSpeed = RobotControlSettings::get().defaultLinearSpeedCmSec();
+    int leftSpeed =  linearSpeed + (angularSpeed * FishBot::InterWheelsDistanceCm) / 2.0;
+    int rightSpeed = linearSpeed - (angularSpeed * FishBot::InterWheelsDistanceCm) / 2.0;
     sendMotorSpeed(leftSpeed, rightSpeed);
 }
 
@@ -158,10 +156,12 @@ void Navigation::pidControlToTargetPosition(TargetPosition* targetPostion)
     double dy = targetPostion->position().y() - m_robot->state().position().y();
 
     double robotOrientation = m_robot->state().orientation().angleRad();
-    double robotCenteredTargetPositionX = qCos(robotOrientation) * dx - qSin(robotOrientation) * dy;
-    double robotCenteredTargetPositionY = qSin(robotOrientation) * dx + qCos(robotOrientation) * dy;
+    double angleToTurn = - qAtan2(dy, dx) + robotOrientation;
 
-    double angleToTurn = qAtan2(robotCenteredTargetPositionY, robotCenteredTargetPositionX);
+// TODO : make this to work
+//    double robotCenteredTargetPositionX = qCos(robotOrientation) * dx - qSin(robotOrientation) * dy;
+//    double robotCenteredTargetPositionY = qSin(robotOrientation) * dx + qCos(robotOrientation) * dy;
+//    double angleToTurn = qAtan2(robotCenteredTargetPositionY, robotCenteredTargetPositionX);
 
     // proportional term
     double proportionalTerm = angleToTurn;
