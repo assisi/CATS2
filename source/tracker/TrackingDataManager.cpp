@@ -283,7 +283,7 @@ float TrackingDataManager::initializeCostMatrices(const QList<AgentDataWorld>& l
     for (int i = 0; i < listOne.size(); i++)
         costMatrix[i].fill(0, listTwo.size());
 
-    float angle;
+//    float angle;
     float distance;
     float maxCost = 0;
     // fill the costs matrices
@@ -292,24 +292,24 @@ float TrackingDataManager::initializeCostMatrices(const QList<AgentDataWorld>& l
             // compute the distance
             distance = listOne[i1].state().position().distanceTo(listTwo[i2].state().position());
 
-            // compute the minimal angle between two agents
-            if (listOne[i1].state().orientation().isValid() && listTwo[i2].state().orientation().isValid()) {
-                angle = listOne[i1].state().orientation().angleRad() - listTwo[i2].state().orientation().angleRad();
-                // normalize to [-pi;pi]
-                if (angle < -M_PI)
-                    angle += M_PI;
-                // map to [-pi/2;pi/2]
-                if (angle > M_PI_2)
-                    angle -= M_PI;
-                if (angle < -M_PI_2)
-                    angle += M_PI;
+//            // compute the minimal angle between two agents
+//            if (listOne[i1].state().orientation().isValid() && listTwo[i2].state().orientation().isValid()) {
+//                angle = listOne[i1].state().orientation().angleRad() - listTwo[i2].state().orientation().angleRad();
+//                // normalize to [-pi;pi]
+//                if (angle < -M_PI)
+//                    angle += M_PI;
+//                // map to [-pi/2;pi/2]
+//                if (angle > M_PI_2)
+//                    angle -= M_PI;
+//                if (angle < -M_PI_2)
+//                    angle += M_PI;
 
-                angle = qAbs(angle);
-            } else
-                angle = InvalidOrientationPenaltyRad;
+//                angle = qAbs(angle);
+//            } else
+//                angle = InvalidOrientationPenaltyRad;
 
-            costMatrix[i1][i2] = distance + OrientationWeightCoefficient * angle;
-            // increas the max cost value
+            costMatrix[i1][i2] = distance/* + OrientationWeightCoefficient * angle*/;
+            // increase the max cost value
             maxCost += costMatrix[i1][i2];
         }
     }
