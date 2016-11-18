@@ -225,13 +225,15 @@ void ViewerWidget::showAgents(QList<AgentDataWorld> agentDataList)
 
                 OrientationRad orientation = coordinatesConversion->worldToImageOrientation(agentData.state().position(),
                                                                                                agentData.state().orientation());
+                m_agents[id]->setVisible(true);
                 if (orientation.isValid()) {
                     m_agents[id]->setHasOrientation(true);
                     m_agents[id]->setRotation(orientation.angleDeg() );
                 } else {
+                    // we hide the item without known orientation to prevent unpleasant visual effects
                     m_agents[id]->setHasOrientation(false);
+                    m_agents[id]->hide();
                 }
-                m_agents[id]->setVisible(true);
             } else {
                 qDebug() << Q_FUNC_INFO << "Unable to convert agent's world position to the image position";
             }
