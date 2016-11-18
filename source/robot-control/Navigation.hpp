@@ -45,6 +45,9 @@ private:
     //! Manages the target position control.
     void setTargetPosition(TargetPosition* targetPostion);
 
+    //! Computes the turn angle based on the robot's orientation,
+    //! position and the target position.
+    double computeAngleToTurn(TargetPosition* targetPostion);
     //! Excecute fish motion pattern while going to target.
     void fishMotionToTargetPosition(TargetPosition* targetPostion);
     //! Excecutes PID while going to target.
