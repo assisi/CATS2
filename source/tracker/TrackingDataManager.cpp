@@ -59,7 +59,11 @@ void TrackingDataManager::addCoordinatesConversion(SetupType::Enum setupType, Co
 }
 
 /*!
- * New tracking results arrive.
+ * New tracking results arrive. The data from the "secondary" data source (in our
+ * case - the top camera) are placed in a queue, in the same time the data from
+ * the "primary" data source (bottom camera) are treated right away. If in the queue
+ * there are recent data from the secondary source then we try to merge them together
+ * otherwise the primary source data is sent as it is.
  */
 void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldAgentData timestampedAgentsData)
 {
@@ -204,20 +208,51 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     for (int i1 = 0; i1 < listOne.size(); i1++) {
         // analyse the winning combination to remove elements that are too far
         if (costMatrix[i1][bestCombination[i1]] < WeightedThreshold) { // i.e. the elements are close enough
-            const AgentDataWorld& agentOne = listOne.at(i1);
-            const AgentDataWorld& agentTwo = listTwo.at(bestCombination[i1]);
+            AgentDataWorld& agentOne = listOne[i1];
+            AgentDataWorld& agentTwo = listTwo[bestCombination[i1]];
+
+//            qDebug() << QString("Agent 1 : %3 orientation : %1 (validity:%2))")
+//                        .arg(agentOne.state().orientation().angleDeg())
+//                        .arg(agentOne.state().orientation().isValid())
+//                        .arg(agentOne.label());
+//            qDebug() << QString("Agent 2 : %3 orientation : %1 (validity:%2))")
+//                        .arg(agentTwo.state().orientation().angleDeg())
+//                        .arg(agentTwo.state().orientation().isValid())
+//                        .arg(agentTwo.label());
 
             // keep the agent with the smaller type (i.e. containing more information)
             if (agentOne.type() < agentTwo.type()) {
                 joinedAgentsList.append(agentOne);
                 // repair the orientation if necessary
-                if (!agentOne.state().orientation().isValid() && agentTwo.state().orientation().isValid())
-                    joinedAgentsList.last().mutableState()->setOrientation(agentTwo.state().orientation());
+                if (!agentOne.state().orientation().isValid()) {
+                    if (agentTwo.state().orientation().isValid()) {
+//                        qDebug() << QString("%1's has invalid orientation, taking the one of %2 : %3")
+//                                    .arg(agentOne.label())
+//                                    .arg(agentTwo.label())
+//                                    .arg(agentTwo.state().orientation().angleDeg());
+                        joinedAgentsList.last().mutableState()->setOrientation(agentTwo.state().orientation());
+                    } else {
+//                        qDebug() << "Both agents have invalid orientation";
+                    }
+                }
             } else {
-                joinedAgentsList.append(agentTwo);
                 // repair the orientation if necessary
-                if (!agentTwo.state().orientation().isValid() && agentOne.state().orientation().isValid())
-                    joinedAgentsList.last().mutableState()->setOrientation(agentOne.state().orientation());
+                if (!agentTwo.state().orientation().isValid()) {
+                    if (agentOne.state().orientation().isValid()) {
+                        agentTwo.mutableState()->setOrientation(agentOne.state().orientation());
+//                        qDebug() << QString("%1's has invalid orientation, taking the one of %2 : %3")
+//                                    .arg(agentTwo.label())
+//                                    .arg(agentOne.label())
+//                                    .arg(agentOne.state().orientation().angleDeg());
+                    } else {
+//                        qDebug() << "Both agents have invalid orientation";
+                    }
+                }
+                joinedAgentsList.append(agentTwo);
+//                qDebug() << QString("As a result, the orientation of %1 is %2 (validity:%3) ")
+//                            .arg(joinedAgentsList.last().label())
+//                            .arg(joinedAgentsList.last().state().orientation().angleDeg())
+//                            .arg(joinedAgentsList.last().state().orientation().isValid());
             }
             indecesToRemove.append(qMakePair(i1, bestCombination[i1]));
         } else {
