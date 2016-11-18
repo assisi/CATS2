@@ -63,7 +63,6 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
     // subract the background
     m_backgroundSubtractor.get()->apply(m_grayscaleImage, m_foregroundImage, 0.0);
 
-
     // dilate and erode directly after
     int an = 1;
     cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(an*2+1, an*2+1), cv::Point(an, an));

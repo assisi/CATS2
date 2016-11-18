@@ -25,7 +25,7 @@ public:
     //! The structure that stores the tracking parameters for one robot.
     struct FishBotDescription
     {
-        //! Initialization
+        //! Initialization.
         FishBotDescription() : id('Z'), ledColor(0,0,0), colorThreshold(100) {}
         //! The FishBot's id.
         QString id;

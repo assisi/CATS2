@@ -37,12 +37,14 @@ void ControlModeStateMachine::setControlMode(ControlModeType::Enum type)
 {
     if (!m_controlModes.contains(type)) {
         qDebug() << Q_FUNC_INFO << "Requested control mode is not available";
+        return;
     }
 
     if (!isTransitionAuthorized(type)) {
         qDebug() << Q_FUNC_INFO << QString("Impossible to change the control mode from %1 to %2")
                     .arg(ControlModeType::toString(m_currentControlMode))
                     .arg(ControlModeType::toString(type));
+        return;
     }
 
     if (type != m_currentControlMode) {
