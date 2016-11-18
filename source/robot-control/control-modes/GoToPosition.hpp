@@ -31,6 +31,8 @@ public:
 private:
     //! The target position.
     PositionMeters m_targetPosition;
+    //! A flag that defines that the robot arrived to its target.
+    bool m_atTarget;
 };
 
 #endif // CATS2_GO_TO_POSITION_HPP
