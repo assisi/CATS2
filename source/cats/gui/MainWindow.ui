@@ -124,6 +124,8 @@
     <addaction name="actionAdjustView"/>
     <addaction name="separator"/>
     <addaction name="actionSaveCurrentView"/>
+    <addaction name="separator"/>
+    <addaction name="actionShowAgents"/>
    </widget>
    <addaction name="menuView"/>
   </widget>
@@ -142,6 +144,8 @@
    <addaction name="actionAdjustView"/>
    <addaction name="separator"/>
    <addaction name="actionSaveCurrentView"/>
+   <addaction name="separator"/>
+   <addaction name="actionShowAgents"/>
   </widget>
   <action name="actionZoomIn">
    <property name="icon">
@@ -186,6 +190,18 @@
    </property>
    <property name="toolTip">
     <string>Adjusts the view to the available area</string>
+   </property>
+  </action>
+  <action name="actionShowAgents">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/resources/icons/ic_change_history_black_24dp.png</normaloff>:/resources/icons/ic_change_history_black_24dp.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show agents on the scene</string>
    </property>
   </action>
  </widget>

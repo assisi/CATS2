@@ -267,3 +267,16 @@ bool ViewerWidget::convertScenePosition(const PositionPixels& imagePosition,
     }
     return false;
 }
+
+/*!
+ * Set the flag that defines if the agents must be shown.
+ */
+void ViewerWidget::setShowAgents(bool agentsShown)
+{
+    m_agentsShown = agentsShown;
+    // hide agents if shown
+    if (!m_agentsShown) {
+        foreach (AgentItem* agentItem, m_agents.values())
+            agentItem->hide();
+    }
+}

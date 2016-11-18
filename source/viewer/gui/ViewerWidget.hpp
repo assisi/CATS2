@@ -46,7 +46,7 @@ public slots:
     //! Triggered on arrival of the new data.
     void showAgents(QList<AgentDataWorld> agentsData);
     //! Set the flag that defines if the agents must be shown.
-    void setShowAgents(bool agentsShown) { m_agentsShown = agentsShown; }
+    void setShowAgents(bool agentsShown);
 
 public slots:
     //! Zoom on the video.
