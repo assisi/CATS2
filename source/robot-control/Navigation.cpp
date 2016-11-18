@@ -157,8 +157,13 @@ void Navigation::pidControlToTargetPosition(TargetPosition* targetPostion)
 
     double robotOrientation = m_robot->state().orientation().angleRad();
     double angleToTurn = - qAtan2(dy, dx) + robotOrientation;
+    // normalize to [-pi, pi]
+    if (angleToTurn < -M_PI)
+        angleToTurn += 2 * M_PI;
+    if (angleToTurn > M_PI)
+        angleToTurn -= 2 * M_PI;
 
-// TODO : make this to work
+// FIXME : make this to work
 //    double robotCenteredTargetPositionX = qCos(robotOrientation) * dx - qSin(robotOrientation) * dy;
 //    double robotCenteredTargetPositionY = qSin(robotOrientation) * dx + qCos(robotOrientation) * dy;
 //    double angleToTurn = qAtan2(robotCenteredTargetPositionY, robotCenteredTargetPositionX);
@@ -183,6 +188,10 @@ void Navigation::pidControlToTargetPosition(TargetPosition* targetPostion)
     double angularVelocity = m_pidControllerSettings.kp() * proportionalTerm +
                              m_pidControllerSettings.ki() * integralTerm +
                              m_pidControllerSettings.kd() * derivativeTerm;
+
+//    qDebug() << QString("Need to turn %1 deg, angular velocity to set %2")
+//                .arg(angleToTurn * 180 / M_PI)
+//                .arg(angularVelocity);
 
     sendMotorSpeed(angularVelocity);
 }

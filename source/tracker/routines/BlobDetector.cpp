@@ -121,6 +121,14 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
 
     // tracking : assign the detected agents to id's
     assingIds(IdsAssignmentMethod::NAIVE_CLOSEST_NEIGHBOUR, centers, directions);
+
+//    // print
+//    for (auto& agent : m_agents)
+//        qDebug() << QString("Found %1 at %2, orientation %3 (valid:%4)")
+//                    .arg(agent.id())
+//                    .arg(agent.state().position().toString())
+//                    .arg(agent.state().orientation().angleDeg())
+//                    .arg(agent.state().orientation().isValid());
 }
 
 /*!

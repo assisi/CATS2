@@ -187,13 +187,13 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     QVector<QVector<float>> costMatrix(listOne.size());
     float maxCost = initializeCostMatrices(listOne, listTwo, costMatrix);
 
-    // TODO : uncomment to debug agent matching
-    qDebug() << Q_FUNC_INFO;
-    qDebug() << "Cost matrix" ;
-    qDebug() << "Threshold" << WeightedThreshold;
-    qDebug() << "Max cost" << maxCost;
-    for (int i = 0; i < listOne.size(); i++)
-        qDebug() << costMatrix[i];
+//    // TODO : uncomment to debug agent matching
+//    qDebug() << Q_FUNC_INFO;
+//    qDebug() << "Cost matrix" ;
+//    qDebug() << "Threshold" << WeightedThreshold;
+//    qDebug() << "Max cost" << maxCost;
+//    for (int i = 0; i < listOne.size(); i++)
+//        qDebug() << costMatrix[i];
 
     // find best match
     QVector<bool> usedIndices(listTwo.size(), false);
@@ -292,6 +292,7 @@ float TrackingDataManager::initializeCostMatrices(const QList<AgentDataWorld>& l
             // compute the distance
             distance = listOne[i1].state().position().distanceTo(listTwo[i2].state().position());
 
+// FIXME : add back and debug
 //            // compute the minimal angle between two agents
 //            if (listOne[i1].state().orientation().isValid() && listTwo[i2].state().orientation().isValid()) {
 //                angle = listOne[i1].state().orientation().angleRad() - listTwo[i2].state().orientation().angleRad();
