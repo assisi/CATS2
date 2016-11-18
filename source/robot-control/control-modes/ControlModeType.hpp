@@ -13,8 +13,24 @@ public:
         IDLE,
         MANUAL,
         GO_TO_POSITION,
-        GO_STRAIGHT
+        GO_STRAIGHT,
+        UNDEFINED
     };
+
+    //! Gets the type of the control mode from the settings' string.
+    static Enum fromSettingsString(QString modeName)
+    {
+        if (modeName.toLower() == "manual")
+            return IDLE;
+        else if (modeName.toLower() == "gotoposition")
+            return GO_TO_POSITION;
+        else if (modeName.toLower() == "gostraight")
+            return GO_STRAIGHT;
+        else if (modeName.toLower() == "idle")
+            return IDLE;
+        else
+            return UNDEFINED;
+    }
 
     //! Returns that control mode type string in human friendly format.
     static QString toString(Enum controlModeType) {
