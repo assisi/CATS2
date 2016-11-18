@@ -87,10 +87,12 @@ ControlTargetPtr ControlModeStateMachine::step()
 /*!
  * Checks if the control mode transition is authorized.
  */
-bool ControlModeStateMachine::isTransitionAuthorized(ControlModeType::Enum) const
+bool ControlModeStateMachine::isTransitionAuthorized(ControlModeType::Enum stateToTransit) const
 {
-    return true;
-    // TODO : to implement
+    if (stateToTransit != ControlModeType::UNDEFINED)
+        return true;
+    else
+        return false;
 }
 
 /*!
