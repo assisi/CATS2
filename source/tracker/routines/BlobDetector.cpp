@@ -215,7 +215,7 @@ void BlobDetector::detectContours(cv::Mat& image,
         // take only the contours that contain corners
         if (cornersInContour.size() > 0) {
             moments = cv::moments(contours[i]);
-            centers.push_back(cv::Point2f((float)(moments.m10/moments.m00+0.5),(float)(moments.m01/moments.m00+0.5)));
+            centers.push_back(cv::Point2f(static_cast<float>(moments.m10/moments.m00+0.5),static_cast<float>(moments.m01/moments.m00+0.5)));
             cornersInContours.push_back(cornersInContour);
         }
     }
@@ -224,7 +224,7 @@ void BlobDetector::detectContours(cv::Mat& image,
     // and the corresponding countours' centers
     cv::Scalar color = cv::Scalar(100, 100, 100);
     int r = 3;
-    for (int i = 0; i < cornersInContours.size(); ++i) {
+    for (unsigned int i = 0; i < cornersInContours.size(); ++i) {
         cv::circle(image, cornersInContours[i][0], r, color, -1, 8, 0);
         cv::circle(image, centers[i], r, color, -1, 8, 0);
     }

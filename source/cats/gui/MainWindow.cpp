@@ -138,7 +138,6 @@ void MainWindow::setSecondaryView(SetupType::Enum setupType)
     }
 }
 
-
 /*!
  * Connects the signals and slots of the primary view.
  */

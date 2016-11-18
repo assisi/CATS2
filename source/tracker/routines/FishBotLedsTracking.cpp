@@ -72,7 +72,7 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
 
         // detect robots
         m_settingsMutex.lock();
-        int numberOfAgents = m_settings.numberOfAgents();
+        unsigned int numberOfAgents = m_settings.numberOfAgents();
         m_settingsMutex.unlock();
         for (size_t robotIndex = 0; robotIndex < numberOfAgents; robotIndex++) {
             detectLeds(robotIndex);

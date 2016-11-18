@@ -123,7 +123,7 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
 
     // image to world error
     error = 0;
-    for (int i = 0; i < imagePoints.size(); i++) {
+    for (unsigned int i = 0; i < imagePoints.size(); i++) {
         PositionMeters projectedPositionMeters = imageToWorld(PositionPixels(imagePoints.at(i)));
         PositionMeters originalPositionMeters(m_xInversionCoefficient * worldPoints.at(i).x / 1000.,
                                               m_yInversionCoefficient * worldPoints.at(i).y / 1000.,
