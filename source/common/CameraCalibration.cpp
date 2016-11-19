@@ -123,7 +123,7 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
 
     // image to world error
     error = 0;
-    for (int i = 0; i < imagePoints.size(); i++) {
+    for (unsigned int i = 0; i < imagePoints.size(); i++) {
         PositionMeters projectedPositionMeters = imageToWorld(PositionPixels(imagePoints.at(i)));
         PositionMeters originalPositionMeters(m_xInversionCoefficient * worldPoints.at(i).x / 1000.,
                                               m_yInversionCoefficient * worldPoints.at(i).y / 1000.,
@@ -198,11 +198,11 @@ PositionPixels CameraCalibration::worldToImage(PositionMeters worldCoordinates)
 /*!
  * Converts the orientation at given position from image to world.
  */
-OrientationRad CameraCalibration::imageToWorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientationRad)
+OrientationRad CameraCalibration::imageToWorldOrientation(PositionPixels imageCoordinates, OrientationRad imageOrientation)
 {
     double vectorLength = 50; // px, empirical constant
-    double u = imageCoordinates.x() + vectorLength * cos(imageOrientationRad.angle()); // a vector in  image coordinates
-    double v = imageCoordinates.y() + vectorLength * sin(imageOrientationRad.angle());
+    double u = imageCoordinates.x() + vectorLength * cos(imageOrientation.angleRad()); // a vector in  image coordinates
+    double v = imageCoordinates.y() + vectorLength * sin(imageOrientation.angleRad());
     PositionPixels imageEndPoint(u, v);
 
     PositionMeters worldCoordinates = imageToWorld(imageCoordinates);
@@ -215,11 +215,11 @@ OrientationRad CameraCalibration::imageToWorldOrientationRad(PositionPixels imag
 /*!
  * Converts the orientation at given position from world to image.
  */
-OrientationRad CameraCalibration::worldToImageOrientationRad(PositionMeters worldCoordinates, OrientationRad worldOrientationRad)
+OrientationRad CameraCalibration::worldToImageOrientation(PositionMeters worldCoordinates, OrientationRad worldOrientation)
 {
-    double vectorLengthMm = 100; // mm, empirical constant
-    double wx = worldCoordinates.x() * 1000 + vectorLengthMm * cos(worldOrientationRad.angle()); // a vector in  image coordinates
-    double wy = worldCoordinates.y() * 1000 + vectorLengthMm * sin(worldOrientationRad.angle());
+    double vectorLength = 0.1; // [m], empirical constant
+    double wx = worldCoordinates.x() + vectorLength * cos(worldOrientation.angleRad()); // a vector in  image coordinates
+    double wy = worldCoordinates.y() + vectorLength * sin(worldOrientation.angleRad());
 
     PositionMeters worldEndPoint(wx, wy, worldCoordinates.z());
 

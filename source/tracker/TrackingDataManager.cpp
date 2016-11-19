@@ -59,7 +59,11 @@ void TrackingDataManager::addCoordinatesConversion(SetupType::Enum setupType, Co
 }
 
 /*!
- * New tracking results arrive.
+ * New tracking results arrive. The data from the "secondary" data source (in our
+ * case - the top camera) are placed in a queue, in the same time the data from
+ * the "primary" data source (bottom camera) are treated right away. If in the queue
+ * there are recent data from the secondary source then we try to merge them together
+ * otherwise the primary source data is sent as it is.
  */
 void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldAgentData timestampedAgentsData)
 {
@@ -73,11 +77,11 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
     } else {
         // if the data comes from the primary source then it needs to be treated right away
         QList<AgentDataWorld> agentDataList = timestampedAgentsData.agentsData;
-        QList<AgentDataWorld> mergedAgentDataList;
         // get the new data's timestamp
         std::chrono::milliseconds timestamp = timestampedAgentsData.timestamp;
+        // the flag that defines if all data sources could be merged together
+        bool allDataMerged = true;
         // look throught data from other sources to make a merge
-        bool sendData = true;
         foreach (SetupType::Enum dataSource, m_trackingData.keys()) {
             if (dataSource != m_primaryDataSource) {
                 // we look for the data with the closest timestamp.
@@ -85,32 +89,33 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
                 if (getDataByTimestamp(timestamp, m_trackingData[dataSource], closestAgentData)) {
                     // if the data list is found than we take the agent from this list that are not
                     // yet in the final list
+                    QList<AgentDataWorld> mergedAgentDataList;
                     matchAgents(agentDataList, closestAgentData.agentsData, mergedAgentDataList);
+                    // update the agent data list with the newly merged data
+                    agentDataList = mergedAgentDataList;
                 } else {
-                    sendData = false; // i.e. we consider that all sources should contribute
-                    // TODO : this parameter should be a flat in the configuration file
+                    allDataMerged = false;
                 }
             }
         }
 
-        if (sendData) {
-            // set the type of all the agent of the undefined type to the specified type
-            for (auto& agentData : mergedAgentDataList) {
-                if (agentData.type() == AgentType::GENERIC)
-                    agentData.setType(m_typeForGenericAgents);
-            }
-
-            // send the results
-            emit notifyAgentDataWorldMerged(mergedAgentDataList);
-
-            // sends results in main setup image coordinates
-            // NOTE : this is a temporary code to share results with CATS
-            QList<AgentDataImage> agentDataListImage = convertToFrameCoordinates(SetupType::MAIN_CAMERA, mergedAgentDataList);
-            emit notifyAgentDataImageMerged(agentDataListImage);
-
-            // save the results to a file
-            m_trajectoryWriter.writeData(timestamp, mergedAgentDataList);
+        // set the type of all the agent of the undefined type to the specified type
+        for (auto& agentData : agentDataList) {
+            if (agentData.type() == AgentType::GENERIC)
+                agentData.setType(m_typeForGenericAgents);
         }
+
+        // send the results
+        emit notifyAgentDataWorldMerged(agentDataList);
+
+        // sends results in main setup image coordinates
+        // NOTE : this is a temporary code to share results with CATS
+        QList<AgentDataImage> agentDataListImage = convertToFrameCoordinates(SetupType::MAIN_CAMERA, agentDataList);
+        emit notifyAgentDataImageMerged(agentDataListImage);
+
+        // save the results to a file only if all the data could be merged
+        if (allDataMerged)
+            m_trajectoryWriter.writeData(timestamp, agentDataList);
     }
 }
 
@@ -182,13 +187,13 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     QVector<QVector<float>> costMatrix(listOne.size());
     float maxCost = initializeCostMatrices(listOne, listTwo, costMatrix);
 
-    // TODO : uncomment to debug agent matching
-    qDebug() << Q_FUNC_INFO;
-    qDebug() << "Cost matrix" ;
-    qDebug() << "Threshold" << WeightedThreshold;
-    qDebug() << "Max cost" << maxCost;
-    for (int i = 0; i < listOne.size(); i++)
-        qDebug() << costMatrix[i];
+//    // TODO : uncomment to debug agent matching
+//    qDebug() << Q_FUNC_INFO;
+//    qDebug() << "Cost matrix" ;
+//    qDebug() << "Threshold" << WeightedThreshold;
+//    qDebug() << "Max cost" << maxCost;
+//    for (int i = 0; i < listOne.size(); i++)
+//        qDebug() << costMatrix[i];
 
     // find best match
     QVector<bool> usedIndices(listTwo.size(), false);
@@ -203,13 +208,52 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     for (int i1 = 0; i1 < listOne.size(); i1++) {
         // analyse the winning combination to remove elements that are too far
         if (costMatrix[i1][bestCombination[i1]] < WeightedThreshold) { // i.e. the elements are close enough
-            const AgentDataWorld& agentOne = listOne.at(i1);
-            const AgentDataWorld& agentTwo = listTwo.at(bestCombination[i1]);
+            AgentDataWorld& agentOne = listOne[i1];
+            AgentDataWorld& agentTwo = listTwo[bestCombination[i1]];
+
+//            qDebug() << QString("Agent 1 : %3 orientation : %1 (validity:%2))")
+//                        .arg(agentOne.state().orientation().angleDeg())
+//                        .arg(agentOne.state().orientation().isValid())
+//                        .arg(agentOne.label());
+//            qDebug() << QString("Agent 2 : %3 orientation : %1 (validity:%2))")
+//                        .arg(agentTwo.state().orientation().angleDeg())
+//                        .arg(agentTwo.state().orientation().isValid())
+//                        .arg(agentTwo.label());
+
             // keep the agent with the smaller type (i.e. containing more information)
-            if (agentOne.type() < agentTwo.type())
+            if (agentOne.type() < agentTwo.type()) {
                 joinedAgentsList.append(agentOne);
-            else
+                // repair the orientation if necessary
+                if (!agentOne.state().orientation().isValid()) {
+                    if (agentTwo.state().orientation().isValid()) {
+//                        qDebug() << QString("%1's has invalid orientation, taking the one of %2 : %3")
+//                                    .arg(agentOne.label())
+//                                    .arg(agentTwo.label())
+//                                    .arg(agentTwo.state().orientation().angleDeg());
+                        joinedAgentsList.last().mutableState()->setOrientation(agentTwo.state().orientation());
+                    } else {
+//                        qDebug() << "Both agents have invalid orientation";
+                    }
+                }
+            } else {
+                // repair the orientation if necessary
+                if (!agentTwo.state().orientation().isValid()) {
+                    if (agentOne.state().orientation().isValid()) {
+                        agentTwo.mutableState()->setOrientation(agentOne.state().orientation());
+//                        qDebug() << QString("%1's has invalid orientation, taking the one of %2 : %3")
+//                                    .arg(agentTwo.label())
+//                                    .arg(agentOne.label())
+//                                    .arg(agentOne.state().orientation().angleDeg());
+                    } else {
+//                        qDebug() << "Both agents have invalid orientation";
+                    }
+                }
                 joinedAgentsList.append(agentTwo);
+//                qDebug() << QString("As a result, the orientation of %1 is %2 (validity:%3) ")
+//                            .arg(joinedAgentsList.last().label())
+//                            .arg(joinedAgentsList.last().state().orientation().angleDeg())
+//                            .arg(joinedAgentsList.last().state().orientation().isValid());
+            }
             indecesToRemove.append(qMakePair(i1, bestCombination[i1]));
         } else {
 //            qDebug() <<  Q_FUNC_INFO << costMatrix[i1][bestCombination[i1]] << WeightedThreshold;
@@ -239,7 +283,7 @@ float TrackingDataManager::initializeCostMatrices(const QList<AgentDataWorld>& l
     for (int i = 0; i < listOne.size(); i++)
         costMatrix[i].fill(0, listTwo.size());
 
-    float angle;
+//    float angle;
     float distance;
     float maxCost = 0;
     // fill the costs matrices
@@ -248,24 +292,25 @@ float TrackingDataManager::initializeCostMatrices(const QList<AgentDataWorld>& l
             // compute the distance
             distance = listOne[i1].state().position().distanceTo(listTwo[i2].state().position());
 
-            // compute the minimal angle between two agents
-            if (listOne[i1].state().orientation().isValid() && listTwo[i2].state().orientation().isValid()) {
-                angle = listOne[i1].state().orientation().angle() - listTwo[i2].state().orientation().angle();
-                // normalize to [-pi;pi]
-                if (angle < -M_PI)
-                    angle += M_PI;
-                // map to [-pi/2;pi/2]
-                if (angle > M_PI_2)
-                    angle -= M_PI;
-                if (angle < -M_PI_2)
-                    angle += M_PI;
+// FIXME : add back and debug
+//            // compute the minimal angle between two agents
+//            if (listOne[i1].state().orientation().isValid() && listTwo[i2].state().orientation().isValid()) {
+//                angle = listOne[i1].state().orientation().angleRad() - listTwo[i2].state().orientation().angleRad();
+//                // normalize to [-pi;pi]
+//                if (angle < -M_PI)
+//                    angle += M_PI;
+//                // map to [-pi/2;pi/2]
+//                if (angle > M_PI_2)
+//                    angle -= M_PI;
+//                if (angle < -M_PI_2)
+//                    angle += M_PI;
 
-                angle = qAbs(angle);
-            } else
-                angle = InvalidOrientationPenaltyRad;
+//                angle = qAbs(angle);
+//            } else
+//                angle = InvalidOrientationPenaltyRad;
 
-            costMatrix[i1][i2] = distance + OrientationWeightCoefficient * angle;
-            // increas the max cost value
+            costMatrix[i1][i2] = distance/* + OrientationWeightCoefficient * angle*/;
+            // increase the max cost value
             maxCost += costMatrix[i1][i2];
         }
     }
@@ -328,7 +373,7 @@ QList<AgentDataImage> TrackingDataManager::convertToFrameCoordinates(SetupType::
         // convert all agents
         foreach (AgentDataWorld agentDataWorld, mergedAgentDataList) {
             PositionPixels imagePosition = m_coordinatesConversions[setupType]->worldToImagePosition(agentDataWorld.state().position());
-            OrientationRad imageOrientation = m_coordinatesConversions[setupType]->worldToImageOrientationRad(agentDataWorld.state().position(),
+            OrientationRad imageOrientation = m_coordinatesConversions[setupType]->worldToImageOrientation(agentDataWorld.state().position(),
                                                                                                               agentDataWorld.state().orientation());
             agentsDataImageList.append(AgentDataImage(agentDataWorld.id(), agentDataWorld.type(), StateImage(imagePosition, imageOrientation)));
         }

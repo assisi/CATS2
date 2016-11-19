@@ -19,12 +19,14 @@ class OrientationRad
 {
 public:
     //! Constructor.
-    explicit OrientationRad(double angle = 0, bool valid = true): m_angle(angle), m_valid(valid) { }
+    explicit OrientationRad(double angleRad = 0, bool valid = true): m_angleRad(angleRad), m_valid(valid) { }
 
-    //! Sets the x coordinate.
-    void setAngle(double angle) { m_angle = angle; }
-    //! Return the x coordinate ([-pi,+pi] radians).
-    double angle() const { return m_angle; }
+    //! Sets the angle.
+    void setAngleRad(double angleRad) { m_angleRad = angleRad; }
+    //! Return the angle ([-pi,+pi] radians).
+    double angleRad() const { return m_angleRad; }
+    //! Return the angle ([-180,+180] degrees).
+    double angleDeg() const { return m_angleRad * 180 / M_PI; }
 
     //! Set the validity status.
     void setValid(bool valid) { m_valid = valid; }
@@ -33,7 +35,7 @@ public:
 
 private:
     //! The angle value.
-    double m_angle;  // [-pi,+pi] radians.
+    double m_angleRad;  // [-pi,+pi] radians.
     //! The angle validity, set to false when the angle could not be determined.
     bool m_valid;
 };
@@ -143,6 +145,14 @@ public:
     cv::Point2f toCvPoint2f() const
     {
         return cv::Point2f(m_x, m_y);
+    }
+
+    //! Returns the point rotates by theta radians.
+    PositionPixels rotated(double thetaRad, PositionPixels center) const
+    {
+        double rotated_x = (m_x - center.x()) * qCos(thetaRad) - (m_y - center.y() / 2) * qSin(thetaRad);
+        double rotated_y = (m_x - center.x()) * qSin(thetaRad) + (m_y - center.y() / 2) * qCos(thetaRad);
+        return PositionPixels(rotated_x + center.x(), rotated_y + center.y() / 2);
     }
 
 private:

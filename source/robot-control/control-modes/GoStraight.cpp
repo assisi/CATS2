@@ -1,5 +1,6 @@
 #include "GoStraight.hpp"
 #include "ControlModeType.hpp"
+#include "settings/RobotControlSettings.hpp"
 
 /*!
  * Constructor.
@@ -14,7 +15,8 @@ GoStraight::GoStraight(FishBot* robot) : ControlMode(robot, ControlModeType::GO_
  */
 ControlTargetPtr GoStraight::step()
 {
-    return ControlTargetPtr(new TargetSpeed(Speed, Speed));
+    int linearSpeed = RobotControlSettings::get().defaultLinearSpeedCmSec();
+    return ControlTargetPtr(new TargetSpeed(linearSpeed, linearSpeed));
 }
 
 /*!

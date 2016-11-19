@@ -138,7 +138,6 @@ void MainWindow::setSecondaryView(SetupType::Enum setupType)
     }
 }
 
-
 /*!
  * Connects the signals and slots of the primary view.
  */
@@ -155,11 +154,17 @@ void MainWindow::connectPrimaryView()
         connect(m_ui->actionZoomOut, &QAction::triggered, viewerWidget, &ViewerWidget::onZoomOut);
         connect(m_ui->actionSaveCurrentView, &QAction::triggered, viewerWidget, &ViewerWidget::saveCurrentFrameToFile);
         connect(m_ui->actionAdjustView, &QAction::triggered, viewerWidget, &ViewerWidget::adjust);
+        connect(m_ui->actionShowAgents, &QAction::toggled, viewerWidget, &ViewerWidget::setShowAgents);
 
         // connect to the tracking data manager
         connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
+                viewerWidget, &ViewerWidget::showAgentLabels);
+        connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
                 viewerWidget, &ViewerWidget::showAgents);
+
         // connect to the robots controller
+        connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
+                m_robotsHandler->contolLoop().data(), &ControlLoop::onTrackingResultsReceived);
         connect(viewerWidget, &ViewerWidget::notifyRightButtonClick,
                 m_robotsHandler->contolLoop().data(), &ControlLoop::goToPosition);
     }
@@ -180,10 +185,11 @@ void MainWindow::disconnectPrimaryView()
         disconnect(m_ui->actionZoomOut, &QAction::triggered, viewerWidget, &ViewerWidget::onZoomOut);
         disconnect(m_ui->actionSaveCurrentView, &QAction::triggered, viewerWidget, &ViewerWidget::saveCurrentFrameToFile);
         disconnect(m_ui->actionAdjustView, &QAction::triggered, viewerWidget, &ViewerWidget::adjust);
+        disconnect(m_ui->actionShowAgents, &QAction::toggled, viewerWidget, &ViewerWidget::setShowAgents);
 
         // disconnect from the tracking data manager
         disconnect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
-                viewerWidget, &ViewerWidget::showAgents);
+                viewerWidget, &ViewerWidget::showAgentLabels);
     }
 }
 

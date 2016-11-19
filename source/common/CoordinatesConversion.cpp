@@ -51,11 +51,11 @@ PositionPixels CoordinatesConversion::worldToImagePosition(PositionMeters worldC
 /*!
  * Converts the orientation from image to world.
  */
-OrientationRad CoordinatesConversion::imageToWorldOrientationRad(PositionPixels imageCoordinates, OrientationRad imageOrientation) const
+OrientationRad CoordinatesConversion::imageToWorldOrientation(PositionPixels imageCoordinates, OrientationRad imageOrientation) const
 {
     OrientationRad orientation;
     if (m_cameraCalibration->isInitialized() && imageCoordinates.isValid() && imageOrientation.isValid())
-        orientation = m_cameraCalibration->imageToWorldOrientationRad(imageCoordinates, imageOrientation);
+        orientation = m_cameraCalibration->imageToWorldOrientation(imageCoordinates, imageOrientation);
     else
         orientation.setValid(false);
 
@@ -65,17 +65,16 @@ OrientationRad CoordinatesConversion::imageToWorldOrientationRad(PositionPixels 
 /*!
  * Converts the orientation from world to image.
  */
-OrientationRad CoordinatesConversion::worldToImageOrientationRad(PositionMeters worldCoordinates, OrientationRad worldOrientation) const
+OrientationRad CoordinatesConversion::worldToImageOrientation(PositionMeters worldCoordinates, OrientationRad worldOrientation) const
 {
     OrientationRad orientation;
     if (m_cameraCalibration->isInitialized() && worldCoordinates.isValid() && worldOrientation.isValid())
-        orientation = m_cameraCalibration->worldToImageOrientationRad(worldCoordinates, worldOrientation);
+        orientation = m_cameraCalibration->worldToImageOrientation(worldCoordinates, worldOrientation);
     else
         orientation.setValid(false);
 
     return orientation;
 }
-
 
 /*!
  * Returns the status of the calibration initialization.

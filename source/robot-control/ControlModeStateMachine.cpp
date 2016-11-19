@@ -5,6 +5,7 @@
 #include "control-modes/GoStraight.hpp"
 #include "control-modes/GoToPosition.hpp"
 #include "control-modes/Idle.hpp"
+#include "control-modes/Manual.hpp"
 #include "FishBot.hpp"
 
 #include <QtCore/QDebug>
@@ -19,6 +20,7 @@ ControlModeStateMachine::ControlModeStateMachine(FishBot* robot, QObject *parent
 {
     // fill the map will all control modes
     m_controlModes.insert(ControlModeType::IDLE, ControlModePtr(new Idle(m_robot), &QObject::deleteLater));
+    m_controlModes.insert(ControlModeType::MANUAL, ControlModePtr(new Manual(m_robot), &QObject::deleteLater));
     m_controlModes.insert(ControlModeType::GO_STRAIGHT, ControlModePtr(new GoStraight(m_robot), &QObject::deleteLater));
     m_controlModes.insert(ControlModeType::GO_TO_POSITION, ControlModePtr(new GoToPosition(m_robot), &QObject::deleteLater));
 
@@ -35,14 +37,15 @@ void ControlModeStateMachine::setControlMode(ControlModeType::Enum type)
 {
     if (!m_controlModes.contains(type)) {
         qDebug() << Q_FUNC_INFO << "Requested control mode is not available";
+        return;
     }
 
     if (!isTransitionAuthorized(type)) {
         qDebug() << Q_FUNC_INFO << QString("Impossible to change the control mode from %1 to %2")
                     .arg(ControlModeType::toString(m_currentControlMode))
                     .arg(ControlModeType::toString(type));
+        return;
     }
-
 
     if (type != m_currentControlMode) {
         qDebug() << QString("Changing the control mode from %1 to %2 for %3")
@@ -84,10 +87,12 @@ ControlTargetPtr ControlModeStateMachine::step()
 /*!
  * Checks if the control mode transition is authorized.
  */
-bool ControlModeStateMachine::isTransitionAuthorized(ControlModeType::Enum) const
+bool ControlModeStateMachine::isTransitionAuthorized(ControlModeType::Enum stateToTransit) const
 {
-    return true;
-    // TODO : to implement
+    if (stateToTransit != ControlModeType::UNDEFINED)
+        return true;
+    else
+        return false;
 }
 
 /*!

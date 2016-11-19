@@ -54,11 +54,15 @@ void FishBot::setupConnection(int robotIndex)
         if (m_robotInterface->nodeList.contains(m_name)) {
             QString scriptDirPath = QCoreApplication::applicationDirPath() + QDir::separator() + "aesl";
             QString scriptPath = scriptDirPath + QDir::separator() + m_name + ".aesl";
-            m_robotInterface->loadScript(scriptPath);
-            // set the robots id
-            Values data;
-            data.append(robotIndex);
-            m_robotInterface->setVariable(m_name, "IDControl", data);
+            if (QFileInfo(scriptPath).exists()) {
+                m_robotInterface->loadScript(scriptPath);
+                // set the robots id
+                Values data;
+                data.append(robotIndex);
+                m_robotInterface->setVariable(m_name, "IDControl", data);
+            } else {
+                qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
+            }
         }
     } else {
         qDebug() << Q_FUNC_INFO << "The robot's interface is not set";
@@ -101,6 +105,11 @@ QList<ControlModeType::Enum> FishBot::supportedControlModes()
 void FishBot::setControlMode(ControlModeType::Enum type)
 {
     m_controlStateMachine.setControlMode(type);
+
+    // a check for a special case - joystick controlled manual mode, only one
+    // robot can be controlled, hence other robots in manual mode switch to idle
+    if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
+        emit notifyInManualMode(m_id);
 }
 
 /*! Received positions of all tracked robots, finds and sets the one

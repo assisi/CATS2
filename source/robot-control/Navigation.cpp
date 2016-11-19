@@ -91,11 +91,9 @@ void Navigation::sendMotorSpeed(int leftSpeed, int rightSpeed)
  */
 void Navigation::sendMotorSpeed(double angularSpeed)
 {
-    int leftSpeed = RobotControlSettings::get().defaultLinearSpeedCmSec() +
-            (angularSpeed * FishBot::InterWheelsDistanceCm) / 2.0;
-    int rightSpeed = RobotControlSettings::get().defaultLinearSpeedCmSec() -
-            (angularSpeed * FishBot::InterWheelsDistanceCm) / 2.0;
-
+    int linearSpeed = RobotControlSettings::get().defaultLinearSpeedCmSec();
+    int leftSpeed =  linearSpeed + (angularSpeed * FishBot::InterWheelsDistanceCm) / 2.0;
+    int rightSpeed = linearSpeed - (angularSpeed * FishBot::InterWheelsDistanceCm) / 2.0;
     sendMotorSpeed(leftSpeed, rightSpeed);
 }
 
@@ -128,23 +126,38 @@ void Navigation::sendFishMotionParameters(int angle, int distance, int speed)
 }
 
 /*!
+ * Computes the turn angle based on the robot's orientation, position
+ * and the target position.
+ */
+double Navigation::computeAngleToTurn(TargetPosition* targetPostion)
+{
+    // FIXME : consider making calculations in the body frame
+    //    double robotCenteredTargetPositionX = qCos(robotOrientation) * dx - qSin(robotOrientation) * dy;
+    //    double robotCenteredTargetPositionY = qSin(robotOrientation) * dx + qCos(robotOrientation) * dy;
+    //    double angleToTurn = qAtan2(robotCenteredTargetPositionY, robotCenteredTargetPositionX);
+
+    double dx = targetPostion->position().x() - m_robot->state().position().x();
+    double dy = targetPostion->position().y() - m_robot->state().position().y();
+    double angleToTarget = qAtan2(dy, dx);
+    double robotOrientation = m_robot->state().orientation().angleRad();
+    double angleToTurn = robotOrientation - angleToTarget;
+    // normalize to [-pi;pi]
+    if (angleToTurn < - M_PI)
+        angleToTurn += 2 * M_PI;
+    if (angleToTurn > M_PI)
+        angleToTurn -= 2 * M_PI;
+
+    return angleToTurn;
+}
+
+/*!
  * Excecutes fish motion pattern while going to target.
  */
 void Navigation::fishMotionToTargetPosition(TargetPosition* targetPostion)
 {
-    double dx = targetPostion->position().x() - m_robot->state().position().x();
-    double dy = targetPostion->position().y() - m_robot->state().position().y();
-
-    double angleToTarget = qAtan2(dy, dx);
-
-    double angleToTurn = m_robot->state().orientation().angle() - angleToTarget;
-    // normalize to [-pi;pi]
-    if (angleToTarget < - M_PI)
-        angleToTarget += M_PI;
-    if (angleToTurn > M_PI)
-        angleToTurn -= M_PI;
-
-    sendFishMotionParameters(angleToTurn * 180 / M_PI,
+    double angleToTurn = computeAngleToTurn(targetPostion);
+    // FIXME : to check why the angle to send is negative
+    sendFishMotionParameters(- angleToTurn * 180 / M_PI,
                              m_fishMotionPatternSettings.distanceCm(), // FIXME : store this parameters somewhere in this class
                              m_fishMotionPatternSettings.speedCmSec());
 }
@@ -154,16 +167,7 @@ void Navigation::fishMotionToTargetPosition(TargetPosition* targetPostion)
  */
 void Navigation::pidControlToTargetPosition(TargetPosition* targetPostion)
 {
-    // get the target in robot centered coordinates
-    double dx = targetPostion->position().x() - m_robot->state().position().x();
-    double dy = targetPostion->position().y() - m_robot->state().position().y();
-
-    double robotOrientation = m_robot->state().orientation().angle();
-    double robotCenteredTargetPositionX = qCos(robotOrientation) * dx - qSin(robotOrientation) * dy;
-    double robotCenteredTargetPositionY = qSin(robotOrientation) * dx + qCos(robotOrientation) * dy;
-
-    double angleToTurn = qAtan2(robotCenteredTargetPositionY, robotCenteredTargetPositionX);
-
+    double angleToTurn = computeAngleToTurn(targetPostion);
     // proportional term
     double proportionalTerm = angleToTurn;
     // derivative term
@@ -180,11 +184,9 @@ void Navigation::pidControlToTargetPosition(TargetPosition* targetPostion)
         for (double error : m_errorBuffer)
             integralTerm += error;
     }
-
     double angularVelocity = m_pidControllerSettings.kp() * proportionalTerm +
                              m_pidControllerSettings.ki() * integralTerm +
                              m_pidControllerSettings.kd() * derivativeTerm;
-
     sendMotorSpeed(angularVelocity);
 }
 

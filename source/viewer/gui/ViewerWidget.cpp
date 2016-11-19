@@ -2,6 +2,7 @@
 #include "ViewerWidget.hpp"
 #include "ViewerData.hpp"
 #include "FrameScene.hpp"
+#include "AgentText.hpp"
 #include "AgentItem.hpp"
 
 #include <CoordinatesConversion.hpp>
@@ -24,7 +25,8 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     m_data(viewerData),
     m_frameSize(frameSize),
     m_uiViewer(new Ui::ViewerWidget),
-    m_averageFps(0.)
+    m_averageFps(0.),
+   m_agentsShown(false)
 {
     m_uiViewer->setupUi(this);
     // always receive mouse events
@@ -158,12 +160,51 @@ void ViewerWidget::adjust()
 /*!
  * Triggered on arrival of the new data.
  */
-void ViewerWidget::showAgents(QList<AgentDataWorld> agentDataList)
+void ViewerWidget::showAgentLabels(QList<AgentDataWorld> agentDataList)
 {
     // first hide all the items on the scene
-    foreach (AgentItem* agentItem, m_agents.values()) {
-        agentItem->hide();
+    foreach (AgentText* agentText, m_agentLabels.values())
+        agentText->hide();
+
+    // update the item's positions, the map itself by adding new
+    // items
+    foreach (AgentDataWorld agentData, agentDataList) {
+        QString id = agentData.id();
+        // if an item corresponding to the agent is not yet in the list
+        // then add it
+        if (! m_agentLabels.contains(id)) {
+            m_agentLabels[id] = new AgentText(agentData.label());
+            m_scene->addItem(m_agentLabels[id]);
+        }
+        // set the position
+        if (agentData.state().position().isValid()) {
+            // convert the position
+            CoordinatesConversionPtr coordinatesConversion = m_data->coordinatesConversion();
+            if (!coordinatesConversion.isNull()) {
+                PositionPixels imagePosition = coordinatesConversion->worldToImagePosition(agentData.state().position());
+                m_agentLabels[id]->setPos(imagePosition.x(), imagePosition.y());
+                m_agentLabels[id]->setVisible(true);
+            } else {
+                qDebug() << Q_FUNC_INFO << "Unable to convert agent's world position to the image position";
+            }
+        } else {
+            qDebug() << Q_FUNC_INFO << QString("The postion of %1 is invalid").arg(agentData.label());
+        }
     }
+}
+
+/*!
+ * Triggered on arrival of the new data.
+ */
+void ViewerWidget::showAgents(QList<AgentDataWorld> agentDataList)
+{
+    if (!m_agentsShown)
+        return;
+
+    // first hide all the items on the scene
+    foreach (AgentItem* agentItem, m_agents.values())
+        agentItem->hide();
+
     // update the item's positions, the map itself by adding new
     // items
     foreach (AgentDataWorld agentData, agentDataList) {
@@ -171,7 +212,7 @@ void ViewerWidget::showAgents(QList<AgentDataWorld> agentDataList)
         // if an item corresponding to the agent is not yet in the list
         // then add it
         if (! m_agents.contains(id)) {
-            m_agents[id] = new AgentItem(agentData.label());
+            m_agents[id] = new AgentItem();
             m_scene->addItem(m_agents[id]);
         }
         // set the position
@@ -181,7 +222,18 @@ void ViewerWidget::showAgents(QList<AgentDataWorld> agentDataList)
             if (!coordinatesConversion.isNull()) {
                 PositionPixels imagePosition = coordinatesConversion->worldToImagePosition(agentData.state().position());
                 m_agents[id]->setPos(imagePosition.x(), imagePosition.y());
+
+                OrientationRad orientation = coordinatesConversion->worldToImageOrientation(agentData.state().position(),
+                                                                                               agentData.state().orientation());
                 m_agents[id]->setVisible(true);
+                if (orientation.isValid()) {
+                    m_agents[id]->setHasOrientation(true);
+                    m_agents[id]->setRotation(orientation.angleDeg() );
+                } else {
+                    // we hide the item without known orientation to prevent unpleasant visual effects
+                    m_agents[id]->setHasOrientation(false);
+                    m_agents[id]->hide();
+                }
             } else {
                 qDebug() << Q_FUNC_INFO << "Unable to convert agent's world position to the image position";
             }
@@ -216,4 +268,17 @@ bool ViewerWidget::convertScenePosition(const PositionPixels& imagePosition,
         }
     }
     return false;
+}
+
+/*!
+ * Set the flag that defines if the agents must be shown.
+ */
+void ViewerWidget::setShowAgents(bool agentsShown)
+{
+    m_agentsShown = agentsShown;
+    // hide agents if shown
+    if (!m_agentsShown) {
+        foreach (AgentItem* agentItem, m_agents.values())
+            agentItem->hide();
+    }
 }

@@ -62,7 +62,7 @@ void ColorDetector::doTracking(const TimestampedFrame& frame)
         if ((m_maskImage.data != nullptr) && (m_blurredImage.type() == m_maskImage.type()))
             m_blurredImage = m_blurredImage & m_maskImage;
         else {
-            qDebug() << Q_FUNC_INFO << "The mask's type is not compatible with the image";
+//            qDebug() << Q_FUNC_INFO << "The mask's type is not compatible with the image";
         }
 
         int h,s,v;

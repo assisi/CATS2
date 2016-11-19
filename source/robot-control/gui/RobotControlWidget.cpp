@@ -54,6 +54,20 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
         m_ui->navigationComboBox->addItem(MotionPatternType::toString(static_cast<MotionPatternType::Enum>(type)), type);
     }
     m_ui->navigationComboBox->setCurrentText(MotionPatternType::toString(m_robot->currentMotionPattern()));
+    // set the robot's motion pattern when it is changed in the combobox
+    connect(m_ui->navigationComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            [=](int index)
+            {
+                m_robot->setMotionPattern(static_cast<MotionPatternType::Enum>(m_ui->navigationComboBox->currentData().toInt()));
+            });
+    // set the motion pattern from the robot
+    connect(m_robot.data(), &FishBot::notifyMotionPatternChanged,
+            [=](MotionPatternType::Enum type)
+            {
+                QString motionPatternString = MotionPatternType::toString(type);
+                if (m_ui->navigationComboBox->currentText() != motionPatternString)
+                    m_ui->navigationComboBox->setCurrentText(motionPatternString);
+            });
 }
 
 /*!

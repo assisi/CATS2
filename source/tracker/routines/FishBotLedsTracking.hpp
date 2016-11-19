@@ -56,6 +56,10 @@ private:
     cv::Mat m_binaryImage;
     //! The foreground image.
     cv::Mat m_foregroundImage;
+
+    //! The previous states. Used to define the orientation of the agent.
+    //! Their order corresponds to the agents' order.
+    QList<StateImage> m_previousStates;
 };
 
 #endif // CATS2_FISHBOT_LEDS_TRACKING_HPP

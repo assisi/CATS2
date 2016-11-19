@@ -12,6 +12,7 @@
 class FrameScene;
 class QGraphicsPixmapItem;
 class QGraphicsTextItem;
+class AgentText;
 class AgentItem;
 
 namespace Ui
@@ -41,7 +42,11 @@ signals:
 
 public slots:
     //! Triggered on arrival of the new data.
+    void showAgentLabels(QList<AgentDataWorld> agentsData);
+    //! Triggered on arrival of the new data.
     void showAgents(QList<AgentDataWorld> agentsData);
+    //! Set the flag that defines if the agents must be shown.
+    void setShowAgents(bool agentsShown);
 
 public slots:
     //! Zoom on the video.
@@ -84,12 +89,18 @@ protected:
     //! The average frame rate.
     double m_averageFps;
 
-    //! The agents maps, contains the agent's id's with corresponding
-    //! graphics items.
-    // FIXME : at the moment that agent's id is copied as it is without taking
+    // FIXME : at the moment the agent's id is copied as it is without taking
     // into account that theoretically two agents coming from different sources
     // can have the same id.
+    //! The map containing the agent's id's with the corresponding label
+    //!  on the scene.
+    QMap<QString, AgentText*> m_agentLabels;
+    //! The map containing the agent's id's with the corresponding object
+    //!  on the scene.
     QMap<QString, AgentItem*> m_agents;
+
+    //! The flag that defines if we show agents on the map.
+    bool m_agentsShown;
 };
 
 #endif // CATS2_VIEWER_WIDGET_HPP

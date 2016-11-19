@@ -1,20 +1,23 @@
-﻿#ifndef CATS2_AGENT_ITEM_HPP
+#ifndef CATS2_AGENT_ITEM_HPP
 #define CATS2_AGENT_ITEM_HPP
 
 #include <QtWidgets/QGraphicsItem>
-#include <QtCore/QString>
 
+/*!
+ * This class with show on the graphics scene a triangle defining the position
+ * and orientation of the detected agent.
+ */
 class AgentItem : public QGraphicsItem
 {
 public:
-    enum { Type = UserType + 16 };
+    enum { Type = UserType + 17 };
 
     //! Constructor.
-    AgentItem(QString text) { setLabel(text); }
+    AgentItem();
 
 public:
-    //! Set label.
-    void setLabel(QString text) { m_text = text; }
+    //! Set the orientation flag.
+    void setHasOrientation(bool hasOrientation) { m_hasOrientation = hasOrientation; }
     //! Returns the type of the item.
     virtual int type() const override { return Type;}
     //! Paints the contents of an item in local coordinates.
@@ -23,11 +26,10 @@ public:
     virtual QRectF boundingRect() const override;
 
 private:
-    //! The text that is shown on the item.
-    QString m_text;
-
+    //! The flag that defines if the orientation of the agent is known.
+    bool m_hasOrientation;
     //! The basic value used to draw the item.
-    static constexpr int Size = 30;
+    static constexpr int Size = 10;
 };
 
 #endif // CATS2_AGENT_ITEM_HPP

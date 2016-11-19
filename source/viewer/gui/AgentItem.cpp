@@ -2,7 +2,16 @@
 
 #include <QtGui/QPainter>
 
-// FIXME : put an order to the constants used.
+/*!
+ * Constructor.
+ */
+AgentItem::AgentItem() :
+    QGraphicsItem(),
+    m_hasOrientation(false)
+{
+
+}
+
 /*!
  * Paints the contents of an item in local coordinates.
  */
@@ -10,18 +19,26 @@ void AgentItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
     Q_UNUSED(widget);
 
-    QPointF points[3] = {QPointF(0,0), QPointF(Size, -Size / 3), QPointF(Size + m_text.length() * 5.5, -Size / 3)};
-
     QPen pen(QBrush(Qt::blue, Qt::SolidPattern), 1, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin);
     painter->setPen(pen);
-    painter->drawPolyline(points, 3);
-    painter->setFont(QFont("Times", 9, QFont::Normal));
 
-    if (!m_text.isEmpty())
-        painter->drawText(Size, -Size / 3 - 2, m_text);
+    if (m_hasOrientation) {
+        static const QPointF points[3] = {
+            QPointF(-Size, Size),
+            QPointF(-Size, -Size),
+            QPointF(2 * Size, 0)
+        };
+        painter->drawPolygon(points, 3);
+    } else {
+        painter->drawEllipse(QPointF(0, 0), Size, Size);
+    }
 }
 
+/*!
+ * Computes the bounding rectangle.
+ */
 QRectF AgentItem::boundingRect() const
 {
-    return QRectF(0, -2 * Size, Size + m_text.length() * 5.5, 2 * Size);
+    return QRectF(-2 * Size, -2 * Size, 4 * Size, 4 * Size);
 }
+
