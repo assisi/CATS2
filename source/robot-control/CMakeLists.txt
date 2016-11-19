@@ -23,6 +23,8 @@ set(srcs
     gui/RobotsWidget.cpp
     RobotsHandler.cpp
     Navigation.cpp
+    control-maps/ControlArea.cpp
+    control-maps/ControlMap.cpp
 )
 
 set(hdrs

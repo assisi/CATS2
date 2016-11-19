@@ -13,7 +13,8 @@ ControlLoop::ControlLoop() :
 {
     // create the robots
     foreach (QString id, RobotControlSettings::get().ids()) {
-        m_robots.append(FishBotPtr(new FishBot(id), &QObject::deleteLater));
+        QString controlMapPath = RobotControlSettings::get().robotSettings(id).controlMapFilePath();
+        m_robots.append(FishBotPtr(new FishBot(id, controlMapPath), &QObject::deleteLater));
         m_robots.last()->setRobotInterface(m_robotsInterface);
         // ensure that only one robot can be in manual mode
         connect(m_robots.last().data(), &FishBot::notifyInManualMode,

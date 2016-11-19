@@ -12,12 +12,14 @@
 /*!
  * Constructor.
  */
-FishBot::FishBot(QString id) :
+FishBot::FishBot(QString id, QString controlMapPath) :
     QObject(nullptr),
     m_id(id),
     m_name(QString("Fish_bot_%1").arg(m_id)),
     m_state(),
     m_robotInterface(nullptr),
+    m_useControlMap(false),
+    m_controlMap(controlMapPath),
     m_controlStateMachine(this),
     m_navigation(this)
 {
@@ -75,6 +77,8 @@ void FishBot::setupConnection(int robotIndex)
 void FishBot::stepControl()
 {
     // check the area map to see if the control mode is to be changed
+    if (m_useControlMap)
+        consultControlMap();
 
     // check the incoming events to see if the control mode is to be changed
     // due to the low-power or the obstacle-avoidance routine - THIS CAN BE DONE
@@ -162,4 +166,20 @@ bool FishBot::supportsMotionPatterns()
 void FishBot::setMotionPattern(MotionPatternType::Enum type)
 {
     m_navigation.setMotionPattern(type);
+}
+
+/*!
+ * Sets the control parameters based on the control map.
+ */
+void FishBot::consultControlMap()
+{
+    ControlMap::ControlData controlData = m_controlMap.controlDataAtPosition(m_state.position());
+    if (controlData.controlMode != ControlModeType::UNDEFINED) {
+        setControlMode(controlData.controlMode);
+
+        // if the control map is set and we can set motion patterns
+        if ((currentControlMode() == controlData.controlMode) && supportsMotionPatterns())
+            if (controlData.motionPattern != MotionPatternType::UNDEFINED)
+                setMotionPattern(controlData.motionPattern);
+    }
 }

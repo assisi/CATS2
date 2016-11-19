@@ -22,9 +22,11 @@
         <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
         <fishBot_1>
             <id>H</id>
+            <controlMapPath>/home/gribovsk/Software/CATS2/config/control-maps/test-control-map.xml</controlMapPath>
         </fishBot_1>
         <fishBot_2>
             <id>F</id>
+            <controlMap>/home/gribovsk/Software/CATS2/config/control-maps/test-control-map.xml</controlMap>
         </fishBot_2>
     </robots>
     <setups>

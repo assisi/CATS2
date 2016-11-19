@@ -6,6 +6,7 @@
 #include "control-modes/ControlTarget.hpp"
 #include "MotionPatternType.hpp"
 #include "Navigation.hpp"
+#include "control-maps/ControlMap.hpp"
 
 #include <AgentState.hpp>
 
@@ -24,7 +25,7 @@ class FishBot : public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    explicit FishBot(QString id);
+    explicit FishBot(QString id, QString controlMapPath);
     //! Destructor.
     virtual ~FishBot() final;
 
@@ -48,6 +49,9 @@ public:
     void setControlMode(ControlModeType::Enum type);
     //! Return the control mode.
     ControlModeType::Enum currentControlMode() const { return m_controlStateMachine.currentControlMode(); }
+
+    //! Sets the use-control-map flag.
+    void setUseControlMap(bool useControlMap) { m_useControlMap = useControlMap; }
 
     //! Checks that the current control modes can generate targets with
     //! different motion patterns.
@@ -91,6 +95,10 @@ public:
     static constexpr double InterWheelsDistanceCm = 1.8;
 
 private:
+    //! Sets the control parameters based on the control map.
+    void consultControlMap();
+
+private:
     //! The robot's id.
     QString m_id;
     //! The robot's name.
@@ -100,12 +108,15 @@ private:
     //! The interface to communicate with the robot. Shared by all robots.
     Aseba::DBusInterfacePtr m_robotInterface;
 
+    //! A flag that defines if the control map is used for this robot.
+    bool m_useControlMap;
+    //! The control map.
+    ControlMap m_controlMap;
     //! The control loop state machine that generates the targets for the navigation.
     ControlModeStateMachine m_controlStateMachine;
 
     //! The data of other robots.
     QList<AgentDataWorld> m_otherRobotsData;
-
     //! The states of fish.
     QList<StateWorld> m_fishStates;
 
