@@ -6,6 +6,7 @@
 #include <QtCore/QString>
 #include <QtCore/QObject>
 #include <QtCore/QtMath>
+#include <QtGui/QColor>
 
 /*
  * The position and orientation classes that define the agent's state.
@@ -242,6 +243,26 @@ private:
     PositionPixels m_positionPixels;  // [m]
     //! The orientation of the agent, with respect to the horizontal x axis.
     OrientationRad m_orientationRad;
+};
+
+//! The alias for the list of points.
+using WorldPolygon = QList<PositionMeters>;
+
+//! The structure to store polygons with the corresponding color and
+//! the label. Used to store the data to be drawn on the gui.
+struct AnnotatedPolygons {
+    //! Initialization.
+    AnnotatedPolygons()
+        : label(""),
+          color(),
+          polygons()
+    {}
+    //! The label.
+    QString label;
+    //! The color.
+    QColor color;
+    //! Polygons.
+    QList<WorldPolygon> polygons;
 };
 
 #endif // CATS2_POSITION_HPP

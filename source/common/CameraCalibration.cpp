@@ -281,7 +281,6 @@ bool CameraCalibration::readParameters(QString calibrationFileName)
 
     // read the units used for the calibration
     std::string units;
-    m_worldScaleCoefficient;
     settings.readVariable(QString("worldUnits"), units);
     if (units.empty()) {
         qDebug() << Q_FUNC_INFO << "Undefined the world units";
