@@ -81,7 +81,7 @@ bool ControlMap::deserialize(QString controlMapFileName)
         // read motion pattern
         std::string motionPatternName;
         settings.readVariable(QString("area_%1/motionPattern").arg(areaIndex), motionPatternName);
-        area.setControlMode(ControlModeType::fromSettingsString(QString::fromUtf8(motionPatternName.c_str())));
+        area.setMotionPattern(MotionPatternType::fromSettingsString(QString::fromUtf8(motionPatternName.c_str())));
 
         m_controlAreas.append(area);
     }
