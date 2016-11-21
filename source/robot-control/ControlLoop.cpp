@@ -9,7 +9,8 @@
 ControlLoop::ControlLoop() :
     QObject(nullptr),
     m_robotsInterface(new Aseba::DBusInterface(), &QObject::deleteLater),
-    m_selectedRobot()
+    m_selectedRobot(),
+    m_sendMaps(false)
 {
     // create the robots
     foreach (QString id, RobotControlSettings::get().ids()) {
@@ -24,6 +25,9 @@ ControlLoop::ControlLoop() :
                         if ((robot->id() != id) && (robot->currentControlMode() == ControlModeType::MANUAL))
                             robot->setControlMode(ControlModeType::IDLE);
                 });
+        // send the cotrol maps
+        connect(m_robots.last().data(), &FishBot::notifyControlMapsPolygons,
+                this, &ControlLoop::notifyCurrentRobotControlMapsPolygons);
     }
 
     // conect the robots
@@ -111,8 +115,12 @@ void ControlLoop::selectRobot(QString name)
 {
     for (auto& robot : m_robots) {
         if (robot->name() == name) {
-            qDebug() << Q_FUNC_INFO << name << "is selected";
-            m_selectedRobot = robot;
+            if (m_selectedRobot != robot) {
+                qDebug() << Q_FUNC_INFO << name << "is selected";
+                m_selectedRobot = robot;
+                // update the control maps
+                sendControlMaps(m_sendMaps);
+            }
             break;
         }
     }
@@ -126,5 +134,16 @@ void ControlLoop::selectRobot(QString name)
  {
      if (m_selectedRobot.data()) {
          m_selectedRobot->goToPosition(position);
+     }
+ }
+
+ /*!
+  * Asks to send control maps for the currently selected robot.
+  */
+ void ControlLoop::sendControlMaps(bool sendMaps)
+ {
+     m_sendMaps = sendMaps;
+     if (m_sendMaps && m_selectedRobot.data()) {
+         m_selectedRobot->requestControlMapsPolygons();
      }
  }

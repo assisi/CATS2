@@ -41,11 +41,11 @@ public:
 
 public slots:
     //! Requests to sends the map areas' polygons.
-    void sendMapPolygons();
+    void requestPolygons();
 
 signals:
     //! Sends the map areas' polygons.
-    void mapPolygons(QList<AnnotatedPolygons>);
+    void notifyPolygons(QList<AnnotatedPolygons>);
 
 private:
     //! Reads the control map from a file.

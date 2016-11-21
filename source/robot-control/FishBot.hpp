@@ -82,6 +82,10 @@ public:
     //! the control mode.
     void setFishStates(QList<StateWorld> fishStates);
 
+public slots:
+    //! Requests to sends the control map areas' polygons.
+    void requestControlMapsPolygons() { m_controlMap.requestPolygons(); }
+
 signals:
     //! Informs that the robot's control mode was modified.
     void notifyControlModeChanged(ControlModeType::Enum type);
@@ -89,6 +93,8 @@ signals:
     void notifyMotionPatternChanged(MotionPatternType::Enum type);
     //! Informs that the robot is in manual control mode.
     void notifyInManualMode(QString id);
+    //! Sends the control map areas' polygons.
+    void notifyControlMapsPolygons(QList<AnnotatedPolygons>);
 
 public:
     //! Distance between robot's wheels.

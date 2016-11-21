@@ -27,6 +27,7 @@ FishBot::FishBot(QString id, QString controlMapPath) :
             this, &FishBot::notifyControlModeChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternChanged,
             this, &FishBot::notifyMotionPatternChanged);
+    connect(&m_controlMap, &ControlMap::notifyPolygons, this, &FishBot::notifyControlMapsPolygons);
 }
 
 /*!

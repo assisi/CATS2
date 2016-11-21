@@ -92,10 +92,11 @@ bool ControlMap::deserialize(QString controlMapFileName)
 /*!
  * Sends the area polygons.
  */
-void ControlMap::sendMapPolygons()
+void ControlMap::requestPolygons()
 {
     QList<AnnotatedPolygons> polygons;
-    for (const auto& area : m_controlAreas)
+    for (const auto& area : m_controlAreas) {
         polygons.append(area.annotatedPolygons());
-        emit mapPolygons(polygons);
+    }
+    emit notifyPolygons(polygons);
 }
