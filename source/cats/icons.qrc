@@ -9,5 +9,6 @@
         <file>resources/icons/ic_settings_overscan_black_24dp.png</file>
         <file>resources/icons/ic_save_black_24dp.png</file>
         <file>resources/icons/ic_change_history_black_24dp.png</file>
+        <file>resources/icons/ic_dashboard_black_24dp.png</file>
     </qresource>
 </RCC>

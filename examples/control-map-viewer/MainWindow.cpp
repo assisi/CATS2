@@ -62,9 +62,9 @@ void MainWindow::openControlMap()
             m_controlMap.reset();
         // now make a new one
         m_controlMap = QSharedPointer<ControlMap>(new ControlMap(fileName));
-        connect(m_controlMap.data(), &ControlMap::mapPolygons, m_viewerHandler->widget(), &ViewerWidget::updateAreas);
+        connect(m_controlMap.data(), &ControlMap::notifyPolygons, m_viewerHandler->widget(), &ViewerWidget::updateAreas);
         m_viewerHandler->widget()->showAreas(true);
         // send out polygons to draw
-        m_controlMap->sendMapPolygons();
+        m_controlMap->requestPolygons();
     }
 }

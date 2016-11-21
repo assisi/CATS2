@@ -330,6 +330,8 @@ void ViewerWidget::updateAreas(QList<AnnotatedPolygons> polygonsToDraw)
             if (imagePolygon.size() > 0) {
                 AnnotatedPolygonItem* item = new AnnotatedPolygonItem(imagePolygon, annotatedPolygons.color, annotatedPolygons.label);
                 m_scene->addItem(item);
+                // store the polygon
+                m_polygons.append(item);
                 // need to position the item to (0,0) in order to the polygon was placed correctly
                 item->setPos(0, 0);
             }

@@ -126,6 +126,8 @@
     <addaction name="actionSaveCurrentView"/>
     <addaction name="separator"/>
     <addaction name="actionShowAgents"/>
+    <addaction name="separator"/>
+    <addaction name="actionShowControlMap"/>
    </widget>
    <addaction name="menuView"/>
   </widget>
@@ -202,6 +204,18 @@
    </property>
    <property name="text">
     <string>Show agents on the scene</string>
+   </property>
+  </action>
+  <action name="actionShowControlMap">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/resources/icons/ic_dashboard_black_24dp.png</normaloff>:/resources/icons/ic_dashboard_black_24dp.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show control map</string>
    </property>
   </action>
  </widget>
