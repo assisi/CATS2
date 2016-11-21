@@ -148,6 +148,8 @@
    <addaction name="actionSaveCurrentView"/>
    <addaction name="separator"/>
    <addaction name="actionShowAgents"/>
+   <addaction name="separator"/>
+   <addaction name="actionShowControlMap"/>
   </widget>
   <action name="actionZoomIn">
    <property name="icon">
