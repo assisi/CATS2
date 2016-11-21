@@ -56,6 +56,12 @@ public:
     void setMotionPattern(MotionPatternType::Enum type);
     //! Return the motion pattern.
     MotionPatternType::Enum currentMotionPattern() const { return m_navigation.motionPattern(); }
+    //! Sets the motion pattern frequency divider. The goal is to send commands
+    //! less often to keep the network load low.
+    void setMotionPatternFrequencyDivider(MotionPatternType::Enum type,
+                                          int frequencyDivider);
+    //! Return the motion pattern frequency divider.
+    int motionPatternFrequencyDivider(MotionPatternType::Enum type);
 
     //! Steps the control for the robot.
     void stepControl();
@@ -83,6 +89,10 @@ signals:
     void notifyControlModeChanged(ControlModeType::Enum type);
     //! Informs that the robot's motion pattern was changed.
     void notifyMotionPatternChanged(MotionPatternType::Enum type);
+    //! Informs that the value of the frequency divider of the robot's motion
+    //! pattern has been changed.
+    void notifyMotionPatternFrequencyDividerChanged(MotionPatternType::Enum type,
+                                                    int frequencyDivider);
     //! Informs that the robot is in manual control mode.
     void notifyInManualMode(QString id);
 

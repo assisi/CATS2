@@ -12,6 +12,8 @@ Navigation::Navigation(FishBot* robot):
     m_robot(robot),
     m_motionPattern(MotionPatternType::PID),
     m_fishMotionPatternSettings(RobotControlSettings::get().fishMotionPatternSettings()),
+    m_fishMotionFrequencyDivider(RobotControlSettings::get().fishMotionPatternFrequencyDivider()),
+    m_fishMotionStepCounter(0),
     m_pidControllerSettings(RobotControlSettings::get().pidControllerSettings()),
     m_dt(1. / RobotControlSettings::get().controlFrequencyHz())
 {
@@ -155,11 +157,16 @@ double Navigation::computeAngleToTurn(TargetPosition* targetPostion)
  */
 void Navigation::fishMotionToTargetPosition(TargetPosition* targetPostion)
 {
-    double angleToTurn = computeAngleToTurn(targetPostion);
-    // FIXME : to check why the angle to send is negative
-    sendFishMotionParameters(- angleToTurn * 180 / M_PI,
-                             m_fishMotionPatternSettings.distanceCm(), // FIXME : store this parameters somewhere in this class
-                             m_fishMotionPatternSettings.speedCmSec());
+    m_fishMotionStepCounter++;
+    // if we waited enough steps
+    if (m_fishMotionStepCounter >=  m_fishMotionFrequencyDivider) {
+        m_fishMotionStepCounter = 0;
+        double angleToTurn = computeAngleToTurn(targetPostion);
+        // FIXME : to check why the angle to send is negative
+        sendFishMotionParameters(- angleToTurn * 180 / M_PI,
+                                 m_fishMotionPatternSettings.distanceCm(), // FIXME : store this parameters somewhere in this class
+                                 m_fishMotionPatternSettings.speedCmSec());
+    }
 }
 
 /*!
@@ -202,7 +209,42 @@ void Navigation::setMotionPattern(MotionPatternType::Enum type)
                     .arg(m_robot->name());
 
         m_motionPattern = type;
+        // reset the steps counter
+        m_fishMotionStepCounter = 0;
 
         emit notifyMotionPatternChanged(type);
     }
 }
+
+/*!
+ * Sets the frequency divider for the fish motion pattern. At the moment this
+ * is supported for the fish motion pattern only, but it can be used for
+ * other motion patterns as well.
+ */
+void Navigation::setMotionPatternFrequencyDivider(MotionPatternType::Enum type,
+                                                  int frequencyDivider)
+{
+    if (type == MotionPatternType::FISH_MOTION) {
+        if (frequencyDivider != m_fishMotionFrequencyDivider) {
+            m_fishMotionFrequencyDivider = frequencyDivider;
+            m_fishMotionStepCounter = 0;
+            emit notifyMotionPatternFrequencyDividerChanged(MotionPatternType::FISH_MOTION,
+                                                            frequencyDivider);
+        }
+    }
+}
+
+/*!
+ * Return the frequency divider for the motion pattern.
+ */
+int Navigation::motionPatternFrequencyDivider(MotionPatternType::Enum type)
+{
+    if (type == MotionPatternType::FISH_MOTION) {
+        return m_fishMotionFrequencyDivider;
+    } else {
+        qDebug() << QString("The motion frequency divider is not supported for %1")
+                    .arg(MotionPatternType::toString(type));
+        return 1;
+    }
+}
+

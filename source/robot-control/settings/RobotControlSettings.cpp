@@ -34,6 +34,10 @@ bool RobotControlSettings::init(QString configurationFileName)
         qDebug() << Q_FUNC_INFO << "The control frequency is invalid" << m_controlFrequencyHz;
     }
 
+    // read the frequency divider for the fish motion pattern
+    settings.readVariable("robots/fishMotionPatternFrequencyDivider", m_fishMotionPatternFrequencyDivider);
+    settingsAccepted = settingsAccepted && (m_fishMotionPatternFrequencyDivider > 0);
+
     // read settings for every robot.
     for (int i = 1; i <= m_numberOfRobots; i++) {
         RobotSettings robotSettings;

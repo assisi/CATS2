@@ -117,6 +117,9 @@ public:
     int controlFrequencyHz() const { return m_controlFrequencyHz; }
     //! Gives the reference to the fish motion pattern settngs.
     const FishMotionPatternSettings& fishMotionPatternSettings() const { return m_fishMotionPatternSettings; }
+    //! Returns the frequency divider for the navigation commands
+    //! for fish motion pattern.
+    int fishMotionPatternFrequencyDivider() const { return m_fishMotionPatternFrequencyDivider; }
     //! Gives the reference to the PID controller settngs.
     const PidControllerSettings& pidControllerSettings() const { return m_pidControllerSettings; }
 
@@ -139,6 +142,8 @@ private:
     int m_numberOfRobots;
     //! The contol loop frequency.
     int m_controlFrequencyHz;
+    //! The frequency divider for the navigation commands for fish motion pattern.
+    int m_fishMotionPatternFrequencyDivider;
     //! Maps robot's id to individual robots settings.
     QMap<QString, RobotSettings> m_robotsSettings;
     //! Fish motion pattern settings; at the moment they are shared

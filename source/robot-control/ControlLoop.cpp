@@ -12,15 +12,15 @@ ControlLoop::ControlLoop() :
     m_selectedRobot()
 {
     // create the robots
-    foreach (QString id, RobotControlSettings::get().ids()) {
+    for (QString id : RobotControlSettings::get().ids()) {
         m_robots.append(FishBotPtr(new FishBot(id), &QObject::deleteLater));
         m_robots.last()->setRobotInterface(m_robotsInterface);
         // ensure that only one robot can be in manual mode
         connect(m_robots.last().data(), &FishBot::notifyInManualMode,
-                [=](QString id)
+                [=](QString senderId)
                 {
                     for (auto& robot : m_robots)
-                        if ((robot->id() != id) && (robot->currentControlMode() == ControlModeType::MANUAL))
+                        if ((robot->id() != senderId) && (robot->currentControlMode() == ControlModeType::MANUAL))
                             robot->setControlMode(ControlModeType::IDLE);
                 });
     }
