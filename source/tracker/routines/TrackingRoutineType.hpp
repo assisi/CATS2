@@ -18,7 +18,7 @@ public:
     };
 
     //! Gets the type of the tracking routine from the settings' string.
-    static TrackingRoutineType::Enum fromSettingsString(QString routineName)
+    static Enum fromSettingsString(QString routineName)
     {
         if (routineName.toLower() == "blobdetector")
             return TrackingRoutineType::BLOB_DETECTOR;

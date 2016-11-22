@@ -4,7 +4,7 @@
 #include <QtWidgets/QGraphicsItem>
 
 /*!
- * This class with show on the graphics scene a triangle defining the position
+ * This class will show on the graphics scene a triangle defining the position
  * and orientation of the detected agent.
  */
 class AgentItem : public QGraphicsItem

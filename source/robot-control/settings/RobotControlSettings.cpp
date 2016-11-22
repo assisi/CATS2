@@ -44,6 +44,11 @@ bool RobotControlSettings::init(QString configurationFileName)
         std::string id = "";
         settings.readVariable(QString("robots/fishBot_%1/id").arg(i), id, id);
         robotSettings.setId(QString::fromStdString(id));
+
+        std::string controlMapFilePath = "";
+        settings.readVariable(QString("robots/fishBot_%1/controlMapPath").arg(i), controlMapFilePath, controlMapFilePath);
+        robotSettings.setControlMapPath(QString::fromStdString(controlMapFilePath));
+
         m_robotsSettings.insert(robotSettings.id(), robotSettings);
         settingsAccepted = settingsAccepted && (id.size() > 0);
     }

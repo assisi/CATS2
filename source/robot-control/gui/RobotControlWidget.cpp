@@ -21,11 +21,13 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
     m_ui->robotNameLabel->setText(robot->name());
 
     // set the controls
-    m_ui->controlMapCheckBox->setEnabled(false); // FIXME : temporary unactive until it's implemented
     // disable controls when the map-based control is active
-    connect(m_ui->controlMapCheckBox, &QCheckBox::toggled, [=](bool checked){ m_ui->controlModeComboBox->setEnabled(!checked);
-                                                                              m_ui->navigationComboBox->setEnabled(!checked);
-                                                                              m_ui->frequencyDividerSpinBox->setEnabled(!checked);});
+    connect(m_ui->controlMapCheckBox, &QCheckBox::toggled,
+            [=](bool checked){ m_ui->controlModeComboBox->setEnabled(!checked);
+                               m_ui->navigationComboBox->setEnabled(!checked);
+                               m_ui->frequencyDividerSpinBox->setEnabled(!checked);
+                               m_robot->setUseControlMap(checked);
+                             });
 
     // set the robot's control mode when it is changed in the combobox
     connect(m_ui->controlModeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),

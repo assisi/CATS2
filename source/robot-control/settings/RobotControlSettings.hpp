@@ -12,14 +12,22 @@ class RobotSettings
 public:
     //! Constructor.
     explicit RobotSettings() { }
+
     //! Sets id.
     void setId(QString id) { m_id = id; }
     //! Return id.
     QString id() const { return m_id; }
 
+    //! Sets control map file path.
+    void setControlMapPath(QString controlMapPath) { m_controlMapPath = controlMapPath; }
+    //! Return control map file path.
+    QString controlMapFilePath() const { return m_controlMapPath; }
+
 private:
     //! Robot's id.
     QString m_id;
+    //! Control map file path.
+    QString m_controlMapPath;
 };
 
 /*!
@@ -153,13 +161,6 @@ private:
     PidControllerSettings m_pidControllerSettings;
     //! Default linear speed of the robot.
     int m_defaultLinearSpeedCmSec;
-    // TODO : this class must keep the following data
-    // (*) number of agents
-    // (*) id of every agent
-    // (*) LED colour of every agent
-    // (*) parameters of control modes and of the navigation system
-    // (*) the control map files
-
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP

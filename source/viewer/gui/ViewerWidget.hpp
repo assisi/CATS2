@@ -14,6 +14,7 @@ class QGraphicsPixmapItem;
 class QGraphicsTextItem;
 class AgentText;
 class AgentItem;
+class AnnotatedPolygonItem;
 
 namespace Ui
 {
@@ -42,11 +43,15 @@ signals:
 
 public slots:
     //! Triggered on arrival of the new data.
-    void showAgentLabels(QList<AgentDataWorld> agentsData);
+    void updateAgentLabels(QList<AgentDataWorld> agentsData);
     //! Triggered on arrival of the new data.
-    void showAgents(QList<AgentDataWorld> agentsData);
+    void updateAgents(QList<AgentDataWorld> agentsData);
     //! Set the flag that defines if the agents must be shown.
     void setShowAgents(bool agentsShown);
+    //! Request to update areas on the scene.
+    void updateAreas(QList<AnnotatedPolygons>);
+    //! Set the flag that defines if the areas must be shown.
+    void showAreas(bool areasShown);
 
 public slots:
     //! Zoom on the video.
@@ -69,9 +74,12 @@ protected slots:
 protected:
     //! Computes new average frame rate value as exponential moving average.
     void updateFrameRate(int fps);
-    //! Converts the scene position to PositionPixels and PositionMeters.
+    //! Converts the scene position from PositionPixels to PositionMeters.
     bool convertScenePosition(const PositionPixels& imagePosition,
                               PositionMeters& worldPosition);
+    //! Converts the world position from PositionMeters to PositionPixels.
+    bool convertWorldPosition(const PositionMeters& worldPosition,
+                              PositionPixels& imagePosition);
 
 protected:
     //! The data object that provides the frames and agent's positions to show.
@@ -98,9 +106,13 @@ protected:
     //! The map containing the agent's id's with the corresponding object
     //!  on the scene.
     QMap<QString, AgentItem*> m_agents;
+    //! The polygons depicting various areas of the experimental setup.
+    QList<AnnotatedPolygonItem*> m_polygons;
 
     //! The flag that defines if we show agents on the map.
     bool m_agentsShown;
+    //! The flage that defines if the areas to be shown on the map.
+    bool m_areasShown;
 };
 
 #endif // CATS2_VIEWER_WIDGET_HPP

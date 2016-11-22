@@ -21,7 +21,6 @@ ViewerWindow::ViewerWindow(SetupType::Enum setupType,
     m_ui(new Ui::ViewerWindow)
 {
     m_ui->setupUi(this);
-//	setWindowIcon(QIcon(":/images/mobots_logo.png"));
 
     // and the viewer handler
     m_viewerHandler = ViewerHandlerPtr(new ViewerHandler(setupType, queuePtr, coordinatesConversion), &QObject::deleteLater);

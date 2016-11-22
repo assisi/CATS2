@@ -8,6 +8,7 @@ set(srcs
     settings/ViewerSettings.cpp
     gui/AgentText.cpp
     gui/AgentItem.cpp
+    gui/AnnotatedPolygonItem.cpp
 )
 
 set(hdrs

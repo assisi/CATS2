@@ -4,6 +4,7 @@
 #include "FrameScene.hpp"
 #include "AgentText.hpp"
 #include "AgentItem.hpp"
+#include "AnnotatedPolygonItem.hpp"
 
 #include <CoordinatesConversion.hpp>
 
@@ -26,7 +27,8 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     m_frameSize(frameSize),
     m_uiViewer(new Ui::ViewerWidget),
     m_averageFps(0.),
-   m_agentsShown(false)
+    m_agentsShown(false),
+    m_areasShown(false)
 {
     m_uiViewer->setupUi(this);
     // always receive mouse events
@@ -160,7 +162,7 @@ void ViewerWidget::adjust()
 /*!
  * Triggered on arrival of the new data.
  */
-void ViewerWidget::showAgentLabels(QList<AgentDataWorld> agentDataList)
+void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
 {
     // first hide all the items on the scene
     foreach (AgentText* agentText, m_agentLabels.values())
@@ -196,7 +198,7 @@ void ViewerWidget::showAgentLabels(QList<AgentDataWorld> agentDataList)
 /*!
  * Triggered on arrival of the new data.
  */
-void ViewerWidget::showAgents(QList<AgentDataWorld> agentDataList)
+void ViewerWidget::updateAgents(QList<AgentDataWorld> agentDataList)
 {
     if (!m_agentsShown)
         return;
@@ -271,14 +273,79 @@ bool ViewerWidget::convertScenePosition(const PositionPixels& imagePosition,
 }
 
 /*!
+ * Converts the scene position to PositionPixels and PositionMeters.
+ */
+bool ViewerWidget::convertWorldPosition(const PositionMeters& worldPosition,
+                                             PositionPixels& imagePosition)
+{
+    if (!m_data.isNull()) {
+        CoordinatesConversionPtr coordinatesConversion = m_data->coordinatesConversion();
+        if (!coordinatesConversion.isNull()){
+            imagePosition = coordinatesConversion->worldToImagePosition(worldPosition);
+            return true;
+        }
+    }
+    return false;
+}
+
+/*!
  * Set the flag that defines if the agents must be shown.
  */
 void ViewerWidget::setShowAgents(bool agentsShown)
 {
     m_agentsShown = agentsShown;
     // hide agents if shown
-    if (!m_agentsShown) {
-        foreach (AgentItem* agentItem, m_agents.values())
-            agentItem->hide();
+    foreach (AgentItem* agentItem, m_agents.values())
+        agentItem->setVisible(m_agentsShown);
+}
+
+/*!
+ * Request to update areas on the scene.
+ */
+void ViewerWidget::updateAreas(QList<AnnotatedPolygons> polygonsToDraw)
+{
+    // first remove previous polygons
+    for (AnnotatedPolygonItem* polygonItem : m_polygons) {
+        m_scene->removeItem(polygonItem);
+        delete polygonItem;
     }
+    m_polygons.clear();
+
+    // add new items
+    for (AnnotatedPolygons annotatedPolygons : polygonsToDraw) {
+        for (WorldPolygon worldPolygon : annotatedPolygons.polygons) {
+            // convert points
+            QPolygonF imagePolygon;
+            for (PositionMeters worldPosition : worldPolygon) {
+                PositionPixels imagePosition;
+                if (convertWorldPosition(worldPosition, imagePosition) && imagePosition.isValid()) {
+                    imagePolygon.append(QPointF(imagePosition.x(), imagePosition.y()));
+                } else {
+                    qDebug() << Q_FUNC_INFO << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
+                    imagePolygon.clear();
+                    break;
+                }
+            }
+            // draw the polygon
+            if (imagePolygon.size() > 0) {
+                AnnotatedPolygonItem* item = new AnnotatedPolygonItem(imagePolygon, annotatedPolygons.color, annotatedPolygons.label);
+                m_scene->addItem(item);
+                // store the polygon
+                m_polygons.append(item);
+                // need to position the item to (0,0) in order to the polygon was placed correctly
+                item->setPos(0, 0);
+            }
+        }
+    }
+}
+
+/*!
+ * Set the flag that defines if the areas must be shown.
+ */
+void ViewerWidget::showAreas(bool areasShown)
+{
+    m_areasShown = areasShown;
+    // hide agents if shown
+    for (auto& item : m_polygons)
+        item->setVisible(m_areasShown);
 }

@@ -21,7 +21,7 @@ public:
     static Enum fromSettingsString(QString modeName)
     {
         if (modeName.toLower() == "manual")
-            return IDLE;
+            return MANUAL;
         else if (modeName.toLower() == "gotoposition")
             return GO_TO_POSITION;
         else if (modeName.toLower() == "gostraight")
