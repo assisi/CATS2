@@ -8,8 +8,7 @@
  */
 GoToPosition::GoToPosition(FishBot* robot) :
     ControlMode(robot, ControlModeType::GO_TO_POSITION),
-    m_targetPosition(0, 0, 0, false), // set the target invalid
-    m_atTarget(false)
+    m_targetPosition(0, 0, 0, false) // set the target invalid
 {
 }
 
@@ -18,26 +17,6 @@ GoToPosition::GoToPosition(FishBot* robot) :
  */
 ControlTargetPtr GoToPosition::step()
 {
-    // if already at the target position then do nothing
-    if (m_atTarget) {
-        return ControlTargetPtr(new TargetSpeed(0.0, 0.0));
-    }
-    // if robot's position is invalid or the target position is invald then
-    // don't move
-    if ((!m_robot->state().position().isValid()) || (!m_targetPosition.isValid())) {
-        qDebug() << Q_FUNC_INFO << m_robot->name() << "Invalid robot's and/or target position, not moving";
-        // send a command to stop
-        return ControlTargetPtr(new TargetSpeed(0.0, 0.0));
-    }
-    // otherwise we decide if to go to the target or if we are already there
-    if (m_robot->state().position().distanceTo(m_targetPosition) < TargetReachedDistanceThresholdM) {
-        m_atTarget = true;
-        qDebug() << Q_FUNC_INFO << m_robot->name() << "Arrived to the target, stopping";
-        // send a stop command
-        return ControlTargetPtr(new TargetSpeed(0.0, 0.0));
-    }
-
-    // otherwise continue advancing
     return ControlTargetPtr(new TargetPosition(m_targetPosition));
 }
 
@@ -47,7 +26,6 @@ ControlTargetPtr GoToPosition::step()
 void GoToPosition::setTargetPosition(PositionMeters position)
 {
     m_targetPosition = position;
-    m_atTarget = false;
     qDebug() << Q_FUNC_INFO << m_robot->name() << "got new target position" << position.toString();
 }
 

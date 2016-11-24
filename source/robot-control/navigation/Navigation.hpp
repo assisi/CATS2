@@ -3,7 +3,10 @@
 
 #include "RobotControlPointerTypes.hpp"
 #include "MotionPatternType.hpp"
+#include "PathPlanner.hpp"
 #include "settings/RobotControlSettings.hpp"
+
+#include <AgentState.hpp>
 
 #include <QtCore/QObject>
 #include <QtCore/QQueue>
@@ -47,11 +50,11 @@ private:
 
     //! Computes the turn angle based on the robot's orientation,
     //! position and the target position.
-    double computeAngleToTurn(TargetPosition* targetPostion);
+    double computeAngleToTurn(PositionMeters position);
     //! Excecute fish motion pattern while going to target.
-    void fishMotionToTargetPosition(TargetPosition* targetPostion);
+    void fishMotionToPosition(PositionMeters position);
     //! Excecutes PID while going to target.
-    void pidControlToTargetPosition(TargetPosition* targetPostion);
+    void pidControlToPosition(PositionMeters position);
 
     //! Sends the motor speed to the robot.
     void sendMotorSpeed(int leftSpeed, int rightSpeed);
@@ -67,6 +70,9 @@ private:
     //! The motion pattern used to control the robot.
     MotionPatternType::Enum m_motionPattern;
 
+    //! The path planner to the target position.
+    PathPlanner m_pathPlanner;
+
     //! Local copy of fish motion pattern settings.
     FishMotionPatternSettings m_fishMotionPatternSettings;
     //! Local copy of PID controller settings.
@@ -77,6 +83,7 @@ private:
     QQueue<double> m_errorBuffer;
     //! The number of errors to keep.
     const int ErrorBufferDepth = 5;
+
     //! The control loop duration.
     double m_dt;
 };

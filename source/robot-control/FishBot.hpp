@@ -5,7 +5,7 @@
 #include "ControlModeStateMachine.hpp"
 #include "control-modes/ControlTarget.hpp"
 #include "MotionPatternType.hpp"
-#include "Navigation.hpp"
+#include "navigation/Navigation.hpp"
 #include "control-maps/ControlMap.hpp"
 
 #include <AgentState.hpp>

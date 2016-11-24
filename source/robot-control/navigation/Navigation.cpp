@@ -11,6 +11,7 @@ Navigation::Navigation(FishBot* robot):
     QObject(nullptr),
     m_robot(robot),
     m_motionPattern(MotionPatternType::PID),
+    m_pathPlanner(),
     m_fishMotionPatternSettings(RobotControlSettings::get().fishMotionPatternSettings()),
     m_pidControllerSettings(RobotControlSettings::get().pidControllerSettings()),
     m_dt(1. / RobotControlSettings::get().controlFrequencyHz())
@@ -53,18 +54,28 @@ void Navigation::setTargetSpeed(TargetSpeed* targetSpeed)
 }
 
 /*!
- * Manages the target position control.
+ * Manages the target position control. Receives a goal, runs a path planning
+ * if necessary to generate collisions free intermediate goals and navigates
+ * between these goals.
  */
 void Navigation::setTargetPosition(TargetPosition* targetPostion)
 {
-    switch (m_motionPattern) {
-    case MotionPatternType::FISH_MOTION:
-        fishMotionToTargetPosition(targetPostion);
-        break;
-    case MotionPatternType::PID:
-    default:
-        pidControlToTargetPosition(targetPostion);
-        break;
+    if (m_robot->state().position().isValid() && targetPostion->position().isValid()) {
+        PositionMeters currentWaypoint = m_pathPlanner.currentWaypoint(m_robot->state().position(),
+                                                                       targetPostion->position());
+        switch (m_motionPattern) {
+            case MotionPatternType::FISH_MOTION:
+                fishMotionToPosition(currentWaypoint);
+                break;
+            case MotionPatternType::PID:
+            default:
+                pidControlToPosition(currentWaypoint);
+                break;
+        }
+    } else {
+        qDebug() << Q_FUNC_INFO << "Invalid robot or target position, stopping";
+        // we stop
+        sendMotorSpeed(0, 0);
     }
 }
 
@@ -129,15 +140,15 @@ void Navigation::sendFishMotionParameters(int angle, int distance, int speed)
  * Computes the turn angle based on the robot's orientation, position
  * and the target position.
  */
-double Navigation::computeAngleToTurn(TargetPosition* targetPostion)
+double Navigation::computeAngleToTurn(PositionMeters position)
 {
     // FIXME : consider making calculations in the body frame
     //    double robotCenteredTargetPositionX = qCos(robotOrientation) * dx - qSin(robotOrientation) * dy;
     //    double robotCenteredTargetPositionY = qSin(robotOrientation) * dx + qCos(robotOrientation) * dy;
     //    double angleToTurn = qAtan2(robotCenteredTargetPositionY, robotCenteredTargetPositionX);
 
-    double dx = targetPostion->position().x() - m_robot->state().position().x();
-    double dy = targetPostion->position().y() - m_robot->state().position().y();
+    double dx = position.x() - m_robot->state().position().x();
+    double dy = position.y() - m_robot->state().position().y();
     double angleToTarget = qAtan2(dy, dx);
     double robotOrientation = m_robot->state().orientation().angleRad();
     double angleToTurn = robotOrientation - angleToTarget;
@@ -153,41 +164,55 @@ double Navigation::computeAngleToTurn(TargetPosition* targetPostion)
 /*!
  * Excecutes fish motion pattern while going to target.
  */
-void Navigation::fishMotionToTargetPosition(TargetPosition* targetPostion)
+void Navigation::fishMotionToPosition(PositionMeters targetPosition)
 {
-    double angleToTurn = computeAngleToTurn(targetPostion);
-    // FIXME : to check why the angle to send is negative
-    sendFishMotionParameters(- angleToTurn * 180 / M_PI,
-                             m_fishMotionPatternSettings.distanceCm(), // FIXME : store this parameters somewhere in this class
-                             m_fishMotionPatternSettings.speedCmSec());
+    // first check if we have already arrived to the destination
+    if (m_robot->state().position().closeTo(targetPosition)) {
+        qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
+        // we stop
+        sendMotorSpeed(0, 0);
+    } else {
+        double angleToTurn = computeAngleToTurn(targetPosition);
+        // FIXME : to check why the angle to send is negative
+        sendFishMotionParameters(- angleToTurn * 180 / M_PI,
+                                 m_fishMotionPatternSettings.distanceCm(), // FIXME : store this parameters somewhere in this class
+                                 m_fishMotionPatternSettings.speedCmSec());
+    }
 }
 
 /*!
  * Excecutes PID while going to target.
  */
-void Navigation::pidControlToTargetPosition(TargetPosition* targetPostion)
+void Navigation::pidControlToPosition(PositionMeters targetPosition)
 {
-    double angleToTurn = computeAngleToTurn(targetPostion);
-    // proportional term
-    double proportionalTerm = angleToTurn;
-    // derivative term
-    double derivativeTerm = 0;
-    if (m_errorBuffer.size() > 0)
-        derivativeTerm = (angleToTurn - m_errorBuffer.last()) * m_dt;
-    // integral term
-    double integralTerm = 0;
-    m_errorBuffer.enqueue(angleToTurn);
-    if (m_errorBuffer.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
-        // forget the oldest element
-        m_errorBuffer.dequeue();
-        // and sum the rest of them
-        for (double error : m_errorBuffer)
-            integralTerm += error;
+    // first check if we have already arrived to the destination
+    if (m_robot->state().position().closeTo(targetPosition)) {
+        qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
+        // we stop
+        sendMotorSpeed(0, 0);
+    } else {
+        double angleToTurn = computeAngleToTurn(targetPosition);
+        // proportional term
+        double proportionalTerm = angleToTurn;
+        // derivative term
+        double derivativeTerm = 0;
+        if (m_errorBuffer.size() > 0)
+            derivativeTerm = (angleToTurn - m_errorBuffer.last()) * m_dt;
+        // integral term
+        double integralTerm = 0;
+        m_errorBuffer.enqueue(angleToTurn);
+        if (m_errorBuffer.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
+            // forget the oldest element
+            m_errorBuffer.dequeue();
+            // and sum the rest of them
+            for (double error : m_errorBuffer)
+                integralTerm += error;
+        }
+        double angularVelocity = m_pidControllerSettings.kp() * proportionalTerm +
+                                 m_pidControllerSettings.ki() * integralTerm +
+                                 m_pidControllerSettings.kd() * derivativeTerm;
+        sendMotorSpeed(angularVelocity);
     }
-    double angularVelocity = m_pidControllerSettings.kp() * proportionalTerm +
-                             m_pidControllerSettings.ki() * integralTerm +
-                             m_pidControllerSettings.kd() * derivativeTerm;
-    sendMotorSpeed(angularVelocity);
 }
 
 /*!

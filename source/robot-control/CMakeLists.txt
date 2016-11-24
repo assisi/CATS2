@@ -22,9 +22,11 @@ set(srcs
     gui/RobotControlWidget.cpp
     gui/RobotsWidget.cpp
     RobotsHandler.cpp
-    Navigation.cpp
     control-maps/ControlArea.cpp
     control-maps/ControlMap.cpp
+    navigation/Navigation.cpp
+    navigation/DijkstraPathPlanner.cpp
+    navigation/PathPlanner.cpp
 )
 
 set(hdrs
