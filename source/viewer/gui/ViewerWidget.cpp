@@ -15,8 +15,10 @@
 #include <QtCore/QtMath>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDateTime>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtGui/QContextMenuEvent>
 
 /*!
  * Constructor.
@@ -58,6 +60,10 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     // connect to the data class
     qRegisterMetaType<QSharedPointer<QPixmap>>("QSharedPointer<QPixmap>");
     connect(m_data.data(), &ViewerData::newFrame, this, &ViewerWidget::onNewFrame);
+
+    // create the context menu actions
+    m_adjustAction = new QAction(tr("&Adjust"), this);
+    connect(m_adjustAction, &QAction::triggered, this, &ViewerWidget::adjust);
 }
 
 /*!
@@ -348,4 +354,15 @@ void ViewerWidget::showAreas(bool areasShown)
     // hide agents if shown
     for (auto& item : m_polygons)
         item->setVisible(m_areasShown);
+}
+
+/*!
+ * Context menu.
+ */
+void ViewerWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu(this);
+    menu.addAction(m_adjustAction);
+
+    menu.exec(event->globalPos());
 }

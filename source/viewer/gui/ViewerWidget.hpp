@@ -82,6 +82,10 @@ protected:
                               PositionPixels& imagePosition);
 
 protected:
+    //! Context menu.
+    void contextMenuEvent(QContextMenuEvent *event) override;
+
+protected:
     //! The data object that provides the frames and agent's positions to show.
     ViewerDataPtr m_data;
     //! The frame size.
@@ -111,8 +115,11 @@ protected:
 
     //! The flag that defines if we show agents on the map.
     bool m_agentsShown;
-    //! The flage that defines if the areas to be shown on the map.
+    //! The flag that defines if the areas to be shown on the map.
     bool m_areasShown;
+
+    //! Actions to be used in the context menu.
+    QAction* m_adjustAction;
 };
 
 #endif // CATS2_VIEWER_WIDGET_HPP
