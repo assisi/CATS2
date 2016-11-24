@@ -13,7 +13,7 @@ QueueHub::QueueHub(TimestampedFrameQueuePtr inputQueue)
 {
     // launch the incoming frames conversion in separated thread
     QThread* thread = new QThread;
-    m_multiplicator = QSharedPointer<Multiplicator>(new Multiplicator(inputQueue), &QObject::deleteLater); // delete later is used for security as multithreaded
+    m_multiplicator = QSharedPointer<Multiplicator>(new Multiplicator(inputQueue)); // delete later is used for security as multithreaded
                                                                                                   // signals and slots might result is crashes when a
                                                                                                   // a sender is deleted before a signal is received for instance
     m_multiplicator->moveToThread(thread);

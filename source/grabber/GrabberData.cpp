@@ -12,7 +12,7 @@ GrabberData::GrabberData(StreamDescriptor parameters, QSize targetFrameSize, Tim
     QObject(nullptr)
 {
     QThread* thread = new QThread;
-    m_streamReceiver = StreamReceiverPtr(new StreamReceiver(parameters, targetFrameSize, outputQueue), &QObject::deleteLater);
+    m_streamReceiver = StreamReceiverPtr(new StreamReceiver(parameters, targetFrameSize, outputQueue));
 
     m_streamReceiver->moveToThread(thread);
     connect(m_streamReceiver.data(), &StreamReceiver::error, this, &GrabberData::onError);

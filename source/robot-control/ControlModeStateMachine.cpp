@@ -19,10 +19,10 @@ ControlModeStateMachine::ControlModeStateMachine(FishBot* robot, QObject *parent
     m_robot(robot)
 {
     // fill the map will all control modes
-    m_controlModes.insert(ControlModeType::IDLE, ControlModePtr(new Idle(m_robot), &QObject::deleteLater));
-    m_controlModes.insert(ControlModeType::MANUAL, ControlModePtr(new Manual(m_robot), &QObject::deleteLater));
-    m_controlModes.insert(ControlModeType::GO_STRAIGHT, ControlModePtr(new GoStraight(m_robot), &QObject::deleteLater));
-    m_controlModes.insert(ControlModeType::GO_TO_POSITION, ControlModePtr(new GoToPosition(m_robot), &QObject::deleteLater));
+    m_controlModes.insert(ControlModeType::IDLE, ControlModePtr(new Idle(m_robot)));
+    m_controlModes.insert(ControlModeType::MANUAL, ControlModePtr(new Manual(m_robot)));
+    m_controlModes.insert(ControlModeType::GO_STRAIGHT, ControlModePtr(new GoStraight(m_robot)));
+    m_controlModes.insert(ControlModeType::GO_TO_POSITION, ControlModePtr(new GoToPosition(m_robot)));
 
     // make necessary connections
     foreach (ControlModePtr controlMode, m_controlModes.values()) {

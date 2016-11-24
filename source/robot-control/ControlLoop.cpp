@@ -8,14 +8,14 @@
  */
 ControlLoop::ControlLoop() :
     QObject(nullptr),
-    m_robotsInterface(new Aseba::DBusInterface(), &QObject::deleteLater),
+    m_robotsInterface(new Aseba::DBusInterface()),
     m_selectedRobot(),
     m_sendMaps(false)
 {
     // create the robots
     foreach (QString id, RobotControlSettings::get().ids()) {
         QString controlMapPath = RobotControlSettings::get().robotSettings(id).controlMapFilePath();
-        m_robots.append(FishBotPtr(new FishBot(id, controlMapPath), &QObject::deleteLater));
+        m_robots.append(FishBotPtr(new FishBot(id, controlMapPath)));
         m_robots.last()->setRobotInterface(m_robotsInterface);
         // ensure that only one robot can be in manual mode
         connect(m_robots.last().data(), &FishBot::notifyInManualMode,

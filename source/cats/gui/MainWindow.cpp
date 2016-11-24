@@ -30,10 +30,10 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui->setupUi(this);
 
     // create the tracking data manager
-    m_trackingDataManager = TrackingDataManagerPtr(new TrackingDataManager(), &QObject::deleteLater);
+    m_trackingDataManager = TrackingDataManagerPtr(new TrackingDataManager());
 
     // create the inter-species data manager
-    m_interSpeciesDataManager = InterSpeciesDataManagerPtr(new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress()), &QObject::deleteLater);
+    m_interSpeciesDataManager = InterSpeciesDataManagerPtr(new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress()));
     connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataImageMerged,
                m_interSpeciesDataManager.data(), &InterSpeciesDataManager::publishAgentData);
 
@@ -84,8 +84,7 @@ void MainWindow::createSetup(SetupType::Enum setupType)
     // create the viewer
     m_viewerHandlers[setupType] = ViewerHandlerPtr(new ViewerHandler(setupType,
                                                                      m_trackingSetups[setupType]->viewerQueue(),
-                                                                     m_trackingSetups[setupType]->coordinatesConversion()),
-                                            &QObject::deleteLater);
+                                                                     m_trackingSetups[setupType]->coordinatesConversion()));
 
     // connect the tracker to the tracking data manager
     m_trackingSetups[setupType]->connectToDataManager(m_trackingDataManager);
