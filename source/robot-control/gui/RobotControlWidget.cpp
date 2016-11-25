@@ -90,7 +90,8 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
                 m_robot->setMotionPatternFrequencyDivider(static_cast<MotionPatternType::Enum>(m_ui->navigationComboBox->currentData().toInt()),
                                                           value);
                 // specify the resulted frequency
-                m_ui->frequencyDividerSpinBox->setSuffix(QString("[%1Hz]").arg(RobotControlSettings::get().controlFrequencyHz() * value));
+                m_ui->frequencyDividerSpinBox->setSuffix(QString("[%1Hz]")
+                                                         .arg(static_cast<float>(RobotControlSettings::get().controlFrequencyHz()) / value , 0, 'f', 1));
             });
 
     // set the motion pattern frequency divider from the robot
