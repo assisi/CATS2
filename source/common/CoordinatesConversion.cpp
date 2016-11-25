@@ -26,11 +26,13 @@ CoordinatesConversion::~CoordinatesConversion()
 PositionMeters CoordinatesConversion::imageToWorldPosition(PositionPixels imageCoordinates) const
 {
     PositionMeters position;
-    if (m_cameraCalibration->isInitialized() && imageCoordinates.isValid())
+    if (m_cameraCalibration->isInitialized()) {
         position = m_cameraCalibration->imageToWorld(imageCoordinates);
-    else
+        position.setValid(imageCoordinates.isValid());
+    } else {
+        qDebug() << Q_FUNC_INFO << "Conversion is not possible as the calibration is not initialized.";
         position.setValid(false);
-
+    }
     return position;
 }
 
@@ -40,11 +42,13 @@ PositionMeters CoordinatesConversion::imageToWorldPosition(PositionPixels imageC
 PositionPixels CoordinatesConversion::worldToImagePosition(PositionMeters worldCoordinates) const
 {
     PositionPixels imagePosition;
-    if (m_cameraCalibration->isInitialized() && worldCoordinates.isValid())
+    if (m_cameraCalibration->isInitialized()) {
         imagePosition = m_cameraCalibration->worldToImage(worldCoordinates);
-    else
+        imagePosition.setValid(worldCoordinates.isValid());
+    } else {
+        qDebug() << Q_FUNC_INFO << "Conversion is not possible as the calibration is not initialized.";
         imagePosition.setValid(false);
-
+    }
     return imagePosition;
 }
 
@@ -54,11 +58,13 @@ PositionPixels CoordinatesConversion::worldToImagePosition(PositionMeters worldC
 OrientationRad CoordinatesConversion::imageToWorldOrientation(PositionPixels imageCoordinates, OrientationRad imageOrientation) const
 {
     OrientationRad orientation;
-    if (m_cameraCalibration->isInitialized() && imageCoordinates.isValid() && imageOrientation.isValid())
+    if (m_cameraCalibration->isInitialized() && imageCoordinates.isValid()) {
         orientation = m_cameraCalibration->imageToWorldOrientation(imageCoordinates, imageOrientation);
-    else
+        orientation.setValid(imageOrientation.isValid());
+    } else {
+        qDebug() << Q_FUNC_INFO << "Conversion is not possible as the calibration is not initialized.";
         orientation.setValid(false);
-
+    }
     return orientation;
 }
 
@@ -68,11 +74,13 @@ OrientationRad CoordinatesConversion::imageToWorldOrientation(PositionPixels ima
 OrientationRad CoordinatesConversion::worldToImageOrientation(PositionMeters worldCoordinates, OrientationRad worldOrientation) const
 {
     OrientationRad orientation;
-    if (m_cameraCalibration->isInitialized() && worldCoordinates.isValid() && worldOrientation.isValid())
+    if (m_cameraCalibration->isInitialized() && worldCoordinates.isValid()) {
         orientation = m_cameraCalibration->worldToImageOrientation(worldCoordinates, worldOrientation);
-    else
+        orientation.setValid(worldOrientation.isValid());
+    } else {
+        qDebug() << Q_FUNC_INFO << "Conversion is not possible as the calibration is not initialized.";
         orientation.setValid(false);
-
+    }
     return orientation;
 }
 

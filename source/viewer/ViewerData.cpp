@@ -15,9 +15,9 @@ ViewerData::ViewerData(TimestampedFrameQueuePtr inputQueue,
 {
     // launch the incoming frames conversion in separated thread
     QThread* thread = new QThread;
-    m_frameConvertor = FrameConvertorPtr(new FrameConvertor(inputQueue), &QObject::deleteLater); // delete later is used for security as multithreaded
-                                                                                                        // signals and slots might result is crashes when a
-                                                                                                        // a sender is deleted before a signal is received for instance
+    m_frameConvertor = FrameConvertorPtr(new FrameConvertor(inputQueue)); // delete later is used for security as multithreaded
+                                                                          // signals and slots might result is crashes when a
+                                                                          // a sender is deleted before a signal is received for instance
     m_frameConvertor->moveToThread(thread);
 
     connect(thread, &QThread::started, m_frameConvertor.data(), &FrameConvertor::process);

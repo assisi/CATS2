@@ -24,7 +24,7 @@ MainWindow::MainWindow(SetupType::Enum setupType,
     m_ui->setupUi(this);
 
     // and the viewer handler
-    m_viewerHandler = ViewerHandlerPtr(new ViewerHandler(setupType, queuePtr, coordinatesConversion), &QObject::deleteLater);
+    m_viewerHandler = ViewerHandlerPtr(new ViewerHandler(setupType, queuePtr, coordinatesConversion));
     m_viewerHandler->data()->blockSignals(true);
     // make the frame viewer the central widget
     setCentralWidget(m_viewerHandler->widget());

@@ -12,8 +12,9 @@ GrabberHandler::GrabberHandler(SetupType::Enum setupType) :
     m_queue(new TimestampedFrameQueue(100)),
     m_data(new GrabberData(CommandLineParameters::get().cameraDescriptor(setupType),
                            GrabberSettings::get().frameSize(setupType),
-                           m_queue), &QObject::deleteLater)
+                           m_queue))
 {
+
 }
 
 /*!
