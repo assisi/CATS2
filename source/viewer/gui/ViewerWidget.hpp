@@ -33,6 +33,11 @@ public:
     //! Destructor.
     virtual ~ViewerWidget() final;
 
+public:
+    //! Sets the flag that defines if the viwer is adjusted to the view size
+    //! automatically.
+    void setAutoAdjust(bool value);
+
 signals:
     //! Notifies that the mouse position has changed and sends it out in both
     //! image and world coordinates.
@@ -53,7 +58,6 @@ public slots:
     //! Set the flag that defines if the areas must be shown.
     void showAreas(bool areasShown);
 
-public slots:
     //! Zoom on the video.
     void onZoomIn();
     //! Unzoom the video.
@@ -84,6 +88,8 @@ protected:
 protected:
     //! Context menu.
     void contextMenuEvent(QContextMenuEvent *event) override;
+    //! Resize event.
+    void resizeEvent(QResizeEvent *event) override;
 
 protected:
     //! The data object that provides the frames and agent's positions to show.
@@ -117,6 +123,9 @@ protected:
     bool m_agentsShown;
     //! The flag that defines if the areas to be shown on the map.
     bool m_areasShown;
+
+    //! Defines if the scene is adjusted to the view size automatically.
+    bool m_autoAdjust;
 
     //! Actions to be used in the context menu.
     QAction* m_adjustAction;
