@@ -157,15 +157,19 @@ double Navigation::computeAngleToTurn(TargetPosition* targetPostion)
  */
 void Navigation::fishMotionToTargetPosition(TargetPosition* targetPostion)
 {
-    m_fishMotionStepCounter++;
-    // if we waited enough steps
-    if (m_fishMotionStepCounter >=  m_fishMotionFrequencyDivider) {
-        m_fishMotionStepCounter = 0;
-        double angleToTurn = computeAngleToTurn(targetPostion);
-        // FIXME : to check why the angle to send is negative
-        sendFishMotionParameters(- angleToTurn * 180 / M_PI,
-                                 m_fishMotionPatternSettings.distanceCm(), // FIXME : store this parameters somewhere in this class
-                                 m_fishMotionPatternSettings.speedCmSec());
+    if (m_robot->state().position().isValid()
+            && m_robot->state().orientation().isValid()
+            && targetPostion->position().isValid()) {
+        m_fishMotionStepCounter++;
+        // if we waited enough steps
+        if (m_fishMotionStepCounter >=  m_fishMotionFrequencyDivider) {
+            m_fishMotionStepCounter = 0;
+            double angleToTurn = computeAngleToTurn(targetPostion);
+            // FIXME : to check why the angle to send is negative
+            sendFishMotionParameters(- angleToTurn * 180 / M_PI,
+                                     m_fishMotionPatternSettings.distanceCm(), // FIXME : store this parameters somewhere in this class
+                                     m_fishMotionPatternSettings.speedCmSec());
+        }
     }
 }
 
@@ -174,27 +178,31 @@ void Navigation::fishMotionToTargetPosition(TargetPosition* targetPostion)
  */
 void Navigation::pidControlToTargetPosition(TargetPosition* targetPostion)
 {
-    double angleToTurn = computeAngleToTurn(targetPostion);
-    // proportional term
-    double proportionalTerm = angleToTurn;
-    // derivative term
-    double derivativeTerm = 0;
-    if (m_errorBuffer.size() > 0)
-        derivativeTerm = (angleToTurn - m_errorBuffer.last()) * m_dt;
-    // integral term
-    double integralTerm = 0;
-    m_errorBuffer.enqueue(angleToTurn);
-    if (m_errorBuffer.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
-        // forget the oldest element
-        m_errorBuffer.dequeue();
-        // and sum the rest of them
-        for (double error : m_errorBuffer)
-            integralTerm += error;
+    if (m_robot->state().position().isValid()
+            && m_robot->state().orientation().isValid()
+            && targetPostion->position().isValid()) {
+        double angleToTurn = computeAngleToTurn(targetPostion);
+        // proportional term
+        double proportionalTerm = angleToTurn;
+        // derivative term
+        double derivativeTerm = 0;
+        if (m_errorBuffer.size() > 0)
+            derivativeTerm = (angleToTurn - m_errorBuffer.last()) * m_dt;
+        // integral term
+        double integralTerm = 0;
+        m_errorBuffer.enqueue(angleToTurn);
+        if (m_errorBuffer.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
+            // forget the oldest element
+            m_errorBuffer.dequeue();
+            // and sum the rest of them
+            for (double error : m_errorBuffer)
+                integralTerm += error;
+        }
+        double angularVelocity = m_pidControllerSettings.kp() * proportionalTerm +
+                                 m_pidControllerSettings.ki() * integralTerm +
+                                 m_pidControllerSettings.kd() * derivativeTerm;
+        sendMotorSpeed(angularVelocity);
     }
-    double angularVelocity = m_pidControllerSettings.kp() * proportionalTerm +
-                             m_pidControllerSettings.ki() * integralTerm +
-                             m_pidControllerSettings.kd() * derivativeTerm;
-    sendMotorSpeed(angularVelocity);
 }
 
 /*!
