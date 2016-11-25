@@ -10,6 +10,7 @@
     <robots>
         <numberOfRobots>1</numberOfRobots>
         <controlFrequencyHz>20</controlFrequencyHz>
+        <fishMotionPatternFrequencyDivider>5</fishMotionPatternFrequencyDivider>
         <fishMotionPattern>
             <distanceCm>25</distanceCm>
             <speedCmSec>15</speedCmSec>

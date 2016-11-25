@@ -26,6 +26,8 @@ public:
 
     //! Return the current motion pattern.
     MotionPatternType::Enum motionPattern() const { return m_motionPattern; }
+    //! Return the frequency divider for the motion pattern.
+    int motionPatternFrequencyDivider(MotionPatternType::Enum type);
 
     //! The navigation step. Gets new control target and converts it to the
     //! motor commands.
@@ -34,10 +36,19 @@ public:
 signals:
     //! Informs that the robot's motion pattern was modified.
     void notifyMotionPatternChanged(MotionPatternType::Enum type);
+    //! Informs that the value of the frequency divider of the motion
+    //! pattern has been changed.
+    void notifyMotionPatternFrequencyDividerChanged(MotionPatternType::Enum type,
+                                                    int frequencyDivider);
 
 public slots:
     //! Sets the requested motion pattern.
     void setMotionPattern(MotionPatternType::Enum type);
+    //! Sets the frequency divider for the motion pattern. At the moment this
+    //! is supported for the fish motion pattern only, but it can be used for
+    //! other motion patterns as well.
+    void setMotionPatternFrequencyDivider(MotionPatternType::Enum type,
+                                          int frequencyDivider);
 
 private:
     //! Manages the target speed control.
@@ -69,6 +80,12 @@ private:
 
     //! Local copy of fish motion pattern settings.
     FishMotionPatternSettings m_fishMotionPatternSettings;
+    //! The frequency divider to send fish motion control commands to the robot
+    //! less often.
+    int m_fishMotionFrequencyDivider;
+    //! The counter to apply the frequency divider.
+    int m_fishMotionStepCounter;
+
     //! Local copy of PID controller settings.
     PidControllerSettings m_pidControllerSettings;
 

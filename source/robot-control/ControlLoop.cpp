@@ -13,16 +13,16 @@ ControlLoop::ControlLoop() :
     m_sendMaps(false)
 {
     // create the robots
-    foreach (QString id, RobotControlSettings::get().ids()) {
+    for (QString id : RobotControlSettings::get().ids()) {
         QString controlMapPath = RobotControlSettings::get().robotSettings(id).controlMapFilePath();
         m_robots.append(FishBotPtr(new FishBot(id, controlMapPath)));
         m_robots.last()->setRobotInterface(m_robotsInterface);
         // ensure that only one robot can be in manual mode
         connect(m_robots.last().data(), &FishBot::notifyInManualMode,
-                [=](QString id)
+                [=](QString senderId)
                 {
                     for (auto& robot : m_robots)
-                        if ((robot->id() != id) && (robot->currentControlMode() == ControlModeType::MANUAL))
+                        if ((robot->id() != senderId) && (robot->currentControlMode() == ControlModeType::MANUAL))
                             robot->setControlMode(ControlModeType::IDLE);
                 });
         // send the cotrol maps
