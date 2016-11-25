@@ -26,6 +26,8 @@ Navigation::Navigation(FishBot* robot):
 Navigation::~Navigation()
 {
     qDebug() << Q_FUNC_INFO << "Destroying the object";
+    // stop the robot before quiting
+    sendMotorSpeed(0, 0);
 }
 
 /*!
