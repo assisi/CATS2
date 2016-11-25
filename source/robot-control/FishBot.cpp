@@ -27,6 +27,8 @@ FishBot::FishBot(QString id, QString controlMapPath) :
             this, &FishBot::notifyControlModeChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternChanged,
             this, &FishBot::notifyMotionPatternChanged);
+    connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
+            this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
     connect(&m_controlMap, &ControlMap::notifyPolygons, this, &FishBot::notifyControlMapsPolygons);
 }
 
@@ -167,6 +169,24 @@ bool FishBot::supportsMotionPatterns()
 void FishBot::setMotionPattern(MotionPatternType::Enum type)
 {
     m_navigation.setMotionPattern(type);
+}
+
+/*!
+ * Sets the motion pattern frequency divider. The goal is to send commands
+ * less often to keep the network load low.
+ */
+void FishBot::setMotionPatternFrequencyDivider(MotionPatternType::Enum type,
+                                               int frequencyDivider)
+{
+    m_navigation.setMotionPatternFrequencyDivider(type, frequencyDivider);
+}
+
+/*!
+ * Return the motion pattern frequency divider.
+ */
+int FishBot::motionPatternFrequencyDivider(MotionPatternType::Enum type)
+{
+    return m_navigation.motionPatternFrequencyDivider(type);
 }
 
 /*!

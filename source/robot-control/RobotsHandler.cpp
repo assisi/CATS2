@@ -10,7 +10,7 @@
  */
 RobotsHandler::RobotsHandler() :
     QObject(nullptr),
-    m_contolLoop(new ControlLoop(), &QObject::deleteLater),
+    m_contolLoop(new ControlLoop()),
     m_widget(new RobotsWidget(m_contolLoop, nullptr)) // on creation the widget's parent is not set, it is treated in the destructor
 {
     // some security: when the widget is destroyed, reset the pointer to it

@@ -13,6 +13,8 @@ Navigation::Navigation(FishBot* robot):
     m_motionPattern(MotionPatternType::PID),
     m_pathPlanner(),
     m_fishMotionPatternSettings(RobotControlSettings::get().fishMotionPatternSettings()),
+    m_fishMotionFrequencyDivider(RobotControlSettings::get().fishMotionPatternFrequencyDivider()),
+    m_fishMotionStepCounter(0),
     m_pidControllerSettings(RobotControlSettings::get().pidControllerSettings()),
     m_dt(1. / RobotControlSettings::get().controlFrequencyHz())
 {
@@ -25,6 +27,8 @@ Navigation::Navigation(FishBot* robot):
 Navigation::~Navigation()
 {
     qDebug() << Q_FUNC_INFO << "Destroying the object";
+    // stop the robot before quiting
+    sendMotorSpeed(0, 0);
 }
 
 /*!
@@ -60,22 +64,21 @@ void Navigation::setTargetSpeed(TargetSpeed* targetSpeed)
  */
 void Navigation::setTargetPosition(TargetPosition* targetPostion)
 {
-    if (m_robot->state().position().isValid() && targetPostion->position().isValid()) {
+    if (m_robot->state().position().isValid()
+            && targetPostion->position().isValid()) {
         PositionMeters currentWaypoint = m_pathPlanner.currentWaypoint(m_robot->state().position(),
                                                                        targetPostion->position());
         switch (m_motionPattern) {
-            case MotionPatternType::FISH_MOTION:
-                fishMotionToPosition(currentWaypoint);
-                break;
-            case MotionPatternType::PID:
-            default:
-                pidControlToPosition(currentWaypoint);
-                break;
+        case MotionPatternType::FISH_MOTION:
+            fishMotionToPosition(currentWaypoint);
+            break;
+        case MotionPatternType::PID:
+        default:
+            pidControlToPosition(currentWaypoint);
+            break;
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Invalid robot or target position, stopping";
-        // we stop
-        sendMotorSpeed(0, 0);
+        qDebug() << Q_FUNC_INFO << "Invalid robot or target position";
     }
 }
 
@@ -166,17 +169,26 @@ double Navigation::computeAngleToTurn(PositionMeters position)
  */
 void Navigation::fishMotionToPosition(PositionMeters targetPosition)
 {
-    // first check if we have already arrived to the destination
-    if (m_robot->state().position().closeTo(targetPosition)) {
-        qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
-        // we stop
-        sendMotorSpeed(0, 0);
-    } else {
-        double angleToTurn = computeAngleToTurn(targetPosition);
-        // FIXME : to check why the angle to send is negative
-        sendFishMotionParameters(- angleToTurn * 180 / M_PI,
-                                 m_fishMotionPatternSettings.distanceCm(), // FIXME : store this parameters somewhere in this class
-                                 m_fishMotionPatternSettings.speedCmSec());
+    if (m_robot->state().position().isValid()
+            && m_robot->state().orientation().isValid()
+            && targetPosition.isValid()) {
+        m_fishMotionStepCounter++;
+        // if we waited enough steps
+        if (m_fishMotionStepCounter >=  m_fishMotionFrequencyDivider) {
+            m_fishMotionStepCounter = 0;
+            // first check if we have already arrived to the destination
+            if (m_robot->state().position().closeTo(targetPosition)) {
+                qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
+                // we stop
+                sendMotorSpeed(0, 0);
+            } else {
+                double angleToTurn = computeAngleToTurn(targetPosition);
+                // FIXME : to check why the angle to send is negative
+                sendFishMotionParameters(- angleToTurn * 180 / M_PI,
+                                         m_fishMotionPatternSettings.distanceCm(), // FIXME : store this parameters somewhere in this class
+                                         m_fishMotionPatternSettings.speedCmSec());
+            }
+        }
     }
 }
 
@@ -185,33 +197,37 @@ void Navigation::fishMotionToPosition(PositionMeters targetPosition)
  */
 void Navigation::pidControlToPosition(PositionMeters targetPosition)
 {
-    // first check if we have already arrived to the destination
-    if (m_robot->state().position().closeTo(targetPosition)) {
-        qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
-        // we stop
-        sendMotorSpeed(0, 0);
-    } else {
-        double angleToTurn = computeAngleToTurn(targetPosition);
-        // proportional term
-        double proportionalTerm = angleToTurn;
-        // derivative term
-        double derivativeTerm = 0;
-        if (m_errorBuffer.size() > 0)
-            derivativeTerm = (angleToTurn - m_errorBuffer.last()) * m_dt;
-        // integral term
-        double integralTerm = 0;
-        m_errorBuffer.enqueue(angleToTurn);
-        if (m_errorBuffer.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
-            // forget the oldest element
-            m_errorBuffer.dequeue();
-            // and sum the rest of them
-            for (double error : m_errorBuffer)
-                integralTerm += error;
+    if (m_robot->state().position().isValid()
+            && m_robot->state().orientation().isValid()
+            && targetPosition.isValid()) {
+        // first check if we have already arrived to the destination
+        if (m_robot->state().position().closeTo(targetPosition)) {
+            qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
+            // we stop
+            sendMotorSpeed(0, 0);
+        } else {
+            double angleToTurn = computeAngleToTurn(targetPosition);
+            // proportional term
+            double proportionalTerm = angleToTurn;
+            // derivative term
+            double derivativeTerm = 0;
+            if (m_errorBuffer.size() > 0)
+                derivativeTerm = (angleToTurn - m_errorBuffer.last()) * m_dt;
+            // integral term
+            double integralTerm = 0;
+            m_errorBuffer.enqueue(angleToTurn);
+            if (m_errorBuffer.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
+                // forget the oldest element
+                m_errorBuffer.dequeue();
+                // and sum the rest of them
+                for (double error : m_errorBuffer)
+                    integralTerm += error;
+            }
+            double angularVelocity = m_pidControllerSettings.kp() * proportionalTerm +
+                    m_pidControllerSettings.ki() * integralTerm +
+                    m_pidControllerSettings.kd() * derivativeTerm;
+            sendMotorSpeed(angularVelocity);
         }
-        double angularVelocity = m_pidControllerSettings.kp() * proportionalTerm +
-                                 m_pidControllerSettings.ki() * integralTerm +
-                                 m_pidControllerSettings.kd() * derivativeTerm;
-        sendMotorSpeed(angularVelocity);
     }
 }
 
@@ -227,7 +243,42 @@ void Navigation::setMotionPattern(MotionPatternType::Enum type)
                     .arg(m_robot->name());
 
         m_motionPattern = type;
+        // reset the steps counter
+        m_fishMotionStepCounter = 0;
 
         emit notifyMotionPatternChanged(type);
     }
 }
+
+/*!
+ * Sets the frequency divider for the fish motion pattern. At the moment this
+ * is supported for the fish motion pattern only, but it can be used for
+ * other motion patterns as well.
+ */
+void Navigation::setMotionPatternFrequencyDivider(MotionPatternType::Enum type,
+                                                  int frequencyDivider)
+{
+    if (type == MotionPatternType::FISH_MOTION) {
+        if (frequencyDivider != m_fishMotionFrequencyDivider) {
+            m_fishMotionFrequencyDivider = frequencyDivider;
+            m_fishMotionStepCounter = 0;
+            emit notifyMotionPatternFrequencyDividerChanged(MotionPatternType::FISH_MOTION,
+                                                            frequencyDivider);
+        }
+    }
+}
+
+/*!
+ * Return the frequency divider for the motion pattern.
+ */
+int Navigation::motionPatternFrequencyDivider(MotionPatternType::Enum type)
+{
+    if (type == MotionPatternType::FISH_MOTION) {
+        return m_fishMotionFrequencyDivider;
+    } else {
+        qDebug() << QString("The motion frequency divider is not supported for %1")
+                    .arg(MotionPatternType::toString(type));
+        return 1;
+    }
+}
+

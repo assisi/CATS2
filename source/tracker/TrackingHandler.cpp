@@ -14,8 +14,7 @@ TrackingHandler::TrackingHandler(SetupType::Enum setupType,
     m_data(new TrackingData(setupType,
                             coordinatesConversion,
                             inputQueue,
-                            m_debugQueue),
-            &QObject::deleteLater),
+                            m_debugQueue)),
     m_widget(new TrackingRoutineWidget(m_data, nullptr)) // on creation the widget's parent is not set, it is treated in the destructor
 {
     // some security: when the tracking widget is destroyed, reset the pointer to it

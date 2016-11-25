@@ -15,8 +15,10 @@
 #include <QtCore/QtMath>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDateTime>
+#include <QtWidgets/QMenu>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QMessageBox>
+#include <QtGui/QContextMenuEvent>
 
 /*!
  * Constructor.
@@ -28,7 +30,8 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     m_uiViewer(new Ui::ViewerWidget),
     m_averageFps(0.),
     m_agentsShown(false),
-    m_areasShown(false)
+    m_areasShown(false),
+    m_autoAdjust(false)
 {
     m_uiViewer->setupUi(this);
     // always receive mouse events
@@ -58,6 +61,10 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     // connect to the data class
     qRegisterMetaType<QSharedPointer<QPixmap>>("QSharedPointer<QPixmap>");
     connect(m_data.data(), &ViewerData::newFrame, this, &ViewerWidget::onNewFrame);
+
+    // create the context menu actions
+    m_adjustAction = new QAction(tr("&Adjust"), this);
+    connect(m_adjustAction, &QAction::triggered, this, &ViewerWidget::adjust);
 }
 
 /*!
@@ -151,12 +158,16 @@ void ViewerWidget::onMouseMoved(QPointF scenePosition)
  */
 void ViewerWidget::adjust()
 {
-    QSize availableArea = m_uiViewer->view->size();
-    float width = m_uiViewer->view->transform().m11() * m_frameSize.width();
-    float height = m_uiViewer->view->transform().m22() * m_frameSize.height();
-    double scaleCoefficient = qMin(availableArea.width() / width,
-                                   availableArea.height() / height);
-    m_uiViewer->view->scale(scaleCoefficient, scaleCoefficient);
+    if (m_frameSize.isValid()) {
+        QSize availableArea = m_uiViewer->view->size();
+        float width = m_uiViewer->view->transform().m11() * m_frameSize.width();
+        float height = m_uiViewer->view->transform().m22() * m_frameSize.height();
+        double scaleCoefficient = qMin(availableArea.width() / width,
+                                       availableArea.height() / height);
+        m_uiViewer->view->scale(scaleCoefficient, scaleCoefficient);
+    } else {
+        qDebug() << Q_FUNC_INFO << "The target frame size is invalid, can not resize";
+    }
 }
 
 /*!
@@ -348,4 +359,36 @@ void ViewerWidget::showAreas(bool areasShown)
     // hide agents if shown
     for (auto& item : m_polygons)
         item->setVisible(m_areasShown);
+}
+
+/*!
+ * Context menu.
+ */
+void ViewerWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    QMenu menu(this);
+    menu.addAction(m_adjustAction);
+
+    menu.exec(event->globalPos());
+}
+
+/*!
+ * Sets the flag that defines if the viwer is adjusted to the view size
+ * automatically.
+ */
+void ViewerWidget::setAutoAdjust(bool value)
+{
+    m_autoAdjust = value;
+    if (m_autoAdjust)
+        adjust();
+}
+
+/*!
+ * Resize event.
+ */
+void ViewerWidget::resizeEvent(QResizeEvent *event)
+{
+    QWidget::resizeEvent(event);
+    if (m_autoAdjust)
+        adjust();
 }
