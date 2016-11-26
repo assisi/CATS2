@@ -28,7 +28,7 @@ Navigation::~Navigation()
 {
     qDebug() << Q_FUNC_INFO << "Destroying the object";
     // stop the robot before quiting
-    sendMotorSpeed(0, 0);
+    stop();
 }
 
 /*!
@@ -280,5 +280,13 @@ int Navigation::motionPatternFrequencyDivider(MotionPatternType::Enum type)
                     .arg(MotionPatternType::toString(type));
         return 1;
     }
+}
+
+/*!
+ * Requests the robot to stop.
+ */
+void Navigation::stop()
+{
+    sendMotorSpeed(0, 0);
 }
 

@@ -35,6 +35,8 @@ public:
     //! The navigation step. Gets new control target and converts it to the
     //! motor commands.
     void step(ControlTargetPtr target);
+    //! Requests the robot to stop.
+    void stop();
 
 signals:
     //! Informs that the robot's motion pattern was modified.
