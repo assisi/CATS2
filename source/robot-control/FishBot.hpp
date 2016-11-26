@@ -87,6 +87,8 @@ public:
     //! Received states of all tracked fish, keeps them in case it's needed by
     //! the control mode.
     void setFishStates(QList<StateWorld> fishStates);
+    //! Returns the states of all tracked fish.
+    QList<StateWorld> fishStates() const { return m_fishStates; }
 
 public slots:
     //! Requests to sends the control map areas' polygons.

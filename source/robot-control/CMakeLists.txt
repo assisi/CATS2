@@ -15,6 +15,7 @@ set(srcs
     control-modes/Idle.cpp
     control-modes/GoStraight.cpp
     control-modes/GoToPosition.cpp
+    control-modes/ModelBased.cpp
     control-modes/Manual.cpp
     control-modes/ControlMode.cpp
     ControlModeStateMachine.cpp
