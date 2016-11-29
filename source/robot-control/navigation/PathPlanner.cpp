@@ -1,10 +1,12 @@
 #include "PathPlanner.hpp"
 
+#include "settings/RobotControlSettings.hpp"
+
 /*!
  * Constructor.
  */
 PathPlanner::PathPlanner() :
-    m_pathPlanner(),
+    m_pathPlanner(RobotControlSettings::get().pathPlanningConfigPath()),
     m_lastReceivedTargetPosition(),
     m_subTargetsQueue(),
     m_currentSubTargetPosition()

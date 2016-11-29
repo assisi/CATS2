@@ -8,7 +8,7 @@
 ControlMap::ControlMap(QString controlMapFileName) :
     QObject(nullptr)
 {
-    m_valid = deserialize(controlMapFileName);
+    m_valid = init(controlMapFileName);
     if (m_valid)
         qDebug() << Q_FUNC_INFO << "Successfully read a control map from" << controlMapFileName;
     else
@@ -40,7 +40,7 @@ ControlMap::ControlData ControlMap::controlDataAtPosition(PositionMeters positio
 /*!
  * Reads the control map from a file.
  */
-bool ControlMap::deserialize(QString controlMapFileName)
+bool ControlMap::init(QString controlMapFileName)
 {
     bool successful = true;
 

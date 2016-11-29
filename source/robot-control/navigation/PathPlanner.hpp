@@ -9,7 +9,9 @@
 
 /*!
  * Runs the flight planner if necessary, if it's not needed than previous
- * resuls of flight planning are returnded.
+ * resuls of flight planning are returnded. At the moment only Dijkstre path
+ * planner is used, but in future it is planned to be extended with more of
+ * them.
  */
 class PathPlanner
 {

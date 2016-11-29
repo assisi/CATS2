@@ -21,6 +21,7 @@
             <kd>0.00</kd>
         </pid>
         <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
+        <pathPlanningConfigPath>/home/gribovsk/Software/CATS2/config/path-planning/two-rooms.xml</pathPlanningConfigPath>
         <fishBot_1>
             <id>H</id>
             <controlMapPath>/home/gribovsk/Software/CATS2/config/control-maps/test-control-map.xml</controlMapPath>

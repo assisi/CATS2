@@ -6,7 +6,7 @@
 /*!
  * Controlling the robot's displacement by a robot.
  * NOTE : at the moment works only under linux
- * TODO : this code comes from CATS, it's not flexible (doesn't check where the
+ * FIXME : this code comes from CATS, it's not flexible (doesn't check where the
  * joystick is, doesn't detect when it's connected/disconnected, etc) and needs
  *  to be redone (by using SDL for instance).
  */

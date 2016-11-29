@@ -79,5 +79,10 @@ bool RobotControlSettings::init(QString configurationFileName)
     settings.readVariable("robots/defaultLinearSpeedCmSec", m_defaultLinearSpeedCmSec);
     settingsAccepted = settingsAccepted && (m_defaultLinearSpeedCmSec > 0);
 
+    // read the path planning configuration file path
+    std::string pathPlanningConfigPath = "";
+    settings.readVariable(QString("robots/pathPlanningConfigPath"), pathPlanningConfigPath, pathPlanningConfigPath);
+    m_pathPlanningConfigPath = QString::fromStdString(pathPlanningConfigPath);
+
     return settingsAccepted;
 }

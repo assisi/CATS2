@@ -40,7 +40,7 @@ public:
     ControlData controlDataAtPosition(PositionMeters position);
 
 public slots:
-    //! Requests to sends the map areas' polygons.
+    //! Requests to send the map areas' polygons.
     void requestPolygons();
 
 signals:
@@ -49,7 +49,7 @@ signals:
 
 private:
     //! Reads the control map from a file.
-    bool deserialize(QString controlMapFileName);
+    bool init(QString controlMapFileName);
 
 private:
     //! A flag that says if the contol map was correctly initialized.

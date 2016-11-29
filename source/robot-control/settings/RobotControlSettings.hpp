@@ -26,7 +26,7 @@ public:
 private:
     //! Robot's id.
     QString m_id;
-    //! Control map file path.
+    //! Control map cofiguration file path.
     QString m_controlMapPath;
 };
 
@@ -139,6 +139,11 @@ public:
     //! Returns the default linear speed.
     int defaultLinearSpeedCmSec() const { return m_defaultLinearSpeedCmSec; }
 
+    //! Sets the path planning configuration file path.
+    void setPathPlanningConfigPath(QString pathPlanningConfigPath) { m_pathPlanningConfigPath = pathPlanningConfigPath; }
+    //! Return the path planning configuration file path.
+    QString pathPlanningConfigPath() const { return m_pathPlanningConfigPath; }
+
 private:
     //! Constructor. Defining it here prevents construction.
     RobotControlSettings() {}
@@ -161,6 +166,8 @@ private:
     PidControllerSettings m_pidControllerSettings;
     //! Default linear speed of the robot.
     int m_defaultLinearSpeedCmSec;
+    //! Path-planning configuration file path.
+    QString m_pathPlanningConfigPath;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP

@@ -57,7 +57,7 @@ private:
     //! The motion pattern corresponding to this area.
     MotionPatternType::Enum m_motionPattern;
 
-    // TODO : it's more logical to use QList<PositionMeters> instead of
+    // TODO : it's more logical to use WorldPolygon instead of
     // QPolygonF. But we use QPolygonF because it has already contains()
     // method
     //! Polygons of this area.
