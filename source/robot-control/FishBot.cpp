@@ -79,8 +79,11 @@ void FishBot::setupConnection(int robotIndex)
  */
 void FishBot::stepControl()
 {
-    // check the area map to see if the control mode is to be changed
+    // TODO : to replace this part by a experiment-controller module that
+    // has several types of experiment to suggest including a control map
+    // if it is provided by the configuration file
     if (m_useControlMap)
+        // check the area map to see if the control mode is to be changed
         consultControlMap();
 
     // check the incoming events to see if the control mode is to be changed
@@ -88,9 +91,7 @@ void FishBot::stepControl()
     // IN THE CALLBACK AND MANAGED BY THE PRIORITY LOGICS OR BY A FLAG ON THE
     // CONTROL MODE "ACCEPTS CONTROL MODE CHANGE"
 
-    // step the control mode state machine with the robot's position and
-    // other agents positions.
-    // TODO : to define how to pass the other agents positions
+    // step the control mode state machine
     ControlTargetPtr controlTarget = m_controlStateMachine.step();
 
     // step the navigation with the resulted target values

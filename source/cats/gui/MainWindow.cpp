@@ -169,8 +169,12 @@ void MainWindow::connectPrimaryView()
         // connect to the robots controller
         connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
                 m_robotsHandler->contolLoop().data(), &ControlLoop::onTrackingResultsReceived);
-        connect(viewerWidget, &ViewerWidget::notifyRightButtonClick,
-                m_robotsHandler->contolLoop().data(), &ControlLoop::goToPosition);
+        connect(viewerWidget, &ViewerWidget::notifyButtonClick,
+                [=](Qt::MouseButton button,PositionMeters worldPosition)
+                {
+                    if (button = Qt::RightButton)
+                        m_robotsHandler->contolLoop().data()->goToPosition(worldPosition);
+                });
         connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyCurrentRobotControlMapsPolygons,
                 viewerWidget, &ViewerWidget::updateAreas);
     }

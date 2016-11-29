@@ -42,9 +42,9 @@ signals:
     //! Notifies that the mouse position has changed and sends it out in both
     //! image and world coordinates.
     void mousePosition(PositionPixels imagePosition, PositionMeters worldPosition);
-    //! Notifies that the right mouse button was clicked on the scene, and sends
+    //! Notifies that the mouse button was clicked on the scene, and sends
     //! its position out in world coordinates.
-    void notifyRightButtonClick(PositionMeters worldPosition);
+    void notifyButtonClick(Qt::MouseButton button,PositionMeters worldPosition);
 
 public slots:
     //! Triggered on arrival of the new data.
@@ -72,8 +72,8 @@ protected slots:
     void onNewFrame(QSharedPointer<QPixmap> pixmap, int fps);
     //! Triggered when a new mouse position is received from the scene.
     void onMouseMoved(QPointF scenePosition);
-    //! Triggered when a right button click is received from the scene.
-    void onRightButtonClicked(QPointF scenePosition);
+    //! Triggered when a button click is received from the scene.
+    void onButtonClicked(Qt::MouseButton button, QPointF scenePosition);
 
 protected:
     //! Computes new average frame rate value as exponential moving average.
@@ -116,6 +116,9 @@ protected:
     //! The map containing the agent's id's with the corresponding object
     //!  on the scene.
     QMap<QString, AgentItem*> m_agents;
+    // TODO : to replace this by a class containing all graphical metadata
+    // for every robot : zones, current targets, trajectories, planning areas
+    // etc.
     //! The polygons depicting various areas of the experimental setup.
     QList<AnnotatedPolygonItem*> m_polygons;
 
