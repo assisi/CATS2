@@ -393,17 +393,6 @@ void ViewerWidget::showAreas(bool areasShown)
 }
 
 /*!
- * Context menu.
- */
-void ViewerWidget::contextMenuEvent(QContextMenuEvent *event)
-{
-    QMenu menu(this);
-    menu.addAction(m_adjustAction);
-
-    menu.exec(event->globalPos());
-}
-
-/*!
  * Sets the flag that defines if the viwer is adjusted to the view size
  * automatically.
  */

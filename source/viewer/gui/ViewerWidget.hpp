@@ -90,8 +90,6 @@ protected:
                               PositionPixels& imagePosition);
 
 protected:
-    //! Context menu.
-    void contextMenuEvent(QContextMenuEvent *event) override;
     //! Resize event.
     void resizeEvent(QResizeEvent *event) override;
 
