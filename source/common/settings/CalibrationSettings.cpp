@@ -3,6 +3,7 @@
 #include "settings/ReadSettingsHelper.hpp"
 
 #include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 /*!
  * The singleton getter. Provides an instance of the settings.
@@ -20,6 +21,9 @@ bool CalibrationSettings::init(QString configurationFileName, SetupType::Enum se
 {
     bool settingsAccepted = true;
 
+    // get the path of the configuration file
+    QString configurationFolder = QFileInfo(configurationFileName).path();
+
     // get the prefix in the path in the configuration file
     QString prefix = SetupType::toSettingsString(setupType);
 
@@ -27,7 +31,7 @@ bool CalibrationSettings::init(QString configurationFileName, SetupType::Enum se
     ReadSettingsHelper settings(configurationFileName);
     settings.readVariable(QString("%1/cameraCalibrationFile").arg(prefix), calibrationFilePath);
 
-    m_calibrationFilePaths[setupType] = QString::fromStdString(calibrationFilePath);
+    m_calibrationFilePaths[setupType] = configurationFolder + QDir::separator() + QString::fromStdString(calibrationFilePath);
     settingsAccepted = QFileInfo(m_calibrationFilePaths[setupType]).exists();
 
     // read the target image size

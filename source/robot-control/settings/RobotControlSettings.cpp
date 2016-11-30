@@ -1,6 +1,7 @@
 #include "RobotControlSettings.hpp"
 
 #include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 #include <settings/ReadSettingsHelper.hpp>
 
@@ -19,6 +20,9 @@ RobotControlSettings& RobotControlSettings::get()
 bool RobotControlSettings::init(QString configurationFileName)
 {
     bool settingsAccepted = true;
+
+    // get the path of the configuration file
+    QString configurationFolder = QFileInfo(configurationFileName).path();
 
     ReadSettingsHelper settings(configurationFileName);
 
@@ -47,7 +51,7 @@ bool RobotControlSettings::init(QString configurationFileName)
 
         std::string controlMapFilePath = "";
         settings.readVariable(QString("robots/fishBot_%1/controlMapPath").arg(i), controlMapFilePath, controlMapFilePath);
-        robotSettings.setControlMapPath(QString::fromStdString(controlMapFilePath));
+        robotSettings.setControlMapPath(configurationFolder + QDir::separator() + QString::fromStdString(controlMapFilePath));
 
         m_robotsSettings.insert(robotSettings.id(), robotSettings);
         settingsAccepted = settingsAccepted && (id.size() > 0);
@@ -82,7 +86,7 @@ bool RobotControlSettings::init(QString configurationFileName)
     // read the path planning configuration file path
     std::string pathPlanningConfigPath = "";
     settings.readVariable(QString("robots/pathPlanningConfigPath"), pathPlanningConfigPath, pathPlanningConfigPath);
-    m_pathPlanningConfigPath = QString::fromStdString(pathPlanningConfigPath);
+    m_pathPlanningConfigPath = configurationFolder + QDir::separator() + QString::fromStdString(pathPlanningConfigPath);
 
     return settingsAccepted;
 }
