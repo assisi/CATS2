@@ -6,7 +6,6 @@
 #include "ViewerData.hpp"
 #include <settings/CommandLineParameters.hpp>
 #include <settings/ReadSettingsHelper.hpp>
-
 #include <QtWidgets/QGraphicsPixmapItem>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QStatusBar>

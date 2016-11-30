@@ -12,9 +12,10 @@
 class FrameScene;
 class QGraphicsPixmapItem;
 class QGraphicsTextItem;
-class AgentText;
+class AgentTextItem;
 class AgentItem;
 class AnnotatedPolygonItem;
+class TrajectoryItem;
 
 namespace Ui
 {
@@ -57,6 +58,9 @@ public slots:
     void updateAreas(QList<AnnotatedPolygons>);
     //! Set the flag that defines if the areas must be shown.
     void showAreas(bool areasShown);
+
+    //! Request to update the trajectory on the scene.
+    void updateTrajectory(QQueue<PositionMeters> polygon);
 
     //! Zoom on the video.
     void onZoomIn();
@@ -112,12 +116,14 @@ protected:
     // can have the same id.
     //! The map containing the agent's id's with the corresponding label
     //!  on the scene.
-    QMap<QString, AgentText*> m_agentLabels;
+    QMap<QString, AgentTextItem*> m_agentLabels;
     //! The map containing the agent's id's with the corresponding object
     //!  on the scene.
     QMap<QString, AgentItem*> m_agents;
     //! The polygons depicting various areas of the experimental setup.
     QList<AnnotatedPolygonItem*> m_polygons;
+    //! The planned trajectory of the robot.
+    TrajectoryItem* m_trajectory;
 
     //! The flag that defines if we show agents on the map.
     bool m_agentsShown;

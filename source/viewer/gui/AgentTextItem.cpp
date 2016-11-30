@@ -1,4 +1,4 @@
-#include "AgentText.hpp"
+#include "AgentTextItem.hpp"
 
 #include <QtGui/QPainter>
 
@@ -6,7 +6,7 @@
 /*!
  * Paints the contents of an item in local coordinates.
  */
-void AgentText::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
+void AgentTextItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option, QWidget *widget)
 {
     Q_UNUSED(widget);
 
@@ -24,7 +24,7 @@ void AgentText::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 /*!
  * Computes the bounding rectangle.
  */
-QRectF AgentText::boundingRect() const
+QRectF AgentTextItem::boundingRect() const
 {
     return QRectF(0, -2 * Size, Size + m_text.length() * 5.5, 2 * Size);
 }
