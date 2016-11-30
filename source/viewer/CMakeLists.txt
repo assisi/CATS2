@@ -6,9 +6,10 @@ set(srcs
     gui/FrameScene.cpp
     gui/ViewerWindow.cpp
     settings/ViewerSettings.cpp
-    gui/AgentText.cpp
+    gui/AgentTextItem.cpp
     gui/AgentItem.cpp
     gui/AnnotatedPolygonItem.cpp
+    gui/TrajectoryItem.cpp
 )
 
 set(hdrs

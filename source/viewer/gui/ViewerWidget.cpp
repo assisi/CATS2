@@ -2,9 +2,10 @@
 #include "ViewerWidget.hpp"
 #include "ViewerData.hpp"
 #include "FrameScene.hpp"
-#include "AgentText.hpp"
+#include "AgentTextItem.hpp"
 #include "AgentItem.hpp"
 #include "AnnotatedPolygonItem.hpp"
+#include "TrajectoryItem.hpp"
 
 #include <CoordinatesConversion.hpp>
 
@@ -12,6 +13,7 @@
 #include <QtWidgets/QGraphicsTextItem>
 #include <QtCore/QDir>
 #include <QtCore/QDebug>
+#include <QtCore/QQueue>
 #include <QtCore/QtMath>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDateTime>
@@ -31,7 +33,8 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     m_averageFps(0.),
     m_agentsShown(false),
     m_areasShown(false),
-    m_autoAdjust(false)
+    m_autoAdjust(false),
+    m_trajectory(nullptr)
 {
     m_uiViewer->setupUi(this);
     // always receive mouse events
@@ -176,7 +179,7 @@ void ViewerWidget::adjust()
 void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
 {
     // first hide all the items on the scene
-    foreach (AgentText* agentText, m_agentLabels.values())
+    foreach (AgentTextItem* agentText, m_agentLabels.values())
         agentText->hide();
 
     // update the item's positions, the map itself by adding new
@@ -186,7 +189,7 @@ void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
         // if an item corresponding to the agent is not yet in the list
         // then add it
         if (! m_agentLabels.contains(id)) {
-            m_agentLabels[id] = new AgentText(agentData.label());
+            m_agentLabels[id] = new AgentTextItem(agentData.label());
             m_scene->addItem(m_agentLabels[id]);
         }
         // set the position
@@ -347,6 +350,34 @@ void ViewerWidget::updateAreas(QList<AnnotatedPolygons> polygonsToDraw)
                 item->setPos(0, 0);
             }
         }
+    }
+}
+
+/*!
+ * Request to update the trajectory on the scene.
+ */
+void ViewerWidget::updateTrajectory(QQueue<PositionMeters> worldPolygon)
+{
+    // convert to image polygon
+    QPolygonF imagePolygon;
+    for (PositionMeters worldPosition : worldPolygon) {
+        PositionPixels imagePosition;
+        if (convertWorldPosition(worldPosition, imagePosition) && imagePosition.isValid()) {
+            imagePolygon.append(QPointF(imagePosition.x(), imagePosition.y()));
+        } else {
+            qDebug() << Q_FUNC_INFO << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
+            imagePolygon.clear();
+            break;
+        }
+    }
+
+    if (!m_trajectory ) {
+        m_trajectory = new TrajectoryItem(imagePolygon, QColor(Qt::green));
+         m_scene->addItem(m_trajectory);
+        // need to position the item to (0,0) in order to the polygon was placed correctly
+        m_trajectory->setPos(0, 0);
+    } else {
+        m_trajectory->setTrajectory(imagePolygon);
     }
 }
 

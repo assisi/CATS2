@@ -94,16 +94,11 @@ void MainWindow::onButtonClicked(Qt::MouseButton button,PositionMeters worldPosi
     QList<AgentDataWorld> points;
     points << AgentDataWorld("Start", AgentType::GENERIC, StateWorld(m_startPosition));
     points << AgentDataWorld("Goal", AgentType::GENERIC, StateWorld(m_goalPosition));
+    m_viewerHandler->widget()->updateAgentLabels(points);
 
     if (m_pathPlanner.data() && m_pathPlanner->isValid()
             && m_startPosition.isValid() && m_goalPosition.isValid()) {
         QQueue<PositionMeters> path = m_pathPlanner->plan(m_startPosition, m_goalPosition);
-        int index = 0;
-        for (auto& point : path) {
-//            qDebug() << point.toString();
-            points << AgentDataWorld(QString::number(index), AgentType::GENERIC, StateWorld(point));
-            index++;
-        }
+        m_viewerHandler->widget()->updateTrajectory(path);
     }
-    m_viewerHandler->widget()->updateAgentLabels(points);
 }
