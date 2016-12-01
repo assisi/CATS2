@@ -86,6 +86,11 @@ bool DijkstraPathPlanner::init(QString controlMapFileName)
                 addEdge(currentPoint, PositionMeters(x, y + m_gridSizeM));
                 addEdge(currentPoint, PositionMeters(x + m_gridSizeM, y + m_gridSizeM));
                 addEdge(currentPoint, PositionMeters(x + m_gridSizeM, y - m_gridSizeM));
+                // not needed but added as a test
+//                addEdge(currentPoint, PositionMeters(x - m_gridSizeM, y));
+//                addEdge(currentPoint, PositionMeters(x, y - m_gridSizeM));
+//                addEdge(currentPoint, PositionMeters(x - m_gridSizeM, y + m_gridSizeM));
+//                addEdge(currentPoint, PositionMeters(x - m_gridSizeM, y - m_gridSizeM));
                 row++;
                 y += m_gridSizeM;
             }
