@@ -62,7 +62,7 @@
      <x>0</x>
      <y>0</y>
      <width>586</width>
-     <height>25</height>
+     <height>37</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuView">
@@ -76,6 +76,7 @@
     <addaction name="actionZoomIn"/>
     <addaction name="actionZoomOut"/>
     <addaction name="actionAdjustView"/>
+    <addaction name="actionSaveCurrentView"/>
     <addaction name="separator"/>
    </widget>
    <addaction name="menuView"/>
@@ -96,6 +97,7 @@
    <addaction name="actionZoomIn"/>
    <addaction name="actionZoomOut"/>
    <addaction name="actionAdjustView"/>
+   <addaction name="actionSaveCurrentView"/>
   </widget>
   <action name="actionZoomIn">
    <property name="icon">
@@ -152,6 +154,18 @@
    </property>
    <property name="toolTip">
     <string>Open path planning config</string>
+   </property>
+  </action>
+  <action name="actionSaveCurrentView">
+   <property name="icon">
+    <iconset resource="../control-map-viewer/icons.qrc">
+     <normaloff>:/resources/icons/ic_camera_enhance_black_24dp.png</normaloff>:/resources/icons/ic_camera_enhance_black_24dp.png</iconset>
+   </property>
+   <property name="text">
+    <string>Save current view</string>
+   </property>
+   <property name="toolTip">
+    <string>Save current view</string>
    </property>
   </action>
  </widget>

@@ -20,6 +20,7 @@ MainWindow::MainWindow(SetupType::Enum setupType,
                        QWidget *parent) :
     QMainWindow(parent),
     m_ui(new Ui::MainWindow),
+    m_pathPlanner(),
     m_startPosition(),
     m_goalPosition()
 {
@@ -40,6 +41,7 @@ MainWindow::MainWindow(SetupType::Enum setupType,
     connect(m_ui->actionZoomOut, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::onZoomOut);
     connect(m_ui->actionOpenPathPlanningConfig, &QAction::triggered, this, &MainWindow::openControlMap);
     connect(m_ui->actionAdjustView, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::adjust);
+    connect(m_ui->actionSaveCurrentView, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::saveCurrentFrameToFile);
 
     connect(m_viewerHandler->widget(), &ViewerWidget::notifyButtonClick, this, &MainWindow::onButtonClicked);
 
