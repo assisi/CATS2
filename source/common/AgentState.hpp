@@ -254,10 +254,10 @@ class WorldPolygon : public QList<PositionMeters>
 public:
     //! Checks if the polygon contains given point.
     // FIXME FIXME FIXME : fast and dirty implementation, redo
-    bool containsPoint(PositionMeters position)
+    bool containsPoint(PositionMeters position) const
     {
         QPolygonF polygon;
-        for (PositionMeters& point : *this)
+        for (const PositionMeters& point : *this)
             polygon.append(QPointF(point.x(), point.y()));
         return polygon.containsPoint(QPointF(position.x(), position.y()), Qt::OddEvenFill);
     }

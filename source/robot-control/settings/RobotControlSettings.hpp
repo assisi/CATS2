@@ -141,6 +141,9 @@ public:
     //! Returns the default linear speed.
     int defaultLinearSpeedCmSec() const { return m_defaultLinearSpeedCmSec; }
 
+    //! Gives the const reference to the experimental setup map.
+    const SetupMap& setupMap() const { return m_setupMap; }
+
 private:
     //! Constructor. Defining it here prevents construction.
     RobotControlSettings() {}
