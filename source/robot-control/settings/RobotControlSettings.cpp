@@ -79,5 +79,10 @@ bool RobotControlSettings::init(QString configurationFileName)
     settings.readVariable("robots/defaultLinearSpeedCmSec", m_defaultLinearSpeedCmSec);
     settingsAccepted = settingsAccepted && (m_defaultLinearSpeedCmSec > 0);
 
+    // read the setup map
+    std::string setupMap = "";
+    settings.readVariable(QString("experiment/setupMapPath"), setupMap, setupMap);
+    m_setupMap.init(QString::fromStdString(setupMap));
+
     return settingsAccepted;
 }

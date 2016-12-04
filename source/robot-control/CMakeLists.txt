@@ -25,6 +25,7 @@ set(srcs
     Navigation.cpp
     control-maps/ControlArea.cpp
     control-maps/ControlMap.cpp
+    SetupMap.cpp
 )
 
 set(hdrs

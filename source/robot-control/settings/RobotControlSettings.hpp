@@ -1,6 +1,8 @@
 #ifndef CATS2_ROBOT_CONTROL_SETTINGS_HPP
 #define CATS2_ROBOT_CONTROL_SETTINGS_HPP
 
+#include "SetupMap.hpp"
+
 #include <QtCore/QString>
 #include <QtCore/QMap>
 
@@ -161,6 +163,8 @@ private:
     PidControllerSettings m_pidControllerSettings;
     //! Default linear speed of the robot.
     int m_defaultLinearSpeedCmSec;
+    //! The map of the setup, used in path planning and modelling.
+    SetupMap m_setupMap;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP
