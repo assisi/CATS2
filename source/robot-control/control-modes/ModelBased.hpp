@@ -4,18 +4,7 @@
 #include "ControlMode.hpp"
 #include <AgentState.hpp>
 
-/*!
- * \brief The temporary model class
- */
-class Model
-{
-public:
-    //! Constructor.
-    Model() {}
-
-    //! The target position as requested by the model.
-    PositionMeters computeTarget(QList<StateWorld>) { return PositionMeters(0, 0); }
-};
+#include "model/bm.hpp"
 
 /*!
  * Makes the robots to follow the fish mode.
@@ -34,8 +23,8 @@ public:
     virtual QList<ControlTargetType> supportedTargets() override;
 
 private:
-    //! The fish model.
-    Model m_model;
+    //! The fish model (BM = Bertrand's model).
+    Fishmodel::BM m_model;
 };
 
 #endif // CATS2_MODEL_BASED_HPP

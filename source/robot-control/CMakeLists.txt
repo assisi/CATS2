@@ -44,6 +44,7 @@ set(srcs
     model/factory.cpp
     model/bm.cpp
     model/random.cpp
+    SetupMap.cpp
 )
 
 set(hdrs

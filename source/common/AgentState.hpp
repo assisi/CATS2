@@ -7,6 +7,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QtMath>
 #include <QtGui/QColor>
+#include <QtGui/QPolygonF>
 
 /*
  * The position and orientation classes that define the agent's state.
@@ -245,8 +246,22 @@ private:
     OrientationRad m_orientationRad;
 };
 
-//! The alias for the list of points.
-using WorldPolygon = QList<PositionMeters>;
+/*!
+ * The class for the list of points.
+ */
+class WorldPolygon : public QList<PositionMeters>
+{
+public:
+    //! Checks if the polygon contains given point.
+    // FIXME FIXME FIXME : fast and dirty implementation, redo
+    bool containsPoint(PositionMeters position) const
+    {
+        QPolygonF polygon;
+        for (const PositionMeters& point : *this)
+            polygon.append(QPointF(point.x(), point.y()));
+        return polygon.containsPoint(QPointF(position.x(), position.y()), Qt::OddEvenFill);
+    }
+};
 
 //! The structure to store polygons with the corresponding color and
 //! the label. Used to store the data to be drawn on the gui.

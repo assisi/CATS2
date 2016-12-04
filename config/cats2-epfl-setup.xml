@@ -6,6 +6,7 @@
         <agents>
             <numberOfAnimals>5</numberOfAnimals>
         </agents>
+        <setupMapPath>/home/gribovsk/Software/CATS2/config/setup/two-rooms.xml</setupMapPath>
     </experiment>
     <robots>
         <numberOfRobots>1</numberOfRobots>
@@ -27,7 +28,7 @@
         </fishBot_1>
         <fishBot_2>
             <id>F</id>
-            <controlMap>/home/gribovsk/Software/CATS2/config/control-maps/test-control-map.xml</controlMap>
+            <controlMapPath>/home/gribovsk/Software/CATS2/config/control-maps/test-control-map.xml</controlMapPath>
         </fishBot_2>
     </robots>
     <setups>
