@@ -84,5 +84,8 @@ bool RobotControlSettings::init(QString configurationFileName)
     settings.readVariable(QString("experiment/setupMapPath"), setupMap, setupMap);
     m_setupMap.init(QString::fromStdString(setupMap));
 
+    // read the number of animals used in experimetns
+    settings.readVariable("experiment/agents/numberOfAnimals", m_numberOfAnimals, 0);
+
     return settingsAccepted;
 }

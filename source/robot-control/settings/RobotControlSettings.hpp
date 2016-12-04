@@ -7,6 +7,34 @@
 #include <QtCore/QMap>
 
 /*!
+ * Stores settings of the fish model.
+ */
+// TODO : read from the configuration file.
+// TODO : make the class and members private.
+struct FishModelSettings {
+public:
+    //! Constructor.
+    FishModelSettings() {}
+
+    //! Agents parameters.
+    float length = 0.02;
+    float width = 0.02;
+    float height = 0.01;
+    int fov = 169;
+    float meanSpeed = -2.65; // Log-normal distribution (so negative mean is normal)
+    float varSpeed = 0.51;
+
+    //! BM parameters.
+    float kappaFishes = 20.0;  //! \kappa_f
+    float alphasCenter = 55.0;   //! \alpha_0
+    float kappaNeutCenter = 6.3; //! \kappa_0
+    float repulsionFromAgentsAtDist = 0.02; //! Repulsion from agent if other is too close
+
+    //! Simulation parameters.
+    float dt = 1.;
+};
+
+/*!
  * Stores settings of one robot.
  */
 class RobotSettings
@@ -144,6 +172,12 @@ public:
     //! Gives the const reference to the experimental setup map.
     const SetupMap& setupMap() const { return m_setupMap; }
 
+    //! Return the number of animals used in the experiment.
+    int numberOfAnimals() const { return m_numberOfAnimals; }
+
+    //! Gives the const reference to the fish model parameters.
+    const FishModelSettings& fishModelSettings() const { return m_fishModelSettings; }
+
 private:
     //! Constructor. Defining it here prevents construction.
     RobotControlSettings() {}
@@ -168,6 +202,10 @@ private:
     int m_defaultLinearSpeedCmSec;
     //! The map of the setup, used in path planning and modelling.
     SetupMap m_setupMap;
+    //! The number of animals used in the experiment.
+    int m_numberOfAnimals;
+    //! The fish model parameters.
+    FishModelSettings m_fishModelSettings;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP
