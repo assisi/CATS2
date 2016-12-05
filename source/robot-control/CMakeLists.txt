@@ -23,8 +23,8 @@ set(srcs
     gui/RobotsWidget.cpp
     RobotsHandler.cpp
     Navigation.cpp
-    control-maps/ControlArea.cpp
-    control-maps/ControlMap.cpp
+    experiment-controllers/ControlArea.cpp
+    experiment-controllers/ControlMap.cpp
     SetupMap.cpp
     experiment-controllers/ExperimentController.cpp
 )
