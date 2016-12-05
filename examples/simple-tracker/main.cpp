@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationDomain("mobots.epfl.ch");
     QApplication::setApplicationName("CAT2-simple-tracker");
 
-    QGst::init(&argc, &argv);
+    QGst::init(nullptr, nullptr);
     QApplication app(argc, argv);
 
     // specify the setup type

@@ -6,6 +6,7 @@
         <agents>
             <numberOfAnimals>5</numberOfAnimals>
         </agents>
+        <setupMapPath>/setup/two-rooms.xml</setupMapPath>
     </experiment>
     <robots>
         <numberOfRobots>1</numberOfRobots>

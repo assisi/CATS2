@@ -1,6 +1,8 @@
 #ifndef CATS2_ROBOT_CONTROL_SETTINGS_HPP
 #define CATS2_ROBOT_CONTROL_SETTINGS_HPP
 
+#include "SetupMap.hpp"
+
 #include <QtCore/QString>
 #include <QtCore/QMap>
 
@@ -26,7 +28,7 @@ public:
 private:
     //! Robot's id.
     QString m_id;
-    //! Control map cofiguration file path.
+    //! Control map file path.
     QString m_controlMapPath;
 };
 
@@ -144,6 +146,9 @@ public:
     //! Return the path planning configuration file path.
     QString pathPlanningConfigPath() const { return m_pathPlanningConfigPath; }
 
+    //! Gives the const reference to the experimental setup map.
+    const SetupMap& setupMap() const { return m_setupMap; }
+
 private:
     //! Constructor. Defining it here prevents construction.
     RobotControlSettings() {}
@@ -168,6 +173,8 @@ private:
     int m_defaultLinearSpeedCmSec;
     //! Path-planning configuration file path.
     QString m_pathPlanningConfigPath;
+    //! The map of the setup, used in path planning and modelling.
+    SetupMap m_setupMap;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP

@@ -88,5 +88,10 @@ bool RobotControlSettings::init(QString configurationFileName)
     settings.readVariable(QString("robots/pathPlanningConfigPath"), pathPlanningConfigPath, pathPlanningConfigPath);
     m_pathPlanningConfigPath = configurationFolder + QDir::separator() + QString::fromStdString(pathPlanningConfigPath);
 
+    // read the setup map
+    std::string setupMap = "";
+    settings.readVariable(QString("experiment/setupMapPath"), setupMap, setupMap);
+    m_setupMap.init(QString::fromStdString(setupMap));
+
     return settingsAccepted;
 }

@@ -27,6 +27,7 @@ set(srcs
     navigation/Navigation.cpp
     navigation/DijkstraPathPlanner.cpp
     navigation/PathPlanner.cpp
+    SetupMap.cpp
 )
 
 set(hdrs
