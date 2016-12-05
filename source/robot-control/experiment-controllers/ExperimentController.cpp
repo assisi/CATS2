@@ -43,7 +43,15 @@ bool ExperimentController::deserialize(QString controlMapFileName)
 
     // read settings for every area.
     for (int areaIndex = 1; areaIndex <= numberOfAreas; areaIndex++) {
-        ControlArea area(QString("Area_%1").arg(areaIndex));
+        // read area id
+        std::string id;
+        settings.readVariable(QString("area_%1/id").arg(areaIndex), id);
+        // read the area type
+        std::string type;
+        settings.readVariable(QString("area_%1/type").arg(areaIndex), type);
+        // create the area object
+        ControlArea area(QString::fromUtf8(id.c_str()),
+                         ControlAreaType::fromSettingsString(QString::fromUtf8(type.c_str())));
 
         // read polygons
         int numberOfPolygons;
