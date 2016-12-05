@@ -2,7 +2,7 @@
 #define CATS2_EXPERIMENT_CONTROLLER_HPP
 
 #include "ExperimentControllerType.hpp"
-#include "experiment-controllers/ControlArea.hpp"
+#include "ControlArea.hpp"
 
 #include <QtCore/QObject>
 
@@ -14,9 +14,6 @@ class FishBot;
  * data or undefined if it is not contained by any area. The control data is
  * either predefined by the control map or computed by the controllers. Control
  * areas should covers the whole experimental area.
- * The control map for every given position of the experimental setup provides
- * the control mode and motion pattern to excecute in this position. Every robot
- * has it's own control map that it consults on every step.
  */
 class ExperimentController : public QObject
 {
@@ -57,19 +54,21 @@ signals:
     //! Sends the map areas' polygons.
     void notifyPolygons(QList<AnnotatedPolygons>);
 
+protected:
+    //! A pointer to the robot that is controlled by this controller.
+    FishBot* m_robot;
+    //! A list of control areas.
+    QList<ControlArea> m_controlAreas;
+
 private:
     //! Reads the control map from a file.
     bool deserialize(QString controlMapFileName);
 
 private:
-    //! A pointer to the robot that is controlled by this controller.
-    FishBot* m_robot;
     //! A type of the controller.
     ExperimentControllerType::Enum m_type;
     //! A flag that says if the contoller was correctly initialized.
     bool m_valid;
-    //! A list of control areas.
-    QList<ControlArea> m_controlAreas;
 };
 
 #endif // CATS2_EXPERIMENT_CONTROLLER_HPP

@@ -6,7 +6,7 @@
 #include "control-modes/ControlTarget.hpp"
 #include "MotionPatternType.hpp"
 #include "Navigation.hpp"
-#include "experiment-controllers/ControlMap.hpp"
+#include "experiment-controllers/MapController.hpp"
 
 #include <AgentState.hpp>
 
@@ -90,7 +90,7 @@ public:
 
 public slots:
     //! Requests to sends the control map areas' polygons.
-    void requestControlMapsPolygons() { m_controlMap.requestPolygons(); }
+    void requestControlMapsPolygons() { m_mapController.requestPolygons(); }
 
 signals:
     //! Informs that the robot's control mode was modified.
@@ -127,7 +127,7 @@ private:
     //! A flag that defines if the control map is used for this robot.
     bool m_useControlMap;
     //! The control map.
-    ControlMap m_controlMap;
+    MapController m_mapController;
     //! The control loop state machine that generates the targets for the navigation.
     ControlModeStateMachine m_controlStateMachine;
 

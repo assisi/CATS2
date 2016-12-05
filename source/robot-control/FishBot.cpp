@@ -19,7 +19,7 @@ FishBot::FishBot(QString id, QString controlMapPath) :
     m_state(),
     m_robotInterface(nullptr),
     m_useControlMap(false),
-    m_controlMap(controlMapPath),
+    m_mapController(this, controlMapPath),
     m_controlStateMachine(this),
     m_navigation(this)
 {
@@ -29,7 +29,7 @@ FishBot::FishBot(QString id, QString controlMapPath) :
             this, &FishBot::notifyMotionPatternChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
             this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
-    connect(&m_controlMap, &ControlMap::notifyPolygons, this, &FishBot::notifyControlMapsPolygons);
+    connect(&m_mapController, &ExperimentController::notifyPolygons, this, &FishBot::notifyControlMapsPolygons);
 }
 
 /*!
@@ -194,7 +194,7 @@ int FishBot::motionPatternFrequencyDivider(MotionPatternType::Enum type)
  */
 void FishBot::consultControlMap()
 {
-    ControlMap::ControlData controlData = m_controlMap.controlDataAtPosition(m_state.position());
+    MapController::ControlData controlData = m_mapController.step(m_state.position());
     if (controlData.controlMode != ControlModeType::UNDEFINED) {
         setControlMode(controlData.controlMode);
 

@@ -5,7 +5,7 @@
 #include <SetupType.hpp>
 #include <TimestampedFrame.hpp>
 #include <CommonPointerTypes.hpp>
-#include <experiment-controllers/ControlMap.hpp>
+#include <experiment-controllers/MapController.hpp>
 
 #include <QtCore>
 #include <QtGui>
@@ -45,7 +45,7 @@ private:
     //! The viewer handler.
     ViewerHandlerPtr m_viewerHandler;
     //! The control map.
-    QSharedPointer<ControlMap> m_controlMap;
+    QSharedPointer<MapController> m_mapController;
 };
 
 #endif // CATS2_MAIN_WINDOW_HPP

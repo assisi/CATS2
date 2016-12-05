@@ -58,13 +58,13 @@ void MainWindow::openControlMap()
     QString fileName = QFileDialog::getOpenFileName(this, tr("Choose File"),"",tr("XML files (*.xml)"));
     if (!fileName.isEmpty()){
         // first clean up
-        if (m_controlMap.data())
-            m_controlMap.reset();
+        if (m_mapController.data())
+            m_mapController.reset();
         // now make a new one
-        m_controlMap = QSharedPointer<ControlMap>(new ControlMap(fileName));
-        connect(m_controlMap.data(), &ControlMap::notifyPolygons, m_viewerHandler->widget(), &ViewerWidget::updateAreas);
+        m_mapController = QSharedPointer<MapController>(new MapController(nullptr, fileName));
+        connect(m_mapController.data(), &ExperimentController::notifyPolygons, m_viewerHandler->widget(), &ViewerWidget::updateAreas);
         m_viewerHandler->widget()->showAreas(true);
         // send out polygons to draw
-        m_controlMap->requestPolygons();
+        m_mapController->requestPolygons();
     }
 }

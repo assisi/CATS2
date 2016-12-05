@@ -24,7 +24,7 @@ set(srcs
     RobotsHandler.cpp
     Navigation.cpp
     experiment-controllers/ControlArea.cpp
-    experiment-controllers/ControlMap.cpp
+    experiment-controllers/MapController.cpp
     SetupMap.cpp
     experiment-controllers/ExperimentController.cpp
 )
