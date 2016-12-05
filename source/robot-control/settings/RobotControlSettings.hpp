@@ -95,6 +95,26 @@ private:
 };
 
 /*!
+ * Stores settings of path planning.
+ */
+class PathPlanningSettings
+{
+public:
+    //! Constructor.
+    explicit PathPlanningSettings() : m_gridSizeMeters(0.0)
+    { }
+
+    //! Sets the grid size.
+    void setGridSizeMeters(double gridSize) { m_gridSizeMeters = gridSize; }
+    //! Returns the grid size.
+    double gridSizeMeters() const { return m_gridSizeMeters; }
+
+private:
+    //! The size of the grid square for the grid based path planning.
+    double m_gridSizeMeters; // meters
+};
+
+/*!
  * Class-signleton that is used to store parameters of the robot control system.
  * Their values are loaded from the configuration file.
  * NOTE : All the settings are made as singltons to simplify the access to them;
@@ -141,13 +161,11 @@ public:
     //! Returns the default linear speed.
     int defaultLinearSpeedCmSec() const { return m_defaultLinearSpeedCmSec; }
 
-    //! Sets the path planning configuration file path.
-    void setPathPlanningConfigPath(QString pathPlanningConfigPath) { m_pathPlanningConfigPath = pathPlanningConfigPath; }
-    //! Return the path planning configuration file path.
-    QString pathPlanningConfigPath() const { return m_pathPlanningConfigPath; }
-
     //! Gives the const reference to the experimental setup map.
     const SetupMap& setupMap() const { return m_setupMap; }
+
+    //! Gives the reference to the path planning settngs.
+    const PathPlanningSettings& pathPlanningSettings() const { return m_pathPlanningSettings; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -171,10 +189,10 @@ private:
     PidControllerSettings m_pidControllerSettings;
     //! Default linear speed of the robot.
     int m_defaultLinearSpeedCmSec;
-    //! Path-planning configuration file path.
-    QString m_pathPlanningConfigPath;
     //! The map of the setup, used in path planning and modelling.
     SetupMap m_setupMap;
+    //! The path planning settings.
+    PathPlanningSettings m_pathPlanningSettings;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP

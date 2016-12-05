@@ -1,6 +1,8 @@
 #ifndef CATS2_DIJKSTRA_PATH_PLANNER_HPP
 #define CATS2_DIJKSTRA_PATH_PLANNER_HPP
 
+#include "SetupMap.hpp"
+
 #include <AgentState.hpp>
 
 #include <QtCore/QPoint>
@@ -23,20 +25,20 @@ class DijkstraPathPlanner : public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    DijkstraPathPlanner(QString setupFilePath);
+    DijkstraPathPlanner();
 
     //! Generates a path plan from the current to the target position.
     QQueue<PositionMeters> plan(PositionMeters start, PositionMeters goal);
 
 public:
     //! Returns the polygon representing the setup.
-    WorldPolygon polygon() const { return m_polygon; }
+    WorldPolygon polygon() const { return m_setupMap.polygon(); }
     //! Returns the validity flag.
     bool isValid() const { return m_valid; }
 
 private:
-    //! Reads the configuration space from the file and builds the graph.
-    bool init(QString controlMapFileName);
+    //! Reads the configuration space and builds the graph.
+    bool init();
 
     //! Adds an edge between two points.
     void addEdge(PositionMeters startPoint, PositionMeters endPoint);
@@ -78,18 +80,13 @@ private:
     //! The graph representing the setup.
     UndirectedGraph m_graph;
 
+    //! The setup map.
+    SetupMap m_setupMap;
     //! The size of the grid square.
-    double m_gridSizeM;
-    //! The polygon of the setup.
-    WorldPolygon m_polygon;
-    //! The min value of the 'x' coordinate to use as a reference point.
-    float m_minX;
-    //! The min value of the 'y' coordinate to use as a reference point.
-    float m_minY;
+    double m_gridSizeMeters;
 
     //! Maps the grid nodes' coordinates to the vertices descriptors in the graph.
     QMap <QPoint, Vertex>  m_gridNodeToVertexMap;
-
 };
 
 #endif // CATS2_DIJKSTRA_PATH_PLANNER_HPP

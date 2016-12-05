@@ -6,7 +6,7 @@
  * Constructor.
  */
 PathPlanner::PathPlanner() :
-    m_pathPlanner(RobotControlSettings::get().pathPlanningConfigPath()),
+    m_pathPlanner(),
     m_lastReceivedTargetPosition(),
     m_subTargetsQueue(),
     m_currentSubTargetPosition()

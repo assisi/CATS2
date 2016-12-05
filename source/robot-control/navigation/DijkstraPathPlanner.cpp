@@ -1,5 +1,7 @@
 #include "DijkstraPathPlanner.hpp"
 
+#include "settings/RobotControlSettings.hpp"
+
 #include <AgentState.hpp>
 
 #include <settings/ReadSettingsHelper.hpp>
@@ -16,11 +18,11 @@ bool operator<(QPoint const& p1, QPoint const& p2)
 /*!
  * Constructor.
  */
-DijkstraPathPlanner::DijkstraPathPlanner(QString setupFilePath) :
-    m_minX(std::numeric_limits<float>::max()),
-    m_minY(std::numeric_limits<float>::max())
+DijkstraPathPlanner::DijkstraPathPlanner() :
+    m_setupMap(RobotControlSettings::get().setupMap()),
+    m_gridSizeMeters(RobotControlSettings::get().pathPlanningSettings().gridSizeMeters())
 {
-    m_valid = init(setupFilePath);
+    m_valid = init();
     if (m_valid)
         qDebug() << Q_FUNC_INFO << "Successfully initialized the dijkstra path planner";
     else
@@ -30,38 +32,20 @@ DijkstraPathPlanner::DijkstraPathPlanner(QString setupFilePath) :
 /*!
  * Reads the configuration space from the file and builds the graph.
  */
-bool DijkstraPathPlanner::init(QString controlMapFileName)
+bool DijkstraPathPlanner::init()
 {
     bool successful = true;
 
-    ReadSettingsHelper settings(controlMapFileName);
-
     // read the size of the grid square and the polygon
-    settings.readVariable("gridSizeM", m_gridSizeM);
-    successful = successful && (m_gridSizeM > 0);
-
-    std::vector<cv::Point2f> polygon;
-    settings.readVariable(QString("polygon"), polygon);
-    successful = successful && (polygon.size() > 0);
+    successful = (m_gridSizeMeters > 0) && m_setupMap.isValid();
 
     // build a graph
     if (successful) {
-        // find min/max values
-        float maxX = std::numeric_limits<float>::min();
-        float maxY = std::numeric_limits<float>::min();
-        for (cv::Point2f& point : polygon) {
-            m_polygon.append(PositionMeters(point.x, point.y));
-            m_minY = qMin(m_minY, point.y);
-            m_minX = qMin(m_minX, point.x);
-            maxY = qMax(maxY, point.y);
-            maxX = qMax(maxX, point.x);
-        }
-
         // add vertices
         int row = 0; // left to right
         int col = 0; // down to up
-        while (m_minX + col * m_gridSizeM < maxX) {
-            while (m_minY + row * m_gridSizeM < maxY) {
+        while (m_setupMap.minX() + col * m_gridSizeMeters < m_setupMap.maxX()) {
+            while (m_setupMap.minY() + row * m_gridSizeMeters < m_setupMap.maxY()) {
                 Vertex vertex = boost::add_vertex(m_graph);
                 m_graph[boost::num_vertices(m_graph) - 1].row = row;
                 m_graph[boost::num_vertices(m_graph) - 1].col = col;
@@ -75,29 +59,29 @@ bool DijkstraPathPlanner::init(QString controlMapFileName)
         // add edges
         row = 0; // left to right
         col = 0; // down to up
-        double x = m_minX;
-        double y = m_minY;
-        while (x < maxX) {
-            while (y < maxY) {
+        double x = m_setupMap.minX();
+        double y = m_setupMap.minY();
+        while (x < m_setupMap.maxX()) {
+            while (y < m_setupMap.maxY()) {
                 // make the connections with four neighbours to the right, up,
                 // and up and down diagonal
                 PositionMeters currentPoint(x, y);
-                addEdge(currentPoint, PositionMeters(x + m_gridSizeM, y));
-                addEdge(currentPoint, PositionMeters(x, y + m_gridSizeM));
-                addEdge(currentPoint, PositionMeters(x + m_gridSizeM, y + m_gridSizeM));
-                addEdge(currentPoint, PositionMeters(x + m_gridSizeM, y - m_gridSizeM));
+                addEdge(currentPoint, PositionMeters(x + m_gridSizeMeters, y));
+                addEdge(currentPoint, PositionMeters(x, y + m_gridSizeMeters));
+                addEdge(currentPoint, PositionMeters(x + m_gridSizeMeters, y + m_gridSizeMeters));
+                addEdge(currentPoint, PositionMeters(x + m_gridSizeMeters, y - m_gridSizeMeters));
                 // not needed but added as a test
 //                addEdge(currentPoint, PositionMeters(x - m_gridSizeM, y));
 //                addEdge(currentPoint, PositionMeters(x, y - m_gridSizeM));
 //                addEdge(currentPoint, PositionMeters(x - m_gridSizeM, y + m_gridSizeM));
 //                addEdge(currentPoint, PositionMeters(x - m_gridSizeM, y - m_gridSizeM));
                 row++;
-                y += m_gridSizeM;
+                y += m_gridSizeMeters;
             }
             col++;
-            x += m_gridSizeM;
+            x += m_gridSizeMeters;
             row = 0;
-            y = m_minY;
+            y = m_setupMap.minY();
         }
     }
 
@@ -109,7 +93,7 @@ bool DijkstraPathPlanner::init(QString controlMapFileName)
  */
 void DijkstraPathPlanner::addEdge(PositionMeters firstPoint, PositionMeters secondPoint)
 {
-    if (m_polygon.containsPoint(firstPoint) && m_polygon.containsPoint(secondPoint)) {
+    if (m_setupMap.containsPoint(firstPoint) && m_setupMap.containsPoint(secondPoint)) {
         double distance = firstPoint.distance2DTo(secondPoint);
         Vertex firstVertex = m_gridNodeToVertexMap[positionToGridNode(firstPoint)];
         Vertex secondVertex = m_gridNodeToVertexMap[positionToGridNode(secondPoint)];
@@ -123,8 +107,8 @@ void DijkstraPathPlanner::addEdge(PositionMeters firstPoint, PositionMeters seco
 QPoint DijkstraPathPlanner::positionToGridNode(PositionMeters position) const
 {
     QPoint point;
-    point.setX(floor((position.x() - m_minX) / m_gridSizeM + 0.5));
-    point.setY(floor((position.y() - m_minY) / m_gridSizeM + 0.5));
+    point.setX(floor((position.x() - m_setupMap.minX()) / m_gridSizeMeters + 0.5));
+    point.setY(floor((position.y() - m_setupMap.minY()) / m_gridSizeMeters + 0.5));
     return point;
 }
 
@@ -134,8 +118,8 @@ QPoint DijkstraPathPlanner::positionToGridNode(PositionMeters position) const
 PositionMeters DijkstraPathPlanner::gridNodeToPosition(QPoint gridNode) const
 {
      PositionMeters position;
-     position.setX(gridNode.x() * m_gridSizeM + m_minX);
-     position.setY(gridNode.y() * m_gridSizeM + m_minY);
+     position.setX(gridNode.x() * m_gridSizeMeters + m_setupMap.minX());
+     position.setY(gridNode.y() * m_gridSizeMeters + m_setupMap.minY());
      return position;
 }
 
@@ -146,7 +130,7 @@ PositionMeters DijkstraPathPlanner::gridNodeToPosition(QPoint gridNode) const
  */
 QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint, PositionMeters goalPoint)
 {
-    if (m_polygon.containsPoint(startPoint) && m_polygon.containsPoint(goalPoint)) {
+    if (m_setupMap.containsPoint(startPoint) && m_setupMap.containsPoint(goalPoint)) {
         Vertex startVertex = m_gridNodeToVertexMap[positionToGridNode(startPoint)];
         Vertex goalVertex = m_gridNodeToVertexMap[positionToGridNode(goalPoint)];
 

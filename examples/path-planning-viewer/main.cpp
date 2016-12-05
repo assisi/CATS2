@@ -4,6 +4,7 @@
 #include <settings/CalibrationSettings.hpp>
 #include <settings/GrabberSettings.hpp>
 #include <settings/ViewerSettings.hpp>
+#include <settings/RobotControlSettings.hpp>
 #include <CoordinatesConversion.hpp>
 #include <CommonPointerTypes.hpp>
 #include <GrabberPointerTypes.hpp>
@@ -44,9 +45,11 @@ int main(int argc, char *argv[])
                                             setupType, needTargetFrameSize)) {
                 grabberHandler = GrabberHandlerPtr(new GrabberHandler(setupType));
                 if (ViewerSettings::get().init(CommandLineParameters::get().configurationFilePath(), setupType)){
-                    MainWindow mainWindow(setupType, grabberHandler->inputQueue(), coordinatesConversion);
-                    mainWindow.show();
-                    return app.exec();
+                    if (RobotControlSettings::get().init(CommandLineParameters::get().configurationFilePath())) {
+                        MainWindow mainWindow(setupType, grabberHandler->inputQueue(), coordinatesConversion);
+                        mainWindow.show();
+                        return app.exec();
+                    }
                 }
             } else {
                 qDebug() << Q_FUNC_INFO << "Grabber settings are not defined";

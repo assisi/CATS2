@@ -83,15 +83,15 @@ bool RobotControlSettings::init(QString configurationFileName)
     settings.readVariable("robots/defaultLinearSpeedCmSec", m_defaultLinearSpeedCmSec);
     settingsAccepted = settingsAccepted && (m_defaultLinearSpeedCmSec > 0);
 
-    // read the path planning configuration file path
-    std::string pathPlanningConfigPath = "";
-    settings.readVariable(QString("robots/pathPlanningConfigPath"), pathPlanningConfigPath, pathPlanningConfigPath);
-    m_pathPlanningConfigPath = configurationFolder + QDir::separator() + QString::fromStdString(pathPlanningConfigPath);
-
     // read the setup map
     std::string setupMap = "";
     settings.readVariable(QString("experiment/setupMapPath"), setupMap, setupMap);
-    m_setupMap.init(QString::fromStdString(setupMap));
+    m_setupMap.init(configurationFolder + QDir::separator() + QString::fromStdString(setupMap));
+
+    // read the path planning settings
+    double gridSizeMeters = 0;
+    settings.readVariable("robots/pathPlanning/gridSizeM", gridSizeMeters, gridSizeMeters);
+    m_pathPlanningSettings.setGridSizeMeters(gridSizeMeters);
 
     return settingsAccepted;
 }

@@ -39,7 +39,6 @@ MainWindow::MainWindow(SetupType::Enum setupType,
     // connect the window's actions
     connect(m_ui->actionZoomIn, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::onZoomIn);
     connect(m_ui->actionZoomOut, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::onZoomOut);
-    connect(m_ui->actionOpenPathPlanningConfig, &QAction::triggered, this, &MainWindow::openControlMap);
     connect(m_ui->actionAdjustView, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::adjust);
     connect(m_ui->actionSaveCurrentView, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::saveCurrentFrameToFile);
 
@@ -47,6 +46,22 @@ MainWindow::MainWindow(SetupType::Enum setupType,
 
     m_startPosition.setValid(false);
     m_goalPosition.setValid(false);
+
+    // create the path planner
+    // first clean up
+    if (m_pathPlanner.data())
+        m_pathPlanner.reset();
+    // now make a new one
+    m_pathPlanner = QSharedPointer<DijkstraPathPlanner>(new DijkstraPathPlanner());
+    m_viewerHandler->widget()->showAreas(true);
+    // show the path planning area
+    QList<AnnotatedPolygons> polygons;
+    AnnotatedPolygons annotatedPolygons;
+    annotatedPolygons.color = QColor(Qt::red);
+    annotatedPolygons.label = "Working space";
+    annotatedPolygons.polygons.append(m_pathPlanner->polygon());
+    polygons.append(annotatedPolygons);
+    m_viewerHandler->widget()->updateAreas(polygons);
 }
 
 /*!
@@ -55,31 +70,6 @@ MainWindow::MainWindow(SetupType::Enum setupType,
 MainWindow::~MainWindow()
 {
     qDebug() << Q_FUNC_INFO << "Destroying the object";
-}
-
-/*!
- * Open control map.
- */
-void MainWindow::openControlMap()
-{
-    // get the file name
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose File"),"",tr("XML files (*.xml)"));
-    if (!fileName.isEmpty()){
-        // first clean up
-        if (m_pathPlanner.data())
-            m_pathPlanner.reset();
-        // now make a new one
-        m_pathPlanner = QSharedPointer<DijkstraPathPlanner>(new DijkstraPathPlanner(fileName));
-        m_viewerHandler->widget()->showAreas(true);
-        // show the path planning area
-        QList<AnnotatedPolygons> polygons;
-        AnnotatedPolygons annotatedPolygons;
-        annotatedPolygons.color = QColor(Qt::red);
-        annotatedPolygons.label = "Working space";
-        annotatedPolygons.polygons.append(m_pathPlanner->polygon());
-        polygons.append(annotatedPolygons);
-        m_viewerHandler->widget()->updateAreas(polygons);
-    }
 }
 
 /*!

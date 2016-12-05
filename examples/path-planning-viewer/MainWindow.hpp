@@ -35,8 +35,6 @@ public:
     virtual ~MainWindow() override;
 
 private slots:
-    //! Open control map.
-    void openControlMap();
     //! Sets the start and goal positions.
     void onButtonClicked(Qt::MouseButton button,PositionMeters worldPosition);
 
