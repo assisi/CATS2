@@ -2,7 +2,7 @@
 #define CATS2_EXPERIMENT_CONTROLLER_HPP
 
 #include "ExperimentControllerType.hpp"
-#include "control-maps/ControlArea.hpp"
+#include "experiment-controllers/ControlArea.hpp"
 
 #include <QtCore/QObject>
 

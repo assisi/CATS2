@@ -5,7 +5,7 @@
 #include <SetupType.hpp>
 #include <TimestampedFrame.hpp>
 #include <CommonPointerTypes.hpp>
-#include <control-maps/ControlMap.hpp>
+#include <experiment-controllers/ControlMap.hpp>
 
 #include <QtCore>
 #include <QtGui>

@@ -6,7 +6,7 @@
 #include "control-modes/ControlTarget.hpp"
 #include "MotionPatternType.hpp"
 #include "Navigation.hpp"
-#include "control-maps/ControlMap.hpp"
+#include "experiment-controllers/ControlMap.hpp"
 
 #include <AgentState.hpp>
 
