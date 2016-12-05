@@ -26,6 +26,7 @@ set(srcs
     control-maps/ControlArea.cpp
     control-maps/ControlMap.cpp
     SetupMap.cpp
+    experiment-controllers/ExperimentController.cpp
 )
 
 set(hdrs
@@ -34,6 +35,7 @@ set(hdrs
     RobotControlPointerTypes.hpp
     MotionPatternType.hpp
     control-modes/ControlModeType.hpp
+    experiment-controllers/ExperimentControllerType.hpp
 )
 
 qt5_wrap_ui(uis_hdrs gui/RobotControlWidget.ui gui/RobotsWidget.ui)
