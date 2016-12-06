@@ -6,7 +6,8 @@
 #include "control-modes/ControlTarget.hpp"
 #include "MotionPatternType.hpp"
 #include "navigation/Navigation.hpp"
-#include "control-maps/ControlMap.hpp"
+#include "experiment-controllers/ExperimentControllerType.hpp"
+#include "experiment-controllers/ExperimentManager.hpp"
 
 #include <AgentState.hpp>
 
@@ -25,7 +26,7 @@ class FishBot : public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    explicit FishBot(QString id, QString controlMapPath);
+    explicit FishBot(QString id, QString controlAreasPath);
     //! Destructor.
     virtual ~FishBot() final;
 
@@ -43,15 +44,20 @@ public:
     void setupConnection(int robotIndex);
 
 public:
+    //! Returns the supported controllers.
+    QList<ExperimentControllerType::Enum> supportedControllers() const { return m_experimentManager.supportedControllers(); }
+    //! Sets the controller.
+    void setController(ExperimentControllerType::Enum type) { m_experimentManager.setController(type); }
+    //! Return the type of the current controller.
+    ExperimentControllerType::Enum currentController() const { return m_experimentManager.currentController(); }
+
+
     //! Returns the supported control modes.
-    QList<ControlModeType::Enum> supportedControlModes();
+    QList<ControlModeType::Enum> supportedControlModes() const { return m_controlStateMachine.supportedControlModes(); }
     //! Sets the control mode.
     void setControlMode(ControlModeType::Enum type);
-    //! Return the control mode.
+    //! Return the type of the current control mode.
     ControlModeType::Enum currentControlMode() const { return m_controlStateMachine.currentControlMode(); }
-
-    //! Sets the use-control-map flag.
-    void setUseControlMap(bool useControlMap) { m_useControlMap = useControlMap; }
 
     //! Checks that the current control modes can generate targets with
     //! different motion patterns.
@@ -87,12 +93,16 @@ public:
     //! Received states of all tracked fish, keeps them in case it's needed by
     //! the control mode.
     void setFishStates(QList<StateWorld> fishStates);
+    //! Returns the states of all tracked fish.
+    QList<StateWorld> fishStates() const { return m_fishStates; }
 
 public slots:
     //! Requests to sends the control map areas' polygons.
-    void requestControlMapsPolygons() { m_controlMap.requestPolygons(); }
+    void requestControlAreasPolygons() { m_experimentManager.requestPolygons(); }
 
 signals:
+    //! Informs that the robot's experiment controller was modified.
+    void notifyControllerChanged(ExperimentControllerType::Enum type);
     //! Informs that the robot's control mode was modified.
     void notifyControlModeChanged(ControlModeType::Enum type);
     //! Informs that the robot's motion pattern was changed.
@@ -104,7 +114,7 @@ signals:
     //! Informs that the robot is in manual control mode.
     void notifyInManualMode(QString id);
     //! Sends the control map areas' polygons.
-    void notifyControlMapsPolygons(QList<AnnotatedPolygons>);
+    void notifyControlAreasPolygons(QList<AnnotatedPolygons>);
 
 public:
     //! Distance between robot's wheels.
@@ -112,7 +122,7 @@ public:
 
 private:
     //! Sets the control parameters based on the control map.
-    void consultControlMap();
+    void stepExperimentManager();
 
 private:
     //! The robot's id.
@@ -124,10 +134,10 @@ private:
     //! The interface to communicate with the robot. Shared by all robots.
     Aseba::DBusInterfacePtr m_robotInterface;
 
-    //! A flag that defines if the control map is used for this robot.
-    bool m_useControlMap;
-    //! The control map.
-    ControlMap m_controlMap;
+    // TODO : to make this class members scopedpointers and use forward declaration
+    // for efficiency
+    //! The "super" controller that manages specific experiments.
+    ExperimentManager m_experimentManager;
     //! The control loop state machine that generates the targets for the navigation.
     ControlModeStateMachine m_controlStateMachine;
 

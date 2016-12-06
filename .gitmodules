@@ -4,3 +4,6 @@
 [submodule "dependencies/aseba"]
 	path = dependencies/aseba
 	url = git@github.com:aseba-community/aseba.git
+[submodule "dependencies/fish-model"]
+	path = dependencies/fish-model
+	url = git@github.com:gribovskiy/FishModel.git

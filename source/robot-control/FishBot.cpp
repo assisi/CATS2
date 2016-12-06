@@ -12,24 +12,26 @@
 /*!
  * Constructor.
  */
-FishBot::FishBot(QString id, QString controlMapPath) :
+FishBot::FishBot(QString id, QString controlAreasPath) :
     QObject(nullptr),
     m_id(id),
     m_name(QString("Fish_bot_%1").arg(m_id)),
     m_state(),
     m_robotInterface(nullptr),
-    m_useControlMap(false),
-    m_controlMap(controlMapPath),
+    m_experimentManager(this, controlAreasPath),
     m_controlStateMachine(this),
     m_navigation(this)
 {
+    connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
+            this, &FishBot::notifyControllerChanged);
+    connect(&m_experimentManager, &ExperimentManager::notifyPolygons,
+            this, &FishBot::notifyControlAreasPolygons);
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternChanged,
             this, &FishBot::notifyMotionPatternChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
             this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
-    connect(&m_controlMap, &ControlMap::notifyPolygons, this, &FishBot::notifyControlMapsPolygons);
 }
 
 /*!
@@ -79,19 +81,19 @@ void FishBot::setupConnection(int robotIndex)
  */
 void FishBot::stepControl()
 {
-    // TODO : to replace this part by a experiment-controller module that
-    // has several types of experiment to suggest including a control map
-    // if it is provided by the configuration file
-    if (m_useControlMap)
-        // check the area map to see if the control mode is to be changed
-        consultControlMap();
+    // check the experiment controller to see if the control mode is to be changed
+    if (m_experimentManager.isActive()) {
+        stepExperimentManager();
+    }
 
     // check the incoming events to see if the control mode is to be changed
     // due to the low-power or the obstacle-avoidance routine - THIS CAN BE DONE
     // IN THE CALLBACK AND MANAGED BY THE PRIORITY LOGICS OR BY A FLAG ON THE
     // CONTROL MODE "ACCEPTS CONTROL MODE CHANGE"
 
-    // step the control mode state machine
+    // step the control mode state machine with the robot's position and
+    // other agents positions.
+    // TODO : to define how to pass the other agents positions
     ControlTargetPtr controlTarget = m_controlStateMachine.step();
 
     // step the navigation with the resulted target values
@@ -100,28 +102,16 @@ void FishBot::stepControl()
 }
 
 /*!
- * Returns the supported control modes.
- */
-QList<ControlModeType::Enum> FishBot::supportedControlModes()
-{
-    return m_controlStateMachine.supportedControlModes();
-}
-
-/*!
  * Sets the control mode.
  */
 void FishBot::setControlMode(ControlModeType::Enum type)
 {
-    if (m_controlStateMachine.setControlMode(type)) {
-        // every time the mode changes we stop the robot to give the user the
-        // time to input the control parameters (target position, etc)
-        m_navigation.stop();
+    m_controlStateMachine.setControlMode(type);
 
-        // a check for a special case - joystick controlled manual mode, only one
-        // robot can be controlled, hence other robots in manual mode switch to idle
-        if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
-            emit notifyInManualMode(m_id);
-    }
+    // a check for a special case - joystick controlled manual mode, only one
+    // robot can be controlled, hence other robots in manual mode switch to idle
+    if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
+        emit notifyInManualMode(m_id);
 }
 
 /*! Received positions of all tracked robots, finds and sets the one
@@ -197,9 +187,9 @@ int FishBot::motionPatternFrequencyDivider(MotionPatternType::Enum type)
 /*!
  * Sets the control parameters based on the control map.
  */
-void FishBot::consultControlMap()
+void FishBot::stepExperimentManager()
 {
-    ControlMap::ControlData controlData = m_controlMap.controlDataAtPosition(m_state.position());
+    ExperimentController::ControlData controlData = m_experimentManager.step();
     if (controlData.controlMode != ControlModeType::UNDEFINED) {
         setControlMode(controlData.controlMode);
 

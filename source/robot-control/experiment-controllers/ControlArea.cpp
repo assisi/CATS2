@@ -3,8 +3,9 @@
 /*!
  * Constructor.
  */
-ControlArea::ControlArea(QString label) :
-    m_label(label)
+ControlArea::ControlArea(QString id, ControlAreaType::Enum type = ControlAreaType::UNDEFINED) :
+    m_id(id),
+    m_type(type)
 {
 
 }
@@ -48,6 +49,6 @@ AnnotatedPolygons ControlArea::annotatedPolygons() const
         polygons.polygons.append(worldPolygon);
     }
     polygons.color = m_color;
-    polygons.label = m_label;
+    polygons.label = m_id;
     return polygons;
 }

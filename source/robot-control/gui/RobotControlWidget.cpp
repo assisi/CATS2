@@ -21,13 +21,28 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
     m_ui->robotNameLabel->setText(robot->name());
 
     // set the controls
-    // disable controls when the map-based control is active
-    connect(m_ui->controlMapCheckBox, &QCheckBox::toggled,
-            [=](bool checked){ m_ui->controlModeComboBox->setEnabled(!checked);
-                               m_ui->navigationComboBox->setEnabled(!checked);
-                               m_ui->frequencyDividerSpinBox->setEnabled(!checked);
-                               m_robot->setUseControlMap(checked);
-                             });
+    // set the robot's controller when it is changed in the combobox
+    connect(m_ui->experimentControllerComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            [=](int index)
+            {
+                m_robot->setController(static_cast<ExperimentControllerType::Enum>(m_ui->experimentControllerComboBox->currentData().toInt()));
+                // disable controls when the experiment control is active
+                m_ui->controllerGroupBox->setEnabled(m_robot->currentController() == ExperimentControllerType::NONE);
+            });
+    // when the controller is changed on the robot
+    connect(m_robot.data(), &FishBot::notifyControllerChanged,
+            [=](ExperimentControllerType::Enum type)
+            {
+                QString controllerTypeString = ExperimentControllerType::toString(type);
+                if (m_ui->experimentControllerComboBox->currentText() != controllerTypeString)
+                    m_ui->experimentControllerComboBox->setCurrentText(controllerTypeString);
+            });
+    // fill the controllers
+    QList<ExperimentControllerType::Enum> controllerTypes = robot->supportedControllers();
+    foreach (ExperimentControllerType::Enum type, controllerTypes) {
+        m_ui->experimentControllerComboBox->addItem(ExperimentControllerType::toString(type), type);
+    }
+    m_ui->experimentControllerComboBox->setCurrentText(ExperimentControllerType::toString(m_robot->currentController()));
 
     // set the robot's control mode when it is changed in the combobox
     connect(m_ui->controlModeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),

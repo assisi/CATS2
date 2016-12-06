@@ -7,6 +7,34 @@
 #include <QtCore/QMap>
 
 /*!
+ * Stores settings of the fish model.
+ */
+// TODO : read from the configuration file.
+// TODO : make the class and members private.
+struct FishModelSettings {
+public:
+    //! Constructor.
+    FishModelSettings() {}
+
+    //! Agents parameters.
+    float length = 0.02;
+    float width = 0.02;
+    float height = 0.01;
+    int fov = 169;
+    float meanSpeed = -2.65; // Log-normal distribution (so negative mean is normal)
+    float varSpeed = 0.51;
+
+    //! BM parameters.
+    float kappaFishes = 20.0;  //! \kappa_f
+    float alphasCenter = 55.0;   //! \alpha_0
+    float kappaNeutCenter = 6.3; //! \kappa_0
+    float repulsionFromAgentsAtDist = 0.02; //! Repulsion from agent if other is too close
+
+    //! Simulation parameters.
+    float dt = 1.;
+};
+
+/*!
  * Stores settings of one robot.
  */
 class RobotSettings
@@ -21,15 +49,15 @@ public:
     QString id() const { return m_id; }
 
     //! Sets control map file path.
-    void setControlMapPath(QString controlMapPath) { m_controlMapPath = controlMapPath; }
+    void setControlAreasPath(QString controlAreasPath) { m_controlAreasPath = controlAreasPath; }
     //! Return control map file path.
-    QString controlMapFilePath() const { return m_controlMapPath; }
+    QString controlAreasFilePath() const { return m_controlAreasPath; }
 
 private:
     //! Robot's id.
     QString m_id;
     //! Control map file path.
-    QString m_controlMapPath;
+    QString m_controlAreasPath;
 };
 
 /*!
@@ -164,6 +192,12 @@ public:
     //! Gives the const reference to the experimental setup map.
     const SetupMap& setupMap() const { return m_setupMap; }
 
+    //! Return the number of animals used in the experiment.
+    int numberOfAnimals() const { return m_numberOfAnimals; }
+
+    //! Gives the const reference to the fish model parameters.
+    const FishModelSettings& fishModelSettings() const { return m_fishModelSettings; }
+
     //! Gives the reference to the path planning settngs.
     const PathPlanningSettings& pathPlanningSettings() const { return m_pathPlanningSettings; }
 
@@ -193,6 +227,10 @@ private:
     SetupMap m_setupMap;
     //! The path planning settings.
     PathPlanningSettings m_pathPlanningSettings;
+    //! The number of animals used in the experiment.
+    int m_numberOfAnimals;
+    //! The fish model parameters.
+    FishModelSettings m_fishModelSettings;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP

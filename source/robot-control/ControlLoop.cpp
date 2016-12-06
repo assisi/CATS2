@@ -10,12 +10,12 @@ ControlLoop::ControlLoop() :
     QObject(nullptr),
     m_robotsInterface(new Aseba::DBusInterface()),
     m_selectedRobot(),
-    m_sendMaps(false)
+    m_sendAreas(false)
 {
     // create the robots
     for (QString id : RobotControlSettings::get().ids()) {
-        QString controlMapPath = RobotControlSettings::get().robotSettings(id).controlMapFilePath();
-        m_robots.append(FishBotPtr(new FishBot(id, controlMapPath)));
+        QString controlAreasPath = RobotControlSettings::get().robotSettings(id).controlAreasFilePath();
+        m_robots.append(FishBotPtr(new FishBot(id, controlAreasPath)));
         m_robots.last()->setRobotInterface(m_robotsInterface);
         // ensure that only one robot can be in manual mode
         connect(m_robots.last().data(), &FishBot::notifyInManualMode,
@@ -26,7 +26,7 @@ ControlLoop::ControlLoop() :
                             robot->setControlMode(ControlModeType::IDLE);
                 });
         // send the cotrol maps
-        connect(m_robots.last().data(), &FishBot::notifyControlMapsPolygons,
+        connect(m_robots.last().data(), &FishBot::notifyControlAreasPolygons,
                 this, &ControlLoop::notifyCurrentRobotControlMapsPolygons);
     }
 
@@ -119,7 +119,7 @@ void ControlLoop::selectRobot(QString name)
                 qDebug() << Q_FUNC_INFO << name << "is selected";
                 m_selectedRobot = robot;
                 // update the control maps
-                sendControlMaps(m_sendMaps);
+                sendControlAreas(m_sendAreas);
             }
             break;
         }
@@ -140,10 +140,10 @@ void ControlLoop::selectRobot(QString name)
  /*!
   * Asks to send control maps for the currently selected robot.
   */
- void ControlLoop::sendControlMaps(bool sendMaps)
+ void ControlLoop::sendControlAreas(bool sendAreas)
  {
-     m_sendMaps = sendMaps;
-     if (m_sendMaps && m_selectedRobot.data()) {
-         m_selectedRobot->requestControlMapsPolygons();
+     m_sendAreas = sendAreas;
+     if (m_sendAreas && m_selectedRobot.data()) {
+         m_selectedRobot->requestControlAreasPolygons();
      }
  }

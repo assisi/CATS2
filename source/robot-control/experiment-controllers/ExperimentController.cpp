@@ -1,50 +1,40 @@
-#include "ControlMap.hpp"
+#include "ExperimentController.hpp"
 
 #include <settings/ReadSettingsHelper.hpp>
 
 /*!
- * Constructor. Gets the file name containing the control map description.
+ * Constructor. Gets the file name containing the control areas description.
  */
-ControlMap::ControlMap(QString controlMapFileName) :
-    QObject(nullptr)
+ExperimentController::ExperimentController(FishBot* robot,                                           
+                                           QString controlAreasFileName,
+                                           ExperimentControllerType::Enum type) :
+    QObject(nullptr),
+    m_robot(robot),
+    m_type(type)
 {
-    m_valid = init(controlMapFileName);
+    m_valid = deserialize(controlAreasFileName);
     if (m_valid)
-        qDebug() << Q_FUNC_INFO << "Successfully read a control map from" << controlMapFileName;
+        qDebug() << Q_FUNC_INFO << "Successfully read a control map from" << controlAreasFileName;
     else
-        qDebug() << Q_FUNC_INFO << "Could not read a control map from" << controlMapFileName;
+        qDebug() << Q_FUNC_INFO << "Could not read a control map from" << controlAreasFileName;
 }
 
 /*!
- * Returns the control values for given position. If it's not in the map
- * then default (UNDEFINED) values are returned.
+ * Returns the control values for given position.
  */
-ControlMap::ControlData ControlMap::controlDataAtPosition(PositionMeters position)
+ExperimentController::ControlData ExperimentController::step()
 {
-    // values are initialized as undefined
-    ControlData controlData;
-
-    if (position.isValid()) {
-        QPointF point(position.x(), position.y());
-        foreach (const ControlArea& controlArea, m_controlAreas) {
-            if (controlArea.contains(point)) {
-                controlData.controlMode = controlArea.controlMode();
-                controlData.motionPattern = controlArea.motionPattern();
-                return controlData;
-            }
-        }
-    }
-    return controlData;
+    return ControlData();
 }
 
 /*!
  * Reads the control map from a file.
  */
-bool ControlMap::init(QString controlMapFileName)
+bool ExperimentController::deserialize(QString controlAreasFileName)
 {
     bool successful = true;
 
-    ReadSettingsHelper settings(controlMapFileName);
+    ReadSettingsHelper settings(controlAreasFileName);
 
     // read the number of areas
     int numberOfAreas;
@@ -53,7 +43,15 @@ bool ControlMap::init(QString controlMapFileName)
 
     // read settings for every area.
     for (int areaIndex = 1; areaIndex <= numberOfAreas; areaIndex++) {
-        ControlArea area(QString("Area_%1").arg(areaIndex));
+        // read area id
+        std::string id;
+        settings.readVariable(QString("area_%1/id").arg(areaIndex), id);
+        // read the area type
+        std::string type;
+        settings.readVariable(QString("area_%1/type").arg(areaIndex), type);
+        // create the area object
+        ControlArea area(QString::fromUtf8(id.c_str()),
+                         ControlAreaType::fromSettingsString(QString::fromUtf8(type.c_str())));
 
         // read polygons
         int numberOfPolygons;
@@ -92,7 +90,7 @@ bool ControlMap::init(QString controlMapFileName)
 /*!
  * Sends the area polygons.
  */
-void ControlMap::requestPolygons()
+void ExperimentController::requestPolygons()
 {
     QList<AnnotatedPolygons> polygons;
     for (const auto& area : m_controlAreas) {

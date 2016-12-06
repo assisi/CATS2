@@ -27,11 +27,11 @@
         <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
         <fishBot_1>
             <id>H</id>
-            <controlMapPath>control-maps/test-control-map.xml</controlMapPath>
+            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_1>
         <fishBot_2>
             <id>F</id>
-            <controlMapPath>control-maps/test-control-map.xml</controlMapPath>
+            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_2>
     </robots>
     <setups>

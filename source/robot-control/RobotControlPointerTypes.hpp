@@ -41,4 +41,10 @@ using ControlLoopPtr = QSharedPointer<ControlLoop>;
 class RobotsHandler;
 using RobotsHandlerPtr = QSharedPointer<RobotsHandler>;
 
+/*!
+ * The alias for the shared pointer to experiment controller class.
+ */
+class ExperimentController;
+using ExperimentControllerPtr = QSharedPointer<ExperimentController>;
+
 #endif // CATS2_ROBOT_CONTROL_POINTER_TYPES_HPP
