@@ -38,11 +38,13 @@ public:
 public:
     //! Returns the validity flag.
     bool isValid() const { return m_valid; }
+    //! Returns the type of the controller.
+    ExperimentControllerType::Enum type() const { return m_type; }
 
     //! Called when the controller is activated. Used to reset parameters.
     virtual void start() {}
     //! Returns the control values for given position.
-    virtual ControlData step(PositionMeters position);
+    virtual ControlData step();
     //! Called when the controller is disactivated. Makes a cleanup if necessary.
     virtual void finish() {}
 

@@ -7,6 +7,7 @@
 #include "MotionPatternType.hpp"
 #include "Navigation.hpp"
 #include "experiment-controllers/MapController.hpp"
+#include "experiment-controllers/ExperimentManager.hpp"
 
 #include <AgentState.hpp>
 
@@ -124,6 +125,10 @@ private:
     //! The interface to communicate with the robot. Shared by all robots.
     Aseba::DBusInterfacePtr m_robotInterface;
 
+    // TODO : to make this class members scopedpointers and use forward declaration
+    // for efficiency
+    //! The "super" controller that manages specific experiments.
+    ExperimentManager m_experimentManager;
     //! A flag that defines if the control map is used for this robot.
     bool m_useControlMap;
     //! The control map.

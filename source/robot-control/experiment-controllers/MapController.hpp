@@ -21,7 +21,7 @@ public:
 
 public:
     //! Returns the control values for given position.
-    virtual ControlData step(PositionMeters position) override;
+    virtual ControlData step() override;
 };
 
 #endif // CATS2_MAP_CONTROLLER_HPP

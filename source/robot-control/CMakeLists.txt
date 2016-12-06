@@ -27,6 +27,7 @@ set(srcs
     experiment-controllers/MapController.cpp
     SetupMap.cpp
     experiment-controllers/ExperimentController.cpp
+    experiment-controllers/ExperimentManager.cpp
 )
 
 set(hdrs

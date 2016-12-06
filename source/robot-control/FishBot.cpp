@@ -18,6 +18,7 @@ FishBot::FishBot(QString id, QString controlMapPath) :
     m_name(QString("Fish_bot_%1").arg(m_id)),
     m_state(),
     m_robotInterface(nullptr),
+    m_experimentManager(this),
     m_useControlMap(false),
     m_mapController(this, controlMapPath),
     m_controlStateMachine(this),
@@ -194,7 +195,7 @@ int FishBot::motionPatternFrequencyDivider(MotionPatternType::Enum type)
  */
 void FishBot::consultControlMap()
 {
-    MapController::ControlData controlData = m_mapController.step(m_state.position());
+    MapController::ControlData controlData = m_mapController.step();
     if (controlData.controlMode != ControlModeType::UNDEFINED) {
         setControlMode(controlData.controlMode);
 

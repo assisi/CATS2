@@ -22,7 +22,7 @@ ExperimentController::ExperimentController(FishBot* robot,
 /*!
  * Returns the control values for given position.
  */
-ExperimentController::ControlData ExperimentController::step(PositionMeters position)
+ExperimentController::ControlData ExperimentController::step()
 {
     return ControlData();
 }

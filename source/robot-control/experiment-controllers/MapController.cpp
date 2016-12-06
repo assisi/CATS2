@@ -1,4 +1,5 @@
 #include "MapController.hpp"
+#include "FishBot.hpp"
 
 #include <settings/ReadSettingsHelper.hpp>
 
@@ -15,21 +16,26 @@ MapController::MapController(FishBot* robot, QString controlMapFileName) :
  * Returns the control values for given position. If it's not in the map
  * then default (UNDEFINED) values are returned.
  */
-ExperimentController::ControlData MapController::step(PositionMeters position)
+ExperimentController::ControlData MapController::step()
 {
     // values are initialized as undefined
     ControlData controlData;
 
-    if (isValid() && position.isValid()) {
-        QPointF point(position.x(), position.y());
-        foreach (const ControlArea& controlArea, m_controlAreas) {
-            if (controlArea.contains(point)) {
-                controlData.controlMode = controlArea.controlMode();
-                controlData.motionPattern = controlArea.motionPattern();
-                return controlData;
+    if (m_robot) {
+        PositionMeters position = m_robot->state().position();
+        if (isValid() && position.isValid()) {
+            QPointF point(position.x(), position.y());
+            foreach (const ControlArea& controlArea, m_controlAreas) {
+                if (controlArea.contains(point)) {
+                    controlData.controlMode = controlArea.controlMode();
+                    controlData.motionPattern = controlArea.motionPattern();
+                    return controlData;
+                }
             }
         }
+
     }
+
     return controlData;
 }
 
