@@ -6,7 +6,7 @@
 #include "control-modes/ControlTarget.hpp"
 #include "MotionPatternType.hpp"
 #include "Navigation.hpp"
-#include "experiment-controllers/MapController.hpp"
+#include "experiment-controllers/ExperimentControllerType.hpp"
 #include "experiment-controllers/ExperimentManager.hpp"
 
 #include <AgentState.hpp>
@@ -44,15 +44,20 @@ public:
     void setupConnection(int robotIndex);
 
 public:
+    //! Returns the supported controllers.
+    QList<ExperimentControllerType::Enum> supportedControllers() const { return m_experimentManager.supportedControllers(); }
+    //! Sets the controller.
+    void setController(ExperimentControllerType::Enum type) { m_experimentManager.setController(type); }
+    //! Return the type of the current controller.
+    ExperimentControllerType::Enum currentController() const { return m_experimentManager.currentController(); }
+
+
     //! Returns the supported control modes.
-    QList<ControlModeType::Enum> supportedControlModes();
+    QList<ControlModeType::Enum> supportedControlModes() const { return m_controlStateMachine.supportedControlModes(); }
     //! Sets the control mode.
     void setControlMode(ControlModeType::Enum type);
-    //! Return the control mode.
+    //! Return the type of the current control mode.
     ControlModeType::Enum currentControlMode() const { return m_controlStateMachine.currentControlMode(); }
-
-    //! Sets the use-control-map flag.
-    void setUseControlMap(bool useControlMap) { m_useControlMap = useControlMap; }
 
     //! Checks that the current control modes can generate targets with
     //! different motion patterns.
@@ -94,6 +99,8 @@ public slots:
     void requestControlAreasPolygons() { m_experimentManager.requestPolygons(); }
 
 signals:
+    //! Informs that the robot's experiment controller was modified.
+    void notifyControllerChanged(ExperimentControllerType::Enum type);
     //! Informs that the robot's control mode was modified.
     void notifyControlModeChanged(ControlModeType::Enum type);
     //! Informs that the robot's motion pattern was changed.
@@ -113,7 +120,7 @@ public:
 
 private:
     //! Sets the control parameters based on the control map.
-    void consultControlMap();
+    void stepExperimentManager();
 
 private:
     //! The robot's id.
@@ -129,10 +136,6 @@ private:
     // for efficiency
     //! The "super" controller that manages specific experiments.
     ExperimentManager m_experimentManager;
-    //! A flag that defines if the control map is used for this robot.
-    bool m_useControlMap;
-    //! The control map.
-    MapController m_mapController;
     //! The control loop state machine that generates the targets for the navigation.
     ControlModeStateMachine m_controlStateMachine;
 

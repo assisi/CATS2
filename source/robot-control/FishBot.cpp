@@ -12,25 +12,26 @@
 /*!
  * Constructor.
  */
-FishBot::FishBot(QString id, QString controlMapPath) :
+FishBot::FishBot(QString id, QString controlAreasPath) :
     QObject(nullptr),
     m_id(id),
     m_name(QString("Fish_bot_%1").arg(m_id)),
     m_state(),
     m_robotInterface(nullptr),
-    m_experimentManager(this),
-    m_useControlMap(false),
-    m_mapController(this, controlMapPath),
+    m_experimentManager(this, controlAreasPath),
     m_controlStateMachine(this),
     m_navigation(this)
 {
+    connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
+            this, &FishBot::notifyControllerChanged);
+    connect(&m_experimentManager, &ExperimentManager::notifyPolygons,
+            this, &FishBot::notifyControlAreasPolygons);
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternChanged,
             this, &FishBot::notifyMotionPatternChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
             this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
-    connect(&m_mapController, &ExperimentController::notifyPolygons, this, &FishBot::notifyControlMapsPolygons);
 }
 
 /*!
@@ -80,9 +81,10 @@ void FishBot::setupConnection(int robotIndex)
  */
 void FishBot::stepControl()
 {
-    // check the area map to see if the control mode is to be changed
-    if (m_useControlMap)
-        consultControlMap();
+    // check the experiment controller to see if the control mode is to be changed
+    if (m_experimentManager.isActive()) {
+        stepExperimentManager();
+    }
 
     // check the incoming events to see if the control mode is to be changed
     // due to the low-power or the obstacle-avoidance routine - THIS CAN BE DONE
@@ -97,14 +99,6 @@ void FishBot::stepControl()
     // step the navigation with the resulted target values
     // it's the navigation that sends commands to robots via the dbus interface
     m_navigation.step(controlTarget);
-}
-
-/*!
- * Returns the supported control modes.
- */
-QList<ControlModeType::Enum> FishBot::supportedControlModes()
-{
-    return m_controlStateMachine.supportedControlModes();
 }
 
 /*!
@@ -193,9 +187,9 @@ int FishBot::motionPatternFrequencyDivider(MotionPatternType::Enum type)
 /*!
  * Sets the control parameters based on the control map.
  */
-void FishBot::consultControlMap()
+void FishBot::stepExperimentManager()
 {
-    MapController::ControlData controlData = m_mapController.step();
+    ExperimentController::ControlData controlData = m_experimentManager.step();
     if (controlData.controlMode != ControlModeType::UNDEFINED) {
         setControlMode(controlData.controlMode);
 

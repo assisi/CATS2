@@ -19,18 +19,29 @@ class ExperimentManager: public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    explicit ExperimentManager(FishBot* robot, QObject *parent = 0);
+    explicit ExperimentManager(FishBot* robot, QString controlAreasPath);
 
     //! The experiment manager step. Returns the control target values.
     ExperimentController::ControlData step();
 
-signals:
-    //! Informs that the robot's controller was modified.
-    void notifyControllerChanged(ExperimentControllerType::Enum type);
+    //! Return a list of all supported controllers.
+    QList<ExperimentControllerType::Enum> supportedControllers() const { return m_controllers.keys(); }
+    //! Return the current controller.
+    ExperimentControllerType::Enum currentController() const { return m_currentController; }
+    //! Is the experiment manager active.
+    bool isActive() const { return (m_currentController != ExperimentControllerType::NONE); }
 
 public slots:
     //! Sets the requested controller.
     void setController(ExperimentControllerType::Enum type);
+    //! Requests to sends the map areas' polygons.
+    void requestPolygons() { m_controllers[m_currentController]->requestPolygons(); }
+
+signals:
+    //! Informs that the robot's controller was modified.
+    void notifyControllerChanged(ExperimentControllerType::Enum type);
+    //! Sends the map areas' polygons.
+    void notifyPolygons(QList<AnnotatedPolygons>);
 
 private:
     //! The list of experiment controllers available to this manager.

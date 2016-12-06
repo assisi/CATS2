@@ -1,4 +1,5 @@
 #include "ExperimentManager.hpp"
+#include "MapController.hpp"
 
 #include "FishBot.hpp"
 
@@ -7,12 +8,22 @@
 /*!
  * Constructor.
  */
-ExperimentManager::ExperimentManager(FishBot* robot, QObject *parent) :
-    QObject(parent),
+ExperimentManager::ExperimentManager(FishBot* robot, QString controlAreasPath) :
+    QObject(nullptr),
     m_currentController(ExperimentControllerType::NONE),
     m_robot(robot)
 {
+    // fill the map will all controllers
+    m_controllers.insert(ExperimentControllerType::NONE,
+                         ExperimentControllerPtr(new ExperimentController(m_robot,
+                                                                          controlAreasPath))); // empty controller for symmetry
+    m_controllers.insert(ExperimentControllerType::CONTROL_MAP,
+                         ExperimentControllerPtr(new MapController(m_robot,
+                                                                   controlAreasPath)));
 
+    // make connections
+    connect(m_controllers[m_currentController].data(), &ExperimentController::notifyPolygons,
+            this, &ExperimentManager::notifyPolygons);
 }
 
 /*!
@@ -31,13 +42,20 @@ void ExperimentManager::setController(ExperimentControllerType::Enum type)
                     .arg(ExperimentControllerType::toString(type))
                     .arg(m_robot->name());
 
-        // first stop the current control mode
+        // disable connections
+        disconnect(m_controllers[m_currentController].data(), &ExperimentController::notifyPolygons,
+                this, &ExperimentManager::notifyPolygons);
+        // first stop the current controller
         m_controllers[m_currentController]->finish();
 
         // then start the new one
         m_currentController = type;
+        // add connections
+        connect(m_controllers[m_currentController].data(), &ExperimentController::notifyPolygons,
+                this, &ExperimentManager::notifyPolygons);
+        // prepare the controller
         m_controllers[m_currentController]->start();
-
+        // inform about changes
         emit notifyControllerChanged(type);
     }
 }
