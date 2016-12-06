@@ -45,8 +45,6 @@ set(srcs
     model/factory.cpp
     model/bm.cpp
     model/random.cpp
-    control-maps/ControlArea.cpp
-    control-maps/ControlMap.cpp
     navigation/Navigation.cpp
     navigation/DijkstraPathPlanner.cpp
     navigation/PathPlanner.cpp
