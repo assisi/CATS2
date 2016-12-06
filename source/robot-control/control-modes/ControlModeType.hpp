@@ -14,6 +14,7 @@ public:
         MANUAL,
         GO_TO_POSITION,
         GO_STRAIGHT,
+        MODEL_BASED,
         UNDEFINED
     };
 
@@ -28,6 +29,8 @@ public:
             return GO_STRAIGHT;
         else if (modeName.toLower() == "idle")
             return IDLE;
+        else if (modeName.toLower() == "modelbased")
+            return MODEL_BASED;
         else
             return UNDEFINED;
     }
@@ -45,6 +48,9 @@ public:
             break;
         case GO_STRAIGHT:
             string = "Go straight";
+            break;
+        case MODEL_BASED:
+            string = "Model based";
             break;
         case IDLE:
         default:

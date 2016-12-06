@@ -14,7 +14,7 @@
 /*!
  * Constructor.
  */
-Manual::Manual(FishBot* robot) : ControlMode(robot, ControlModeType::IDLE)
+Manual::Manual(FishBot* robot) : ControlMode(robot, ControlModeType::MANUAL)
 {
     // open joystick port
     if ((m_descriptor = open("/dev/input/js0", O_RDONLY)) < 0) {
