@@ -22,8 +22,8 @@ public:
     //! Constructor. It gets a pointer to the robot that is controlled by this
     //! controller.
     ExperimentController(FishBot* robot,
-                         ExperimentControllerType::Enum type,
-                         QString controlMapFileName);
+                         QString controlAreasFileName,
+                         ExperimentControllerType::Enum type = ExperimentControllerType::NONE);
 
     //! The data from the control map returned on request for given position.
     struct ControlData {
@@ -64,7 +64,7 @@ protected:
 
 private:
     //! Reads the control map from a file.
-    bool deserialize(QString controlMapFileName);
+    bool deserialize(QString controlAreasFileName);
 
 private:
     //! A type of the controller.

@@ -26,7 +26,7 @@ class FishBot : public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    explicit FishBot(QString id, QString controlMapPath);
+    explicit FishBot(QString id, QString controlAreasPath);
     //! Destructor.
     virtual ~FishBot() final;
 
@@ -91,7 +91,7 @@ public:
 
 public slots:
     //! Requests to sends the control map areas' polygons.
-    void requestControlMapsPolygons() { m_mapController.requestPolygons(); }
+    void requestControlAreasPolygons() { m_experimentManager.requestPolygons(); }
 
 signals:
     //! Informs that the robot's control mode was modified.
@@ -105,7 +105,7 @@ signals:
     //! Informs that the robot is in manual control mode.
     void notifyInManualMode(QString id);
     //! Sends the control map areas' polygons.
-    void notifyControlMapsPolygons(QList<AnnotatedPolygons>);
+    void notifyControlAreasPolygons(QList<AnnotatedPolygons>);
 
 public:
     //! Distance between robot's wheels.

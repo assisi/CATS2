@@ -5,18 +5,18 @@
 /*!
  * Constructor. Gets the file name containing the control areas description.
  */
-ExperimentController::ExperimentController(FishBot* robot,
-                                           ExperimentControllerType::Enum type,
-                                           QString controlMapFileName) :
+ExperimentController::ExperimentController(FishBot* robot,                                           
+                                           QString controlAreasFileName,
+                                           ExperimentControllerType::Enum type) :
     QObject(nullptr),
     m_robot(robot),
     m_type(type)
 {
-    m_valid = deserialize(controlMapFileName);
+    m_valid = deserialize(controlAreasFileName);
     if (m_valid)
-        qDebug() << Q_FUNC_INFO << "Successfully read a control map from" << controlMapFileName;
+        qDebug() << Q_FUNC_INFO << "Successfully read a control map from" << controlAreasFileName;
     else
-        qDebug() << Q_FUNC_INFO << "Could not read a control map from" << controlMapFileName;
+        qDebug() << Q_FUNC_INFO << "Could not read a control map from" << controlAreasFileName;
 }
 
 /*!
@@ -30,11 +30,11 @@ ExperimentController::ControlData ExperimentController::step()
 /*!
  * Reads the control map from a file.
  */
-bool ExperimentController::deserialize(QString controlMapFileName)
+bool ExperimentController::deserialize(QString controlAreasFileName)
 {
     bool successful = true;
 
-    ReadSettingsHelper settings(controlMapFileName);
+    ReadSettingsHelper settings(controlAreasFileName);
 
     // read the number of areas
     int numberOfAreas;

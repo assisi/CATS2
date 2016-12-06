@@ -6,8 +6,8 @@
 /*!
  * Constructor. Gets the file name containing the control map description.
  */
-MapController::MapController(FishBot* robot, QString controlMapFileName) :
-    ExperimentController(robot, ExperimentControllerType::CONTROL_MAP, controlMapFileName)
+MapController::MapController(FishBot* robot, QString controlAreasFileName) :
+    ExperimentController(robot, controlAreasFileName, ExperimentControllerType::CONTROL_MAP)
 {
 
 }

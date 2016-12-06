@@ -158,7 +158,7 @@ void MainWindow::connectPrimaryView()
         connect(m_ui->actionShowAgents, &QAction::toggled, viewerWidget, &ViewerWidget::setShowAgents);
         connect(m_ui->actionShowControlMap, &QAction::toggled, viewerWidget, &ViewerWidget::showAreas);
         connect(m_ui->actionShowControlMap, &QAction::toggled,
-                m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlMaps);
+                m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlAreas);
 
         // connect to the tracking data manager
         connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
@@ -194,7 +194,7 @@ void MainWindow::disconnectPrimaryView()
         disconnect(m_ui->actionShowAgents, &QAction::toggled, viewerWidget, &ViewerWidget::setShowAgents);
         disconnect(m_ui->actionShowControlMap, &QAction::toggled, viewerWidget, &ViewerWidget::showAreas);
         disconnect(m_ui->actionShowControlMap, &QAction::toggled,
-                m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlMaps);
+                m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlAreas);
 
         // disconnect from the tracking data manager
         disconnect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,

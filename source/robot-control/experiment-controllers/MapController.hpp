@@ -17,7 +17,7 @@ class MapController : public ExperimentController
     Q_OBJECT
 public:
     //! Constructor. Gets the file name containing the control map description.
-    MapController(FishBot* robot, QString controlMapFileName);
+    MapController(FishBot* robot, QString controlAreasFileName);
 
 public:
     //! Returns the control values for given position.

@@ -21,15 +21,15 @@ public:
     QString id() const { return m_id; }
 
     //! Sets control map file path.
-    void setControlMapPath(QString controlMapPath) { m_controlMapPath = controlMapPath; }
+    void setControlAreasPath(QString controlAreasPath) { m_controlAreasPath = controlAreasPath; }
     //! Return control map file path.
-    QString controlMapFilePath() const { return m_controlMapPath; }
+    QString controlAreasFilePath() const { return m_controlAreasPath; }
 
 private:
     //! Robot's id.
     QString m_id;
     //! Control map file path.
-    QString m_controlMapPath;
+    QString m_controlAreasPath;
 };
 
 /*!
