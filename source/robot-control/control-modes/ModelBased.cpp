@@ -12,10 +12,10 @@
 ModelBased::ModelBased(FishBot* robot) :
     ControlMode(robot, ControlModeType::MODEL_BASED),
     m_setupMap(RobotControlSettings::get().setupMap()),
-    arena(nullptr),
-    sim(nullptr)
+    m_arena(nullptr),
+    m_sim(nullptr)
 {
-
+    initModel();
 }
 
 /*!
@@ -24,7 +24,7 @@ ModelBased::ModelBased(FishBot* robot) :
 ControlTargetPtr ModelBased::step()
 {
     // if we track any fish
-    if (m_robot->fishStates().size() > 0) {
+    if ((m_robot->fishStates().size() > 0) &&  m_sim) {
         PositionMeters targetPosition = computeTargetPosition();
         if (targetPosition.isValid()) {
             return ControlTargetPtr(new TargetPosition(targetPosition));
@@ -71,8 +71,8 @@ void ModelBased::initModel()
                 y += ModelResolutionM;
             }
             // create the arena
-            arena.reset(new Fishmodel::Arena(arenaMatrix, size));
-            Fishmodel::SimulationFactory factory(*arena);
+            m_arena.reset(new Fishmodel::Arena(arenaMatrix, size));
+            Fishmodel::SimulationFactory factory(*m_arena);
             factory.nbFishes = RobotControlSettings::get().numberOfAnimals();
             factory.nbRobots = 1; // we generate one simulator for every robot
             factory.nbVirtuals = 0;
@@ -80,10 +80,10 @@ void ModelBased::initModel()
             factory.behaviorRobots = "BM";
             factory.behaviorVirtuals = "BM";
             // create the simulator
-            sim = factory.create();
+            m_sim = factory.create();
             const FishModelSettings& fishModelSettings = RobotControlSettings::get().fishModelSettings();
-            sim->dt = fishModelSettings.dt;
-            for(auto& a: sim->agents) {
+            m_sim->dt = fishModelSettings.dt;
+            for(auto& a: m_sim->agents) {
                 a.first->length = fishModelSettings.length;
                 a.first->width = fishModelSettings.width;
                 a.first->height = fishModelSettings.height;
@@ -113,19 +113,19 @@ PositionMeters ModelBased::computeTargetPosition()
     size_t agentIndex = 0;
     for (StateWorld& state : m_robot->fishStates()){
         if (state.position().isValid() && m_setupMap.containsPoint(state.position())) {
-            sim->fishes[agentIndex].first->headPos.first = state.position().x() - m_setupMap.minX(); // NOTE : the positions are normalized to fit the matrix
-            sim->fishes[agentIndex].first->headPos.second = state.position().y() - m_setupMap.minY();
+            m_sim->fishes[agentIndex].first->headPos.first = state.position().x() - m_setupMap.minX(); // NOTE : the positions are normalized to fit the matrix
+            m_sim->fishes[agentIndex].first->headPos.second = state.position().y() - m_setupMap.minY();
             if (state.orientation().isValid())
-                sim->fishes[agentIndex].first->direction = state.orientation().angleRad();
+                m_sim->fishes[agentIndex].first->direction = state.orientation().angleRad();
             else
-                sim->fishes[agentIndex].first->direction = 0;
-            sim->fishes[agentIndex].first->present = true;
+                m_sim->fishes[agentIndex].first->direction = 0;
+            m_sim->fishes[agentIndex].first->present = true;
             agentIndex++;
         }
     }
     size_t detectedAgentNum = agentIndex;
     for (agentIndex = detectedAgentNum; agentIndex < RobotControlSettings::get().numberOfAnimals(); ++agentIndex) {
-        sim->fishes[agentIndex].first->present = false;
+        m_sim->fishes[agentIndex].first->present = false;
     }
 
     // TODO : to check if we need it
@@ -144,12 +144,12 @@ PositionMeters ModelBased::computeTargetPosition()
 //		behav->alphasCenter = 5000. / (double)(detected + settings.numberOfCASUS);
 //	}
 
-    if ((m_robot->fishStates().size() > 0 ) && (detectedAgentNum > 0) && sim)  {
-        sim->step();
+    if ((m_robot->fishStates().size() > 0 ) && (detectedAgentNum > 0))  {
+        m_sim->step();
         // get the target value
-        if (sim->robots.size() > 0) { // we have only one robot so it is #0
-            targetPosition.setX((sim->robots[0].first->headPos.first + sim->robots[0].first->tailPos.first) / 2. + m_setupMap.minX());
-            targetPosition.setY((sim->robots[0].first->headPos.second + sim->robots[0].first->tailPos.second) / 2. + m_setupMap.minY());
+        if (m_sim->robots.size() > 0) { // we have only one robot so it is #0
+            targetPosition.setX((m_sim->robots[0].first->headPos.first + m_sim->robots[0].first->tailPos.first) / 2. + m_setupMap.minX());
+            targetPosition.setY((m_sim->robots[0].first->headPos.second + m_sim->robots[0].first->tailPos.second) / 2. + m_setupMap.minY());
             targetPosition.setValid(true);
         }
     }

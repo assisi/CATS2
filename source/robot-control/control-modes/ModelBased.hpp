@@ -38,8 +38,8 @@ private:
     static constexpr double ModelResolutionM = 0.005; // i.e. 5 mm
 
     //! The model related data.
-    std::unique_ptr<Fishmodel::Arena> arena;
-    std::unique_ptr<Fishmodel::Simulation> sim;
+    std::unique_ptr<Fishmodel::Arena> m_arena;
+    std::unique_ptr<Fishmodel::Simulation> m_sim;
 };
 
 #endif // CATS2_MODEL_BASED_HPP
