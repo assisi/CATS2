@@ -1,6 +1,7 @@
 #include "RobotControlSettings.hpp"
 
 #include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 #include <settings/ReadSettingsHelper.hpp>
 
@@ -19,6 +20,9 @@ RobotControlSettings& RobotControlSettings::get()
 bool RobotControlSettings::init(QString configurationFileName)
 {
     bool settingsAccepted = true;
+
+    // get the path of the configuration file
+    QString configurationFolder = QFileInfo(configurationFileName).path();
 
     ReadSettingsHelper settings(configurationFileName);
 
@@ -47,7 +51,7 @@ bool RobotControlSettings::init(QString configurationFileName)
 
         std::string controlAreasFilePath = "";
         settings.readVariable(QString("robots/fishBot_%1/controlAreasPath").arg(i), controlAreasFilePath, controlAreasFilePath);
-        robotSettings.setControlAreasPath(QString::fromStdString(controlAreasFilePath));
+        robotSettings.setControlAreasPath(configurationFolder + QDir::separator() + QString::fromStdString(controlAreasFilePath));
 
         m_robotsSettings.insert(robotSettings.id(), robotSettings);
         settingsAccepted = settingsAccepted && (id.size() > 0);
@@ -82,7 +86,7 @@ bool RobotControlSettings::init(QString configurationFileName)
     // read the setup map
     std::string setupMap = "";
     settings.readVariable(QString("experiment/setupMapPath"), setupMap, setupMap);
-    m_setupMap.init(QString::fromStdString(setupMap));
+    m_setupMap.init(configurationFolder + QDir::separator() + QString::fromStdString(setupMap));
 
     // read the number of animals used in experimetns
     settings.readVariable("experiment/agents/numberOfAnimals", m_numberOfAnimals, 0);

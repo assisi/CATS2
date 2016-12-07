@@ -6,7 +6,7 @@
         <agents>
             <numberOfAnimals>5</numberOfAnimals>
         </agents>
-        <setupMapPath>/home/gribovsk/Software/CATS2/config/setup/two-rooms.xml</setupMapPath>
+        <setupMapPath>/setup/two-rooms.xml</setupMapPath>
     </experiment>
     <robots>
         <numberOfRobots>1</numberOfRobots>
@@ -24,11 +24,11 @@
         <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
         <fishBot_1>
             <id>H</id>
-            <controlAreasPath>/home/gribovsk/Software/CATS2/config/control-maps/test-control-map.xml</controlAreasPath>
+            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_1>
         <fishBot_2>
             <id>F</id>
-            <controlAreasPath>/home/gribovsk/Software/CATS2/config/control-maps/test-control-map.xml</controlAreasPath>
+            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_2>
     </robots>
     <setups>
@@ -41,7 +41,7 @@
                 <width>512</width>
                 <height>512</height>
             </imageSize>
-            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
+            <cameraCalibrationFile>camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
                 <numberOfAgents>7</numberOfAgents>
@@ -60,10 +60,10 @@
                 <width>640</width>
                 <height>480</height>
             </imageSize>
-            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera-calibration/epfl-setup-180/cats2-epfl-180-angle-below-camera.xml</cameraCalibrationFile>
+            <cameraCalibrationFile>camera-calibration/epfl-setup-180/cats2-epfl-180-angle-below-camera.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>fishBotLedsTracking</trackingMethod>
-                <maskFile>/home/gribovsk/Software/CATS2/config/bottom-camera-mask.png</maskFile>
+                <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
                     <!-- TODO : consider moving this to the robot's specific section. -->
                     <fishBot_H>

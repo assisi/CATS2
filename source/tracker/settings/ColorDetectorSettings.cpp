@@ -2,6 +2,8 @@
 
 #include <settings/ReadSettingsHelper.hpp>
 
+#include <QtCore/QDir>
+
 /*!
  * Constructor.
  */
@@ -16,13 +18,16 @@ ColorDetectorSettings::ColorDetectorSettings(SetupType::Enum setupType) :
  */
 bool ColorDetectorSettings::init(QString configurationFileName)
 {
+    // get the path of the configuration file
+    QString configurationFolder = QFileInfo(configurationFileName).path();
+
     // read the settings
     ReadSettingsHelper settings(configurationFileName);
 
     // read the mask file path
     std::string maskFilePath;
     settings.readVariable(QString("%1/tracking/maskFile").arg(m_settingPathPrefix), maskFilePath);
-    m_data.setMaskFilePath(maskFilePath);
+    m_data.setMaskFilePath(configurationFolder.toStdString() + QDir::separator().toLatin1() + maskFilePath);
 
     int value;
     settings.readVariable(QString("%1/tracking/numberOfAgents").arg(m_settingPathPrefix), value, m_data.numberOfAgents());

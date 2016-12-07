@@ -2,6 +2,8 @@
 
 #include <settings/ReadSettingsHelper.hpp>
 
+#include <QtCore/QDir>
+
 /*!
  * Constructor.
  */
@@ -18,6 +20,9 @@ FishBotLedsTrackingSettings::FishBotLedsTrackingSettings(SetupType::Enum setupTy
  */
 bool FishBotLedsTrackingSettings::init(QString configurationFileName)
 {
+    // get the path of the configuration file
+    QString configurationFolder = QFileInfo(configurationFileName).path();
+
     // read the settings
     ReadSettingsHelper settings(configurationFileName);
 
@@ -27,7 +32,7 @@ bool FishBotLedsTrackingSettings::init(QString configurationFileName)
     // read the mask file path
     std::string maskFilePath;
     settings.readVariable(QString("%1/tracking/maskFile").arg(m_settingPathPrefix), maskFilePath);
-    m_data.setMaskFilePath(maskFilePath);
+    m_data.setMaskFilePath(configurationFolder.toStdString() + QDir::separator().toLatin1() + maskFilePath);
 
     // read the robot specific settings
     for (int robotIndex = 1; robotIndex <= numberOfRobots; ++robotIndex) {
