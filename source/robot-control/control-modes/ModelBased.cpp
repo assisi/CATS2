@@ -103,30 +103,43 @@ void ModelBased::initModel()
 
 /*!
  * Computes the target position from the model.
+ * NOTE : at the moment we ignore the positions of other robots, only
+ * fish are taken into account.
  */
 PositionMeters ModelBased::computeTargetPosition()
 {
     // set the target invalid until it's computed
     PositionMeters targetPosition;
     targetPosition.setValid(false);
+
     // update the fish positions in the model
     size_t agentIndex = 0;
     for (StateWorld& state : m_robot->fishStates()){
-        if (state.position().isValid() && m_setupMap.containsPoint(state.position())) {
-            m_sim->fishes[agentIndex].first->headPos.first = state.position().x() - m_setupMap.minX(); // NOTE : the positions are normalized to fit the matrix
-            m_sim->fishes[agentIndex].first->headPos.second = state.position().y() - m_setupMap.minY();
-            if (state.orientation().isValid())
-                m_sim->fishes[agentIndex].first->direction = state.orientation().angleRad();
-            else
-                m_sim->fishes[agentIndex].first->direction = 0;
-            m_sim->fishes[agentIndex].first->present = true;
-            agentIndex++;
-        }
+        if (agentIndex < m_sim->fishes.size()) {
+            if (state.position().isValid() && m_setupMap.containsPoint(state.position())) {
+                m_sim->fishes[agentIndex].first->headPos.first = state.position().x() - m_setupMap.minX(); // NOTE : the positions are normalized to fit the matrix
+                m_sim->fishes[agentIndex].first->headPos.second = state.position().y() - m_setupMap.minY();
+                if (state.orientation().isValid())
+                    m_sim->fishes[agentIndex].first->direction = state.orientation().angleRad();
+                else
+                    m_sim->fishes[agentIndex].first->direction = 0;
+                m_sim->fishes[agentIndex].first->present = true;
+                agentIndex++;
+            }
+        } else
+            break;
     }
     size_t detectedAgentNum = agentIndex;
     for (agentIndex = detectedAgentNum; agentIndex < RobotControlSettings::get().numberOfAnimals(); ++agentIndex) {
         m_sim->fishes[agentIndex].first->present = false;
     }
+
+    // update the position of the current robot
+    m_sim->robots[0].first->headPos.first = m_robot->state().position().x() - m_setupMap.minX();
+    m_sim->robots[0].first->headPos.second = m_robot->state().position().y() - m_setupMap.minY();
+    if (m_robot->state().orientation().isValid())
+        m_sim->robots[0].first->direction = m_robot->state().orientation().angleRad();
+    m_sim->robots[0].first->present = true;
 
     // TODO : to check if we need it
 //    // Update position of robots in model
