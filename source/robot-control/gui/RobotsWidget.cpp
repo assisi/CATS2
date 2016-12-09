@@ -17,12 +17,12 @@ RobotsWidget::RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent) :
     m_ui->setupUi(this);
 
     // connect tab change with the robot selection
-    connect(this, &RobotsWidget::notifyCurrentRobotChanged, contolLoop.data(), &ControlLoop::selectRobot);
+    connect(this, &RobotsWidget::notifySelectedRobotChanged, contolLoop.data(), &ControlLoop::selectRobot);
 
     // select a robot when a tab is changed
     connect(m_ui->robotsTabWidget, &QTabWidget::currentChanged,
             [=](int index) {
-                emit notifyCurrentRobotChanged(m_ui->robotsTabWidget->tabText(index));
+                emit notifySelectedRobotChanged(m_ui->robotsTabWidget->tabText(index));
             });
     // populate the tabs with the robots' information
     for (auto& robot : contolLoop->robots()) {

@@ -175,12 +175,15 @@ void MainWindow::connectPrimaryView()
                 m_robotsHandler->contolLoop().data(), &ControlLoop::goToPosition);
         connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotControlAreasPolygons,
                 viewerWidget, &ViewerWidget::updateAreas);
-        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyCurrentRobotChanged,
+        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifySelectedRobotChanged,
                 viewerWidget, &ViewerWidget::updateCurrentAgent);
         connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTargetPositionChanged,
                 viewerWidget, &ViewerWidget::updateTarget);
         connect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
                 viewerWidget, &ViewerWidget::updateSetup);
+
+        // request to get the current robot
+        m_robotsHandler->contolLoop()->requestSelectedRobot();
     }
 }
 
@@ -215,7 +218,7 @@ void MainWindow::disconnectPrimaryView()
         // disconnect from the robot controller
         disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotControlAreasPolygons,
                 viewerWidget, &ViewerWidget::updateAreas);
-        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyCurrentRobotChanged,
+        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifySelectedRobotChanged,
                 viewerWidget, &ViewerWidget::updateCurrentAgent);
         disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTargetPositionChanged,
                 viewerWidget, &ViewerWidget::updateTarget);

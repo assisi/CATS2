@@ -38,6 +38,8 @@ public slots:
     void goToPosition(PositionMeters position);
     //! Asks to send control maps for the currently selected robot.
     void sendNavigationData(bool sendMaps);
+    //! Asks to send the current robot id.
+    void requestSelectedRobot();
 
 signals:
     //! Sends the control map areas' polygons of the robot.
@@ -47,7 +49,7 @@ signals:
     //! Sends the target of the robot.
     void notifyRobotTargetPositionChanged(QString agentId, PositionMeters position);
     //! Sends the current robot.
-    void notifyCurrentRobotChanged(QString agentId);
+    void notifySelectedRobotChanged(QString agentId);
 
 private:
     //! Loads and initialized the robots' firmware scripts.

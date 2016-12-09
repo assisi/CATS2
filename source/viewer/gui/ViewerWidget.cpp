@@ -323,6 +323,9 @@ void ViewerWidget::setShowAgents(bool shownAgents)
  */
 void ViewerWidget::updateAreas(QString agentId, QList<AnnotatedPolygons> polygonsToDraw)
 {
+    if (!m_showNavigationData)
+        return;
+
     // add a group if doesn't exist yet
     if (!m_navigationData.contains(agentId)) {
         m_navigationData.insert(agentId, AgentDataItemGroup());
@@ -372,6 +375,9 @@ void ViewerWidget::updateAreas(QString agentId, QList<AnnotatedPolygons> polygon
  */
 void ViewerWidget::updateTrajectory(QString agentId, QQueue<PositionMeters> worldPolygon)
 {
+    if (!m_showNavigationData)
+        return;
+
     // add a group if doesn't exist yet
     if (!m_navigationData.contains(agentId)) {
         m_navigationData.insert(agentId, AgentDataItemGroup());
@@ -411,6 +417,9 @@ void ViewerWidget::updateTrajectory(QString agentId, QQueue<PositionMeters> worl
  */
 void ViewerWidget::updateTarget(QString agentId, PositionMeters worldPosition)
 {
+    if (!m_showNavigationData)
+        return;
+
     // add a group if doesn't exist yet
     if (!m_navigationData.contains(agentId)) {
         m_navigationData.insert(agentId, AgentDataItemGroup());

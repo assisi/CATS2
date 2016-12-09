@@ -137,7 +137,7 @@ void ControlLoop::selectRobot(QString name)
                 qDebug() << Q_FUNC_INFO << name << "is selected";
                 m_selectedRobot = robot;
                 // inform about the change
-                emit notifyCurrentRobotChanged(m_selectedRobot->id());
+                emit notifySelectedRobotChanged(m_selectedRobot->id());
                 // update the navigation data
                 sendNavigationData(m_sendData);
             }
@@ -168,4 +168,12 @@ void ControlLoop::selectRobot(QString name)
          m_selectedRobot->requestTrajectory();
          m_selectedRobot->requestCurrentTarget();
      }
+ }
+
+ /*!
+  * Asks to send the current robot id.
+  */
+ void ControlLoop::requestSelectedRobot()
+ {
+     emit notifySelectedRobotChanged(m_selectedRobot->id());
  }
