@@ -28,9 +28,13 @@
             <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_1>
         <fishBot_2>
-            <id>F</id>
+            <id>B</id>
             <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_2>
+        <fishBot_3>
+            <id>C</id>
+            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
+        </fishBot_3>
     </robots>
     <setups>
         <mainCamera>
@@ -75,14 +79,22 @@
                         </color>
                         <threshold>30</threshold>
                     </fishBot_H>
-                    <fishBot_F>
+                    <fishBot_B>
                         <color>
-                            <r>45</r>
-                            <g>130</g>
-                            <b>220</b>
+                            <r>255</r>
+                            <g>160</g>
+                            <b>200</b>
                         </color>
-                        <threshold>20</threshold>
-                    </fishBot_F>
+                        <threshold>40</threshold>
+                    </fishBot_B>
+                    <fishBot_C>
+                        <color>
+                            <r>190</r>
+                            <g>255</g>
+                            <b>190</b>
+                        </color>
+                        <threshold>40</threshold>
+                    </fishBot_C>
                 </fishBotLedsTracking>
             </tracking>
         </cameraBelow>
