@@ -47,7 +47,6 @@ MainWindow::MainWindow(QWidget *parent) :
     }
     connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
             m_robotsHandler->contolLoop().data(), &ControlLoop::onTrackingResultsReceived);
-    connect(m_ui->actionShowSetupOutline, &QAction::toggled, m_robotsHandler.data(), &RobotsHandler::requestSetupMap);
 
     // create setups
     if (Settings::get().isAvailable(SetupType::MAIN_CAMERA)) {
@@ -163,6 +162,7 @@ void MainWindow::connectPrimaryView()
         connect(m_ui->actionShowRobotNavigationData, &QAction::toggled,
                 m_robotsHandler->contolLoop().data(), &ControlLoop::sendNavigationData);
         connect(m_ui->actionShowSetupOutline, &QAction::toggled, viewerWidget, &ViewerWidget::setShowSetup);
+        connect(m_ui->actionShowSetupOutline, &QAction::toggled, m_robotsHandler.data(), &RobotsHandler::requestSetupMap);
 
         // connect to the tracking data manager
         connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
@@ -204,6 +204,7 @@ void MainWindow::disconnectPrimaryView()
         disconnect(m_ui->actionShowRobotNavigationData, &QAction::toggled,
                 m_robotsHandler->contolLoop().data(), &ControlLoop::sendNavigationData);
         disconnect(m_ui->actionShowSetupOutline, &QAction::toggled, viewerWidget, &ViewerWidget::setShowSetup);
+        disconnect(m_ui->actionShowSetupOutline, &QAction::toggled, m_robotsHandler.data(), &RobotsHandler::requestSetupMap);
 
         // disconnect from the tracking data manager
         disconnect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
