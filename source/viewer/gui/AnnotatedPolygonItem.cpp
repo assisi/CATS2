@@ -5,9 +5,8 @@
 /*!
  * Constructor.
  */
-AnnotatedPolygonItem::AnnotatedPolygonItem(QPolygonF polygon, QColor color, QString label) :
+AnnotatedPolygonItem::AnnotatedPolygonItem(QPolygonF polygon, QString label) :
     m_polygon(polygon),
-    m_color(color),
     m_label(label)
 {
 
