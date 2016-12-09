@@ -45,6 +45,9 @@ MainWindow::MainWindow(QWidget *parent) :
         // and place a robot controller widget on this layout
         m_ui->robotsControllerWidget->layout()->addWidget(m_robotsHandler->widget());
     }
+    connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
+            m_robotsHandler->contolLoop().data(), &ControlLoop::onTrackingResultsReceived);
+    connect(m_ui->actionShowSetupOutline, &QAction::toggled, m_robotsHandler.data(), &RobotsHandler::requestSetupMap);
 
     // create setups
     if (Settings::get().isAvailable(SetupType::MAIN_CAMERA)) {
@@ -159,6 +162,7 @@ void MainWindow::connectPrimaryView()
         connect(m_ui->actionShowControlMap, &QAction::toggled, viewerWidget, &ViewerWidget::showAreas);
         connect(m_ui->actionShowControlMap, &QAction::toggled,
                 m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlAreas);
+        connect(m_ui->actionShowSetupOutline, &QAction::toggled, viewerWidget, &ViewerWidget::setShowSetup);
 
         // connect to the tracking data manager
         connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
@@ -167,12 +171,12 @@ void MainWindow::connectPrimaryView()
                 viewerWidget, &ViewerWidget::updateAgents);
 
         // connect to the robots controller
-        connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
-                m_robotsHandler->contolLoop().data(), &ControlLoop::onTrackingResultsReceived);
         connect(viewerWidget, &ViewerWidget::notifyRightButtonClick,
                 m_robotsHandler->contolLoop().data(), &ControlLoop::goToPosition);
         connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyCurrentRobotControlMapsPolygons,
                 viewerWidget, &ViewerWidget::updateAreas);
+        connect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
+                viewerWidget, &ViewerWidget::updateSetup);
     }
 }
 
@@ -195,14 +199,19 @@ void MainWindow::disconnectPrimaryView()
         disconnect(m_ui->actionShowControlMap, &QAction::toggled, viewerWidget, &ViewerWidget::showAreas);
         disconnect(m_ui->actionShowControlMap, &QAction::toggled,
                 m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlAreas);
+        disconnect(m_ui->actionShowSetupOutline, &QAction::toggled, viewerWidget, &ViewerWidget::setShowSetup);
 
         // disconnect from the tracking data manager
         disconnect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
                 viewerWidget, &ViewerWidget::updateAgentLabels);
+        disconnect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
+                viewerWidget, &ViewerWidget::updateAgents);
 
         // disconnect from the robot controller
         disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyCurrentRobotControlMapsPolygons,
                 viewerWidget, &ViewerWidget::updateAreas);
+        disconnect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
+                viewerWidget, &ViewerWidget::updateSetup);
     }
 }
 

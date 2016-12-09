@@ -61,6 +61,11 @@ public slots:
 
     //! Request to update the trajectory on the scene.
     void updateTrajectory(QQueue<PositionMeters> polygon);
+ 
+    //! Updates the setup outline polygon.
+    void updateSetup(AnnotatedPolygons polygon);
+    //! Set the flag that defines if the setup must be shown.
+    void setShowSetup(bool showSetup);
 
     //! Zoom on the video.
     void onZoomIn();
@@ -111,14 +116,17 @@ protected:
     //! The average frame rate.
     double m_averageFps;
 
+private: // agents items
     // FIXME : at the moment the agent's id is copied as it is without taking
     // into account that theoretically two agents coming from different sources
     // can have the same id.
+
     //! The map containing the agent's id's with the corresponding label
-    //!  on the scene.
+    //!  on the scene. Updated by the tracker.
     QMap<QString, AgentTextItem*> m_agentLabels;
+
     //! The map containing the agent's id's with the corresponding object
-    //!  on the scene.
+    //!  on the scene. Updated by the tracker.
     QMap<QString, AgentItem*> m_agents;
     //! The polygons depicting various areas of the experimental setup.
     QList<AnnotatedPolygonItem*> m_polygons;
@@ -135,6 +143,11 @@ protected:
 
     //! Actions to be used in the context menu.
     QAction* m_adjustAction;
+
+    //! The map of the setup.
+    AnnotatedPolygonItem* m_setupPolygon;
+    //! The flag that defines if we show agents on the map.
+    bool m_showSetup;
 };
 
 #endif // CATS2_VIEWER_WIDGET_HPP

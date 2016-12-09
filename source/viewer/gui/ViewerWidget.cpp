@@ -6,6 +6,7 @@
 #include "AgentItem.hpp"
 #include "AnnotatedPolygonItem.hpp"
 #include "TrajectoryItem.hpp"
+#include "TargetItem.hpp"
 
 #include <CoordinatesConversion.hpp>
 
@@ -422,4 +423,57 @@ void ViewerWidget::resizeEvent(QResizeEvent *event)
     QWidget::resizeEvent(event);
     if (m_autoAdjust)
         adjust();
+}
+
+/*!
+ * Updates the setup outline polygon.
+ */
+void ViewerWidget::updateSetup(AnnotatedPolygons annotatedPolygon)
+{
+    if (! m_showSetup)
+        return;
+
+    // the setup map never changes during the program lifetime
+    // thus if it was already drawn once no need to re-compute
+    if (m_setupPolygon)
+        return;
+
+    // otherwise create the item
+    for (WorldPolygon worldPolygon : annotatedPolygon.polygons) {
+        // convert points
+        QPolygonF imagePolygon;
+        for (PositionMeters worldPosition : worldPolygon) {
+            PositionPixels imagePosition;
+            if (convertWorldPosition(worldPosition, imagePosition) && imagePosition.isValid()) {
+                imagePolygon.append(QPointF(imagePosition.x(), imagePosition.y()));
+            } else {
+                qDebug() << Q_FUNC_INFO << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
+                imagePolygon.clear();
+                break;
+            }
+        }
+
+        // draw the polygon
+        if (imagePolygon.size() > 0) {
+            if (! m_setupPolygon) {
+                m_setupPolygon = new AnnotatedPolygonItem(imagePolygon, annotatedPolygon.label);
+                m_scene->addItem(m_setupPolygon);
+                m_setupPolygon->setVisible(m_showSetup);
+                // need to position the item to (0,0) in order to the polygon was placed correctly
+                m_setupPolygon->setPos(0, 0);
+            }
+            m_setupPolygon->setColor(annotatedPolygon.color);
+        }
+    }
+}
+
+/*!
+ * Set the flag that defines if the setup must be shown.
+ */
+void ViewerWidget::setShowSetup(bool showSetup)
+{
+    m_showSetup = showSetup;
+    // hide setup if necessary if shown
+    if (m_setupPolygon)
+        m_setupPolygon->setVisible(m_showSetup);
 }

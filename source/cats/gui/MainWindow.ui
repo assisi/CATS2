@@ -128,6 +128,7 @@
     <addaction name="actionShowAgents"/>
     <addaction name="separator"/>
     <addaction name="actionShowControlMap"/>
+    <addaction name="actionShowSetupOutline"/>
    </widget>
    <addaction name="menuView"/>
   </widget>
@@ -150,6 +151,7 @@
    <addaction name="actionShowAgents"/>
    <addaction name="separator"/>
    <addaction name="actionShowControlMap"/>
+   <addaction name="actionShowSetupOutline"/>
   </widget>
   <action name="actionZoomIn">
    <property name="icon">
@@ -187,7 +189,7 @@
   <action name="actionAdjustView">
    <property name="icon">
     <iconset resource="../icons.qrc">
-     <normaloff>:/resources/icons/ic_settings_overscan_black_24dp.png</normaloff>:/resources/icons/ic_settings_overscan_black_24dp.png</iconset>
+     <normaloff>:/resources/icons/ic_zoom_out_map_black_24dp.png</normaloff>:/resources/icons/ic_zoom_out_map_black_24dp.png</iconset>
    </property>
    <property name="text">
     <string>AdjustView</string>
@@ -202,13 +204,13 @@
    </property>
    <property name="icon">
     <iconset resource="../icons.qrc">
-     <normaloff>:/resources/icons/ic_change_history_black_24dp.png</normaloff>:/resources/icons/ic_change_history_black_24dp.png</iconset>
+     <normaloff>:/resources/icons/ic_near_me_black_24dp.png</normaloff>:/resources/icons/ic_near_me_black_24dp.png</iconset>
    </property>
    <property name="text">
     <string>Show agents on the scene</string>
    </property>
   </action>
-  <action name="actionShowControlMap">
+  <action name="actionShowRobotNavigationData">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -217,7 +219,25 @@
      <normaloff>:/resources/icons/ic_dashboard_black_24dp.png</normaloff>:/resources/icons/ic_dashboard_black_24dp.png</iconset>
    </property>
    <property name="text">
-    <string>Show control map</string>
+    <string>Show robot navigation data</string>
+   </property>
+   <property name="toolTip">
+    <string>Show robot navigation data</string>
+   </property>
+  </action>
+  <action name="actionShowSetupOutline">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/resources/icons/ic_grid_on_black_24dp.png</normaloff>:/resources/icons/ic_grid_on_black_24dp.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show setup outline</string>
+   </property>
+   <property name="toolTip">
+    <string>Show setup outline</string>
    </property>
   </action>
  </widget>

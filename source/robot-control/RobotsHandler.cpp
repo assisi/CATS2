@@ -1,5 +1,7 @@
 #include "RobotsHandler.hpp"
 
+#include "settings/RobotControlSettings.hpp"
+
 #include "gui/RobotsWidget.hpp"
 #include "ControlLoop.hpp"
 
@@ -34,6 +36,19 @@ RobotsHandler::~RobotsHandler()
 QWidget* RobotsHandler::widget()
 {
     return m_widget;
+}
+
+/*!
+ * Requests to send the polygon corresponding to the setup.
+ */
+void RobotsHandler::requestSetupMap()
+{
+    if (RobotControlSettings::get().setupMap().isValid()) {
+        QList<WorldPolygon> polygons = {RobotControlSettings::get().setupMap().polygon()};
+        AnnotatedPolygons annotatedPolygons;
+        annotatedPolygons.polygons = polygons;
+        emit notifySetupMap(annotatedPolygons);
+    }
 }
 
 
