@@ -32,10 +32,10 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     m_frameSize(frameSize),
     m_uiViewer(new Ui::ViewerWidget),
     m_averageFps(0.),
-    m_agentsShown(false),
-    m_areasShown(false),
+    m_showAgents(false),
     m_autoAdjust(false),
-    m_trajectory(nullptr)
+    m_currentAgentId(),
+    m_setupPolygon(nullptr)
 {
     m_uiViewer->setupUi(this);
     // always receive mouse events
@@ -191,6 +191,8 @@ void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
         // then add it
         if (! m_agentLabels.contains(id)) {
             m_agentLabels[id] = new AgentTextItem(agentData.label());
+            if (m_agentColors.contains(id))
+                m_agentLabels[id]->setColor(m_agentColors[id]);
             m_scene->addItem(m_agentLabels[id]);
         }
         // set the position
@@ -215,7 +217,7 @@ void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
  */
 void ViewerWidget::updateAgents(QList<AgentDataWorld> agentDataList)
 {
-    if (!m_agentsShown)
+    if (!m_showAgents)
         return;
 
     // first hide all the items on the scene
@@ -230,6 +232,8 @@ void ViewerWidget::updateAgents(QList<AgentDataWorld> agentDataList)
         // then add it
         if (! m_agents.contains(id)) {
             m_agents[id] = new AgentItem();
+            if (m_agentColors.contains(id))
+                m_agents[id]->setColor(m_agentColors[id]);
             m_scene->addItem(m_agents[id]);
         }
         // set the position
@@ -306,25 +310,31 @@ bool ViewerWidget::convertWorldPosition(const PositionMeters& worldPosition,
 /*!
  * Set the flag that defines if the agents must be shown.
  */
-void ViewerWidget::setShowAgents(bool agentsShown)
+void ViewerWidget::setShowAgents(bool shownAgents)
 {
-    m_agentsShown = agentsShown;
+    m_showAgents = shownAgents;
     // hide agents if shown
     foreach (AgentItem* agentItem, m_agents.values())
-        agentItem->setVisible(m_agentsShown);
+        agentItem->setVisible(m_showAgents);
 }
 
 /*!
  * Request to update areas on the scene.
  */
-void ViewerWidget::updateAreas(QList<AnnotatedPolygons> polygonsToDraw)
+void ViewerWidget::updateAreas(QString agentId, QList<AnnotatedPolygons> polygonsToDraw)
 {
+    // add a group if doesn't exist yet
+    if (!m_navigationData.contains(agentId)) {
+        m_navigationData.insert(agentId, AgentDataItemGroup());
+    }
+    AgentDataItemGroup& itemsGroup = m_navigationData[agentId];
+
     // first remove previous polygons
-    for (AnnotatedPolygonItem* polygonItem : m_polygons) {
+    for (AnnotatedPolygonItem* polygonItem : itemsGroup.m_areas) {
         m_scene->removeItem(polygonItem);
         delete polygonItem;
     }
-    m_polygons.clear();
+    itemsGroup.m_areas.clear();
 
     // add new items
     for (AnnotatedPolygons annotatedPolygons : polygonsToDraw) {
@@ -343,10 +353,13 @@ void ViewerWidget::updateAreas(QList<AnnotatedPolygons> polygonsToDraw)
             }
             // draw the polygon
             if (imagePolygon.size() > 0) {
-                AnnotatedPolygonItem* item = new AnnotatedPolygonItem(imagePolygon, annotatedPolygons.color, annotatedPolygons.label);
+                AnnotatedPolygonItem* item = new AnnotatedPolygonItem(imagePolygon, annotatedPolygons.label);
+                item->setColor(annotatedPolygons.color);
                 m_scene->addItem(item);
                 // store the polygon
-                m_polygons.append(item);
+                itemsGroup.m_areas.append(item);
+                // hide if it's not the current agent
+                itemsGroup.m_areas.last()->setVisible(m_currentAgentId == agentId);
                 // need to position the item to (0,0) in order to the polygon was placed correctly
                 item->setPos(0, 0);
             }
@@ -357,8 +370,14 @@ void ViewerWidget::updateAreas(QList<AnnotatedPolygons> polygonsToDraw)
 /*!
  * Request to update the trajectory on the scene.
  */
-void ViewerWidget::updateTrajectory(QQueue<PositionMeters> worldPolygon)
+void ViewerWidget::updateTrajectory(QString agentId, QQueue<PositionMeters> worldPolygon)
 {
+    // add a group if doesn't exist yet
+    if (!m_navigationData.contains(agentId)) {
+        m_navigationData.insert(agentId, AgentDataItemGroup());
+    }
+    AgentDataItemGroup& itemsGroup = m_navigationData[agentId];
+
     // convert to image polygon
     QPolygonF imagePolygon;
     for (PositionMeters worldPosition : worldPolygon) {
@@ -372,25 +391,119 @@ void ViewerWidget::updateTrajectory(QQueue<PositionMeters> worldPolygon)
         }
     }
 
-    if (!m_trajectory ) {
-        m_trajectory = new TrajectoryItem(imagePolygon, QColor(Qt::green));
-         m_scene->addItem(m_trajectory);
+    // add a trajectory item is doesn't exist yet
+    if (!itemsGroup.m_trajectory) {
+        itemsGroup.m_trajectory = new TrajectoryItem(imagePolygon);
+        if (m_agentColors.contains(agentId))
+            itemsGroup.m_trajectory->setColor(m_agentColors[agentId]);
+        m_scene->addItem(itemsGroup.m_trajectory);
+        // hide if it's not the current agent
+        itemsGroup.m_trajectory->setVisible(m_currentAgentId == agentId);
         // need to position the item to (0,0) in order to the polygon was placed correctly
-        m_trajectory->setPos(0, 0);
+        itemsGroup.m_trajectory->setPos(0, 0);
     } else {
-        m_trajectory->setTrajectory(imagePolygon);
+        itemsGroup.m_trajectory->setTrajectory(imagePolygon);
     }
 }
 
 /*!
- * Set the flag that defines if the areas must be shown.
+ * Request to update the target on the scene.
  */
-void ViewerWidget::showAreas(bool areasShown)
+void ViewerWidget::updateTarget(QString agentId, PositionMeters worldPosition)
 {
-    m_areasShown = areasShown;
-    // hide agents if shown
-    for (auto& item : m_polygons)
-        item->setVisible(m_areasShown);
+    // add a group if doesn't exist yet
+    if (!m_navigationData.contains(agentId)) {
+        m_navigationData.insert(agentId, AgentDataItemGroup());
+    }
+    AgentDataItemGroup& itemsGroup = m_navigationData[agentId];
+
+    // convert to image position
+    PositionPixels imagePosition;
+    if (convertWorldPosition(worldPosition, imagePosition) && imagePosition.isValid()) {
+        // add a target item if doesn't exist yet
+        if (!itemsGroup.m_target) {
+            itemsGroup.m_target = new TargetItem();
+            if (m_agentColors.contains(agentId))
+                itemsGroup.m_target->setColor(m_agentColors[agentId]);
+            m_scene->addItem(itemsGroup.m_target);
+            // hide if it's not the current agent
+            itemsGroup.m_target->setVisible(m_currentAgentId == agentId);
+        }
+        itemsGroup.m_target->setPos(QPointF(imagePosition.x(), imagePosition.y()));
+    } else {
+        qDebug() << Q_FUNC_INFO << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
+        // clean up
+        if (itemsGroup.m_target) {
+            m_scene->removeItem(itemsGroup.m_target);
+            delete itemsGroup.m_target;
+            itemsGroup.m_target = nullptr;
+        }
+    }
+}
+
+/*!
+ * Updates the agent's color.
+ */
+void ViewerWidget::updateColor(QString id, QColor color)
+{
+    m_agentColors[id] = color;
+    // update the agents
+    if (m_agentLabels.contains(id))
+        m_agentLabels[id]->setColor(color);
+    if (m_agents.contains(id))
+        m_agents[id]->setColor(color);
+    // update the navigation data
+    if (m_navigationData.contains(id)) {
+        if (m_navigationData[id].m_target)
+            m_navigationData[id].m_target->setColor(color);
+        if (m_navigationData[id].m_trajectory)
+            m_navigationData[id].m_trajectory->setColor(color);
+    }
+}
+
+/*!
+ * Show/hides the navigation data.
+ */
+void ViewerWidget::showNavigationData(bool showData)
+{
+    if (showData != m_showNavigationData) {
+        m_showNavigationData = showData;
+        setNavigationDataVisible(m_currentAgentId, m_showNavigationData);
+    }
+}
+
+/*!
+ * Only one agent data can be shown in a time.
+ */
+void ViewerWidget::updateCurrentAgent(QString id)
+{
+    if (id != m_currentAgentId) {
+        // if the data is to be show
+        if (m_showNavigationData) {
+            // hide the navigation data for previous current item
+            setNavigationDataVisible(m_currentAgentId, false);
+            // show the navigation data for new item
+            setNavigationDataVisible(id, true);
+        }
+        // set the new current agent
+        m_currentAgentId = id;
+    }
+}
+
+/*!
+ * Shows/hide the navigation data for given agent.
+ */
+void ViewerWidget::setNavigationDataVisible(QString agentId, bool visible)
+{
+    if (m_navigationData.contains(agentId)) {
+        if (m_navigationData[agentId].m_target)
+            m_navigationData[agentId].m_target->setVisible(visible);
+        if (m_navigationData[agentId].m_trajectory)
+            m_navigationData[agentId].m_trajectory->setVisible(visible);
+        for (auto& item : m_navigationData[agentId].m_areas) {
+            item->setVisible(visible);
+        }
+    }
 }
 
 /*!

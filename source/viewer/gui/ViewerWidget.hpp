@@ -2,6 +2,7 @@
 #define CATS2_VIEWER_WIDGET_HPP
 
 #include "ViewerPointerTypes.hpp"
+#include "AgentDataItemGroup.hpp"
 
 #include <AgentData.hpp>
 
@@ -54,14 +55,23 @@ public slots:
     void updateAgents(QList<AgentDataWorld> agentsData);
     //! Set the flag that defines if the agents must be shown.
     void setShowAgents(bool agentsShown);
-    //! Request to update areas on the scene.
-    void updateAreas(QList<AnnotatedPolygons>);
-    //! Set the flag that defines if the areas must be shown.
-    void showAreas(bool areasShown);
 
     //! Request to update the trajectory on the scene.
-    void updateTrajectory(QQueue<PositionMeters> polygon);
- 
+    // TODO : not used at the moment, to implement
+    void updateTrajectory(QString agentId, QQueue<PositionMeters> polygon);
+    //! Request to update the target on the scene.
+    void updateTarget(QString agentId, PositionMeters position);
+    //! Update areas on the scene for specific agent.
+    void updateAreas(QString agentId, QList<AnnotatedPolygons> polygons);
+    //! Show/hides the navigation data.
+    void showNavigationData(bool dataShown);
+
+    //! Only one agent data can be shown in a time.
+    void updateCurrentAgent(QString agentId);
+
+    //! Updates the agent's color.
+    void updateColor(QString id, QColor color);
+
     //! Updates the setup outline polygon.
     void updateSetup(AnnotatedPolygons polygon);
     //! Set the flag that defines if the setup must be shown.
@@ -93,6 +103,8 @@ protected:
     //! Converts the world position from PositionMeters to PositionPixels.
     bool convertWorldPosition(const PositionMeters& worldPosition,
                               PositionPixels& imagePosition);
+    //! Shows/hide the navigation data for given agent.
+    void setNavigationDataVisible(QString agentId, bool visible);
 
 protected:
     //! Context menu.
@@ -100,7 +112,13 @@ protected:
     //! Resize event.
     void resizeEvent(QResizeEvent *event) override;
 
-protected:
+private: // view adjust
+    //! Defines if the scene is adjusted to the view size automatically.
+    bool m_autoAdjust;
+    //! Actions to be used in the context menu.
+    QAction* m_adjustAction;
+
+private: // video playback data
     //! The data object that provides the frames and agent's positions to show.
     ViewerDataPtr m_data;
     //! The frame size.
@@ -120,6 +138,9 @@ private: // agents items
     // FIXME : at the moment the agent's id is copied as it is without taking
     // into account that theoretically two agents coming from different sources
     // can have the same id.
+    //! The colors of agents. Updated by robots.
+    // TODO : not used at the moment, to implement
+    QMap<QString, QColor> m_agentColors;
 
     //! The map containing the agent's id's with the corresponding label
     //!  on the scene. Updated by the tracker.
@@ -128,21 +149,16 @@ private: // agents items
     //! The map containing the agent's id's with the corresponding object
     //!  on the scene. Updated by the tracker.
     QMap<QString, AgentItem*> m_agents;
-    //! The polygons depicting various areas of the experimental setup.
-    QList<AnnotatedPolygonItem*> m_polygons;
-    //! The planned trajectory of the robot.
-    TrajectoryItem* m_trajectory;
-
     //! The flag that defines if we show agents on the map.
-    bool m_agentsShown;
-    //! The flag that defines if the areas to be shown on the map.
-    bool m_areasShown;
+    bool m_showAgents;
 
-    //! Defines if the scene is adjusted to the view size automatically.
-    bool m_autoAdjust;
+    //! The navigation data for robots. Updated by the navigation system of the robot.
+    QMap<QString, AgentDataItemGroup> m_navigationData;
+    //! The flag that defines if the navigation data is to be shown on the map.
+    bool m_showNavigationData;
 
-    //! Actions to be used in the context menu.
-    QAction* m_adjustAction;
+    //! The current agent's id. Used to show the navigation data.
+    QString m_currentAgentId;
 
     //! The map of the setup.
     AnnotatedPolygonItem* m_setupPolygon;

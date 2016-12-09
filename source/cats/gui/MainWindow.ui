@@ -126,8 +126,8 @@
     <addaction name="actionSaveCurrentView"/>
     <addaction name="separator"/>
     <addaction name="actionShowAgents"/>
+    <addaction name="actionShowRobotNavigationData"/>
     <addaction name="separator"/>
-    <addaction name="actionShowControlMap"/>
     <addaction name="actionShowSetupOutline"/>
    </widget>
    <addaction name="menuView"/>
@@ -149,8 +149,8 @@
    <addaction name="actionSaveCurrentView"/>
    <addaction name="separator"/>
    <addaction name="actionShowAgents"/>
+   <addaction name="actionShowRobotNavigationData"/>
    <addaction name="separator"/>
-   <addaction name="actionShowControlMap"/>
    <addaction name="actionShowSetupOutline"/>
   </widget>
   <action name="actionZoomIn">

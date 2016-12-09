@@ -24,6 +24,7 @@
         <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
         <fishBot_1>
             <id>H</id>
+            <!-- TODO : move this out into the experiment section. -->
             <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_1>
         <fishBot_2>

@@ -49,6 +49,7 @@ bool ExperimentController::deserialize(QString controlAreasFileName)
         // read the area type
         std::string type;
         settings.readVariable(QString("area_%1/type").arg(areaIndex), type);
+
         // create the area object
         ControlArea area(QString::fromUtf8(id.c_str()),
                          ControlAreaType::fromSettingsString(QString::fromUtf8(type.c_str())));

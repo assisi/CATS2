@@ -61,6 +61,8 @@ void Navigation::setTargetSpeed(TargetSpeed* targetSpeed)
  */
 void Navigation::setTargetPosition(TargetPosition* targetPostion)
 {
+    // FIXME : temporary code
+    emit notifyTargetPositionChanged(targetPostion->position());
     switch (m_motionPattern) {
     case MotionPatternType::FISH_MOTION:
         fishMotionToTargetPosition(targetPostion);

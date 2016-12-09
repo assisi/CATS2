@@ -159,9 +159,9 @@ void MainWindow::connectPrimaryView()
         connect(m_ui->actionSaveCurrentView, &QAction::triggered, viewerWidget, &ViewerWidget::saveCurrentFrameToFile);
         connect(m_ui->actionAdjustView, &QAction::triggered, viewerWidget, &ViewerWidget::adjust);
         connect(m_ui->actionShowAgents, &QAction::toggled, viewerWidget, &ViewerWidget::setShowAgents);
-        connect(m_ui->actionShowControlMap, &QAction::toggled, viewerWidget, &ViewerWidget::showAreas);
-        connect(m_ui->actionShowControlMap, &QAction::toggled,
-                m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlAreas);
+        connect(m_ui->actionShowRobotNavigationData, &QAction::toggled, viewerWidget, &ViewerWidget::showNavigationData);
+        connect(m_ui->actionShowRobotNavigationData, &QAction::toggled,
+                m_robotsHandler->contolLoop().data(), &ControlLoop::sendNavigationData);
         connect(m_ui->actionShowSetupOutline, &QAction::toggled, viewerWidget, &ViewerWidget::setShowSetup);
 
         // connect to the tracking data manager
@@ -173,8 +173,12 @@ void MainWindow::connectPrimaryView()
         // connect to the robots controller
         connect(viewerWidget, &ViewerWidget::notifyRightButtonClick,
                 m_robotsHandler->contolLoop().data(), &ControlLoop::goToPosition);
-        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyCurrentRobotControlMapsPolygons,
+        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotControlAreasPolygons,
                 viewerWidget, &ViewerWidget::updateAreas);
+        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyCurrentRobotChanged,
+                viewerWidget, &ViewerWidget::updateCurrentAgent);
+        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTargetPositionChanged,
+                viewerWidget, &ViewerWidget::updateTarget);
         connect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
                 viewerWidget, &ViewerWidget::updateSetup);
     }
@@ -196,9 +200,9 @@ void MainWindow::disconnectPrimaryView()
         disconnect(m_ui->actionSaveCurrentView, &QAction::triggered, viewerWidget, &ViewerWidget::saveCurrentFrameToFile);
         disconnect(m_ui->actionAdjustView, &QAction::triggered, viewerWidget, &ViewerWidget::adjust);
         disconnect(m_ui->actionShowAgents, &QAction::toggled, viewerWidget, &ViewerWidget::setShowAgents);
-        disconnect(m_ui->actionShowControlMap, &QAction::toggled, viewerWidget, &ViewerWidget::showAreas);
-        disconnect(m_ui->actionShowControlMap, &QAction::toggled,
-                m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlAreas);
+        disconnect(m_ui->actionShowRobotNavigationData, &QAction::toggled, viewerWidget, &ViewerWidget::showNavigationData);
+        disconnect(m_ui->actionShowRobotNavigationData, &QAction::toggled,
+                m_robotsHandler->contolLoop().data(), &ControlLoop::sendNavigationData);
         disconnect(m_ui->actionShowSetupOutline, &QAction::toggled, viewerWidget, &ViewerWidget::setShowSetup);
 
         // disconnect from the tracking data manager
@@ -208,8 +212,12 @@ void MainWindow::disconnectPrimaryView()
                 viewerWidget, &ViewerWidget::updateAgents);
 
         // disconnect from the robot controller
-        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyCurrentRobotControlMapsPolygons,
+        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotControlAreasPolygons,
                 viewerWidget, &ViewerWidget::updateAreas);
+        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyCurrentRobotChanged,
+                viewerWidget, &ViewerWidget::updateCurrentAgent);
+        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTargetPositionChanged,
+                viewerWidget, &ViewerWidget::updateTarget);
         disconnect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
                 viewerWidget, &ViewerWidget::updateSetup);
     }

@@ -51,7 +51,6 @@ public:
     //! Return the type of the current controller.
     ExperimentControllerType::Enum currentController() const { return m_experimentManager.currentController(); }
 
-
     //! Returns the supported control modes.
     QList<ControlModeType::Enum> supportedControlModes() const { return m_controlStateMachine.supportedControlModes(); }
     //! Sets the control mode.
@@ -99,8 +98,12 @@ public:
 public slots:
     //! Requests to sends the control map areas' polygons.
     void requestControlAreasPolygons() { m_experimentManager.requestPolygons(); }
+    //! Requests to sends the control map areas' polygons.
+    void requestTrajectory() { /* TODO : to implement */}
+    //! Requests to sends the control map areas' polygons.
+    void requestCurrentTarget() { m_navigation.requestTargetPosion(); }
 
-signals:
+signals: // control states
     //! Informs that the robot's experiment controller was modified.
     void notifyControllerChanged(ExperimentControllerType::Enum type);
     //! Informs that the robot's control mode was modified.
@@ -113,8 +116,14 @@ signals:
                                                     int frequencyDivider);
     //! Informs that the robot is in manual control mode.
     void notifyInManualMode(QString id);
+
+signals: // navigation
     //! Sends the control map areas' polygons.
-    void notifyControlAreasPolygons(QList<AnnotatedPolygons>);
+    void notifyControlAreasPolygons(QString agentId, QList<AnnotatedPolygons> polygons);
+    //! Sends the current target.
+    void notifyTargetPositionChanged(QString agentId, PositionMeters position);
+    //! Sends the current trajectory.
+    void notifyTrajectoryChanged(QString agentId, QQueue<PositionMeters> trajectory);
 
 public:
     //! Distance between robot's wheels.

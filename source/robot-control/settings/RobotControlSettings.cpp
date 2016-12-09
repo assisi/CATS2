@@ -51,7 +51,7 @@ bool RobotControlSettings::init(QString configurationFileName)
 
         std::string controlAreasFilePath = "";
         settings.readVariable(QString("robots/fishBot_%1/controlAreasPath").arg(i), controlAreasFilePath, controlAreasFilePath);
-        robotSettings.setControlAreasPath(configurationFolder + QDir::separator() + QString::fromStdString(controlAreasFilePath));
+        robotSettings.setControlAreasFilePath(configurationFolder + QDir::separator() + QString::fromStdString(controlAreasFilePath));
 
         m_robotsSettings.insert(robotSettings.id(), robotSettings);
         settingsAccepted = settingsAccepted && (id.size() > 0);

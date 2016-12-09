@@ -22,10 +22,23 @@ FishBot::FishBot(QString id, QString controlAreasPath) :
     m_controlStateMachine(this),
     m_navigation(this)
 {
+    // control areas
+    connect(&m_experimentManager, &ExperimentManager::notifyPolygons,
+            [=](QList<AnnotatedPolygons> polygons)
+            {
+                emit notifyControlAreasPolygons(m_id, polygons);
+            });
+    // navigation data
+    connect(&m_navigation, &Navigation::notifyTargetPositionChanged,
+            [=](PositionMeters position)
+            {
+                emit notifyTargetPositionChanged(m_id, position);
+            });
+    // TODO : add the trajectory here
+    // controller data
     connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
             this, &FishBot::notifyControllerChanged);
-    connect(&m_experimentManager, &ExperimentManager::notifyPolygons,
-            this, &FishBot::notifyControlAreasPolygons);
+    // control modes
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternChanged,

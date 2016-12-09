@@ -10,7 +10,7 @@ ControlLoop::ControlLoop() :
     QObject(nullptr),
     m_robotsInterface(new Aseba::DBusInterface()),
     m_selectedRobot(),
-    m_sendAreas(false)
+    m_sendData(false)
 {
     // create the robots
     for (QString id : RobotControlSettings::get().ids()) {
@@ -25,9 +25,27 @@ ControlLoop::ControlLoop() :
                         if ((robot->id() != senderId) && (robot->currentControlMode() == ControlModeType::MANUAL))
                             robot->setControlMode(ControlModeType::IDLE);
                 });
-        // send the cotrol maps
+        // send the cotrol areas for the selected robot
         connect(m_robots.last().data(), &FishBot::notifyControlAreasPolygons,
-                this, &ControlLoop::notifyCurrentRobotControlMapsPolygons);
+                [=](QString agentId, QList<AnnotatedPolygons> polygons)
+                {
+                    if (m_sendData && (m_selectedRobot->id() == agentId))
+                        emit notifyRobotControlAreasPolygons(agentId, polygons);
+                });
+        // send the robot trajectory for the selected robot
+        connect(m_robots.last().data(), &FishBot::notifyTrajectoryChanged,
+                [=](QString agentId, QQueue<PositionMeters> trajectory)
+                {
+                    if (m_sendData && (m_selectedRobot->id() == agentId))
+                        emit notifyRobotTrajectoryChanged(agentId, trajectory);
+                });
+        // send the robot target for the selected robot
+        connect(m_robots.last().data(), &FishBot::notifyTargetPositionChanged,
+                [=](QString agentId, PositionMeters position)
+                {
+                    if (m_sendData && (m_selectedRobot->id() == agentId))
+                        emit notifyRobotTargetPositionChanged(agentId, position);
+                });
     }
 
     // conect the robots
@@ -118,8 +136,10 @@ void ControlLoop::selectRobot(QString name)
             if (m_selectedRobot != robot) {
                 qDebug() << Q_FUNC_INFO << name << "is selected";
                 m_selectedRobot = robot;
-                // update the control maps
-                sendControlAreas(m_sendAreas);
+                // inform about the change
+                emit notifyCurrentRobotChanged(m_selectedRobot->id());
+                // update the navigation data
+                sendNavigationData(m_sendData);
             }
             break;
         }
@@ -140,10 +160,12 @@ void ControlLoop::selectRobot(QString name)
  /*!
   * Asks to send control maps for the currently selected robot.
   */
- void ControlLoop::sendControlAreas(bool sendAreas)
+ void ControlLoop::sendNavigationData(bool sendData)
  {
-     m_sendAreas = sendAreas;
-     if (m_sendAreas && m_selectedRobot.data()) {
+     m_sendData = sendData;
+     if (m_sendData && m_selectedRobot.data()) {
          m_selectedRobot->requestControlAreasPolygons();
+         m_selectedRobot->requestTrajectory();
+         m_selectedRobot->requestCurrentTarget();
      }
  }

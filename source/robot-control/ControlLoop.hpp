@@ -37,11 +37,17 @@ public slots:
     //! to the selected robots.
     void goToPosition(PositionMeters position);
     //! Asks to send control maps for the currently selected robot.
-    void sendControlAreas(bool sendMaps);
+    void sendNavigationData(bool sendMaps);
 
 signals:
-    //! Sends the control map areas' polygons for the currently selected robot.
-    void notifyCurrentRobotControlMapsPolygons(QList<AnnotatedPolygons>);
+    //! Sends the control map areas' polygons of the robot.
+    void notifyRobotControlAreasPolygons(QString agentId, QList<AnnotatedPolygons> polygons);
+    //! Sends the trajectory of the robot.
+    void notifyRobotTrajectoryChanged(QString agentId, QQueue<PositionMeters> trajectory);
+    //! Sends the target of the robot.
+    void notifyRobotTargetPositionChanged(QString agentId, PositionMeters position);
+    //! Sends the current robot.
+    void notifyCurrentRobotChanged(QString agentId);
 
 private:
     //! Loads and initialized the robots' firmware scripts.
@@ -59,8 +65,8 @@ private:
     //! The control loop timer.
     QTimer m_controlLoopTimer;
 
-    //! The flag that defines if the control maps of robots are to be submitted.
-    bool m_sendAreas;
+    //! The flag that defines if the navigation data of robots are to be submitted.
+    bool m_sendData;
 };
 
 #endif // CATS2_CONTROL_LOOP_HPP
