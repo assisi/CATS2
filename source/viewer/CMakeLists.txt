@@ -15,6 +15,7 @@ set(srcs
 
 set(hdrs
     ViewerPointerTypes.hpp
+    gui/AgentDataItemGroup.hpp
     gui/ColoredItem.hpp
 )
 
