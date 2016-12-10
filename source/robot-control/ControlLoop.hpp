@@ -36,9 +36,11 @@ public slots:
     //! The target position received from the viewer; it's set as a target
     //! to the selected robots.
     void goToPosition(PositionMeters position);
-    //! Asks to send control maps for the currently selected robot.
-    void sendNavigationData(bool sendMaps);
-    //! Asks to send the current robot id.
+    //! Asks the robots to send their navigation data (trajectories, targets, etc).
+    void sendNavigationData(bool sendData);
+    //! Asks to send the control areas for the selected robot.
+    void sendControlAreas(bool sendAreas);
+    //! Asks to send the selected robot id.
     void requestSelectedRobot();
     //! Asks to send the colors of all robots.
     void requestRobotsLedColors();
@@ -72,7 +74,9 @@ private:
     QTimer m_controlLoopTimer;
 
     //! The flag that defines if the navigation data of robots are to be submitted.
-    bool m_sendData;
+    bool m_sendNavigationData;
+    //! The flag that defines if the control areas for the current robot are to be submitted.
+    bool m_sendControlAreas;
 };
 
 #endif // CATS2_CONTROL_LOOP_HPP

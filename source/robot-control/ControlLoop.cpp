@@ -10,7 +10,8 @@ ControlLoop::ControlLoop() :
     QObject(nullptr),
     m_robotsInterface(new Aseba::DBusInterface()),
     m_selectedRobot(),
-    m_sendData(false)
+    m_sendNavigationData(false),
+    m_sendControlAreas(false)
 {
     // create the robots
     for (QString id : RobotControlSettings::get().ids()) {
@@ -18,6 +19,7 @@ ControlLoop::ControlLoop() :
         m_robots.append(FishBotPtr(new FishBot(id, controlAreasPath)));
         m_robots.last()->setLedColor(RobotControlSettings::get().robotSettings(id).ledColor());
         m_robots.last()->setRobotInterface(m_robotsInterface);
+
         // ensure that only one robot can be in manual mode
         connect(m_robots.last().data(), &FishBot::notifyInManualMode,
                 [=](QString senderId)
@@ -26,27 +28,31 @@ ControlLoop::ControlLoop() :
                         if ((robot->id() != senderId) && (robot->currentControlMode() == ControlModeType::MANUAL))
                             robot->setControlMode(ControlModeType::IDLE);
                 });
-        // send the cotrol areas for the selected robot
+
+        // send the cotrol areas for the _selected_ robot if the corresponding flag is set
         connect(m_robots.last().data(), &FishBot::notifyControlAreasPolygons,
                 [=](QString agentId, QList<AnnotatedPolygons> polygons)
                 {
-                    if (m_sendData && (m_selectedRobot->id() == agentId))
+                    if (m_sendControlAreas && (m_selectedRobot->id() == agentId))
                         emit notifyRobotControlAreasPolygons(agentId, polygons);
                 });
-        // send the robot trajectory for the selected robot
+
+        // send the robot trajectory for all robots if the corresponding flag is set
         connect(m_robots.last().data(), &FishBot::notifyTrajectoryChanged,
                 [=](QString agentId, QQueue<PositionMeters> trajectory)
                 {
-                    if (m_sendData && (m_selectedRobot->id() == agentId))
+                    if (m_sendNavigationData)
                         emit notifyRobotTrajectoryChanged(agentId, trajectory);
                 });
-        // send the robot target for the selected robot
+
+        // send the robot target for all robots if the corresponding flag is set
         connect(m_robots.last().data(), &FishBot::notifyTargetPositionChanged,
                 [=](QString agentId, PositionMeters position)
                 {
-                    if (m_sendData && (m_selectedRobot->id() == agentId))
+                    if (m_sendNavigationData)
                         emit notifyRobotTargetPositionChanged(agentId, position);
                 });
+
         // send the robot color
         connect(m_robots.last().data(), &FishBot::notifyLedColor, this, &ControlLoop::notifyRobotLedColor);
     }
@@ -142,7 +148,7 @@ void ControlLoop::selectRobot(QString name)
                 // inform about the change
                 emit notifySelectedRobotChanged(m_selectedRobot->id());
                 // update the navigation data
-                sendNavigationData(m_sendData);
+                sendNavigationData(m_sendNavigationData);
             }
             break;
         }
@@ -161,15 +167,27 @@ void ControlLoop::selectRobot(QString name)
  }
 
  /*!
-  * Asks to send control maps for the currently selected robot.
+  * Asks the robots to send their navigation data (trajectories, targets, etc).
   */
  void ControlLoop::sendNavigationData(bool sendData)
  {
-     m_sendData = sendData;
-     if (m_sendData && m_selectedRobot.data()) {
+     m_sendNavigationData = sendData;
+     if (m_sendNavigationData) {
+         for(auto& robot : m_robots) {
+             robot->requestCurrentTarget();
+             robot->requestTrajectory();
+         }
+     }
+ }
+
+ /*!
+  * Asks to send the control areas for the selected robot.
+  */
+ void ControlLoop::sendControlAreas(bool sendAreas)
+ {
+     m_sendControlAreas = sendAreas;
+     if (m_sendControlAreas && m_selectedRobot.data()) {
          m_selectedRobot->requestControlAreasPolygons();
-         m_selectedRobot->requestTrajectory();
-         m_selectedRobot->requestCurrentTarget();
      }
  }
 

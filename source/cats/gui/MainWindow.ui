@@ -125,8 +125,8 @@
     <addaction name="separator"/>
     <addaction name="actionSaveCurrentView"/>
     <addaction name="separator"/>
-    <addaction name="actionShowAgents"/>
-    <addaction name="actionShowRobotNavigationData"/>
+    <addaction name="actionShowAgentsData"/>
+    <addaction name="actionShowControlAreas"/>
     <addaction name="separator"/>
     <addaction name="actionShowSetupOutline"/>
    </widget>
@@ -148,8 +148,8 @@
    <addaction name="separator"/>
    <addaction name="actionSaveCurrentView"/>
    <addaction name="separator"/>
-   <addaction name="actionShowAgents"/>
-   <addaction name="actionShowRobotNavigationData"/>
+   <addaction name="actionShowAgentsData"/>
+   <addaction name="actionShowControlAreas"/>
    <addaction name="separator"/>
    <addaction name="actionShowSetupOutline"/>
   </widget>
@@ -198,7 +198,7 @@
     <string>Adjusts the view to the available area</string>
    </property>
   </action>
-  <action name="actionShowAgents">
+  <action name="actionShowAgentsData">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -207,10 +207,13 @@
      <normaloff>:/resources/icons/ic_near_me_black_24dp.png</normaloff>:/resources/icons/ic_near_me_black_24dp.png</iconset>
    </property>
    <property name="text">
-    <string>Show agents on the scene</string>
+    <string>Show agents data on the scene</string>
+   </property>
+   <property name="toolTip">
+    <string>Show agents data on the scene</string>
    </property>
   </action>
-  <action name="actionShowRobotNavigationData">
+  <action name="actionShowControlAreas">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -219,10 +222,10 @@
      <normaloff>:/resources/icons/ic_dashboard_black_24dp.png</normaloff>:/resources/icons/ic_dashboard_black_24dp.png</iconset>
    </property>
    <property name="text">
-    <string>Show robot navigation data</string>
+    <string>Show control areas for selected robot</string>
    </property>
    <property name="toolTip">
-    <string>Show robot navigation data</string>
+    <string>Show control areas for selected robot</string>
    </property>
   </action>
   <action name="actionShowSetupOutline">

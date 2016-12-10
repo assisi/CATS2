@@ -63,9 +63,9 @@ void MainWindow::openControlMap()
         m_mapController = QSharedPointer<MapController>(new MapController(nullptr, fileName));
         connect(m_mapController.data(), &ExperimentController::notifyPolygons,
                 [=](QList<AnnotatedPolygons> polygons) {
-                    m_viewerHandler->widget()->updateAreas("Z", polygons);
+                    m_viewerHandler->widget()->updateControlAreas("Z", polygons);
                 });
-        m_viewerHandler->widget()->showNavigationData(true);
+        m_viewerHandler->widget()->setShowControlAreas(true);
         // send out polygons to draw
         m_mapController->requestPolygons();
     }

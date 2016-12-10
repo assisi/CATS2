@@ -2,7 +2,6 @@
 #define CATS2_VIEWER_WIDGET_HPP
 
 #include "ViewerPointerTypes.hpp"
-#include "AgentDataItemGroup.hpp"
 
 #include <AgentData.hpp>
 
@@ -17,6 +16,7 @@ class AgentTextItem;
 class AgentItem;
 class AnnotatedPolygonItem;
 class TrajectoryItem;
+class TargetItem;
 
 namespace Ui
 {
@@ -54,7 +54,7 @@ public slots:
     //! Triggered on arrival of the new data.
     void updateAgents(QList<AgentDataWorld> agentsData);
     //! Set the flag that defines if the agents must be shown.
-    void setShowAgents(bool agentsShown);
+    void setShowAgentsData(bool agentsShown);
 
     //! Request to update the trajectory on the scene.
     // TODO : not used at the moment, to implement
@@ -62,9 +62,9 @@ public slots:
     //! Request to update the target on the scene.
     void updateTarget(QString agentId, PositionMeters position);
     //! Update areas on the scene for specific agent.
-    void updateAreas(QString agentId, QList<AnnotatedPolygons> polygons);
+    void updateControlAreas(QString agentId, QList<AnnotatedPolygons> polygons);
     //! Show/hides the navigation data.
-    void showNavigationData(bool dataShown);
+    void setShowControlAreas(bool dataShown);
 
     //! Only one agent data can be shown in a time.
     void updateCurrentAgent(QString agentId);
@@ -104,7 +104,7 @@ protected:
     bool convertWorldPosition(const PositionMeters& worldPosition,
                               PositionPixels& imagePosition);
     //! Shows/hide the navigation data for given agent.
-    void setNavigationDataVisible(QString agentId, bool visible);
+    void setControlAreasVisible(QString agentId, bool visible);
 
 protected:
     //! Context menu.
@@ -143,20 +143,29 @@ private: // agents items
     QMap<QString, QColor> m_agentColors;
 
     //! The map containing the agent's id's with the corresponding label
-    //!  on the scene. Updated by the tracker.
+    //!  on the scene. Updated by the tracker, always shown.
     QMap<QString, AgentTextItem*> m_agentLabels;
 
-    //! The map containing the agent's id's with the corresponding object
-    //!  on the scene. Updated by the tracker.
+    //! The map containing the agent's id's with the corresponding agent representation
+    //!  on the scene. Updated by the tracker, shown if m_showAgentsData flag is set.
     QMap<QString, AgentItem*> m_agents;
-    //! The flag that defines if we show agents on the map.
-    bool m_showAgents;
+    //! The map containing the agent's id's with the corresponding agent's
+    //! trajectory on the scene (for the robots only). Updated by the
+    //! navigation system of every robot, shown if m_showAgentsData flag is set.
+    QMap<QString, TrajectoryItem*> m_agentsTrajectories;
+    //! The map containing the agent's id's with the corresponding agent's
+    //! target on the scene (for the robots only). Updated by the
+    //! navigation system of every robot, shown if m_showAgentsData flag is set.
+    QMap<QString, TargetItem*> m_agentsTargets;
+    //! The flag that defines if we show agents and their navigation data (for
+    //! robot's only) on the map.
+    bool m_showAgentsData;
 
-    //! The navigation data for robots. Updated by the navigation system of the robot.
-    QMap<QString, AgentDataItemGroup> m_navigationData;
-    //! The flag that defines if the navigation data is to be shown on the map.
-    bool m_showNavigationData;
-
+    //! The control areas for different robots. Areas only for the current agent are
+    //! shown.
+    QMap<QString, QList<AnnotatedPolygonItem*>> m_controlAreas;
+    //! The flag that defines if the control areas is to be shown on the map.
+    bool m_showControlAreas;
     //! The current agent's id. Used to show the navigation data.
     QString m_currentAgentId;
 
