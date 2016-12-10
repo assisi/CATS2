@@ -180,9 +180,9 @@ void ViewerWidget::adjust()
  */
 void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
 {
-    // first hide all the items on the scene
-    foreach (AgentTextItem* agentText, m_agentLabels.values())
-        agentText->hide();
+//    // first hide all the items on the scene
+//    foreach (AgentTextItem* agentText, m_agentLabels.values())
+//        agentText->hide();
 
     // update the item's positions, the map itself by adding new
     // items
@@ -221,9 +221,9 @@ void ViewerWidget::updateAgents(QList<AgentDataWorld> agentDataList)
     if (!m_showAgentsData)
         return;
 
-    // first hide all the items on the scene
-    foreach (AgentItem* agentItem, m_agents.values())
-        agentItem->hide();
+//    // first hide all the items on the scene
+//    foreach (AgentItem* agentItem, m_agents.values())
+//        agentItem->hide();
 
     // update the item's positions, the map itself by adding new
     // items
