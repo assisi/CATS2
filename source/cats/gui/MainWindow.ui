@@ -129,7 +129,14 @@
     <addaction name="separator"/>
     <addaction name="actionShowControlMap"/>
    </widget>
+   <widget class="QMenu" name="menuRobots">
+    <property name="title">
+     <string>Robots</string>
+    </property>
+    <addaction name="actionReconnectToRobots"/>
+   </widget>
    <addaction name="menuView"/>
+   <addaction name="menuRobots"/>
   </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
@@ -150,6 +157,8 @@
    <addaction name="actionShowAgents"/>
    <addaction name="separator"/>
    <addaction name="actionShowControlMap"/>
+   <addaction name="separator"/>
+   <addaction name="actionReconnectToRobots"/>
   </widget>
   <action name="actionZoomIn">
    <property name="icon">
@@ -218,6 +227,18 @@
    </property>
    <property name="text">
     <string>Show control map</string>
+   </property>
+  </action>
+  <action name="actionReconnectToRobots">
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/resources/icons/ic_autorenew_black_24dp.png</normaloff>:/resources/icons/ic_autorenew_black_24dp.png</iconset>
+   </property>
+   <property name="text">
+    <string>Re-establish the connection with robots</string>
+   </property>
+   <property name="toolTip">
+    <string>Re-establish the connection with robots</string>
    </property>
   </action>
  </widget>

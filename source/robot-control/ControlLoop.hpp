@@ -38,6 +38,8 @@ public slots:
     void goToPosition(PositionMeters position);
     //! Asks to send control maps for the currently selected robot.
     void sendControlAreas(bool sendMaps);
+    //! Reconnect the robot's to the aseba interface.
+    void reconnectRobots() { initializeRobotsInterfaces(); }
 
 signals:
     //! Sends the control map areas' polygons for the currently selected robot.

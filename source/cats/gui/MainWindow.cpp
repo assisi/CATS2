@@ -45,6 +45,7 @@ MainWindow::MainWindow(QWidget *parent) :
         // and place a robot controller widget on this layout
         m_ui->robotsControllerWidget->layout()->addWidget(m_robotsHandler->widget());
     }
+    connect(m_ui->actionReconnectToRobots, &QAction::triggered, m_robotsHandler->contolLoop().data(), &ControlLoop::reconnectRobots);
 
     // create setups
     if (Settings::get().isAvailable(SetupType::MAIN_CAMERA)) {

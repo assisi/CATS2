@@ -31,13 +31,7 @@ ControlLoop::ControlLoop() :
     }
 
     // conect the robots
-    if (m_robotsInterface->checkConnection()) {
-        // TODO : to make this initialization logics more robust, to allow the
-        // (re)connection when medula is (re)launched after CATS2.
-        initializeRobotsInterfaces();
-    } else {
-        qDebug() << Q_FUNC_INFO << "The connection with the dbus could not be established.";
-    }
+    initializeRobotsInterfaces();
 
     // start the control timer
     int stepMsec = static_cast<int>(1000. / RobotControlSettings::get().controlFrequencyHz());
@@ -78,8 +72,14 @@ void ControlLoop::step()
  */
 void ControlLoop::initializeRobotsInterfaces()
 {
-    for (int index = 0; index < m_robots.size(); ++index) {
-        m_robots[index]->setupConnection(index);
+    if (m_robotsInterface->checkConnection()) {
+        // TODO : to make this initialization logics more robust, to allow the
+        // (re)connection when medula is (re)launched after CATS2.
+        for (int index = 0; index < m_robots.size(); ++index) {
+            m_robots[index]->setupConnection(index);
+        }
+    } else {
+        qDebug() << Q_FUNC_INFO << "The connection with the dbus could not be established.";
     }
 }
 
