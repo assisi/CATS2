@@ -58,7 +58,8 @@ void FishBot::setRobotInterface(Aseba::DBusInterfacePtr robotInterface)
 void FishBot::setupConnection(int robotIndex)
 {
     if (m_robotInterface.data()) {
-        if (m_robotInterface->nodeList.contains(m_name)) {
+        // FIXME : in the multi-robot/node mode aseba doesn't provide the node list correctly
+//        if (m_robotInterface->nodeList.contains(m_name)) {
             QString scriptDirPath = QCoreApplication::applicationDirPath() + QDir::separator() + "aesl";
             QString scriptPath = scriptDirPath + QDir::separator() + m_name + ".aesl";
             if (QFileInfo(scriptPath).exists()) {
@@ -70,7 +71,7 @@ void FishBot::setupConnection(int robotIndex)
             } else {
                 qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
             }
-        }
+//        }
     } else {
         qDebug() << Q_FUNC_INFO << "The robot's interface is not set";
     }
