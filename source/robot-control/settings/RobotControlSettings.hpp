@@ -48,6 +48,11 @@ public:
     //! Return id.
     QString id() const { return m_id; }
 
+    //! Set color.
+    void setLedColor(QColor color) { m_ledColor = color; }
+    //! Get color.
+    QColor ledColor() const { return m_ledColor; }
+
     //! Sets control map file path.
     void setControlAreasFilePath(QString controlAreasFilePath) { m_controlAreasFilePath = controlAreasFilePath; }
     //! Return control map file path.
@@ -56,6 +61,8 @@ public:
 private:
     //! Robot's id.
     QString m_id;
+    //! Robot's color.
+    QColor m_ledColor;
     //! Control map file path.
     //TODO : make a class ExperimentSettings in order to have a
     // specific areas file for every experiment and to store experiment

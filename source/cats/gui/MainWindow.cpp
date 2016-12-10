@@ -181,7 +181,11 @@ void MainWindow::connectPrimaryView()
                 viewerWidget, &ViewerWidget::updateTarget);
         connect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
                 viewerWidget, &ViewerWidget::updateSetup);
+        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotLedColor,
+                viewerWidget, &ViewerWidget::updateColor);
 
+        // request to get robots leds' colors
+        m_robotsHandler->contolLoop()->requestRobotsLedColors();
         // request to get the current robot
         m_robotsHandler->contolLoop()->requestSelectedRobot();
     }

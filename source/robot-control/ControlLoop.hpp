@@ -40,6 +40,8 @@ public slots:
     void sendNavigationData(bool sendMaps);
     //! Asks to send the current robot id.
     void requestSelectedRobot();
+    //! Asks to send the colors of all robots.
+    void requestRobotsLedColors();
 
 signals:
     //! Sends the control map areas' polygons of the robot.
@@ -50,6 +52,8 @@ signals:
     void notifyRobotTargetPositionChanged(QString agentId, PositionMeters position);
     //! Sends the current robot.
     void notifySelectedRobotChanged(QString agentId);
+    //! Sends the leds' color of the robot.
+    void notifyRobotLedColor(QString agentId, QColor ledColor);
 
 private:
     //! Loads and initialized the robots' firmware scripts.

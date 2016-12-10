@@ -16,6 +16,7 @@ ControlLoop::ControlLoop() :
     for (QString id : RobotControlSettings::get().ids()) {
         QString controlAreasPath = RobotControlSettings::get().robotSettings(id).controlAreasFilePath();
         m_robots.append(FishBotPtr(new FishBot(id, controlAreasPath)));
+        m_robots.last()->setLedColor(RobotControlSettings::get().robotSettings(id).ledColor());
         m_robots.last()->setRobotInterface(m_robotsInterface);
         // ensure that only one robot can be in manual mode
         connect(m_robots.last().data(), &FishBot::notifyInManualMode,
@@ -46,6 +47,8 @@ ControlLoop::ControlLoop() :
                     if (m_sendData && (m_selectedRobot->id() == agentId))
                         emit notifyRobotTargetPositionChanged(agentId, position);
                 });
+        // send the robot color
+        connect(m_robots.last().data(), &FishBot::notifyLedColor, this, &ControlLoop::notifyRobotLedColor);
     }
 
     // conect the robots
@@ -176,4 +179,14 @@ void ControlLoop::selectRobot(QString name)
  void ControlLoop::requestSelectedRobot()
  {
      emit notifySelectedRobotChanged(m_selectedRobot->id());
+ }
+
+ /*!
+  * Asks to send the colors of all robots.
+  */
+ void ControlLoop::requestRobotsLedColors()
+ {
+     for(auto& robot : m_robots) {
+         robot->requestLedColor();
+     }
  }

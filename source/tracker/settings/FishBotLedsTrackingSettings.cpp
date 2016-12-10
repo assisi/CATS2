@@ -39,15 +39,15 @@ bool FishBotLedsTrackingSettings::init(QString configurationFileName)
         FishBotLedsTrackingSettingsData::FishBotDescription robotDescription;
         // read the robot's id
         std::string id;
-        settings.readVariable(QString("robots/fishBot_%2/id").arg(robotIndex), id);
+        settings.readVariable(QString("robots/fishBot_%1/id").arg(robotIndex), id);
         robotDescription.id = QString::fromStdString(id);
         // read the robot led's color
         int red;
-        settings.readVariable(QString("%1/tracking/fishBotLedsTracking/fishBot_%2/color/r").arg(m_settingPathPrefix).arg(id.data()), red);
+        settings.readVariable(QString("robots/fishBot_%1/ledColor/r").arg(robotIndex), red);
         int green;
-        settings.readVariable(QString("%1/tracking/fishBotLedsTracking/fishBot_%2/color/g").arg(m_settingPathPrefix).arg(id.data()), green);
+        settings.readVariable(QString("robots/fishBot_%1/ledColor/g").arg(robotIndex), green);
         int blue;
-        settings.readVariable(QString("%1/tracking/fishBotLedsTracking/fishBot_%2/color/b").arg(m_settingPathPrefix).arg(id.data()), blue);
+        settings.readVariable(QString("robots/fishBot_%1/ledColor/b").arg(robotIndex), blue);
         robotDescription.ledColor = QColor(red, green, blue);
         // read the color threshold
         settings.readVariable(QString("%1/tracking/fishBotLedsTracking/fishBot_%2/threshold").arg(m_settingPathPrefix).arg(id.data()), robotDescription.colorThreshold);

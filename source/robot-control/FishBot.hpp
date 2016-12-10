@@ -35,6 +35,9 @@ public:
     //! Return the robot's id.
     QString id() const { return m_id; }
 
+    //! Sets the robot's color
+    void setLedColor(QColor color) { m_ledColor = color; }
+
     //! Sets the robot's interface.
     void setRobotInterface(Aseba::DBusInterfacePtr robotInterface);
     //! Returns the robot's interface.
@@ -102,6 +105,8 @@ public slots:
     void requestTrajectory() { /* TODO : to implement */}
     //! Requests to sends the control map areas' polygons.
     void requestCurrentTarget() { m_navigation.requestTargetPosion(); }
+    //! Requests leds color.
+    void requestLedColor() { emit notifyLedColor(m_id, m_ledColor); }
 
 signals: // control states
     //! Informs that the robot's experiment controller was modified.
@@ -125,6 +130,10 @@ signals: // navigation
     //! Sends the current trajectory.
     void notifyTrajectoryChanged(QString agentId, QQueue<PositionMeters> trajectory);
 
+signals: // other
+    //! Informs about the leds color.
+    void notifyLedColor(QString agentId, QColor color);
+
 public:
     //! Distance between robot's wheels.
     static constexpr double InterWheelsDistanceCm = 1.8;
@@ -138,6 +147,8 @@ private:
     QString m_id;
     //! The robot's name.
     QString m_name;
+    //! The color of the robot's LEDs.
+    QColor m_ledColor;
     //! The robot's state.
     StateWorld m_state;
     //! The interface to communicate with the robot. Shared by all robots.

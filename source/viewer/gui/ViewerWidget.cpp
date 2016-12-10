@@ -453,20 +453,20 @@ void ViewerWidget::updateTarget(QString agentId, PositionMeters worldPosition)
 /*!
  * Updates the agent's color.
  */
-void ViewerWidget::updateColor(QString id, QColor color)
+void ViewerWidget::updateColor(QString agentId, QColor color)
 {
-    m_agentColors[id] = color;
+    m_agentColors[agentId] = color;
     // update the agents
-    if (m_agentLabels.contains(id))
-        m_agentLabels[id]->setColor(color);
-    if (m_agents.contains(id))
-        m_agents[id]->setColor(color);
+    if (m_agentLabels.contains(agentId))
+        m_agentLabels[agentId]->setColor(color);
+    if (m_agents.contains(agentId))
+        m_agents[agentId]->setColor(color);
     // update the navigation data
-    if (m_navigationData.contains(id)) {
-        if (m_navigationData[id].m_target)
-            m_navigationData[id].m_target->setColor(color);
-        if (m_navigationData[id].m_trajectory)
-            m_navigationData[id].m_trajectory->setColor(color);
+    if (m_navigationData.contains(agentId)) {
+        if (m_navigationData[agentId].m_target)
+            m_navigationData[agentId].m_target->setColor(color);
+        if (m_navigationData[agentId].m_trajectory)
+            m_navigationData[agentId].m_trajectory->setColor(color);
     }
 }
 
