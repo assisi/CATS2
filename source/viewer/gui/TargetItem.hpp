@@ -23,7 +23,7 @@ public:
 
 private:
     //! The basic value used to draw the item.
-    static constexpr int Size = 10;
+    static constexpr int Size = 4;
 };
 
 #endif // CATS2_TARGET_ITEM_HPP

@@ -31,7 +31,7 @@ private:
     //! The flag that defines if the orientation of the agent is known.
     bool m_hasOrientation;
     //! The basic value used to draw the item.
-    static constexpr int Size = 10;
+    static constexpr int Size = 6;
 };
 
 #endif // CATS2_AGENT_ITEM_HPP
