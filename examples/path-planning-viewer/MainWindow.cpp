@@ -53,7 +53,7 @@ MainWindow::MainWindow(SetupType::Enum setupType,
         m_pathPlanner.reset();
     // now make a new one
     m_pathPlanner = QSharedPointer<DijkstraPathPlanner>(new DijkstraPathPlanner());
-    m_viewerHandler->widget()->showAreas(true);
+    m_viewerHandler->widget()->setShowControlAreas(true);
     // show the path planning area
     QList<AnnotatedPolygons> polygons;
     AnnotatedPolygons annotatedPolygons;
@@ -61,7 +61,7 @@ MainWindow::MainWindow(SetupType::Enum setupType,
     annotatedPolygons.label = "Working space";
     annotatedPolygons.polygons.append(m_pathPlanner->polygon());
     polygons.append(annotatedPolygons);
-    m_viewerHandler->widget()->updateAreas(polygons);
+    m_viewerHandler->widget()->updateControlAreas("Z", polygons);
 }
 
 /*!
@@ -91,6 +91,6 @@ void MainWindow::onButtonClicked(Qt::MouseButton button,PositionMeters worldPosi
     if (m_pathPlanner.data() && m_pathPlanner->isValid()
             && m_startPosition.isValid() && m_goalPosition.isValid()) {
         QQueue<PositionMeters> path = m_pathPlanner->plan(m_startPosition, m_goalPosition);
-        m_viewerHandler->widget()->updateTrajectory(path);
+        m_viewerHandler->widget()->updateTrajectory("Z", path);
     }
 }

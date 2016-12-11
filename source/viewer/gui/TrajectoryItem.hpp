@@ -1,6 +1,8 @@
 #ifndef CATS2_TRAJECTORY_ITEM_HPP
 #define CATS2_TRAJECTORY_ITEM_HPP
 
+#include "ColoredItem.hpp"
+
 #include <QtWidgets/QGraphicsItem>
 #include <QtCore/QString>
 
@@ -8,13 +10,13 @@
 * This class will show on the graphics scene a polyline.
 * NOTE : this item must be positioned at (0,0) to work correctly.
 */
-class TrajectoryItem : public QGraphicsItem
+class TrajectoryItem : public QGraphicsItem, public ColoredItem
 {
 public:
     enum { Type = UserType + 6 };
 
     //! Constructor.
-    TrajectoryItem(QPolygonF polygon, QColor color);
+    TrajectoryItem(QPolygonF polygon);
     //! Sets the polygon.
     void setTrajectory(QPolygonF polygon) { m_polygon = polygon; }
 
@@ -29,8 +31,6 @@ public:
 private:
     //! The polygon to draw.
     QPolygonF m_polygon;
-    //! The color to use.
-    QColor m_color;
 };
 
 #endif // CATS2_TRAJECTORY_ITEM_HPP

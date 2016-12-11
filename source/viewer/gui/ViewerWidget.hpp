@@ -16,6 +16,7 @@ class AgentTextItem;
 class AgentItem;
 class AnnotatedPolygonItem;
 class TrajectoryItem;
+class TargetItem;
 
 namespace Ui
 {
@@ -53,14 +54,28 @@ public slots:
     //! Triggered on arrival of the new data.
     void updateAgents(QList<AgentDataWorld> agentsData);
     //! Set the flag that defines if the agents must be shown.
-    void setShowAgents(bool agentsShown);
-    //! Request to update areas on the scene.
-    void updateAreas(QList<AnnotatedPolygons>);
-    //! Set the flag that defines if the areas must be shown.
-    void showAreas(bool areasShown);
+    void setShowAgentsData(bool agentsShown);
 
     //! Request to update the trajectory on the scene.
-    void updateTrajectory(QQueue<PositionMeters> polygon);
+    // TODO : not used at the moment, to implement
+    void updateTrajectory(QString agentId, QQueue<PositionMeters> polygon);
+    //! Request to update the target on the scene.
+    void updateTarget(QString agentId, PositionMeters position);
+    //! Update areas on the scene for specific agent.
+    void updateControlAreas(QString agentId, QList<AnnotatedPolygons> polygons);
+    //! Show/hides the navigation data.
+    void setShowControlAreas(bool dataShown);
+
+    //! Only one agent data can be shown in a time.
+    void updateCurrentAgent(QString agentId);
+
+    //! Updates the agent's color.
+    void updateColor(QString id, QColor color);
+
+    //! Updates the setup outline polygon.
+    void updateSetup(AnnotatedPolygons polygon);
+    //! Set the flag that defines if the setup must be shown.
+    void setShowSetup(bool showSetup);
 
     //! Zoom on the video.
     void onZoomIn();
@@ -88,12 +103,20 @@ protected:
     //! Converts the world position from PositionMeters to PositionPixels.
     bool convertWorldPosition(const PositionMeters& worldPosition,
                               PositionPixels& imagePosition);
+    //! Shows/hide the navigation data for given agent.
+    void setControlAreasVisible(QString agentId, bool visible);
 
 protected:
     //! Resize event.
     void resizeEvent(QResizeEvent *event) override;
 
-protected:
+private: // view adjust
+    //! Defines if the scene is adjusted to the view size automatically.
+    bool m_autoAdjust;
+    //! Actions to be used in the context menu.
+    QAction* m_adjustAction;
+
+private: // video playback data
     //! The data object that provides the frames and agent's positions to show.
     ViewerDataPtr m_data;
     //! The frame size.
@@ -109,33 +132,45 @@ protected:
     //! The average frame rate.
     double m_averageFps;
 
+private: // agents items
     // FIXME : at the moment the agent's id is copied as it is without taking
     // into account that theoretically two agents coming from different sources
     // can have the same id.
+    //! The colors of agents. Updated by robots.
+    // TODO : not used at the moment, to implement
+    QMap<QString, QColor> m_agentColors;
+
     //! The map containing the agent's id's with the corresponding label
-    //!  on the scene.
+    //!  on the scene. Updated by the tracker, always shown.
     QMap<QString, AgentTextItem*> m_agentLabels;
-    //! The map containing the agent's id's with the corresponding object
-    //!  on the scene.
+
+    //! The map containing the agent's id's with the corresponding agent representation
+    //!  on the scene. Updated by the tracker, shown if m_showAgentsData flag is set.
     QMap<QString, AgentItem*> m_agents;
-    // TODO : to replace this by a class containing all graphical metadata
-    // for every robot : zones, current targets, trajectories, planning areas
-    // etc.
-    //! The polygons depicting various areas of the experimental setup.
-    QList<AnnotatedPolygonItem*> m_polygons;
-    //! The planned trajectory of the robot.
-    TrajectoryItem* m_trajectory;
+    //! The map containing the agent's id's with the corresponding agent's
+    //! trajectory on the scene (for the robots only). Updated by the
+    //! navigation system of every robot, shown if m_showAgentsData flag is set.
+    QMap<QString, TrajectoryItem*> m_agentsTrajectories;
+    //! The map containing the agent's id's with the corresponding agent's
+    //! target on the scene (for the robots only). Updated by the
+    //! navigation system of every robot, shown if m_showAgentsData flag is set.
+    QMap<QString, TargetItem*> m_agentsTargets;
+    //! The flag that defines if we show agents and their navigation data (for
+    //! robot's only) on the map.
+    bool m_showAgentsData;
 
+    //! The control areas for different robots. Areas only for the current agent are
+    //! shown.
+    QMap<QString, QList<AnnotatedPolygonItem*>> m_controlAreas;
+    //! The flag that defines if the control areas is to be shown on the map.
+    bool m_showControlAreas;
+    //! The current agent's id. Used to show the navigation data.
+    QString m_currentAgentId;
+
+    //! The map of the setup.
+    AnnotatedPolygonItem* m_setupPolygon;
     //! The flag that defines if we show agents on the map.
-    bool m_agentsShown;
-    //! The flag that defines if the areas to be shown on the map.
-    bool m_areasShown;
-
-    //! Defines if the scene is adjusted to the view size automatically.
-    bool m_autoAdjust;
-
-    //! Actions to be used in the context menu.
-    QAction* m_adjustAction;
+    bool m_showSetup;
 };
 
 #endif // CATS2_VIEWER_WIDGET_HPP

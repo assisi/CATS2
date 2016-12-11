@@ -3,6 +3,8 @@
 
 #include "RobotControlPointerTypes.hpp"
 
+#include <AgentData.hpp>
+
 #include <QtCore/QObject>
 
 class RobotsWidget;
@@ -21,6 +23,14 @@ public:
     explicit RobotsHandler();
     //! Destructor.
     virtual ~RobotsHandler() final;
+
+public slots:
+    //! Requests to send the polygon corresponding to the setup.
+    void requestSetupMap();
+
+signals :
+    //! Sends the polygon corresponding to the setup.
+    void notifySetupMap(AnnotatedPolygons polygon);
 
 public:
     //! Return the pointer of the data.

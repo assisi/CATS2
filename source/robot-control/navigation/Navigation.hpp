@@ -38,14 +38,6 @@ public:
     //! Requests the robot to stop.
     void stop();
 
-signals:
-    //! Informs that the robot's motion pattern was modified.
-    void notifyMotionPatternChanged(MotionPatternType::Enum type);
-    //! Informs that the value of the frequency divider of the motion
-    //! pattern has been changed.
-    void notifyMotionPatternFrequencyDividerChanged(MotionPatternType::Enum type,
-                                                    int frequencyDivider);
-
 public slots:
     //! Sets the requested motion pattern.
     void setMotionPattern(MotionPatternType::Enum type);
@@ -54,6 +46,20 @@ public slots:
     //! other motion patterns as well.
     void setMotionPatternFrequencyDivider(MotionPatternType::Enum type,
                                           int frequencyDivider);
+
+public slots:
+    //! Requests to sends the map areas' polygons.
+    void requestTargetPosion() { /* TODO : to implement*/}
+
+signals:
+    //! Informs that the robot's motion pattern was modified.
+    void notifyMotionPatternChanged(MotionPatternType::Enum type);
+    //! Informs that the value of the frequency divider of the motion
+    //! pattern has been changed.
+    void notifyMotionPatternFrequencyDividerChanged(MotionPatternType::Enum type,
+                                                    int frequencyDivider);
+    //! Informs that the robot's target position was modified.
+    void notifyTargetPositionChanged(PositionMeters PositionMeters);
 
 private:
     //! Manages the target speed control.

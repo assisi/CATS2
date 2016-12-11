@@ -338,7 +338,7 @@ struct AnnotatedPolygons {
     //! Initialization.
     AnnotatedPolygons()
         : label(""),
-          color(),
+          color(Qt::black),
           polygons()
     {}
     //! The label.

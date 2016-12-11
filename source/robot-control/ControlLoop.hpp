@@ -36,12 +36,28 @@ public slots:
     //! The target position received from the viewer; it's set as a target
     //! to the selected robots.
     void goToPosition(PositionMeters position);
-    //! Asks to send control maps for the currently selected robot.
-    void sendControlAreas(bool sendMaps);
+    //! Asks the robots to send their navigation data (trajectories, targets, etc).
+    void sendNavigationData(bool sendData);
+    //! Asks to send the control areas for the selected robot.
+    void sendControlAreas(bool sendAreas);
+    //! Asks to send the selected robot id.
+    void requestSelectedRobot();
+    //! Asks to send the colors of all robots.
+    void requestRobotsLedColors();
+    //! Reconnect the robot's to the aseba interface.
+    void reconnectRobots() { initializeRobotsInterfaces(); }
 
 signals:
-    //! Sends the control map areas' polygons for the currently selected robot.
-    void notifyCurrentRobotControlMapsPolygons(QList<AnnotatedPolygons>);
+    //! Sends the control map areas' polygons of the robot.
+    void notifyRobotControlAreasPolygons(QString agentId, QList<AnnotatedPolygons> polygons);
+    //! Sends the trajectory of the robot.
+    void notifyRobotTrajectoryChanged(QString agentId, QQueue<PositionMeters> trajectory);
+    //! Sends the target of the robot.
+    void notifyRobotTargetPositionChanged(QString agentId, PositionMeters position);
+    //! Sends the current robot.
+    void notifySelectedRobotChanged(QString agentId);
+    //! Sends the leds' color of the robot.
+    void notifyRobotLedColor(QString agentId, QColor ledColor);
 
 private:
     //! Loads and initialized the robots' firmware scripts.
@@ -59,8 +75,10 @@ private:
     //! The control loop timer.
     QTimer m_controlLoopTimer;
 
-    //! The flag that defines if the control maps of robots are to be submitted.
-    bool m_sendAreas;
+    //! The flag that defines if the navigation data of robots are to be submitted.
+    bool m_sendNavigationData;
+    //! The flag that defines if the control areas for the current robot are to be submitted.
+    bool m_sendControlAreas;
 };
 
 #endif // CATS2_CONTROL_LOOP_HPP

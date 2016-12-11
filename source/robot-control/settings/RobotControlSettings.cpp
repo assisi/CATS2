@@ -43,15 +43,24 @@ bool RobotControlSettings::init(QString configurationFileName)
     settingsAccepted = settingsAccepted && (m_fishMotionPatternFrequencyDivider > 0);
 
     // read settings for every robot.
-    for (int i = 1; i <= m_numberOfRobots; i++) {
+    for (int index = 1; index <= m_numberOfRobots; index++) {
         RobotSettings robotSettings;
         std::string id = "";
-        settings.readVariable(QString("robots/fishBot_%1/id").arg(i), id, id);
+        settings.readVariable(QString("robots/fishBot_%1/id").arg(index), id, id);
         robotSettings.setId(QString::fromStdString(id));
 
+        // read the robot led's color
+        int red;
+        settings.readVariable(QString("robots/fishBot_%1/ledColor/r").arg(index), red);
+        int green;
+        settings.readVariable(QString("robots/fishBot_%1/ledColor/g").arg(index), green);
+        int blue;
+        settings.readVariable(QString("robots/fishBot_%1/ledColor/b").arg(index), blue);
+        robotSettings.setLedColor(QColor(red, green, blue));
+
         std::string controlAreasFilePath = "";
-        settings.readVariable(QString("robots/fishBot_%1/controlAreasPath").arg(i), controlAreasFilePath, controlAreasFilePath);
-        robotSettings.setControlAreasPath(configurationFolder + QDir::separator() + QString::fromStdString(controlAreasFilePath));
+        settings.readVariable(QString("robots/fishBot_%1/controlAreasPath").arg(index), controlAreasFilePath, controlAreasFilePath);
+        robotSettings.setControlAreasFilePath(configurationFolder + QDir::separator() + QString::fromStdString(controlAreasFilePath));
 
         m_robotsSettings.insert(robotSettings.id(), robotSettings);
         settingsAccepted = settingsAccepted && (id.size() > 0);

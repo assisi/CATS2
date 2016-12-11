@@ -5,9 +5,8 @@
 /*!
  * Constructor.
  */
-TrajectoryItem::TrajectoryItem(QPolygonF polygon, QColor color) :
-    m_polygon(polygon),
-    m_color(color)
+TrajectoryItem::TrajectoryItem(QPolygonF polygon) :
+    m_polygon(polygon)
 {
 
 }

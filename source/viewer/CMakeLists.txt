@@ -10,10 +10,12 @@ set(srcs
     gui/AgentItem.cpp
     gui/AnnotatedPolygonItem.cpp
     gui/TrajectoryItem.cpp
+    gui/TargetItem.cpp
 )
 
 set(hdrs
     ViewerPointerTypes.hpp
+    gui/ColoredItem.hpp
 )
 
 qt5_wrap_ui(uis_hdrs gui/ViewerWidget.ui gui/ViewerWindow.ui)
