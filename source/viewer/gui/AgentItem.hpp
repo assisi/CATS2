@@ -1,13 +1,15 @@
 #ifndef CATS2_AGENT_ITEM_HPP
 #define CATS2_AGENT_ITEM_HPP
 
+#include "ColoredItem.hpp"
+
 #include <QtWidgets/QGraphicsItem>
 
 /*!
  * This class will show on the graphics scene a triangle defining the position
  * and orientation of the detected agent.
  */
-class AgentItem : public QGraphicsItem
+class AgentItem : public QGraphicsItem, public ColoredItem
 {
 public:
     enum { Type = UserType + 17 };
@@ -29,7 +31,7 @@ private:
     //! The flag that defines if the orientation of the agent is known.
     bool m_hasOrientation;
     //! The basic value used to draw the item.
-    static constexpr int Size = 10;
+    static constexpr int Size = 6;
 };
 
 #endif // CATS2_AGENT_ITEM_HPP

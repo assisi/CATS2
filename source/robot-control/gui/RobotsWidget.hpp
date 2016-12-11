@@ -25,7 +25,7 @@ public:
 signals:
     //! When a tab is changed the corresponding robot is considered as
     //! selected.
-    void notifyCurrentRobotChanged(QString robotName);
+    void notifySelectedRobotChanged(QString robotName);
 
 private:
     //! The gui form.

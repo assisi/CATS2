@@ -125,9 +125,10 @@
     <addaction name="separator"/>
     <addaction name="actionSaveCurrentView"/>
     <addaction name="separator"/>
-    <addaction name="actionShowAgents"/>
+    <addaction name="actionShowAgentsData"/>
+    <addaction name="actionShowControlAreas"/>
     <addaction name="separator"/>
-    <addaction name="actionShowControlMap"/>
+    <addaction name="actionShowSetupOutline"/>
    </widget>
    <widget class="QMenu" name="menuRobots">
     <property name="title">
@@ -154,9 +155,10 @@
    <addaction name="separator"/>
    <addaction name="actionSaveCurrentView"/>
    <addaction name="separator"/>
-   <addaction name="actionShowAgents"/>
+   <addaction name="actionShowAgentsData"/>
+   <addaction name="actionShowControlAreas"/>
    <addaction name="separator"/>
-   <addaction name="actionShowControlMap"/>
+   <addaction name="actionShowSetupOutline"/>
    <addaction name="separator"/>
    <addaction name="actionReconnectToRobots"/>
   </widget>
@@ -196,7 +198,7 @@
   <action name="actionAdjustView">
    <property name="icon">
     <iconset resource="../icons.qrc">
-     <normaloff>:/resources/icons/ic_settings_overscan_black_24dp.png</normaloff>:/resources/icons/ic_settings_overscan_black_24dp.png</iconset>
+     <normaloff>:/resources/icons/ic_zoom_out_map_black_24dp.png</normaloff>:/resources/icons/ic_zoom_out_map_black_24dp.png</iconset>
    </property>
    <property name="text">
     <string>AdjustView</string>
@@ -205,19 +207,22 @@
     <string>Adjusts the view to the available area</string>
    </property>
   </action>
-  <action name="actionShowAgents">
+  <action name="actionShowAgentsData">
    <property name="checkable">
     <bool>true</bool>
    </property>
    <property name="icon">
     <iconset resource="../icons.qrc">
-     <normaloff>:/resources/icons/ic_change_history_black_24dp.png</normaloff>:/resources/icons/ic_change_history_black_24dp.png</iconset>
+     <normaloff>:/resources/icons/ic_near_me_black_24dp.png</normaloff>:/resources/icons/ic_near_me_black_24dp.png</iconset>
    </property>
    <property name="text">
-    <string>Show agents on the scene</string>
+    <string>Show agents data on the scene</string>
+   </property>
+   <property name="toolTip">
+    <string>Show agents data on the scene</string>
    </property>
   </action>
-  <action name="actionShowControlMap">
+  <action name="actionShowControlAreas">
    <property name="checkable">
     <bool>true</bool>
    </property>
@@ -226,7 +231,25 @@
      <normaloff>:/resources/icons/ic_dashboard_black_24dp.png</normaloff>:/resources/icons/ic_dashboard_black_24dp.png</iconset>
    </property>
    <property name="text">
-    <string>Show control map</string>
+    <string>Show control areas for selected robot</string>
+   </property>
+   <property name="toolTip">
+    <string>Show control areas for selected robot</string>
+   </property>
+  </action>
+  <action name="actionShowSetupOutline">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/resources/icons/ic_grid_on_black_24dp.png</normaloff>:/resources/icons/ic_grid_on_black_24dp.png</iconset>
+   </property>
+   <property name="text">
+    <string>Show setup outline</string>
+   </property>
+   <property name="toolTip">
+    <string>Show setup outline</string>
    </property>
   </action>
   <action name="actionReconnectToRobots">

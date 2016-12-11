@@ -6,7 +6,7 @@
         <agents>
             <numberOfAnimals>5</numberOfAnimals>
         </agents>
-        <setupMapPath>/setup/two-rooms.xml</setupMapPath>
+        <setupMapPath>setup/epfl-two-rooms.xml</setupMapPath>
     </experiment>
     <robots>
         <numberOfRobots>1</numberOfRobots>
@@ -24,12 +24,32 @@
         <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
         <fishBot_1>
             <id>H</id>
+            <ledColor>
+                <r>90</r>
+                <g>150</g>
+                <b>200</b>
+            </ledColor>
+            <!-- TODO : move this out into the experiment section. -->
             <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_1>
         <fishBot_2>
-            <id>F</id>
+            <id>B</id>
+            <ledColor>
+                <r>255</r>
+                <g>160</g>
+                <b>200</b>
+            </ledColor>
             <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_2>
+        <fishBot_3>
+            <id>C</id>
+            <ledColor>
+                <r>190</r>
+                <g>255</g>
+                <b>190</b>
+            </ledColor>
+            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
+        </fishBot_3>
     </robots>
     <setups>
         <mainCamera>
@@ -65,23 +85,15 @@
                 <trackingMethod>fishBotLedsTracking</trackingMethod>
                 <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
-                    <!-- TODO : consider moving this to the robot's specific section. -->
                     <fishBot_H>
-                        <color>
-                            <r>90</r>
-                            <g>150</g>
-                            <b>200</b>
-                        </color>
                         <threshold>30</threshold>
                     </fishBot_H>
-                    <fishBot_F>
-                        <color>
-                            <r>45</r>
-                            <g>130</g>
-                            <b>220</b>
-                        </color>
-                        <threshold>20</threshold>
-                    </fishBot_F>
+                    <fishBot_B>
+                        <threshold>40</threshold>
+                    </fishBot_B>
+                    <fishBot_C>
+                        <threshold>40</threshold>
+                    </fishBot_C>
                 </fishBotLedsTracking>
             </tracking>
         </cameraBelow>

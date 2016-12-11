@@ -19,7 +19,7 @@ void AgentItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 {
     Q_UNUSED(widget);
 
-    QPen pen(QBrush(Qt::blue, Qt::SolidPattern), 1, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin);
+    QPen pen(QBrush(m_color, Qt::SolidPattern), 2, Qt::SolidLine, Qt::SquareCap, Qt::BevelJoin);
     painter->setPen(pen);
 
     if (m_hasOrientation) {

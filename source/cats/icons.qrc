@@ -10,6 +10,9 @@
         <file>resources/icons/ic_save_black_24dp.png</file>
         <file>resources/icons/ic_change_history_black_24dp.png</file>
         <file>resources/icons/ic_dashboard_black_24dp.png</file>
+        <file>resources/icons/ic_near_me_black_24dp.png</file>
+        <file>resources/icons/ic_grid_on_black_24dp.png</file>
+        <file>resources/icons/ic_zoom_out_map_black_24dp.png</file>
         <file>resources/icons/ic_autorenew_black_24dp.png</file>
     </qresource>
 </RCC>

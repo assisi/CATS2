@@ -35,6 +35,9 @@ public:
     //! Return the robot's id.
     QString id() const { return m_id; }
 
+    //! Sets the robot's color
+    void setLedColor(QColor color) { m_ledColor = color; }
+
     //! Sets the robot's interface.
     void setRobotInterface(Aseba::DBusInterfacePtr robotInterface);
     //! Returns the robot's interface.
@@ -50,7 +53,6 @@ public:
     void setController(ExperimentControllerType::Enum type) { m_experimentManager.setController(type); }
     //! Return the type of the current controller.
     ExperimentControllerType::Enum currentController() const { return m_experimentManager.currentController(); }
-
 
     //! Returns the supported control modes.
     QList<ControlModeType::Enum> supportedControlModes() const { return m_controlStateMachine.supportedControlModes(); }
@@ -99,8 +101,14 @@ public:
 public slots:
     //! Requests to sends the control map areas' polygons.
     void requestControlAreasPolygons() { m_experimentManager.requestPolygons(); }
+    //! Requests to sends the control map areas' polygons.
+    void requestTrajectory() { /* TODO : to implement */}
+    //! Requests to sends the control map areas' polygons.
+    void requestCurrentTarget() { m_navigation.requestTargetPosion(); }
+    //! Requests leds color.
+    void requestLedColor() { emit notifyLedColor(m_id, m_ledColor); }
 
-signals:
+signals: // control states
     //! Informs that the robot's experiment controller was modified.
     void notifyControllerChanged(ExperimentControllerType::Enum type);
     //! Informs that the robot's control mode was modified.
@@ -113,8 +121,18 @@ signals:
                                                     int frequencyDivider);
     //! Informs that the robot is in manual control mode.
     void notifyInManualMode(QString id);
+
+signals: // navigation
     //! Sends the control map areas' polygons.
-    void notifyControlAreasPolygons(QList<AnnotatedPolygons>);
+    void notifyControlAreasPolygons(QString agentId, QList<AnnotatedPolygons> polygons);
+    //! Sends the current target.
+    void notifyTargetPositionChanged(QString agentId, PositionMeters position);
+    //! Sends the current trajectory.
+    void notifyTrajectoryChanged(QString agentId, QQueue<PositionMeters> trajectory);
+
+signals: // other
+    //! Informs about the leds color.
+    void notifyLedColor(QString agentId, QColor color);
 
 public:
     //! Distance between robot's wheels.
@@ -129,6 +147,8 @@ private:
     QString m_id;
     //! The robot's name.
     QString m_name;
+    //! The color of the robot's LEDs.
+    QColor m_ledColor;
     //! The robot's state.
     StateWorld m_state;
     //! The interface to communicate with the robot. Shared by all robots.

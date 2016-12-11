@@ -6,7 +6,6 @@
 #include "ViewerData.hpp"
 #include <settings/CommandLineParameters.hpp>
 #include <settings/ReadSettingsHelper.hpp>
-
 #include <QtWidgets/QGraphicsPixmapItem>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QStatusBar>
@@ -62,8 +61,11 @@ void MainWindow::openControlMap()
             m_mapController.reset();
         // now make a new one
         m_mapController = QSharedPointer<MapController>(new MapController(nullptr, fileName));
-        connect(m_mapController.data(), &ExperimentController::notifyPolygons, m_viewerHandler->widget(), &ViewerWidget::updateAreas);
-        m_viewerHandler->widget()->showAreas(true);
+        connect(m_mapController.data(), &ExperimentController::notifyPolygons,
+                [=](QList<AnnotatedPolygons> polygons) {
+                    m_viewerHandler->widget()->updateControlAreas("Z", polygons);
+                });
+        m_viewerHandler->widget()->setShowControlAreas(true);
         // send out polygons to draw
         m_mapController->requestPolygons();
     }

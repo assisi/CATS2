@@ -1,22 +1,24 @@
-#ifndef CATS2_ANNOTATED_POLYGON_ITEM_HPP
-#define CATS2_ANNOTATED_POLYGON_ITEM_HPP
+#ifndef CATS2_TRAJECTORY_ITEM_HPP
+#define CATS2_TRAJECTORY_ITEM_HPP
 
 #include "ColoredItem.hpp"
 
 #include <QtWidgets/QGraphicsItem>
+#include <QtCore/QString>
 
 /*!
- * This class will show on the graphics scene a coloured polygon with
- * a label text inside.
- * NOTE : this item must be positioned at (0,0) to work correctly.
- */
-class AnnotatedPolygonItem : public QGraphicsItem, public ColoredItem
+* This class will show on the graphics scene a polyline.
+* NOTE : this item must be positioned at (0,0) to work correctly.
+*/
+class TrajectoryItem : public QGraphicsItem, public ColoredItem
 {
 public:
-    enum { Type = UserType + 5 };
+    enum { Type = UserType + 6 };
 
     //! Constructor.
-    AnnotatedPolygonItem(QPolygonF polygon, QString label);
+    TrajectoryItem(QPolygonF polygon);
+    //! Sets the polygon.
+    void setTrajectory(QPolygonF polygon) { m_polygon = polygon; }
 
 public:
     //! Returns the type of the item.
@@ -29,8 +31,6 @@ public:
 private:
     //! The polygon to draw.
     QPolygonF m_polygon;
-    //! The label to put on the polygon.
-    QString m_label;
 };
 
-#endif // CATS2_ANNOTATED_POLYGON_ITEM_HPP
+#endif // CATS2_TRAJECTORY_ITEM_HPP
