@@ -64,6 +64,9 @@ MainWindow::MainWindow(QWidget *parent) :
         else
             setSecondaryView(SetupType::CAMERA_BELOW);
     }
+
+    // show the window maximazed
+     setWindowState(Qt::WindowMaximized);
 }
 
 /*!
