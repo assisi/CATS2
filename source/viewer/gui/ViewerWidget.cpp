@@ -251,11 +251,12 @@ void ViewerWidget::updateAgents(QList<AgentDataWorld> agentDataList)
                 if (orientation.isValid()) {
                     m_agents[id]->setHasOrientation(true);
                     m_agents[id]->setRotation(orientation.angleDeg() );
-                } else {
+                } // NOTE : to prevent the blinking we keep the previous orientation of the agent
+                /*else {
                     // we hide the item without known orientation to prevent unpleasant visual effects
                     m_agents[id]->setHasOrientation(false);
                     m_agents[id]->hide();
-                }
+                }*/
             } else {
                 qDebug() << Q_FUNC_INFO << "Unable to convert agent's world position to the image position";
             }
