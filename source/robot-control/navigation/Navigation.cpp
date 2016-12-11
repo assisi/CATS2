@@ -66,7 +66,8 @@ void Navigation::setTargetPosition(TargetPosition* targetPostion)
 {
      // FIXME : temporary code
      emit notifyTargetPositionChanged(targetPostion->position());
-     if (m_robot->state().position().isValid()
+
+    if (m_robot->state().position().isValid()
             && targetPostion->position().isValid()) {
         PositionMeters currentWaypoint = m_pathPlanner.currentWaypoint(m_robot->state().position(),
                                                                        targetPostion->position());

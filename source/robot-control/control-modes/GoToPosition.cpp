@@ -19,10 +19,6 @@ ControlTargetPtr GoToPosition::step()
 {
     if (m_targetPosition.isValid())
         return ControlTargetPtr(new TargetPosition(m_targetPosition));
-    else {
-        qDebug() << Q_FUNC_INFO << "Target position is not valid, stop the robot";
-        return ControlTargetPtr(new TargetSpeed(0, 0));
-    }
 }
 
 /*!

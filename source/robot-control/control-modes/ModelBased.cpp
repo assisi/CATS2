@@ -30,8 +30,6 @@ ControlTargetPtr ModelBased::step()
             return ControlTargetPtr(new TargetPosition(targetPosition));
         }
     }
-    // otherwise the robot doesn't move
-    return ControlTargetPtr(new TargetSpeed(0, 0));
 }
 
 /*!
