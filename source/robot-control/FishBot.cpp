@@ -108,7 +108,6 @@ void FishBot::stepControl()
 
     // step the control mode state machine with the robot's position and
     // other agents positions.
-    // TODO : to define how to pass the other agents positions
     ControlTargetPtr controlTarget = m_controlStateMachine.step();
 
     // step the navigation with the resulted target values
@@ -121,12 +120,18 @@ void FishBot::stepControl()
  */
 void FishBot::setControlMode(ControlModeType::Enum type)
 {
-    m_controlStateMachine.setControlMode(type);
+    if (m_controlStateMachine.currentControlMode() != type) {
+        // stop the robot for safety reason
+        m_navigation.stop();
 
-    // a check for a special case - joystick controlled manual mode, only one
-    // robot can be controlled, hence other robots in manual mode switch to idle
-    if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
-        emit notifyInManualMode(m_id);
+        // change the control mode
+        m_controlStateMachine.setControlMode(type);
+
+        // a check for a special case - joystick controlled manual mode, only one
+        // robot can be controlled, hence other robots in manual mode switch to idle
+        if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
+            emit notifyInManualMode(m_id);
+    }
 }
 
 /*! Received positions of all tracked robots, finds and sets the one
