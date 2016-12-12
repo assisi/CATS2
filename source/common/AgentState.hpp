@@ -67,6 +67,13 @@ public:
     //! Destructor.
     ~PositionMeters() = default;
 
+    //! Resets the position to default values.
+    void reset()
+    {
+        m_x = m_y = m_z = 0;
+        m_valid = false;
+    }
+
     //! Sets the x coordinate.
     void setX(double x) { m_x = x; }
     //! Return the x coordinate.

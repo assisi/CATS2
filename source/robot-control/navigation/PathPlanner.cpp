@@ -33,7 +33,9 @@ PositionMeters PathPlanner::currentWaypoint(PositionMeters currentPosition,
             m_currentSubTargetPosition = m_subTargetsQueue.dequeue();
         } else {
             // otherwise we arrived to the destination, so we keep the same
-            // target
+            // target and reset the last received target to be sure that we
+            // never fall to the same position next time
+            m_lastReceivedTargetPosition.reset();
         }
     }
 
