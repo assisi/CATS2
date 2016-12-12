@@ -91,6 +91,8 @@ private:
 
     //! The path planner to the target position.
     PathPlanner m_pathPlanner;
+    //! The flag that says if the path planning is to be used.
+    bool m_usePathPlanning;
 
     //! Local copy of fish motion pattern settings.
     FishMotionPatternSettings m_fishMotionPatternSettings;
