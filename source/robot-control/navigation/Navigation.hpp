@@ -38,6 +38,9 @@ public:
     //! Requests the robot to stop.
     void stop();
 
+    //! Returns the path planning usage flag.
+    bool usePathPlanning() const { return m_usePathPlanning; }
+
 public slots:
     //! Sets the requested motion pattern.
     void setMotionPattern(MotionPatternType::Enum type);
@@ -46,9 +49,11 @@ public slots:
     //! other motion patterns as well.
     void setMotionPatternFrequencyDivider(MotionPatternType::Enum type,
                                           int frequencyDivider);
+    //! Sets the path planning usage flag.
+    void setUsePathPlanning(bool usePathPlanning);
 
 public slots:
-    //! Requests to sends the map areas' polygons.
+    //! Requests to sends the current target.
     void requestTargetPosion() { /* TODO : to implement*/}
 
 signals:
@@ -60,7 +65,9 @@ signals:
                                                     int frequencyDivider);
     //! Informs that the robot's target position was modified.
     void notifyTargetPositionChanged(PositionMeters PositionMeters);
-
+    //! Informs that the path planning is on/off in the navigation.
+    void notifyUsePathPlanningChanged(bool value);
+    
 private:
     //! Manages the target speed control.
     void setTargetSpeed(TargetSpeed* targetSpeed);

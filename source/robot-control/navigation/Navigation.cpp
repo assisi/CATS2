@@ -279,6 +279,18 @@ int Navigation::motionPatternFrequencyDivider(MotionPatternType::Enum type)
     }
 }
 
+/*! 
+ * Sets the path planning usage flag.
+ */ 
+void Navigation::setUsePathPlanning(bool usePathPlanning) 
+{ 
+    if (m_usePathPlanning != usePathPlanning) {
+        m_usePathPlanning = usePathPlanning; 
+        emit notifyUsePathPlanningChanged(m_usePathPlanning);
+    }
+}
+
+
 /*!
  * Requests the robot to stop.
  */

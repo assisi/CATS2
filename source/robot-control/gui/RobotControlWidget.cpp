@@ -116,6 +116,20 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
                 if (m_ui->frequencyDividerSpinBox->value() != value)
                     m_ui->frequencyDividerSpinBox->setValue(value);
             });
+
+    // set the robot's motion path planning usage flag on change
+    connect(m_ui->pathPlanningCheckBox, static_cast<void (QCheckBox::*)(bool)>(&QCheckBox::toggled),
+            [=](bool value) { m_robot->setUsePathPlanning(value); });
+
+    // set the path planning gui from the robot
+    connect(m_robot.data(), &FishBot::notifyUsePathPlanningChanged,
+            [=](bool value)
+            {
+                if (m_ui->pathPlanningCheckBox->isChecked() != value)
+                    m_ui->pathPlanningCheckBox->setChecked(value);
+            });
+    // set the current value
+    m_ui->pathPlanningCheckBox->setChecked(m_robot->usePathPlanning());
 }
 
 /*!

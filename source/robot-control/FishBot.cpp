@@ -46,6 +46,10 @@ FishBot::FishBot(QString id, QString controlAreasPath) :
             this, &FishBot::notifyMotionPatternChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
             this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
+    connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
+            this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
+    connect(&m_navigation, &Navigation::notifyUsePathPlanningChanged,
+            this, &FishBot::notifyUsePathPlanningChanged);
 }
 
 /*!
@@ -202,6 +206,14 @@ void FishBot::setMotionPatternFrequencyDivider(MotionPatternType::Enum type,
 int FishBot::motionPatternFrequencyDivider(MotionPatternType::Enum type)
 {
     return m_navigation.motionPatternFrequencyDivider(type);
+}
+
+/*!
+ * Sets the path planning usage flag in the navigation.
+ */
+void FishBot::setUsePathPlanning(bool usePathPlanning)
+{
+    m_navigation.setUsePathPlanning(usePathPlanning);
 }
 
 /*!

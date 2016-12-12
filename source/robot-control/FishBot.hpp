@@ -74,6 +74,10 @@ public:
                                           int frequencyDivider);
     //! Return the motion pattern frequency divider.
     int motionPatternFrequencyDivider(MotionPatternType::Enum type);
+    //! Sets the path planning usage flag in the navigation.
+    void setUsePathPlanning(bool usePathPlanning);
+    //! Returns the path planning usage from from the navigation.
+    bool usePathPlanning() const { return m_navigation.usePathPlanning(); }
 
     //! Steps the control for the robot.
     void stepControl();
@@ -121,6 +125,8 @@ signals: // control states
                                                     int frequencyDivider);
     //! Informs that the robot is in manual control mode.
     void notifyInManualMode(QString id);
+    //! Informs that the path planning is on/off in the navigation.
+    void notifyUsePathPlanningChanged(bool value);
 
 signals: // navigation
     //! Sends the control map areas' polygons.
