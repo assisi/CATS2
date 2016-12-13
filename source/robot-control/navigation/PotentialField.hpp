@@ -3,6 +3,7 @@
 
 #include "SetupMap.hpp"
 #include "GridBasedMethod.hpp"
+#include "settings/RobotControlSettings.hpp"
 
 #include <opencv2/opencv.hpp>
 
@@ -19,10 +20,9 @@ public:
     PotentialField(FishBot* robot);
     
     //! Updates the parameters of the potential field.
-    void setParameters(int newNuRobots, int newRho0Robots,
-                                       int newNuArena, int newRho0Arena,
-                                       int newZeta, int newdGoalStar,
-                                       int newMaxForce, int newMaxAngle);    
+    void setSettings(PotentialFieldSettings settings);
+    //! Returns the parameters of the potential field.
+    const PotentialFieldSettings& settings() const { return m_settings; }
 
     //! Compute the total force on a robot, both attractive and repulsive.
     QVector2D computeTotalForceForRobot(PositionMeters targetPosition);
@@ -47,20 +47,10 @@ private:
     //! Contains the discretized configuration space
     cv::Mat m_configurationSpace;
 
+    //! Potential field settings.
+    PotentialFieldSettings m_settings;
     // potential field parameters
-    //! Repulsive Parameters rho0 being the distance of influence and nu the "strength" of the repulsion
-    float m_rho0Arena,  m_nuArena;
-    float m_rho0Robots, m_nuRobots;
     float m_nu,  m_rho0;
-    //! Attractive Parameters dgoalstar being the distance of influence and zeta the "strength" of the attraction
-    float m_zeta;
-    float m_dGoalStar;
-    //! General Parameters
-    float m_maxForce;
-    float m_maxAngleDeg;
-    // TODO : to make a parameter?
-    const int DistInfluence = 150;
-    const int RobotsInfluence = 40;
 };
 
 #endif // CATS2_POTENTIAL_FIELD_HPP

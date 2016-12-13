@@ -153,6 +153,34 @@ private:
 };
 
 /*!
+ * Stores settings for the potential field obstacle avoidance
+ */
+struct PotentialFieldSettings
+{
+    //! Constructor.
+    PotentialFieldSettings() :
+        influenceStrengthTarget(2), influenceDistanceTargetMeters(0.05),
+        influenceStrengthArena(300), influenceDistanceArenaMeters(0.1),
+        influenceStrengthRobots(1000),influenceDistanceRobotsMeters(0.03),
+        maxForce(1000),maxAngleDeg(60),
+        obstacleAvoidanceAreaDiameterMeters(0.1)
+    { }
+
+    //! Repulsive parameters rho0 being the distance of influence and nu the "strength" of the repulsion.
+    float influenceDistanceArenaMeters, influenceStrengthArena;
+    float influenceDistanceRobotsMeters, influenceStrengthRobots;
+    //! Attractive parameters.
+    float influenceDistanceTargetMeters;
+    float influenceStrengthTarget;
+    //! Maximal acceptable force, an empirical parameter,
+    float maxForce;
+    //! A cone where we check the presence of other robots to avoid.
+    float maxAngleDeg;
+    //! The local window size around the robot.
+    float obstacleAvoidanceAreaDiameterMeters;
+};
+
+/*!
  * Class-signleton that is used to store parameters of the robot control system.
  * Their values are loaded from the configuration file.
  * NOTE : All the settings are made as singltons to simplify the access to them;
@@ -208,8 +236,11 @@ public:
     //! Gives the const reference to the fish model parameters.
     const FishModelSettings& fishModelSettings() const { return m_fishModelSettings; }
 
-    //! Gives the reference to the path planning settngs.
+    //! Gives the reference to the path planning settings.
     const PathPlanningSettings& pathPlanningSettings() const { return m_pathPlanningSettings; }
+
+    //! Gives the reference to the potential field obstacle avoidance settings.
+    const PotentialFieldSettings& potentialFieldSettings() const { return m_potentialFieldSettings; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -237,6 +268,8 @@ private:
     SetupMap m_setupMap;
     //! The path planning settings.
     PathPlanningSettings m_pathPlanningSettings;
+    //! The potential field obstacle avoidance settings.
+    PotentialFieldSettings m_potentialFieldSettings;
     //! The number of animals used in the experiment.
     int m_numberOfAnimals;
     //! The fish model parameters.

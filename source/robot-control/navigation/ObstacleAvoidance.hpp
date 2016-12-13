@@ -1,7 +1,7 @@
 #ifndef CATS2_OBSTACLE_AVOIDANCE_HPP
 #define CATS2_OBSTACLE_AVOIDANCE_HPP
 
-#include "PotentialField.hpp"
+#include "RobotControlPointerTypes.hpp"
 
 class FishBot;
 
@@ -16,8 +16,11 @@ public:
     //! Constructor.
     ObstacleAvoidance(FishBot* robot);
 
+    //! Returns a pointer to the potential field method.
+    PotentialFieldPtr potentialField() { return m_potentialField; }
+
 private:
     //! Potential field obstacle avoidance method.
-    PotentialField m_potentialField;
+    PotentialFieldPtr m_potentialField;
 };
 #endif // CATS2_OBSTACLE_AVOIDANCE_HPP

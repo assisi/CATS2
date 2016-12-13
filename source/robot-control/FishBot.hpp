@@ -88,6 +88,12 @@ public:
     void stepControl();
 
 public:
+    // FIXME : this is a temporary code, to be removed once the parameters of the
+    // obstacle avoidance are tuned
+    //! Returns a pointer to the potential field obstacle avoidance module.
+    PotentialFieldPtr potentialField() { return m_navigation.potentialField(); }
+
+public:
     //! The target position received from the viewer; it's transfered further
     //! to the state machine.
     void goToPosition(PositionMeters position);

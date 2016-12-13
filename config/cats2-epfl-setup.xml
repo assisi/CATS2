@@ -15,6 +15,19 @@
         <pathPlanning>
             <gridSizeM>0.01</gridSizeM>
         </pathPlanning>
+        <obstacleAvoidance>
+            <potentialField>
+                <influenceDistanceArenaM>0.1</influenceDistanceArenaM>
+                <influenceStrengthArena>300</influenceStrengthArena>
+                <influenceDistanceRobotsM>0.03</influenceDistanceRobotsM>
+                <influenceStrengthRobots>1000</influenceStrengthRobots>
+                <influenceDistanceTargetM>0.05</influenceDistanceTargetM>
+                <influenceStrengthTarget>2</influenceStrengthTarget>
+                <maxForce>1000</maxForce>
+                <maxAngleDeg>60</maxAngleDeg>
+                <obstacleAvoidanceAreaDiameterM>0.1</obstacleAvoidanceAreaDiameterM>
+            </potentialField>
+        </obstacleAvoidance>
         <fishMotionPattern>
             <distanceCm>25</distanceCm>
             <speedCmSec>15</speedCmSec>

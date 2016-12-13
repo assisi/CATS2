@@ -13,10 +13,7 @@
 PotentialField::PotentialField(FishBot* robot) :
     m_robot(robot),
     GridBasedMethod(RobotControlSettings::get().pathPlanningSettings().gridSizeMeters()),
-    m_zeta(2), m_dGoalStar(50),
-    m_nuArena(300), m_rho0Arena(100),
-    m_nuRobots(1000),m_rho0Robots(30),
-    m_maxForce(1000),m_maxAngleDeg(60)
+    m_settings(RobotControlSettings::get().potentialFieldSettings())
 {
     m_configurationSpace = generateGrid();
 }
@@ -24,19 +21,9 @@ PotentialField::PotentialField(FishBot* robot) :
 /*! 
  * Updates the parameters of the potential field.
  */ 
-void PotentialField::setParameters(int newNuRobots, int newRho0Robots,
-                                   int newNuArena, int newRho0Arena,
-                                   int newZeta, int newdGoalStar,
-                                   int newMaxForce, int newMaxAngle)
+void PotentialField::setSettings(PotentialFieldSettings settings)
 {
-    m_nuArena = newNuArena;
-    m_rho0Arena = newRho0Arena;
-    m_nuRobots = newNuRobots;
-    m_rho0Robots = newRho0Robots;
-    m_zeta = newZeta;
-    m_dGoalStar = newdGoalStar;
-    m_maxForce = newMaxForce;
-    m_maxAngleDeg = newMaxAngle;
+    m_settings = settings;
 }
 
 /*! 
@@ -50,10 +37,11 @@ QVector2D PotentialField::computeLocalRepulsiveForceDueToArena()
 
     QPoint currentPositionNode = positionToGridNode(m_robot->state().position());
     // iterate through the cells locally around current position
-    for (int col = currentPositionNode.x() - DistInfluence / 2;
-         col <= currentPositionNode.x() + DistInfluence / 2 ; ++col) {
-        for (int row = currentPositionNode.y() - DistInfluence / 2 ;
-             row <= currentPositionNode.y() + DistInfluence / 2 ; ++row) {
+    int areaGridDiameter = floor (m_settings.obstacleAvoidanceAreaDiameterMeters / m_gridSizeMeters + 0.5);
+    for (int col = currentPositionNode.x() - areaGridDiameter / 2;
+         col <= currentPositionNode.x() + areaGridDiameter / 2 ; ++col) {
+        for (int row = currentPositionNode.y() - areaGridDiameter / 2 ;
+             row <= currentPositionNode.y() + areaGridDiameter / 2 ; ++row) {
 
             // if the considered position is in bounds
             if ((col > 0) && (row > 0)
@@ -66,8 +54,8 @@ QVector2D PotentialField::computeLocalRepulsiveForceDueToArena()
                     obstacleNode.setY(row);
 
                     // intiailize repulsive force parameters
-                    m_nu = m_nuArena;
-                    m_rho0 = m_rho0Arena;
+                    m_nu = m_settings.influenceStrengthArena;
+                    m_rho0 = m_settings.influenceDistanceArenaMeters;
                     // compute the repulsive force
                     force = computeLocalRepulsiveForce(m_robot->state().position(),
                                                        gridNodeToPosition(obstacleNode));
@@ -130,10 +118,10 @@ QVector2D PotentialField::computeRepulsiveForceDueToRobots()
                 angleDifferenceRad += 2 * M_PI;
 
             // if the obstacle is in the robot's path
-            if (qAbs(angleDifferenceRad * 180 / M_PI) < m_maxAngleDeg) {
+            if (qAbs(angleDifferenceRad * 180 / M_PI) < m_settings.maxAngleDeg) {
                 // compute the resulting force
-                m_nu = m_nuRobots;
-                m_rho0 = m_rho0Robots;
+                m_nu = m_settings.influenceStrengthRobots;
+                m_rho0 = m_settings.influenceDistanceRobotsMeters;
                 robotsRepulsiveForce += computeLocalRepulsiveForce(currentPosition, agentPosition);
             }
     }
@@ -155,14 +143,14 @@ QVector2D PotentialField::computeAttractiveForce(PositionMeters targetPosition)
     float deltaX = targetPosition.x() - m_robot->state().position().x();
     float deltaY = targetPosition.y() - m_robot->state().position().y();
     // if the distance is inferior to the limit
-    if (distanceToTarget <= m_dGoalStar) {
+    if (distanceToTarget <= m_settings.influenceDistanceTargetMeters) {
         // compute the strong attractive force
-        attractiveForce.setX(m_zeta * deltaX);
-        attractiveForce.setY(m_zeta * deltaY);
+        attractiveForce.setX(m_settings.influenceStrengthTarget * deltaX);
+        attractiveForce.setY(m_settings.influenceStrengthTarget * deltaY);
     } else {
         // else compute the "weaker" attractive force
-        attractiveForce.setX(m_dGoalStar * m_zeta * deltaX / distanceToTarget);
-        attractiveForce.setY(m_dGoalStar * m_zeta * deltaY / distanceToTarget);
+        attractiveForce.setX(m_settings.influenceDistanceTargetMeters * m_settings.influenceStrengthTarget * deltaX / distanceToTarget);
+        attractiveForce.setY(m_settings.influenceDistanceTargetMeters * m_settings.influenceStrengthTarget * deltaY / distanceToTarget);
     }
 
     return attractiveForce;
@@ -190,8 +178,8 @@ QVector2D PotentialField::computeTotalForceForRobot(PositionMeters targetPositio
     float forceNorm = totalForce.length();
 
     // if the norm is superior to the max force admissible, rescale.
-    if (qAbs(forceNorm) > m_maxForce)
-        totalForce *= m_maxForce / forceNorm;
+    if (qAbs(forceNorm) > m_settings.maxForce)
+        totalForce *= m_settings.maxForce / forceNorm;
 
     return totalForce;
 }

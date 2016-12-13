@@ -47,4 +47,10 @@ using RobotsHandlerPtr = QSharedPointer<RobotsHandler>;
 class ExperimentController;
 using ExperimentControllerPtr = QSharedPointer<ExperimentController>;
 
+/*!
+ * The alias for the shared pointer to potential field obstacle avoidance routine.
+ */
+class PotentialField;
+using PotentialFieldPtr = QSharedPointer<PotentialField>;
+
 #endif // CATS2_ROBOT_CONTROL_POINTER_TYPES_HPP

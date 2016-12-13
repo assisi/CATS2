@@ -46,6 +46,12 @@ public:
     bool useObstacleAvoidance() const { return m_useObstacleAvoidance; }
 
 public:
+    // FIXME : this is a temporary code, to be removed once the parameters of the
+    // obstacle avoidance are tuned
+    //! Returns a pointer to the potential field obstacle avoidance module.
+    PotentialFieldPtr potentialField() { return m_obstacleAvoidance.potentialField(); }
+
+public:
     //! Sets the requested motion pattern.
     void setMotionPattern(MotionPatternType::Enum type);
     //! Sets the frequency divider for the motion pattern. At the moment this
