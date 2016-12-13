@@ -96,6 +96,8 @@ public:
     //! Receives data of all tracked robots, finds and sets the one corresponding
     //! to this robot and keeps the rest in case it's needed by the control mode.
     void setRobotsData(QList<AgentDataWorld> robotsPositions);
+    //! Returns the data of other robots.
+    const QList<AgentDataWorld>& otherRobotsData() const { return m_otherRobotsData; }
     //! Received states of all tracked fish, keeps them in case it's needed by
     //! the control mode.
     void setFishStates(QList<StateWorld> fishStates);

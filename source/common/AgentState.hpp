@@ -143,6 +143,22 @@ private:
 };
 
 /*!
+ * Addition operator.
+ */
+inline PositionMeters operator+(const PositionMeters& lhs, const PositionMeters& rhs)
+{
+    return PositionMeters(lhs.x() + rhs.x(), lhs.y() + rhs.y());
+}
+
+/*!
+ * Subtraction operator.
+ */
+inline PositionMeters operator-(const PositionMeters& lhs, const PositionMeters& rhs)
+{
+    return PositionMeters(lhs.x() - rhs.x(), lhs.y() - rhs.y());
+}
+
+/*!
  * Comparison operator.
  */
 inline bool operator==(const PositionMeters& lhs, const PositionMeters& rhs)
