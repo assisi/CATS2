@@ -2,6 +2,7 @@
 #define CATS2_DIJKSTRA_PATH_PLANNER_HPP
 
 #include "SetupMap.hpp"
+#include "GridBasedMethod.hpp"
 
 #include <AgentState.hpp>
 
@@ -20,9 +21,8 @@ bool operator<(QPoint const& p1, QPoint const& p2);
  * Runs the path planner to safety reach the target position by using the
  * Dijkstra path planner.
  */
-class DijkstraPathPlanner : public QObject
+class DijkstraPathPlanner : public GridBasedMethod
 {
-    Q_OBJECT
 public:
     //! Constructor.
     DijkstraPathPlanner();
@@ -31,8 +31,6 @@ public:
     QQueue<PositionMeters> plan(PositionMeters start, PositionMeters goal);
 
 public:
-    //! Returns the polygon representing the setup.
-    WorldPolygon polygon() const { return m_setupMap.polygon(); }
     //! Returns the validity flag.
     bool isValid() const { return m_valid; }
 
@@ -42,11 +40,6 @@ private:
 
     //! Adds an edge between two points.
     void addEdge(PositionMeters startPoint, PositionMeters endPoint);
-
-    //! Computes the grid node point from the world position.
-    QPoint positionToGridNode(PositionMeters position) const;
-    //! Computes the world position corresponding to the grid node point.
-    PositionMeters gridNodeToPosition(QPoint gridNode) const;
 
 private:
     struct vertexInfo {
@@ -79,11 +72,6 @@ private:
     bool m_valid;
     //! The graph representing the setup.
     UndirectedGraph m_graph;
-
-    //! The setup map.
-    SetupMap m_setupMap;
-    //! The size of the grid square.
-    double m_gridSizeMeters;
 
     //! Maps the grid nodes' coordinates to the vertices descriptors in the graph.
     QMap <QPoint, Vertex>  m_gridNodeToVertexMap;

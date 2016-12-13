@@ -48,6 +48,7 @@ set(srcs
     navigation/Navigation.cpp
     navigation/DijkstraPathPlanner.cpp
     navigation/PathPlanner.cpp
+    navigation/GridBasedMethod.cpp
     SetupMap.cpp
 )
 

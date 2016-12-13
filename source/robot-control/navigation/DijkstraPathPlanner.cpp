@@ -4,9 +4,8 @@
 
 #include <AgentState.hpp>
 
-#include <settings/ReadSettingsHelper.hpp>
-
 #include <QtCore/QQueue>
+#include <QtCore/QDebug>
 
 #include <limits>
 
@@ -19,8 +18,7 @@ bool operator<(QPoint const& p1, QPoint const& p2)
  * Constructor.
  */
 DijkstraPathPlanner::DijkstraPathPlanner() :
-    m_setupMap(RobotControlSettings::get().setupMap()),
-    m_gridSizeMeters(RobotControlSettings::get().pathPlanningSettings().gridSizeMeters())
+    GridBasedMethod(RobotControlSettings::get().pathPlanningSettings().gridSizeMeters())
 {
     m_valid = init();
     if (m_valid)
@@ -99,28 +97,6 @@ void DijkstraPathPlanner::addEdge(PositionMeters firstPoint, PositionMeters seco
         Vertex secondVertex = m_gridNodeToVertexMap[positionToGridNode(secondPoint)];
         boost::add_edge(firstVertex, secondVertex, distance, m_graph);
     }
-}
-
-/*! 
- * Computes the grid node point from the world position.
- */ 
-QPoint DijkstraPathPlanner::positionToGridNode(PositionMeters position) const
-{
-    QPoint point;
-    point.setX(floor((position.x() - m_setupMap.minX()) / m_gridSizeMeters + 0.5));
-    point.setY(floor((position.y() - m_setupMap.minY()) / m_gridSizeMeters + 0.5));
-    return point;
-}
-
-/*!
- * Computes the world position corresponding to the grid node point.
- */
-PositionMeters DijkstraPathPlanner::gridNodeToPosition(QPoint gridNode) const
-{
-     PositionMeters position;
-     position.setX(gridNode.x() * m_gridSizeMeters + m_setupMap.minX());
-     position.setY(gridNode.y() * m_gridSizeMeters + m_setupMap.minY());
-     return position;
 }
 
 /*!
