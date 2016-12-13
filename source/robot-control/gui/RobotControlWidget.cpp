@@ -53,6 +53,7 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
                 // show the navigation pattern choice when it's supported or
                 // hide when it is not supported
                 m_ui->navigationWidget->setVisible(m_robot->supportsMotionPatterns());
+                m_ui->navigationParametersGroupBox->setVisible(m_robot->supportsMotionPatterns());
             });
 
     // set the control mode from the robot
@@ -131,8 +132,6 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
             });
     // set the current value
     m_ui->pathPlanningCheckBox->setChecked(m_robot->usePathPlanning());
-    // temporary disable the path planning as it's not tested yet
-    m_ui->pathPlanningCheckBox->setEnabled(false); // FIXME : to uncomment
 
     // set the robot's obstacle avoidance usage flag on change
     connect(m_ui->obstacleAvoidanceCheckBox, static_cast<void (QCheckBox::*)(bool)>(&QCheckBox::toggled),

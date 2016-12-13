@@ -3,6 +3,8 @@
 
 #include "RobotControlPointerTypes.hpp"
 
+#include "AgentState.hpp"
+
 class FishBot;
 
 /*!
@@ -18,6 +20,9 @@ public:
 
     //! Returns a pointer to the potential field method.
     PotentialFieldPtr potentialField() { return m_potentialField; }
+
+    //! Returns the target orientation.
+    double targetOrientationRad(PositionMeters targetPosition);
 
 private:
     //! Potential field obstacle avoidance method.

@@ -167,11 +167,16 @@ double Navigation::computeAngleToTurn(PositionMeters position)
     //    double robotCenteredTargetPositionY = qSin(robotOrientation) * dx + qCos(robotOrientation) * dy;
     //    double angleToTurn = qAtan2(robotCenteredTargetPositionY, robotCenteredTargetPositionX);
 
-    double dx = position.x() - m_robot->state().position().x();
-    double dy = position.y() - m_robot->state().position().y();
-    double angleToTarget = qAtan2(dy, dx);
+    double targetOrientation;
+    if (m_useObstacleAvoidance) {
+        targetOrientation = m_obstacleAvoidance.targetOrientationRad(position);
+    } else {
+        double dx = position.x() - m_robot->state().position().x();
+        double dy = position.y() - m_robot->state().position().y();
+        targetOrientation = qAtan2(dy, dx);
+    }
     double robotOrientation = m_robot->state().orientation().angleRad();
-    double angleToTurn = robotOrientation - angleToTarget;
+    double angleToTurn = robotOrientation - targetOrientation;
     // normalize to [-pi;pi]
     if (angleToTurn < - M_PI)
         angleToTurn += 2 * M_PI;

@@ -28,7 +28,7 @@ public:
     QVector2D computeTotalForceForRobot(PositionMeters targetPosition);
 
 private:
-    // FIXME : in all these method we never check that the robot's position
+    // FIXME FIXME: in all these method we never check that the robot's position
     // and the target's position are valid.
     //! Compute the repulsive force due to the arena.
     QVector2D computeLocalRepulsiveForceDueToArena();
