@@ -118,7 +118,8 @@ void FishBot::stepControl()
 
     // step the navigation with the resulted target values
     // it's the navigation that sends commands to robots via the dbus interface
-    m_navigation.step(controlTarget);
+    if (!controlTarget.isNull())
+        m_navigation.step(controlTarget);
 }
 
 /*!

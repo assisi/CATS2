@@ -19,6 +19,8 @@ ControlTargetPtr GoToPosition::step()
 {
     if (m_targetPosition.isValid())
         return ControlTargetPtr(new TargetPosition(m_targetPosition));
+    else
+        return ControlTargetPtr();
 }
 
 /*!

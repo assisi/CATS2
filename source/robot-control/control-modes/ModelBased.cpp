@@ -30,6 +30,7 @@ ControlTargetPtr ModelBased::step()
             return ControlTargetPtr(new TargetPosition(targetPosition));
         }
     }
+    return ControlTargetPtr();
 }
 
 /*!
