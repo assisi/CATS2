@@ -45,7 +45,7 @@ public:
     //! Returns the obstacle avoidance usage flag.
     bool useObstacleAvoidance() const { return m_useObstacleAvoidance; }
 
-public slots:
+public:
     //! Sets the requested motion pattern.
     void setMotionPattern(MotionPatternType::Enum type);
     //! Sets the frequency divider for the motion pattern. At the moment this
