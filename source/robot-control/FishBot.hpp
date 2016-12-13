@@ -79,6 +79,11 @@ public:
     //! Returns the path planning usage from from the navigation.
     bool usePathPlanning() const { return m_navigation.usePathPlanning(); }
 
+    //! Sets the obstacle avoidance usage flag in the navigation.
+    void setUseObstacleAvoidance(bool useObstacleAvoidance);
+    //! Returns the obstacle avoidance usage from from the navigation.
+    bool useObstacleAvoidance() const { return m_navigation.useObstacleAvoidance(); }
+
     //! Steps the control for the robot.
     void stepControl();
 
@@ -129,6 +134,8 @@ signals: // control states
     void notifyInManualMode(QString id);
     //! Informs that the path planning is on/off in the navigation.
     void notifyUsePathPlanningChanged(bool value);
+    //! Informs that the obstacle avoidance is on/off in the navigation.
+    void notifyUseObstacleAvoidanceChanged(bool value);
 
 signals: // navigation
     //! Sends the control map areas' polygons.

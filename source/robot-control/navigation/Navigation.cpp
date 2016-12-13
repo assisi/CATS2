@@ -13,6 +13,8 @@ Navigation::Navigation(FishBot* robot):
     m_motionPattern(MotionPatternType::PID),
     m_pathPlanner(),
     m_usePathPlanning(false),
+    m_obstacleAvoidance(robot),
+    m_useObstacleAvoidance(false),
     m_fishMotionPatternSettings(RobotControlSettings::get().fishMotionPatternSettings()),
     m_fishMotionFrequencyDivider(RobotControlSettings::get().fishMotionPatternFrequencyDivider()),
     m_fishMotionStepCounter(0),
@@ -290,6 +292,16 @@ void Navigation::setUsePathPlanning(bool usePathPlanning)
     }
 }
 
+/*!
+ * Sets the obstacle avoidance usage flag.
+ */
+void Navigation::setUseObstacleAvoidance(bool useObstacleAvoidance)
+{
+    if (m_useObstacleAvoidance != useObstacleAvoidance) {
+        m_useObstacleAvoidance = useObstacleAvoidance;
+        emit notifyUseObstacleAvoidanceChanged(m_useObstacleAvoidance);
+    }
+}
 
 /*!
  * Requests the robot to stop.

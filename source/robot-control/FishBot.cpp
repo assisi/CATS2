@@ -50,6 +50,8 @@ FishBot::FishBot(QString id, QString controlAreasPath) :
             this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
     connect(&m_navigation, &Navigation::notifyUsePathPlanningChanged,
             this, &FishBot::notifyUsePathPlanningChanged);
+    connect(&m_navigation, &Navigation::notifyUseObstacleAvoidanceChanged,
+            this, &FishBot::notifyUseObstacleAvoidanceChanged);
 }
 
 /*!
@@ -214,6 +216,14 @@ int FishBot::motionPatternFrequencyDivider(MotionPatternType::Enum type)
 void FishBot::setUsePathPlanning(bool usePathPlanning)
 {
     m_navigation.setUsePathPlanning(usePathPlanning);
+}
+
+/*!
+ * Sets the obstacle avoidance usage flag in the navigation.
+ */
+void FishBot::setUseObstacleAvoidance(bool useObstacleAvoidance)
+{
+    m_navigation.setUseObstacleAvoidance(useObstacleAvoidance);
 }
 
 /*!

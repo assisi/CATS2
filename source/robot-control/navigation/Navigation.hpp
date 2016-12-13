@@ -4,6 +4,7 @@
 #include "RobotControlPointerTypes.hpp"
 #include "MotionPatternType.hpp"
 #include "PathPlanner.hpp"
+#include "ObstacleAvoidance.hpp"
 #include "settings/RobotControlSettings.hpp"
 
 #include <AgentState.hpp>
@@ -41,6 +42,9 @@ public:
     //! Returns the path planning usage flag.
     bool usePathPlanning() const { return m_usePathPlanning; }
 
+    //! Returns the obstacle avoidance usage flag.
+    bool useObstacleAvoidance() const { return m_useObstacleAvoidance; }
+
 public slots:
     //! Sets the requested motion pattern.
     void setMotionPattern(MotionPatternType::Enum type);
@@ -51,6 +55,8 @@ public slots:
                                           int frequencyDivider);
     //! Sets the path planning usage flag.
     void setUsePathPlanning(bool usePathPlanning);
+    //! Sets the obstacle avoidance usage flag.
+    void setUseObstacleAvoidance(bool useObstacleAvoidance);
 
 public slots:
     //! Requests to sends the current target.
@@ -67,6 +73,8 @@ signals:
     void notifyTargetPositionChanged(PositionMeters PositionMeters);
     //! Informs that the path planning is on/off in the navigation.
     void notifyUsePathPlanningChanged(bool value);
+    //! Informs that the obstacle avoidance is on/off in the navigation.
+    void notifyUseObstacleAvoidanceChanged(bool value);
     
 private:
     //! Manages the target speed control.
@@ -100,6 +108,11 @@ private:
     PathPlanner m_pathPlanner;
     //! The flag that says if the path planning is to be used.
     bool m_usePathPlanning;
+
+    //! The obstacle avoidance module.
+    ObstacleAvoidance m_obstacleAvoidance;
+    //! The flag that says if the obstacle avoidance is to be used.
+    bool m_useObstacleAvoidance;
 
     //! Local copy of fish motion pattern settings.
     FishMotionPatternSettings m_fishMotionPatternSettings;
