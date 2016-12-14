@@ -21,7 +21,7 @@ Navigation::Navigation(FishBot* robot):
     m_pidControllerSettings(RobotControlSettings::get().pidControllerSettings()),
     m_dt(1. / RobotControlSettings::get().controlFrequencyHz())
 {
-
+    connect(&m_pathPlanner, &PathPlanner::notifyTrajectoryChanged, this, &Navigation::notifyTrajectoryChanged);
 }
 
 /*!
@@ -67,15 +67,15 @@ void Navigation::setTargetSpeed(TargetSpeed* targetSpeed)
  */
 void Navigation::setTargetPosition(TargetPosition* targetPosition)
 {
-     // FIXME : temporary code
-     emit notifyTargetPositionChanged(targetPosition->position());
-
     if (m_robot->state().position().isValid() && targetPosition->position().isValid()) {
         // first check if we are already in the target position
         if (m_robot->state().position().closeTo(targetPosition->position())) {
-            qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
+//            qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
             // stop the robot
             stop();
+            // reset the path planner
+            if (m_usePathPlanning)
+                m_pathPlanner.clearTrajectory();
         } else {
             PositionMeters currentWaypoint;
             if (m_usePathPlanning)
@@ -83,6 +83,14 @@ void Navigation::setTargetPosition(TargetPosition* targetPosition)
                 currentWaypoint = m_pathPlanner.currentWaypoint(m_robot->state().position(), targetPosition->position());
             else
                 currentWaypoint = targetPosition->position();
+            // check the validity of the current target
+            if (!currentWaypoint.isValid()) {
+                // stop the robot and return
+                stop();
+                return;
+            }
+            // update the current waypoint
+            updateCurrentWaypoint(currentWaypoint);
             // go to the target
             switch (m_motionPattern) {
             case MotionPatternType::FISH_MOTION:
@@ -314,5 +322,18 @@ void Navigation::setUseObstacleAvoidance(bool useObstacleAvoidance)
 void Navigation::stop()
 {
     sendMotorSpeed(0, 0);
+    // the current waypoint is not valid anymore
+    updateCurrentWaypoint(PositionMeters::invalidPosition());
+}
+
+/*!
+ * Updates the current waypoint. Notifies on the change.
+ */
+void Navigation::updateCurrentWaypoint(PositionMeters currentWaypoint)
+{
+    if (m_currentWaypoint != currentWaypoint) {
+        m_currentWaypoint = currentWaypoint;
+        emit notifyTargetPositionChanged(m_currentWaypoint);
+    }
 }
 

@@ -27,6 +27,10 @@ signals:
     //! selected.
     void notifySelectedRobotChanged(QString robotName);
 
+protected:
+    //! Intercepts all events.
+    bool eventFilter(QObject *obj, QEvent *event) override;
+
 private:
     //! The gui form.
     Ui::RobotsWidget *m_ui;

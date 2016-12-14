@@ -35,7 +35,11 @@ FishBot::FishBot(QString id, QString controlAreasPath) :
             {
                 emit notifyTargetPositionChanged(m_id, position);
             });
-    // TODO : add the trajectory here
+    connect(&m_navigation, &Navigation::notifyTrajectoryChanged,
+            [=](QQueue<PositionMeters> trajectory)
+            {
+                emit notifyTrajectoryChanged(m_id, trajectory);
+            });
     // controller data
     connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
             this, &FishBot::notifyControllerChanged);

@@ -187,6 +187,8 @@ void MainWindow::connectPrimaryView()
                 viewerWidget, &ViewerWidget::updateCurrentAgent);
         connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTargetPositionChanged,
                 viewerWidget, &ViewerWidget::updateTarget);
+        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTrajectoryChanged,
+                viewerWidget, &ViewerWidget::updateTrajectory);
         connect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
                 viewerWidget, &ViewerWidget::updateSetup);
         connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotLedColor,
@@ -234,6 +236,8 @@ void MainWindow::disconnectPrimaryView()
                 viewerWidget, &ViewerWidget::updateCurrentAgent);
         disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTargetPositionChanged,
                 viewerWidget, &ViewerWidget::updateTarget);
+        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTrajectoryChanged,
+                viewerWidget, &ViewerWidget::updateTrajectory);
         disconnect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
                 viewerWidget, &ViewerWidget::updateSetup);
     }

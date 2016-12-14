@@ -8,7 +8,7 @@
  */
 GoToPosition::GoToPosition(FishBot* robot) :
     ControlMode(robot, ControlModeType::GO_TO_POSITION),
-    m_targetPosition(0, 0, 0, false) // set the target invalid
+    m_targetPosition(PositionMeters::invalidPosition()) // set the target invalid
 {
 }
 

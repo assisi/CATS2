@@ -6,6 +6,7 @@
 #include <AgentState.hpp>
 
 #include <QtCore/QQueue>
+#include <QtCore/QObject>
 
 /*!
  * Runs the flight planner if necessary, if it's not needed than previous
@@ -13,8 +14,9 @@
  * planner is used, but in future it is planned to be extended with more of
  * them.
  */
-class PathPlanner
+class PathPlanner : public QObject
 {
+    Q_OBJECT
 public:
     //! Constructor.
     PathPlanner();
@@ -22,6 +24,15 @@ public:
     //! Tells where to go.
     PositionMeters currentWaypoint(PositionMeters currentPosition,
                                    PositionMeters targetPosition);
+
+public:
+    //! Requests to sends the current trajectory.
+    void requestTrajectory() { emit notifyTrajectoryChanged(m_subTargetsQueue); }
+    //! Resets the trajectory.
+    void clearTrajectory();
+signals:
+    //! Notifies on the trajectory changes.
+    void notifyTrajectoryChanged(QQueue<PositionMeters>);
 
 private:
     //! The path planner to the target position.

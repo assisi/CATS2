@@ -13,12 +13,12 @@
 class TrajectoryItem : public QGraphicsItem, public ColoredItem
 {
 public:
-    enum { Type = UserType + 6 };
+    enum { Type = UserType + 26 };
 
     //! Constructor.
     TrajectoryItem(QPolygonF polygon);
     //! Sets the polygon.
-    void setTrajectory(QPolygonF polygon) { m_polygon = polygon; }
+    void setTrajectory(QPolygonF polygon);
 
 public:
     //! Returns the type of the item.
@@ -26,11 +26,18 @@ public:
     //! Paints the contents of an item in local coordinates.
     virtual void paint(QPainter *painter, const QStyleOptionGraphicsItem *item, QWidget *widget) override ;
     //! Computes the bounding rectangle.
-    virtual QRectF boundingRect() const override { return m_polygon.boundingRect(); }
+    virtual QRectF boundingRect() const override;
+
+private:
+    //! Recomputes the bounding rectangle.
+    void updateBoundingRectangle();
 
 private:
     //! The polygon to draw.
     QPolygonF m_polygon;
+    //! The bounding rectangle.
+    QRectF m_boundingRectangle;
+
 };
 
 #endif // CATS2_TRAJECTORY_ITEM_HPP
