@@ -52,6 +52,13 @@ ControlLoop::ControlLoop() :
                     if (m_sendNavigationData)
                         emit notifyRobotTargetPositionChanged(agentId, position);
                 });
+        // send the robot trajectory for all robots if the corresponding flag is set
+        connect(m_robots.last().data(), &FishBot::notifyTrajectoryChanged,
+                [=](QString agentId, QQueue<PositionMeters> trajectory)
+                {
+                    if (m_sendNavigationData)
+                        emit notifyRobotTrajectoryChanged(agentId, trajectory);
+                });
 
         // send the robot color
         connect(m_robots.last().data(), &FishBot::notifyLedColor, this, &ControlLoop::notifyRobotLedColor);

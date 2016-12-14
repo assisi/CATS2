@@ -23,6 +23,8 @@ PositionMeters PathPlanner::currentWaypoint(PositionMeters currentPosition,
     // if the new position is set then we apply the path planning
     if (targetPosition != m_lastReceivedTargetPosition) {
         m_subTargetsQueue = m_pathPlanner.plan(currentPosition, targetPosition);
+        // notify about changes
+        emit notifyTrajectoryChanged(m_subTargetsQueue);
         // take the first sub-target
         m_currentSubTargetPosition = m_subTargetsQueue.dequeue();
     }
@@ -33,9 +35,11 @@ PositionMeters PathPlanner::currentWaypoint(PositionMeters currentPosition,
             m_currentSubTargetPosition = m_subTargetsQueue.dequeue();
         } else {
             // otherwise we arrived to the destination, so we keep the same
-            // target and reset the last received target to be sure that we
-            // never fall to the same position next time
-            m_lastReceivedTargetPosition.reset();
+            // target and invalidate the last received target to be sure that
+            // we never fall to the same position next time
+            m_lastReceivedTargetPosition.setValid(false);
+            // notify that the queue is empty
+            emit notifyTrajectoryChanged(m_subTargetsQueue);
         }
     }
 

@@ -106,7 +106,7 @@ public slots:
     //! Requests to sends the control map areas' polygons.
     void requestControlAreasPolygons() { m_experimentManager.requestPolygons(); }
     //! Requests to sends the control map areas' polygons.
-    void requestTrajectory() { /* TODO : to implement */}
+    void requestTrajectory() { m_navigation.requestTrajectory(); }
     //! Requests to sends the control map areas' polygons.
     void requestCurrentTarget() { m_navigation.requestTargetPosition(); }
     //! Requests leds color.

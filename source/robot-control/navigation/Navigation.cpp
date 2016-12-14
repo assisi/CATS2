@@ -19,7 +19,7 @@ Navigation::Navigation(FishBot* robot):
     m_pidControllerSettings(RobotControlSettings::get().pidControllerSettings()),
     m_dt(1. / RobotControlSettings::get().controlFrequencyHz())
 {
-
+    connect(&m_pathPlanner, &PathPlanner::notifyTrajectoryChanged, this, &Navigation::notifyTrajectoryChanged);
 }
 
 /*!

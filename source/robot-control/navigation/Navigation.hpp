@@ -55,6 +55,8 @@ public slots:
 public slots:
     //! Requests to sends the current target.
     void requestTargetPosition() { emit notifyTargetPositionChanged(m_currentWaypoint); }
+    //! Requests to sends the current trajectory.
+    void requestTrajectory() { m_pathPlanner.requestTrajectory(); }
 
 signals:
     //! Informs that the robot's motion pattern was modified.
@@ -67,6 +69,8 @@ signals:
     void notifyTargetPositionChanged(PositionMeters PositionMeters);
     //! Informs that the path planning is on/off in the navigation.
     void notifyUsePathPlanningChanged(bool value);
+    //! Informs that the robot's trajectory has changed.
+    void notifyTrajectoryChanged(QQueue<PositionMeters>);
     
 private:
     //! Manages the target speed control.
