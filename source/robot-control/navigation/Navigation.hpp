@@ -54,7 +54,7 @@ public slots:
 
 public slots:
     //! Requests to sends the current target.
-    void requestTargetPosion() { /* TODO : to implement*/}
+    void requestTargetPosition() { emit notifyTargetPositionChanged(m_currentWaypoint); }
 
 signals:
     //! Informs that the robot's motion pattern was modified.
@@ -89,6 +89,9 @@ private:
     //! Sends the fish behavior parameters to the robot.
     void sendFishMotionParameters(int angle, int distance, int speed);
 
+    //! Updates the current waypoint. Notifies on the change.
+    void updateCurrentWaypoint(PositionMeters currentWaypoint);
+
 private:
     //! A pointer to the robot that is controlled by this navigation.
     FishBot* m_robot;
@@ -100,6 +103,8 @@ private:
     PathPlanner m_pathPlanner;
     //! The flag that says if the path planning is to be used.
     bool m_usePathPlanning;
+    //! The current waypoint to follow. It's stored to be given upon request.
+    PositionMeters m_currentWaypoint;
 
     //! Local copy of fish motion pattern settings.
     FishMotionPatternSettings m_fishMotionPatternSettings;

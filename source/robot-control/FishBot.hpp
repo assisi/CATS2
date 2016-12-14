@@ -108,7 +108,7 @@ public slots:
     //! Requests to sends the control map areas' polygons.
     void requestTrajectory() { /* TODO : to implement */}
     //! Requests to sends the control map areas' polygons.
-    void requestCurrentTarget() { m_navigation.requestTargetPosion(); }
+    void requestCurrentTarget() { m_navigation.requestTargetPosition(); }
     //! Requests leds color.
     void requestLedColor() { emit notifyLedColor(m_id, m_ledColor); }
 

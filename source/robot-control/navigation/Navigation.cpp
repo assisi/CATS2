@@ -65,9 +65,6 @@ void Navigation::setTargetSpeed(TargetSpeed* targetSpeed)
  */
 void Navigation::setTargetPosition(TargetPosition* targetPosition)
 {
-     // FIXME : temporary code
-     emit notifyTargetPositionChanged(targetPosition->position());
-
     if (m_robot->state().position().isValid() && targetPosition->position().isValid()) {
         // first check if we are already in the target position
         if (m_robot->state().position().closeTo(targetPosition->position())) {
@@ -81,6 +78,8 @@ void Navigation::setTargetPosition(TargetPosition* targetPosition)
                 currentWaypoint = m_pathPlanner.currentWaypoint(m_robot->state().position(), targetPosition->position());
             else
                 currentWaypoint = targetPosition->position();
+            // update the current waypoint
+            updateCurrentWaypoint(currentWaypoint);
             // go to the target
             switch (m_motionPattern) {
             case MotionPatternType::FISH_MOTION:
@@ -297,5 +296,19 @@ void Navigation::setUsePathPlanning(bool usePathPlanning)
 void Navigation::stop()
 {
     sendMotorSpeed(0, 0);
+    // the current waypoint is not valid anymore
+    m_currentWaypoint.setValid(false);
+    updateCurrentWaypoint(m_currentWaypoint);
+}
+
+/*!
+ * Updates the current waypoint. Notifies on the change.
+ */
+void Navigation::updateCurrentWaypoint(PositionMeters currentWaypoint)
+{
+    if (m_currentWaypoint != currentWaypoint) {
+        m_currentWaypoint = currentWaypoint;
+        emit notifyTargetPositionChanged(m_currentWaypoint);
+    }
 }
 
