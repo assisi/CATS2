@@ -68,9 +68,12 @@ void Navigation::setTargetPosition(TargetPosition* targetPosition)
     if (m_robot->state().position().isValid() && targetPosition->position().isValid()) {
         // first check if we are already in the target position
         if (m_robot->state().position().closeTo(targetPosition->position())) {
-            qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
+//            qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
             // stop the robot
             stop();
+            // reset the path planner
+            if (m_usePathPlanning)
+                m_pathPlanner.clearTrajectory();
         } else {
             PositionMeters currentWaypoint;
             if (m_usePathPlanning)
@@ -78,6 +81,12 @@ void Navigation::setTargetPosition(TargetPosition* targetPosition)
                 currentWaypoint = m_pathPlanner.currentWaypoint(m_robot->state().position(), targetPosition->position());
             else
                 currentWaypoint = targetPosition->position();
+            // check the validity of the current target
+            if (!currentWaypoint.isValid()) {
+                // stop the robot and return
+                stop();
+                return;
+            }
             // update the current waypoint
             updateCurrentWaypoint(currentWaypoint);
             // go to the target
@@ -297,8 +306,7 @@ void Navigation::stop()
 {
     sendMotorSpeed(0, 0);
     // the current waypoint is not valid anymore
-    m_currentWaypoint.setValid(false);
-    updateCurrentWaypoint(m_currentWaypoint);
+    updateCurrentWaypoint(PositionMeters::invalidPosition());
 }
 
 /*!

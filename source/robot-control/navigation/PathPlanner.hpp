@@ -28,7 +28,8 @@ public:
 public:
     //! Requests to sends the current trajectory.
     void requestTrajectory() { emit notifyTrajectoryChanged(m_subTargetsQueue); }
-
+    //! Resets the trajectory.
+    void clearTrajectory();
 signals:
     //! Notifies on the trajectory changes.
     void notifyTrajectoryChanged(QQueue<PositionMeters>);

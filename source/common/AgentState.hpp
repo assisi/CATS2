@@ -120,6 +120,15 @@ public:
         return (distance2DTo(other) < threshold);
     }
 
+    /*!
+     * Return an invalid point.
+     */
+    static PositionMeters invalidPosition()
+    {
+        return PositionMeters(0, 0, 0, false);
+    }
+
+
 private:
     //! Position x.
     double m_x;  // [m]
