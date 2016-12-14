@@ -6,6 +6,8 @@
 #include "gui/RobotControlWidget.hpp"
 
 #include <QtCore/QDebug>
+#include <QtCore/QEvent>
+#include <QtGui/QKeyEvent>
 
 /*!
  * Constructor.
@@ -32,6 +34,8 @@ RobotsWidget::RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent) :
     if (m_ui->robotsTabWidget->count() > 0) {
         m_ui->robotsTabWidget->setCurrentIndex(0);
     }
+    // install the event filter
+    qApp->installEventFilter(this);
 }
 
 /*!
@@ -41,4 +45,23 @@ RobotsWidget::~RobotsWidget()
 {
     qDebug() << Q_FUNC_INFO << "Destroying the object";
     delete m_ui;
+}
+
+/*!
+ * Intercepts all events. If it's a "number" key pressed than
+ * the corresponding robot is selected.
+ */
+bool RobotsWidget::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        bool isNumber;
+        int index = keyEvent->text().toInt(&isNumber) - 1; // map to [0,...]
+        if (isNumber && (index >= 0) && (index < m_ui->robotsTabWidget->count())) {
+            m_ui->robotsTabWidget->setCurrentIndex(index);
+            return true;
+        } else
+            return false;
+    }
+    return false;
 }
