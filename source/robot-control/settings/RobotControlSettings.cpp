@@ -92,6 +92,10 @@ bool RobotControlSettings::init(QString configurationFileName)
     settings.readVariable("robots/defaultLinearSpeedCmSec", m_defaultLinearSpeedCmSec);
     settingsAccepted = settingsAccepted && (m_defaultLinearSpeedCmSec > 0);
 
+    // read the navigation flag
+    m_needOrientationToNavigate = false;
+    settings.readVariable("robots/needOrientationToNavigate", m_needOrientationToNavigate);
+
     // read the setup map
     std::string setupMap = "";
     settings.readVariable(QString("experiment/setupMapPath"), setupMap, setupMap);

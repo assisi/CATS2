@@ -15,6 +15,7 @@ Navigation::Navigation(FishBot* robot):
     m_usePathPlanning(false),
     m_obstacleAvoidance(robot),
     m_useObstacleAvoidance(false),
+    m_needOrientationToNavigate(RobotControlSettings::get().needOrientationToNavigate()),
     m_fishMotionPatternSettings(RobotControlSettings::get().fishMotionPatternSettings()),
     m_fishMotionFrequencyDivider(RobotControlSettings::get().fishMotionPatternFrequencyDivider()),
     m_fishMotionStepCounter(0),
@@ -199,7 +200,7 @@ double Navigation::computeAngleToTurn(PositionMeters position)
  */
 void Navigation::fishMotionToPosition(PositionMeters targetPosition)
 {
-    if (m_robot->state().orientation().isValid()) {
+    if (m_robot->state().orientation().isValid() || !m_needOrientationToNavigate) {
         m_fishMotionStepCounter++;
         // if we waited enough steps
         if (m_fishMotionStepCounter >=  m_fishMotionFrequencyDivider) {
@@ -218,7 +219,7 @@ void Navigation::fishMotionToPosition(PositionMeters targetPosition)
  */
 void Navigation::pidControlToPosition(PositionMeters targetPosition)
 {
-    if (m_robot->state().orientation().isValid()) {
+    if (m_robot->state().orientation().isValid() || !m_needOrientationToNavigate) {
         double angleToTurn = computeAngleToTurn(targetPosition);
         // proportional term
         double proportionalTerm = angleToTurn;

@@ -38,6 +38,7 @@
             <kd>0.00</kd>
         </pid>
         <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
+        <needOrientationToNavigate>0</needOrientationToNavigate>
         <fishBot_1>
             <id>H</id>
             <ledColor>

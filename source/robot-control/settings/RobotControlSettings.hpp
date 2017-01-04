@@ -227,6 +227,10 @@ public:
     //! Returns the default linear speed.
     int defaultLinearSpeedCmSec() const { return m_defaultLinearSpeedCmSec; }
 
+    //! Returns the flag that defines if the robot needs an orientation to
+    //! navigate.
+    int needOrientationToNavigate() const { return m_needOrientationToNavigate; }
+
     //! Gives the const reference to the experimental setup map.
     const SetupMap& setupMap() const { return m_setupMap; }
 
@@ -264,6 +268,8 @@ private:
     PidControllerSettings m_pidControllerSettings;
     //! Default linear speed of the robot.
     int m_defaultLinearSpeedCmSec;
+    //! If the robot needs to have a valid orientation to navigate.
+    bool m_needOrientationToNavigate;
     //! The map of the setup, used in path planning and modelling.
     SetupMap m_setupMap;
     //! The path planning settings.

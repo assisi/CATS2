@@ -129,6 +129,11 @@ private:
     //! The flag that says if the obstacle avoidance is to be used.
     bool m_useObstacleAvoidance;
 
+    //! If the robot needs to have a valid orientation to navigate. It's
+    //! important when the precise navigation is required, but might be very
+    //! restrictive as the robot won't move untill it's orientation is known.
+    bool m_needOrientationToNavigate;
+
     //! Local copy of fish motion pattern settings.
     FishMotionPatternSettings m_fishMotionPatternSettings;
     //! The frequency divider to send fish motion control commands to the robot
