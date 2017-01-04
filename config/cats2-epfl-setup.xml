@@ -10,7 +10,7 @@
     </experiment>
     <robots>
         <numberOfRobots>1</numberOfRobots>
-        <controlFrequencyHz>20</controlFrequencyHz>
+        <controlFrequencyHz>10</controlFrequencyHz>
         <fishMotionPatternFrequencyDivider>5</fishMotionPatternFrequencyDivider>
         <pathPlanning>
             <gridSizeM>0.01</gridSizeM>
