@@ -131,12 +131,17 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint, Posi
         QQueue<PositionMeters> path;
         std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor >::reverse_iterator it;
         QPoint point;
+        double shortestDistance = 0;
         for (it = shortestPath.rbegin(); it != shortestPath.rend(); ++it)
         {
             point.setX(m_graph[*it].col);
             point.setY(m_graph[*it].row);
-            path.enqueue(gridNodeToPosition(point));
+            PositionMeters position = gridNodeToPosition(point);
+            if (path.size() > 0)
+                shortestDistance += path.last().distance2DTo(position);
+            path.enqueue(position);
         }
+        qDebug() << Q_FUNC_INFO << QString("Shortest distance to the target is %1").arg(shortestDistance);
         return path;
     } else {
         qDebug() << Q_FUNC_INFO << "At least start or goal position are outside of the working space, path planning stopped";
