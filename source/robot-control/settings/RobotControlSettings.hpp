@@ -159,9 +159,9 @@ struct PotentialFieldSettings
 {
     //! Constructor.
     PotentialFieldSettings() :
-        influenceStrengthTarget(2), influenceDistanceTargetMeters(0.05),
-        influenceStrengthArena(300), influenceDistanceArenaMeters(0.1),
-        influenceStrengthRobots(1000),influenceDistanceRobotsMeters(0.03),
+        influenceStrengthTarget(2), influenceDistanceTargetMeters(0.03),
+        influenceStrengthArena(10), influenceDistanceArenaMeters(0.03),
+        influenceStrengthRobots(20),influenceDistanceRobotsMeters(0.09),
         maxForce(1000),maxAngleDeg(60),
         obstacleAvoidanceAreaDiameterMeters(0.1)
     { }
