@@ -13,7 +13,7 @@ class FishBot;
  * a XML file, stores it and returns for every point the corresponding control
  * data or undefined if it is not contained by any area. The control data is
  * either predefined by the control map or computed by the controllers. Control
- * areas should covers the whole experimental area.
+ * areas must covers the whole experimental area.
  */
 class ExperimentController : public QObject
 {
@@ -33,6 +33,7 @@ public:
         ControlModeType::Enum controlMode;
         //! The motion pattern.
         MotionPatternType::Enum motionPattern;
+        // TODO : to add the extra control data as QVariant (e.g. target for the go-to-target control mode)
     };
 
 public:

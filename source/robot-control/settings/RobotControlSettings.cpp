@@ -59,7 +59,7 @@ bool RobotControlSettings::init(QString configurationFileName)
         robotSettings.setLedColor(QColor(red, green, blue));
 
         std::string controlAreasFilePath = "";
-        settings.readVariable(QString("robots/fishBot_%1/controlAreasPath").arg(index), controlAreasFilePath, controlAreasFilePath);
+        settings.readVariable(QString("robots/controllers/controlMap/controlAreasPath").arg(index), controlAreasFilePath, controlAreasFilePath);
         robotSettings.setControlAreasFilePath(configurationFolder + QDir::separator() + QString::fromStdString(controlAreasFilePath));
 
         m_robotsSettings.insert(robotSettings.id(), robotSettings);

@@ -22,6 +22,11 @@
             <kd>0.00</kd>
         </pid>
         <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
+        <controllers>
+            <controlMap>
+                <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
+            </controlMap>
+        </controllers>
         <fishBot_1>
             <id>H</id>
             <ledColor>
@@ -29,8 +34,6 @@
                 <g>150</g>
                 <b>200</b>
             </ledColor>
-            <!-- TODO : move this out into the experiment section. -->
-            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_1>
         <fishBot_2>
             <id>B</id>
@@ -39,7 +42,6 @@
                 <g>160</g>
                 <b>200</b>
             </ledColor>
-            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_2>
         <fishBot_3>
             <id>C</id>
@@ -48,7 +50,6 @@
                 <g>255</g>
                 <b>190</b>
             </ledColor>
-            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_3>
     </robots>
     <setups>
