@@ -44,8 +44,8 @@ bool DijkstraPathPlanner::init()
         // add vertices
         int row = 0; // left to right
         int col = 0; // down to up
-        while (m_setupMap.minX() + col * m_gridSizeMeters < m_setupMap.maxX()) {
-            while (m_setupMap.minY() + row * m_gridSizeMeters < m_setupMap.maxY()) {
+        while (minX() + col * m_gridSizeMeters < m_setupMap.maxX()) {
+            while (minY() + row * m_gridSizeMeters < m_setupMap.maxY()) {
                 Vertex vertex = boost::add_vertex(m_graph);
                 m_graph[boost::num_vertices(m_graph) - 1].row = row;
                 m_graph[boost::num_vertices(m_graph) - 1].col = col;
@@ -59,8 +59,8 @@ bool DijkstraPathPlanner::init()
         // add edges
         row = 0; // left to right
         col = 0; // down to up
-        double x = m_setupMap.minX();
-        double y = m_setupMap.minY();
+        double x = minX();
+        double y = minY();
         while (x < m_setupMap.maxX()) {
             while (y < m_setupMap.maxY()) {
                 // make the connections with four neighbours to the right, up,
@@ -81,7 +81,7 @@ bool DijkstraPathPlanner::init()
             col++;
             x += m_gridSizeMeters;
             row = 0;
-            y = m_setupMap.minY();
+            y = minY();
         }
     }
 
@@ -107,8 +107,8 @@ void DijkstraPathPlanner::addEdge(PositionMeters firstPoint, PositionMeters seco
 QPoint DijkstraPathPlanner::positionToGridNode(PositionMeters position) const
 {
     QPoint point;
-    point.setX(floor((position.x() - m_setupMap.minX()) / m_gridSizeMeters + 0.5));
-    point.setY(floor((position.y() - m_setupMap.minY()) / m_gridSizeMeters + 0.5));
+    point.setX(floor((position.x() - minX()) / m_gridSizeMeters + 0.5));
+    point.setY(floor((position.y() - minY()) / m_gridSizeMeters + 0.5));
     return point;
 }
 
@@ -118,8 +118,8 @@ QPoint DijkstraPathPlanner::positionToGridNode(PositionMeters position) const
 PositionMeters DijkstraPathPlanner::gridNodeToPosition(QPoint gridNode) const
 {
      PositionMeters position;
-     position.setX(gridNode.x() * m_gridSizeMeters + m_setupMap.minX());
-     position.setY(gridNode.y() * m_gridSizeMeters + m_setupMap.minY());
+     position.setX(gridNode.x() * m_gridSizeMeters + minX());
+     position.setY(gridNode.y() * m_gridSizeMeters + minY());
      return position;
 }
 

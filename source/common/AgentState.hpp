@@ -332,6 +332,8 @@ class WorldPolygon : public QList<PositionMeters>
 public:
     //! Checks if the polygon contains given point.
     // FIXME FIXME FIXME : fast and dirty implementation, redo
+    // NOTE : QPolygonF::containsPoint returns true only when the point is
+    // _inside_ the polygon, not on the edge(!)
     bool containsPoint(PositionMeters position) const
     {
         QPolygonF polygon;
