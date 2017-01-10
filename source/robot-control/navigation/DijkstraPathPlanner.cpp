@@ -161,9 +161,57 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint, Posi
             point.setY(m_graph[*it].row);
             path.enqueue(gridNodeToPosition(point));
         }
+        // simplify the path
+        simplifyPath(path);
         return path;
     } else {
         qDebug() << Q_FUNC_INFO << "At least start or goal position are outside of the working space, path planning stopped";
         return QQueue<PositionMeters>();
     }
+}
+
+/*!
+ * Simplifies the resulted path by removing the points lying on the same line.
+ */
+void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
+{
+    double previousDx, currentDx, previousDy, currentDy;
+    QQueue<PositionMeters> reducedPath;
+
+    // if the computed dijkstra path is not empty
+    if (!path.empty()) {
+        // add the starting point
+        PositionMeters previousPosition = path.dequeue();
+        reducedPath.enqueue(previousPosition);
+        // if there are more than 2 nodes in the path
+        if(path.size()>2) {
+            PositionMeters currentPosition = path.dequeue();
+            // compute the fisrt difference of position along x and y
+            previousDx = currentPosition.x() - previousPosition.x();
+            previousDy = currentPosition.y() - previousPosition.y();
+
+            // for all the other points in the path
+            while (path.size() > 1) {
+                // update the positions
+                previousPosition = currentPosition;
+                currentPosition = path.dequeue();
+                // compute the curent difference of position along x and y
+                currentDx = currentPosition.x() - previousPosition.x();
+                currentDy = currentPosition.y() - previousPosition.y();
+
+                // if the slope is different
+                if(!qFuzzyCompare(previousDx, currentDx) || !qFuzzyCompare(previousDy, currentDy)) {
+                    // add the new point to the path
+                    reducedPath.enqueue(previousPosition);
+                }
+                // update the current differences of positions along x and y
+                previousDx = currentDx;
+                previousDy = currentDy;
+            }
+        }
+        // the last element
+        reducedPath.enqueue(path.dequeue());
+    }
+    // return the reduced path
+    path = reducedPath;
 }

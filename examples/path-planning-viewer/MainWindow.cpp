@@ -54,6 +54,7 @@ MainWindow::MainWindow(SetupType::Enum setupType,
     // now make a new one
     m_pathPlanner = QSharedPointer<DijkstraPathPlanner>(new DijkstraPathPlanner());
     m_viewerHandler->widget()->setShowControlAreas(true);
+    m_viewerHandler->widget()->setShowAgentsData(true);
     // show the path planning area
     QList<AnnotatedPolygons> polygons;
     AnnotatedPolygons annotatedPolygons;
@@ -61,6 +62,7 @@ MainWindow::MainWindow(SetupType::Enum setupType,
     annotatedPolygons.label = "Working space";
     annotatedPolygons.polygons.append(m_pathPlanner->polygon());
     polygons.append(annotatedPolygons);
+    m_viewerHandler->widget()->updateCurrentAgent("Z");
     m_viewerHandler->widget()->updateControlAreas("Z", polygons);
 }
 

@@ -24,6 +24,10 @@ void TrajectoryItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *op
     painter->setPen(pen);
 
     painter->drawPolyline(m_polygon);
+    // draw little points
+    for (auto point : m_polygon) {
+        painter->drawEllipse(point, 1, 1);
+    }
 }
 
 /*!

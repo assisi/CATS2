@@ -47,6 +47,9 @@ private:
     QPoint positionToGridNode(PositionMeters position) const;
     //! Computes the world position corresponding to the grid node point.
     PositionMeters gridNodeToPosition(QPoint gridNode) const;
+    //! Simplifies the resulted path by removing the points lying on the same
+    //! line.
+    void simplifyPath(QQueue<PositionMeters>& path);
     //! Returns the graph's minimal value of the x coordinate. It's shifted by a
     //! half-grid size from the border of the setup to insure that all grid
     //! nodes are inside of the setup.
