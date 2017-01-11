@@ -26,7 +26,7 @@ bool TrackingSettings::init(QString configurationFileName, SetupType::Enum setup
     ReadSettingsHelper settings(configurationFileName);
     std::string experimentName;
     settings.readVariable("experiment/name", experimentName, std::string("Experiment"));
-    m_experimentName = QString::fromUtf8(experimentName.c_str());
+    m_experimentName = QString::fromStdString(experimentName.c_str());
 
     settings.readVariable("robots/numberOfRobots", m_numberOfRobots, 0);
     settings.readVariable("experiment/agents/numberOfAnimals", m_numberOfAnimals, 0);
@@ -65,5 +65,5 @@ TrackingRoutineType::Enum TrackingSettings::readTrackingRoutineType(QString conf
     settings.readVariable(QString("%1/tracking/trackingMethod").arg(prefix),
                           trackingRoutineName);
 
-    return TrackingRoutineType::fromSettingsString(QString::fromUtf8(trackingRoutineName.c_str()));
+    return TrackingRoutineType::fromSettingsString(QString::fromStdString(trackingRoutineName.c_str()));
 }

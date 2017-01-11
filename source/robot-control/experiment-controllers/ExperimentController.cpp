@@ -55,8 +55,10 @@ bool ExperimentController::deserialize(QString controlAreasFileName)
         settings.readVariable(QString("area_%1/type").arg(areaIndex), type);
 
         // create the area object
-        ControlAreaType::Enum areaType = ControlAreaType::fromSettingsString(QString::fromUtf8(type.c_str()));
-        ControlAreaPtr area(new ControlArea(QString::fromUtf8(id.c_str()), areaType));
+        ControlAreaType::Enum areaType =
+                ControlAreaType::fromSettingsString(QString::fromStdString(type.c_str()));
+        ControlAreaPtr area(new ControlArea(QString::fromStdString(id.c_str()),
+                                            areaType));
 
         // read polygons
         int numberOfPolygons;
@@ -81,12 +83,12 @@ bool ExperimentController::deserialize(QString controlAreasFileName)
         // read control mode
         std::string controlModeName;
         settings.readVariable(QString("area_%1/controlMode").arg(areaIndex), controlModeName);
-        area->setControlMode(ControlModeType::fromSettingsString(QString::fromUtf8(controlModeName.c_str())));
+        area->setControlMode(ControlModeType::fromSettingsString(QString::fromStdString(controlModeName.c_str())));
 
         // read motion pattern
         std::string motionPatternName;
         settings.readVariable(QString("area_%1/motionPattern").arg(areaIndex), motionPatternName);
-        area->setMotionPattern(MotionPatternType::fromSettingsString(QString::fromUtf8(motionPatternName.c_str())));
+        area->setMotionPattern(MotionPatternType::fromSettingsString(QString::fromStdString(motionPatternName.c_str())));
 
         // add to the areas map
         m_controlAreas[area->id()] = area;
@@ -95,7 +97,7 @@ bool ExperimentController::deserialize(QString controlAreasFileName)
     // read the prefered area if available
     std::string preferedAreaId;
     settings.readVariable(QString("preferedAreaId"), preferedAreaId);
-    m_preferedAreaId = QString::fromUtf8(preferedAreaId.c_str());
+    m_preferedAreaId = QString::fromStdString(preferedAreaId.c_str());
 
     return successful;
 }
