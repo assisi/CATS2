@@ -1,5 +1,6 @@
 #include "MapController.hpp"
 #include "FishBot.hpp"
+#include "ControlArea.hpp"
 
 #include <settings/ReadSettingsHelper.hpp>
 
@@ -25,10 +26,10 @@ ExperimentController::ControlData MapController::step()
         PositionMeters position = m_robot->state().position();
         if (isValid() && position.isValid()) {
             QPointF point(position.x(), position.y());
-            foreach (const ControlArea& controlArea, m_controlAreas) {
-                if (controlArea.contains(point)) {
-                    controlData.controlMode = controlArea.controlMode();
-                    controlData.motionPattern = controlArea.motionPattern();
+            for (const auto controlArea : m_controlAreas.values()) {
+                if (controlArea->contains(point)) {
+                    controlData.controlMode = controlArea->controlMode();
+                    controlData.motionPattern = controlArea->motionPattern();
                     return controlData;
                 }
             }

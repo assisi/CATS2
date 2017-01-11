@@ -1,5 +1,7 @@
 #include "ExperimentController.hpp"
 
+#include "ControlArea.hpp"
+
 #include <settings/ReadSettingsHelper.hpp>
 
 /*!
@@ -14,9 +16,11 @@ ExperimentController::ExperimentController(FishBot* robot,
 {
     m_valid = deserialize(controlAreasFileName);
     if (m_valid)
-        qDebug() << Q_FUNC_INFO << "Successfully read a control map from" << controlAreasFileName;
+        qDebug() << Q_FUNC_INFO << "Successfully read a control map from"
+                 << controlAreasFileName;
     else
-        qDebug() << Q_FUNC_INFO << "Could not read a control map from" << controlAreasFileName;
+        qDebug() << Q_FUNC_INFO << "Could not read a control map from"
+                 << controlAreasFileName;
 }
 
 /*!
@@ -51,39 +55,47 @@ bool ExperimentController::deserialize(QString controlAreasFileName)
         settings.readVariable(QString("area_%1/type").arg(areaIndex), type);
 
         // create the area object
-        ControlArea area(QString::fromUtf8(id.c_str()),
-                         ControlAreaType::fromSettingsString(QString::fromUtf8(type.c_str())));
+        ControlAreaType::Enum areaType = ControlAreaType::fromSettingsString(QString::fromUtf8(type.c_str()));
+        ControlAreaPtr area(new ControlArea(QString::fromUtf8(id.c_str()), areaType));
 
         // read polygons
         int numberOfPolygons;
-        settings.readVariable(QString("area_%1/polygons/numberOfPolygons").arg(areaIndex), numberOfPolygons);
+        settings.readVariable(QString("area_%1/polygons/numberOfPolygons")
+                              .arg(areaIndex), numberOfPolygons);
         for (int polygonIndex = 1; polygonIndex <= numberOfPolygons; polygonIndex++) {
             std::vector<cv::Point2f> polygon;
-            settings.readVariable(QString("area_%1/polygons/polygon_%2").arg(areaIndex).arg(polygonIndex), polygon);
-            area.addPolygon(polygon);
+            settings.readVariable(QString("area_%1/polygons/polygon_%2")
+                                  .arg(areaIndex).arg(polygonIndex), polygon);
+            area->addPolygon(polygon);
         }
 
-        // read color
+        // read the area color (for gui)
         int red;
         settings.readVariable(QString("area_%1/color/r").arg(areaIndex), red);
         int green;
         settings.readVariable(QString("area_%1/color/g").arg(areaIndex), green);
         int blue;
         settings.readVariable(QString("area_%1/color/b").arg(areaIndex), blue);
-        area.setColor(QColor(red, green, blue));
+        area->setColor(QColor(red, green, blue));
 
         // read control mode
         std::string controlModeName;
         settings.readVariable(QString("area_%1/controlMode").arg(areaIndex), controlModeName);
-        area.setControlMode(ControlModeType::fromSettingsString(QString::fromUtf8(controlModeName.c_str())));
+        area->setControlMode(ControlModeType::fromSettingsString(QString::fromUtf8(controlModeName.c_str())));
 
         // read motion pattern
         std::string motionPatternName;
         settings.readVariable(QString("area_%1/motionPattern").arg(areaIndex), motionPatternName);
-        area.setMotionPattern(MotionPatternType::fromSettingsString(QString::fromUtf8(motionPatternName.c_str())));
+        area->setMotionPattern(MotionPatternType::fromSettingsString(QString::fromUtf8(motionPatternName.c_str())));
 
-        m_controlAreas.append(area);
+        // add to the areas map
+        m_controlAreas[area->id()] = area;
     }
+
+    // read the prefered area if available
+    std::string preferedAreaId;
+    settings.readVariable(QString("preferedAreaId"), preferedAreaId);
+    m_preferedAreaId = QString::fromUtf8(preferedAreaId.c_str());
 
     return successful;
 }
@@ -94,8 +106,8 @@ bool ExperimentController::deserialize(QString controlAreasFileName)
 void ExperimentController::requestPolygons()
 {
     QList<AnnotatedPolygons> polygons;
-    for (const auto& area : m_controlAreas) {
-        polygons.append(area.annotatedPolygons());
+    for (const auto area : m_controlAreas.values()) {
+        polygons.append(area->annotatedPolygons());
     }
     emit notifyPolygons(polygons);
 }

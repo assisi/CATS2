@@ -2,9 +2,14 @@
 #define CATS2_EXPERIMENT_CONTROLLER_HPP
 
 #include "ExperimentControllerType.hpp"
-#include "ControlArea.hpp"
+#include "RobotControlPointerTypes.hpp"
+#include "MotionPatternType.hpp"
+#include "control-modes/ControlModeType.hpp"
+
+#include <AgentState.hpp>
 
 #include <QtCore/QObject>
+#include <QtCore/QMap>
 
 class FishBot;
 
@@ -28,12 +33,14 @@ public:
     //! The data from the control map returned on request for given position.
     struct ControlData {
         //! Initialization.
-        ControlData() : controlMode(ControlModeType::UNDEFINED), motionPattern(MotionPatternType::UNDEFINED) {}
+        ControlData() : controlMode(ControlModeType::UNDEFINED),
+            motionPattern(MotionPatternType::UNDEFINED) {}
         //! The control mode.
         ControlModeType::Enum controlMode;
         //! The motion pattern.
         MotionPatternType::Enum motionPattern;
-        // TODO : to add the extra control data as QVariant (e.g. target for the go-to-target control mode)
+        // TODO : to add the extra control data as QVariant (e.g. target for
+        // the go-to-target control mode)
     };
 
 public:
@@ -60,8 +67,10 @@ signals:
 protected:
     //! A pointer to the robot that is controlled by this controller.
     FishBot* m_robot;
-    //! A list of control areas.
-    QList<ControlArea> m_controlAreas;
+    //! Maps control areas' ids to the areas.
+    QMap<QString, ControlAreaPtr> m_controlAreas;
+    //! Prefered area id.
+    QString m_preferedAreaId;
 
 private:
     //! Reads the control map from a file.

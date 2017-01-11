@@ -14,6 +14,7 @@ class FishBot;
 /*!
  * Manages the different experiment controllers.
  */
+// TODO : to move this file/class to the main folder
 class ExperimentManager: public QObject
 {
     Q_OBJECT

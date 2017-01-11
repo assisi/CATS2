@@ -46,6 +46,9 @@ public:
     ControlArea(QString id, ControlAreaType::Enum type);
 
 public:
+    //! Returns the id.
+    QString id() const { return m_id; }
+
     //! Sets the color.
     void setColor(QColor color) { m_color = color; }
     //! Returns the color.
