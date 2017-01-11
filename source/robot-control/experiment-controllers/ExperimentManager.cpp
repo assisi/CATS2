@@ -14,9 +14,11 @@ ExperimentManager::ExperimentManager(FishBot* robot, QString controlAreasPath) :
     m_robot(robot)
 {
     // fill the map will all controllers
+    // first we add an empty controller for the sake simplicity in the
+    // setController() implementation
     m_controllers.insert(ExperimentControllerType::NONE,
                          ExperimentControllerPtr(new ExperimentController(m_robot,
-                                                                          controlAreasPath))); // empty controller for symmetry
+                                                                          controlAreasPath)));
     m_controllers.insert(ExperimentControllerType::CONTROL_MAP,
                          ExperimentControllerPtr(new MapController(m_robot,
                                                                    controlAreasPath)));

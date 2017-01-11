@@ -266,13 +266,13 @@ bool CameraCalibration::readParameters(QString calibrationFileName)
 
     // read the frame size that was used to set the calibration points
     // (can be different from the target frame size)
-    // read the target image size
+    // read the target image size, negative default values are used to
+    // guarantee an invalid size if the correct value is not read
     int width;
-    settings.readVariable(QString("imageSize/width"), width, -1); // default value to guarantee an
-                                                                  // invalid size if the correct valus is not read
+    settings.readVariable(QString("imageSize/width"), width, -1);
     int height;
-    settings.readVariable(QString("imageSize/height"), height, -1); // default value to guarantee an
-                                                                    // invalid size if the correct valus is not read
+    settings.readVariable(QString("imageSize/height"), height, -1);
+
     m_calibrationFrameSize = QSize(width, height);
     if (!m_calibrationFrameSize.isValid()) {
         qDebug() << Q_FUNC_INFO << "The calibration frame size is invalid.";

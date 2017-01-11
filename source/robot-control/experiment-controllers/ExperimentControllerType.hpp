@@ -14,7 +14,8 @@ public:
         CONTROL_MAP
     };
 
-    //! Gets the type of the experiment controller type from the settings' string.
+    //! Gets the type of the experiment controller type from the settings'
+    //! string.
     static Enum fromSettingsString(QString controllerName)
     {
         if (controllerName.toLower() == "controlmap")
