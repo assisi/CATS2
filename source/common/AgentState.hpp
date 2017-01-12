@@ -96,6 +96,14 @@ public:
     }
 
     /*!
+     * Checks if two points are close in 2D.
+     */
+    bool closeTo(const PositionMeters& other, double threshold = ProximityThreshold)
+    {
+        return (distance2DTo(other) < threshold);
+    }
+
+    /*!
      * Operator +=.
      */
     PositionMeters& operator+=(const PositionMeters &rhs)
@@ -127,6 +135,10 @@ private:
     double m_z; // [m]
     //! Position validity, set to false when the position could not be determined.
     bool m_valid;
+
+    //! The threshold to decide that one point is close to another. It's used
+    //! by in the control modes and navigation.
+    static constexpr double ProximityThreshold = 0.05; // [m]
 };
 
 /*!
