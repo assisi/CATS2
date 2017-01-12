@@ -13,10 +13,10 @@ ControlArea::ControlArea(QString id, ControlAreaType::Enum type = ControlAreaTyp
 /*!
  * Checks if the point is inside this area.
  */
-bool ControlArea::contains(QPointF point) const
+bool ControlArea::contains(PositionMeters point) const
 {
-    foreach (const QPolygonF& polygon, m_polygons) {
-        if (polygon.containsPoint(point, Qt::OddEvenFill))
+    foreach (const WorldPolygon& polygon, m_polygons) {
+        if (polygon.containsPoint(point))
             return true;
     }
     return false;
@@ -25,12 +25,20 @@ bool ControlArea::contains(QPointF point) const
 /*!
  * Adds a polygon included in this area.
  */
+void ControlArea::addPolygon(WorldPolygon polygon)
+{
+    m_polygons.append(polygon);
+}
+
+/*!
+ * Adds a polygon included in this area.
+ */
 void ControlArea::addPolygon(std::vector<cv::Point2f> cvPolygon)
 {
-    QPolygonF polygon;
+    WorldPolygon polygon;
 
     for (const auto& point : cvPolygon)
-        polygon.append(QPointF(point.x, point.y));
+        polygon.append(PositionMeters(point.x, point.y));
 
     addPolygon(polygon);
 }

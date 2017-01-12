@@ -65,11 +65,11 @@ public:
     MotionPatternType::Enum motionPattern() const { return m_motionPattern; }
 
     //! Adds a polygon included in this area.
-    void addPolygon(QPolygonF polygon) { m_polygons.append(polygon); }
+    void addPolygon(WorldPolygon polygon);
     //! Adds a polygon included in this area.
     void addPolygon(std::vector<cv::Point2f>);
     //! Checks if the point is inside this area.
-    bool contains(QPointF) const;
+    bool contains(PositionMeters) const;
 
     //! Returns the polygons to be used in gui.
     AnnotatedPolygons annotatedPolygons() const;
@@ -86,11 +86,8 @@ private:
     //! The motion pattern corresponding to this area.
     MotionPatternType::Enum m_motionPattern;
 
-    // TODO : it's more logical to use QList<PositionMeters> instead of
-    // QPolygonF. But we use QPolygonF because it has already contains()
-    // method
     //! Polygons of this area.
-    QList<QPolygonF> m_polygons;
+    QList<WorldPolygon> m_polygons;
 };
 
 #endif // CATS2_CONTROL_AREA_HPP
