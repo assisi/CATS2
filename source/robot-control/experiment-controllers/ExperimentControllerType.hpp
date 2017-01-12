@@ -11,7 +11,8 @@ class ExperimentControllerType
 public:
     enum Enum {
         NONE,
-        CONTROL_MAP
+        CONTROL_MAP,
+        INITIATION
     };
 
     //! Gets the type of the experiment controller type from the settings'
@@ -20,6 +21,8 @@ public:
     {
         if (controllerName.toLower() == "controlmap")
             return CONTROL_MAP;
+        if (controllerName.toLower() == "initiation")
+            return INITIATION;
         else if (controllerName.toLower() == "none")
             return NONE;
         else
@@ -35,6 +38,9 @@ public:
         case CONTROL_MAP:
             string = "controlMap";
             break;
+        case INITIATION:
+            string = "initiation";
+            break;
         case NONE:
         default:
             break;
@@ -49,6 +55,9 @@ public:
         switch (controllerType) {
         case CONTROL_MAP:
             string = "Control map";
+            break;
+        case INITIATION:
+            string = "Initiation";
             break;
         case NONE:
         default:

@@ -141,6 +141,8 @@ private:
     static constexpr double ProximityThreshold = 0.05; // [m]
 };
 
+Q_DECLARE_METATYPE(PositionMeters)
+
 /*!
  * \brief The class that stores the position in frame pixels.
  * Use CoordiantesTransformation class to convert the position in pixels to

@@ -1,5 +1,5 @@
 #include "ExperimentController.hpp"
-
+#include "FishBot.hpp"
 #include "ControlArea.hpp"
 
 #include <settings/ReadSettingsHelper.hpp>
@@ -13,6 +13,10 @@ ExperimentController::ExperimentController(FishBot* robot,
                                            ExperimentControllerType::Enum type) :
     QObject(nullptr),
     m_robot(robot),
+    m_controlAreas(),
+    m_preferedAreaId(""),
+    m_fishAreaId(""),
+    m_robotAreaId(""),
     m_type(type)
 {
 
@@ -103,3 +107,102 @@ void ExperimentController::requestPolygons()
     }
     emit notifyPolygons(polygons);
 }
+
+/*!
+ * Find where the robot and the fish are.
+ */
+void ExperimentController::updateAreasOccupation()
+{
+    QString areaId;
+    if (findRobotArea(areaId)) {
+        if (m_robotAreaId != areaId) {
+            qDebug() << QString("Robot %1 changed the room from %2 to %3")
+                        .arg(m_robot->id())
+                        .arg(m_robotAreaId)
+                        .arg(areaId);
+            m_robotAreaId = areaId;
+        } else { // reset the variable
+            m_robotAreaId = "";
+        }
+    }
+    if (findFishArea(areaId)) {
+        if (m_fishAreaId != areaId) {
+            qDebug() << QString("Most of fish is now in room %1 (before %2)")
+                        .arg(areaId)
+                        .arg(m_fishAreaId);
+            m_fishAreaId = areaId;
+        } else { // reset the variable
+            m_fishAreaId = "";
+        }
+    }
+}
+
+/*!
+ * Finds the room with the majority of fish. Returns the success status.
+ */
+bool ExperimentController::findFishArea(QString& maxFishNumberAreaId)
+{
+    if (m_robot) {
+        // get the fish states
+        QList<StateWorld> fishStates = m_robot->fishStates();
+        if (fishStates.size() > 0) {
+            // setup the map to count the fish
+            for (const auto& areaId : m_controlAreas.keys())
+                m_fishNumberByArea[areaId] = 0;
+            // for every fish check where it is
+            for (const auto& state : fishStates) {
+                QString areaId;
+                if (findAreaByPosition(areaId, state.position())) {
+                    m_fishNumberByArea[areaId]++;
+                }
+            }
+            // find the majority of fish
+            QString prevMaxFishNumberAreaId = maxFishNumberAreaId; // backup
+            int maxFishNumber = 0;
+            for (const auto& areaId : m_controlAreas.keys()) {
+                if (m_fishNumberByArea[areaId] > maxFishNumber) {
+                    maxFishNumber = m_fishNumberByArea[areaId];
+                    maxFishNumberAreaId = areaId;
+                }
+            }
+            // restore the valus if nothing found
+            if (maxFishNumber == 0) {
+                maxFishNumberAreaId = prevMaxFishNumberAreaId;
+                return false;
+            } else {
+                return true;
+            }
+
+        }
+    }
+    return false;
+}
+
+/*!
+ * Finds the room where the robot is. Returns the success status.
+ */
+bool ExperimentController::findRobotArea(QString& robotAreaId)
+{
+    if (m_robot) {
+        return findAreaByPosition(robotAreaId, m_robot->state().position());
+    }
+    return false;
+}
+
+/*!
+ * Finds the room that contains given point.
+ */
+bool ExperimentController::findAreaByPosition(QString& areaId,
+                                              const PositionMeters& position)
+{
+    if (position.isValid()) {
+        for (const auto controlArea : m_controlAreas.values()) {
+            if (controlArea->contains(position)) {
+                areaId = controlArea->id();
+                return true;
+            }
+        }
+    }
+    return false;
+}
+

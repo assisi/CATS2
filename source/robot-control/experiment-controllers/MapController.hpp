@@ -17,7 +17,7 @@ class MapController : public ExperimentController
 {
     Q_OBJECT
 public:
-    //! Constructor. Gets robot and the settings
+    //! Constructor. Gets the robot and the settings.
     MapController(FishBot* robot,
                   ExperimentControllerSettingsPtr settings);
 

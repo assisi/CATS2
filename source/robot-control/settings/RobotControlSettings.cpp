@@ -110,7 +110,7 @@ bool RobotControlSettings::init(QString configurationFileName)
     settings.close();
     // read the settings for all available controllers
     for (int type = ExperimentControllerType::CONTROL_MAP;
-         type <= ExperimentControllerType::CONTROL_MAP; type++ )
+         type <= ExperimentControllerType::INITIATION; type++ )
     {
         ExperimentControllerType::Enum controllerType =
                 static_cast<ExperimentControllerType::Enum>(type);

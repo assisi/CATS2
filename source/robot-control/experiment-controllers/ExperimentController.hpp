@@ -10,6 +10,7 @@
 
 #include <QtCore/QObject>
 #include <QtCore/QMap>
+#include <QtCore/QVariant>
 
 class FishBot;
 
@@ -38,8 +39,9 @@ public:
         ControlModeType::Enum controlMode;
         //! The motion pattern.
         MotionPatternType::Enum motionPattern;
-        // TODO : to add the extra control data as QVariant (e.g. target for
-        // the go-to-target control mode)
+        //! The extra control data to send (e.g. target for the go-to-target
+        //! control mode).
+        QVariant data;
     };
 
 public:
@@ -66,6 +68,16 @@ protected:
     void readControlMap(QString controlAreasFileName);
 
 protected:
+    //! Find where the robot and the fish are.
+    void updateAreasOccupation();
+    //! Finds the room that contains given point.
+    bool findAreaByPosition(QString& areaId, const PositionMeters& position);
+    //! Finds the room with the majority of fish. Returns the success status.
+    bool findFishArea(QString& areaId);
+    //! Finds the room where the robot is. Returns the success status.
+    bool findRobotArea(QString& areaId);
+
+protected:
     //! A pointer to the robot that is controlled by this controller.
     FishBot* m_robot;
     //! Maps control areas' ids to the areas. Since they will be most probably
@@ -73,6 +85,12 @@ protected:
     QMap<QString, ControlAreaPtr> m_controlAreas;
     //! Prefered area id.
     QString m_preferedAreaId;
+    //! The area with the majority of fish.
+    QString m_fishAreaId;
+    //! The area where the robot is.
+    QString m_robotAreaId;
+    //! Where the fish are.
+    QMap<QString, int> m_fishNumberByArea;
 
 private:
     //! A type of the controller.

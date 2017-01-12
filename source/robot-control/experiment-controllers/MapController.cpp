@@ -2,10 +2,10 @@
 #include "FishBot.hpp"
 #include "ControlArea.hpp"
 
-#include <settings/ReadSettingsHelper.hpp>
+#include <QtCore/QDebug>
 
 /*!
- * Constructor. Gets the file name containing the control map description.
+ * Constructor.
  */
 MapController::MapController(FishBot* robot,
                              ExperimentControllerSettingsPtr settings) :
@@ -36,19 +36,14 @@ ExperimentController::ControlData MapController::step()
     // values are initialized as undefined
     ControlData controlData;
 
-    if (m_robot) {
-        PositionMeters position = m_robot->state().position();
-        if (position.isValid()) {
-            QPointF point(position.x(), position.y());
-            for (const auto controlArea : m_controlAreas.values()) {
-                if (controlArea->contains(point)) {
-                    controlData.controlMode = controlArea->controlMode();
-                    controlData.motionPattern = controlArea->motionPattern();
-                    return controlData;
-                }
-            }
-        }
+    // check where the robot and fish are
+    updateAreasOccupation();
 
+    // based on where is the robot we update the command
+    if (m_controlAreas.contains(m_robotAreaId)) {
+        controlData.controlMode = m_controlAreas[m_robotAreaId]->controlMode();
+        controlData.motionPattern = m_controlAreas[m_robotAreaId]->motionPattern();
+        return controlData;
     }
 
     return controlData;

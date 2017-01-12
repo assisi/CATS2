@@ -11,6 +11,7 @@ set(srcs
 set(hdrs
     AgentState.hpp
     SetupType.hpp
+    Timer.hpp
     CommonPointerTypes.hpp
     settings/ReadSettingsHelper.hpp
 )

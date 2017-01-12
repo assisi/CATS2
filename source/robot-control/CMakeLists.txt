@@ -26,6 +26,7 @@ set(srcs
     settings/RobotControlSettings.cpp
     settings/ExperimentControllerSettings.cpp
     settings/MapControllerSettings.cpp
+    settings/InitiationControllerSettings.cpp
     FishBot.cpp
     ControlLoop.cpp
     control-modes/Idle.cpp
@@ -44,6 +45,7 @@ set(srcs
     experiment-controllers/MapController.cpp
     experiment-controllers/ExperimentController.cpp
     experiment-controllers/ExperimentManager.cpp
+    experiment-controllers/InitiationController.cpp
     model/model.cpp
     model/factory.cpp
     model/bm.cpp

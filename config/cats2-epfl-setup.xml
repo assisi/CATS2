@@ -26,6 +26,12 @@
             <controlMap>
                 <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
             </controlMap>
+            <initiation>
+                <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
+                <departureTimeOutSec>5</departureTimeOutSec>
+                <fishFollowCheckTimeOutSec>5</fishFollowCheckTimeOutSec>
+                <maximalFishNumberAllowedToStay>3</maximalFishNumberAllowedToStay>
+            </initiation>
         </controllers>
         <fishBot_1>
             <id>H</id>
