@@ -95,6 +95,29 @@ public:
                      (m_y - other.y()) * (m_y - other.y()));
     }
 
+    /*!
+     * Operator +=.
+     */
+    PositionMeters& operator+=(const PositionMeters &rhs)
+    {
+        m_x += rhs.x();
+        m_y += rhs.y();
+        m_z += rhs.z();
+        m_valid &= rhs.isValid();
+        return *this;
+    }
+
+    /*!
+     * Operator /=.
+     */
+    PositionMeters& operator/=(const double &value)
+    {
+        m_x /= value;
+        m_y /= value;
+        m_z /= value;
+        return *this;
+    }
+
 private:
     //! Position x.
     double m_x;  // [m]
