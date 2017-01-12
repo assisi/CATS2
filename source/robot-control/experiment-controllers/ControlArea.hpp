@@ -48,6 +48,8 @@ public:
 public:
     //! Returns the id.
     QString id() const { return m_id; }
+    //! Returns the type.
+    ControlAreaType::Enum type() const { return m_type; }
 
     //! Sets the color.
     void setColor(QColor color) { m_color = color; }
@@ -74,6 +76,9 @@ public:
     //! Returns the polygons to be used in gui.
     AnnotatedPolygons annotatedPolygons() const;
 
+    //! Returns the area centroid.
+    PositionMeters centroid() const { return m_centroid; }
+
 private:
     //! Area's label.
     QString m_id;
@@ -88,6 +93,14 @@ private:
 
     //! Polygons of this area.
     QList<WorldPolygon> m_polygons;
+
+    // TODO : a geometry library is needed
+    // FIXME : it's too much of the simplification
+    //! Computes the area centroid. For the areas composed of several polygons
+    //! only the first polygon is taken into account.
+    void updateCentroid();
+    //! The area centroid.
+    PositionMeters m_centroid;
 };
 
 #endif // CATS2_CONTROL_AREA_HPP

@@ -5,7 +5,8 @@
  */
 ControlArea::ControlArea(QString id, ControlAreaType::Enum type = ControlAreaType::UNDEFINED) :
     m_id(id),
-    m_type(type)
+    m_type(type),
+    m_centroid()
 {
 
 }
@@ -28,6 +29,8 @@ bool ControlArea::contains(PositionMeters point) const
 void ControlArea::addPolygon(WorldPolygon polygon)
 {
     m_polygons.append(polygon);
+    // updates the area centroid
+    updateCentroid();
 }
 
 /*!
@@ -59,4 +62,20 @@ AnnotatedPolygons ControlArea::annotatedPolygons() const
     polygons.color = m_color;
     polygons.label = m_id;
     return polygons;
+}
+
+/*!
+ * Computes the area centroid. For the areas composed of several polygons
+ * only the first polygon is taken into account.
+ */
+void ControlArea::updateCentroid()
+{
+    if (m_polygons.size() > 0) {
+        PositionMeters centroid;
+        for (const auto& vertice : m_polygons.at(0)) {
+            centroid += vertice;
+        }
+        centroid /= m_polygons.size();
+        m_centroid = centroid;
+    }
 }
