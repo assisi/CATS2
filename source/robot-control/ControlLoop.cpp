@@ -15,8 +15,7 @@ ControlLoop::ControlLoop() :
 {
     // create the robots
     for (QString id : RobotControlSettings::get().ids()) {
-        QString controlAreasPath = RobotControlSettings::get().robotSettings(id).controlAreasFilePath();
-        m_robots.append(FishBotPtr(new FishBot(id, controlAreasPath)));
+        m_robots.append(FishBotPtr(new FishBot(id)));
         m_robots.last()->setLedColor(RobotControlSettings::get().robotSettings(id).ledColor());
         m_robots.last()->setRobotInterface(m_robotsInterface);
 

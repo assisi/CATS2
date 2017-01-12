@@ -26,6 +26,22 @@ public:
             return NONE;
     }
 
+    //! Returns the controller type string that is used to look for the settings
+    //! values in the configuration file.
+    static QString toSettingsString(Enum controllerType) {
+        QString string = "none";
+
+        switch (controllerType) {
+        case CONTROL_MAP:
+            string = "controlMap";
+            break;
+        case NONE:
+        default:
+            break;
+        }
+        return string;
+    }
+
     //! Returns that experiment controller type string in human friendly format.
     static QString toString(Enum controllerType) {
         QString string;

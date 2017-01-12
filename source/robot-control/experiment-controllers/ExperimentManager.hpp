@@ -20,7 +20,7 @@ class ExperimentManager: public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    explicit ExperimentManager(FishBot* robot, QString controlAreasPath);
+    explicit ExperimentManager(FishBot* robot);
 
     //! The experiment manager step. Returns the control target values.
     ExperimentController::ControlData step();

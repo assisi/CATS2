@@ -27,7 +27,6 @@ public:
     //! Constructor. It gets a pointer to the robot that is controlled by this
     //! controller.
     ExperimentController(FishBot* robot,
-                         QString controlAreasFileName,
                          ExperimentControllerType::Enum type = ExperimentControllerType::NONE);
 
     //! The data from the control map returned on request for given position.
@@ -44,8 +43,6 @@ public:
     };
 
 public:
-    //! Returns the validity flag.
-    bool isValid() const { return m_valid; }
     //! Returns the type of the controller.
     ExperimentControllerType::Enum type() const { return m_type; }
 
@@ -65,22 +62,21 @@ signals:
     void notifyPolygons(QList<AnnotatedPolygons>);
 
 protected:
+    //! Reads the control map from a file.
+    void readControlMap(QString controlAreasFileName);
+
+protected:
     //! A pointer to the robot that is controlled by this controller.
     FishBot* m_robot;
-    //! Maps control areas' ids to the areas.
+    //! Maps control areas' ids to the areas. Since they will be most probably
+    //! used by all controller they are placed in this parent class.
     QMap<QString, ControlAreaPtr> m_controlAreas;
     //! Prefered area id.
     QString m_preferedAreaId;
 
 private:
-    //! Reads the control map from a file.
-    bool deserialize(QString controlAreasFileName);
-
-private:
     //! A type of the controller.
     ExperimentControllerType::Enum m_type;
-    //! A flag that says if the contoller was correctly initialized.
-    bool m_valid;
 };
 
 #endif // CATS2_EXPERIMENT_CONTROLLER_HPP

@@ -1,4 +1,6 @@
 #include "RobotControlSettings.hpp"
+#include "experiment-controllers/ExperimentControllerType.hpp"
+#include "experiment-controllers/ExperimentControllerFactory.hpp"
 
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
@@ -46,7 +48,6 @@ bool RobotControlSettings::init(QString configurationFileName)
     settingsAccepted = settingsAccepted &&
             (m_fishMotionPatternFrequencyDivider > 0);
 
-
     // read settings for every robot.
     for (int index = 1; index <= m_numberOfRobots; index++) {
         RobotSettings robotSettings;
@@ -65,14 +66,6 @@ bool RobotControlSettings::init(QString configurationFileName)
         settings.readVariable(QString("robots/fishBot_%1/ledColor/b").arg(index),
                               blue);
         robotSettings.setLedColor(QColor(red, green, blue));
-
-        std::string controlAreasFilePath = "";
-        settings.readVariable(QString("robots/controllers/controlMap/controlAreasPath").
-                                arg(index),
-                              controlAreasFilePath, controlAreasFilePath);
-        robotSettings.setControlAreasFilePath(configurationFolder +
-                                              QDir::separator() +
-                                              QString::fromStdString(controlAreasFilePath));
 
         m_robotsSettings.insert(robotSettings.id(), robotSettings);
         settingsAccepted = settingsAccepted && (id.size() > 0);
@@ -114,5 +107,32 @@ bool RobotControlSettings::init(QString configurationFileName)
     // read the number of animals used in experimetns
     settings.readVariable("experiment/agents/numberOfAnimals", m_numberOfAnimals, 0);
 
+    settings.close();
+    // read the settings for all available controllers
+    for (int type = ExperimentControllerType::CONTROL_MAP;
+         type <= ExperimentControllerType::CONTROL_MAP; type++ )
+    {
+        ExperimentControllerType::Enum controllerType =
+                static_cast<ExperimentControllerType::Enum>(type);
+        ExperimentControllerSettingsPtr controllerSettings =
+                    ExperimentControllerFactory::createSettings(controllerType);
+        if (!controllerSettings.isNull() &&
+                controllerSettings->init(configurationFileName))
+        {
+            m_controllerSettings.insert(controllerType, controllerSettings);
+        }
+    }
+
     return settingsAccepted;
+}
+
+/*!
+ * Gives the settings for the given controller type.
+ */
+ExperimentControllerSettingsPtr RobotControlSettings::controllerSettings(ExperimentControllerType::Enum type)
+{
+    if (m_controllerSettings.contains(type))
+        return m_controllerSettings.value(type);
+    else
+        return ExperimentControllerSettingsPtr();
 }

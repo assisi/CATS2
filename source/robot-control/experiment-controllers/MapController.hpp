@@ -2,6 +2,7 @@
 #define CATS2_MAP_CONTROLLER_HPP
 
 #include "ExperimentController.hpp"
+#include "settings/MapControllerSettings.hpp"
 
 #include <AgentState.hpp>
 
@@ -16,12 +17,17 @@ class MapController : public ExperimentController
 {
     Q_OBJECT
 public:
-    //! Constructor. Gets the file name containing the control map description.
-    MapController(FishBot* robot, QString controlAreasFileName);
+    //! Constructor. Gets robot and the settings
+    MapController(FishBot* robot,
+                  ExperimentControllerSettingsPtr settings);
 
 public:
     //! Returns the control values for given position.
     virtual ControlData step() override;
+
+private:
+    //! The settings for this controller.
+    MapControllerSettingsData m_settings;
 };
 
 #endif // CATS2_MAP_CONTROLLER_HPP

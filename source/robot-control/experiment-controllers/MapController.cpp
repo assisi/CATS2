@@ -7,10 +7,24 @@
 /*!
  * Constructor. Gets the file name containing the control map description.
  */
-MapController::MapController(FishBot* robot, QString controlAreasFileName) :
-    ExperimentController(robot, controlAreasFileName, ExperimentControllerType::CONTROL_MAP)
+MapController::MapController(FishBot* robot,
+                             ExperimentControllerSettingsPtr settings) :
+    ExperimentController(robot, ExperimentControllerType::CONTROL_MAP),
+    m_settings()
 {
+    // NOTE : to get parameters specific for this controller we need to convert
+    // the settings to the corresponding format
+    MapControllerSettings* mapControllerSettings =
+            dynamic_cast<MapControllerSettings*>(settings.data());
+    if (mapControllerSettings != nullptr){
+        // copy the parameters
+        m_settings = mapControllerSettings->data();
+    } else {
+        qDebug() << Q_FUNC_INFO << "Could not set the controller's settings";
+    }
 
+    // load the control map
+    readControlMap(m_settings.controlAreasFileName());
 }
 
 /*!
@@ -24,7 +38,7 @@ ExperimentController::ControlData MapController::step()
 
     if (m_robot) {
         PositionMeters position = m_robot->state().position();
-        if (isValid() && position.isValid()) {
+        if (position.isValid()) {
             QPointF point(position.x(), position.y());
             for (const auto controlArea : m_controlAreas.values()) {
                 if (controlArea->contains(point)) {

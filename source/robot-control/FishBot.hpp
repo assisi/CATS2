@@ -26,7 +26,7 @@ class FishBot : public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    explicit FishBot(QString id, QString controlAreasPath);
+    explicit FishBot(QString id);
     //! Destructor.
     virtual ~FishBot() final;
 

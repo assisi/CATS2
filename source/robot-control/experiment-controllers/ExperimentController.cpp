@@ -4,23 +4,18 @@
 
 #include <settings/ReadSettingsHelper.hpp>
 
+#include <QtCore/QFileInfo>
+
 /*!
  * Constructor. Gets the file name containing the control areas description.
  */
-ExperimentController::ExperimentController(FishBot* robot,                                           
-                                           QString controlAreasFileName,
+ExperimentController::ExperimentController(FishBot* robot,
                                            ExperimentControllerType::Enum type) :
     QObject(nullptr),
     m_robot(robot),
     m_type(type)
 {
-    m_valid = deserialize(controlAreasFileName);
-    if (m_valid)
-        qDebug() << Q_FUNC_INFO << "Successfully read a control map from"
-                 << controlAreasFileName;
-    else
-        qDebug() << Q_FUNC_INFO << "Could not read a control map from"
-                 << controlAreasFileName;
+
 }
 
 /*!
@@ -34,16 +29,13 @@ ExperimentController::ControlData ExperimentController::step()
 /*!
  * Reads the control map from a file.
  */
-bool ExperimentController::deserialize(QString controlAreasFileName)
+void ExperimentController::readControlMap(QString controlAreasFileName)
 {
-    bool successful = true;
-
     ReadSettingsHelper settings(controlAreasFileName);
 
     // read the number of areas
     int numberOfAreas;
     settings.readVariable("numberOfAreas", numberOfAreas);
-    successful = successful && (numberOfAreas > 0);
 
     // read settings for every area.
     for (int areaIndex = 1; areaIndex <= numberOfAreas; areaIndex++) {
@@ -98,8 +90,6 @@ bool ExperimentController::deserialize(QString controlAreasFileName)
     std::string preferedAreaId;
     settings.readVariable(QString("preferedAreaId"), preferedAreaId);
     m_preferedAreaId = QString::fromStdString(preferedAreaId.c_str());
-
-    return successful;
 }
 
 /*!

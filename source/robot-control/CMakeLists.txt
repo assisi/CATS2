@@ -24,6 +24,8 @@ makeLink(dependencies/fish-model/random.h model/random.h)
 
 set(srcs
     settings/RobotControlSettings.cpp
+    settings/ExperimentControllerSettings.cpp
+    settings/MapControllerSettings.cpp
     FishBot.cpp
     ControlLoop.cpp
     control-modes/Idle.cpp
@@ -56,6 +58,7 @@ set(hdrs
     MotionPatternType.hpp
     control-modes/ControlModeType.hpp
     experiment-controllers/ExperimentControllerType.hpp
+    experiment-controllers/ExperimentControllerFactory.hpp
 )
 
 qt5_wrap_ui(uis_hdrs gui/RobotControlWidget.ui gui/RobotsWidget.ui)

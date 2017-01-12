@@ -6,6 +6,7 @@
 #include "ViewerData.hpp"
 #include <settings/CommandLineParameters.hpp>
 #include <settings/ReadSettingsHelper.hpp>
+#include <settings/RobotControlSettings.hpp>
 #include <QtWidgets/QGraphicsPixmapItem>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QStatusBar>
@@ -27,16 +28,38 @@ MainWindow::MainWindow(SetupType::Enum setupType,
     m_viewerHandler->data()->blockSignals(true);
     // make the frame viewer the central widget
     setCentralWidget(m_viewerHandler->widget());
-    connect(m_viewerHandler->widget(), &ViewerWidget::mousePosition, [this](PositionPixels imagePosition, PositionMeters worldPosition) {
-        statusBar()->showMessage(tr("Image position: %1, world position: %2").arg(imagePosition.toString()).arg(worldPosition.toString()));
+    connect(m_viewerHandler->widget(), &ViewerWidget::mousePosition,
+            [this](PositionPixels imagePosition, PositionMeters worldPosition) {
+        statusBar()->showMessage(tr("Image position: %1, world position: %2")
+                                 .arg(imagePosition.toString())
+                                 .arg(worldPosition.toString()));
     });
     m_viewerHandler->data()->blockSignals(false);
 
+    // make a new controller
+    m_viewerHandler->widget()->updateCurrentAgent("Z");
+    ExperimentControllerSettingsPtr settings =
+            RobotControlSettings::get().controllerSettings(ExperimentControllerType::CONTROL_MAP);
+    m_mapController = QSharedPointer<MapController>(new MapController(nullptr,
+                                                                      settings));
+    connect(m_mapController.data(), &ExperimentController::notifyPolygons,
+            [=](QList<AnnotatedPolygons> polygons) {
+                m_viewerHandler->widget()->updateControlAreas("Z", polygons);
+            });
+    // send out polygons to draw
+    m_mapController->requestPolygons();
+
     // connect the window's actions
-    connect(m_ui->actionZoomIn, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::onZoomIn);
-    connect(m_ui->actionZoomOut, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::onZoomOut);
-    connect(m_ui->actionOpenControlMap, &QAction::triggered, this, &MainWindow::openControlMap);
-    connect(m_ui->actionAdjustView, &QAction::triggered, m_viewerHandler->widget(), &ViewerWidget::adjust);
+    connect(m_ui->actionZoomIn, &QAction::triggered,
+            m_viewerHandler->widget(), &ViewerWidget::onZoomIn);
+    connect(m_ui->actionZoomOut, &QAction::triggered,
+            m_viewerHandler->widget(), &ViewerWidget::onZoomOut);
+    connect(m_ui->actionShowControlAreas, &QAction::toggled,
+            m_viewerHandler->widget(), &ViewerWidget::setShowControlAreas);
+    connect(m_ui->actionShowControlAreas, &QAction::toggled,
+            m_mapController.data(), &ExperimentController::requestPolygons);
+    connect(m_ui->actionAdjustView, &QAction::triggered,
+            m_viewerHandler->widget(), &ViewerWidget::adjust);
 }
 
 /*!
@@ -45,28 +68,4 @@ MainWindow::MainWindow(SetupType::Enum setupType,
 MainWindow::~MainWindow()
 {
     qDebug() << Q_FUNC_INFO << "Destroying the object";
-}
-
-
-/*!
- * Open control map.
- */
-void MainWindow::openControlMap()
-{
-    // get the file name
-    QString fileName = QFileDialog::getOpenFileName(this, tr("Choose File"),"",tr("XML files (*.xml)"));
-    if (!fileName.isEmpty()){
-        // first clean up
-        if (m_mapController.data())
-            m_mapController.reset();
-        // now make a new one
-        m_mapController = QSharedPointer<MapController>(new MapController(nullptr, fileName));
-        connect(m_mapController.data(), &ExperimentController::notifyPolygons,
-                [=](QList<AnnotatedPolygons> polygons) {
-                    m_viewerHandler->widget()->updateControlAreas("Z", polygons);
-                });
-        m_viewerHandler->widget()->setShowControlAreas(true);
-        // send out polygons to draw
-        m_mapController->requestPolygons();
-    }
 }

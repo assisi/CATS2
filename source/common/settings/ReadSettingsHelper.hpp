@@ -25,11 +25,44 @@ public:
     //! Desctructor.
     virtual ~ReadSettingsHelper()
     {
+        if (m_fs.isOpened())
+            close();
+    }
+
+    //! Close the file.
+    void close()
+    {
         m_fs.release();
+    }
+
+    //! Checks if the node exists. Used to check if certain sections exist in
+    //! the settings.
+    bool validPath(QString pathInFile)
+    {
+        if (!m_fs.isOpened()){
+            qDebug() << QString("Could not read the configuration file");
+            return false;
+        }
+
+        QStringList pathInFileList = pathInFile.split("/");
+        cv::FileNode node = m_fs.root();
+        foreach (QString nodeName, pathInFileList){
+            node = node[nodeName.toStdString()];
+            if (node.empty())
+            {
+                qDebug() << QString("Could not find requested section %1")
+                            .arg(pathInFile);
+                return false;
+            }
+        }
+        // the node is a section (mapping)
+        return node.type() == cv::FileNode::MAP;
     }
 
     //! Read the variable value with the given path starting from the document's root node.
     //! If the path is not found then the variable gets the default value when provided.
+    // TODO : refactor this to return true/false depending if the value is read
+    // this would simply a lot the handling of settings
     template <typename T>
     void readVariable(QString pathInFile, T& value, T defaultValue = T())
     {

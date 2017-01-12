@@ -2,6 +2,8 @@
 #define CATS2_ROBOT_CONTROL_SETTINGS_HPP
 
 #include "SetupMap.hpp"
+#include "experiment-controllers/ExperimentControllerType.hpp"
+#include "RobotControlPointerTypes.hpp"
 
 #include <QtCore/QString>
 #include <QtCore/QMap>
@@ -53,21 +55,11 @@ public:
     //! Get color.
     QColor ledColor() const { return m_ledColor; }
 
-    //! Sets control map file path.
-    void setControlAreasFilePath(QString controlAreasFilePath) { m_controlAreasFilePath = controlAreasFilePath; }
-    //! Return control map file path.
-    QString controlAreasFilePath() const { return m_controlAreasFilePath; }
-
 private:
     //! Robot's id.
     QString m_id;
     //! Robot's color.
     QColor m_ledColor;
-    //! Control map file path.
-    //TODO : make a class ExperimentSettings in order to have a
-    // specific areas file for every experiment and to store experiment
-    // specific settings
-    QString m_controlAreasFilePath;
 };
 
 /*!
@@ -188,6 +180,14 @@ public:
     //! Gives the const reference to the fish model parameters.
     const FishModelSettings& fishModelSettings() const { return m_fishModelSettings; }
 
+    //! Gives the settings for the given controller type.
+    ExperimentControllerSettingsPtr controllerSettings(ExperimentControllerType::Enum type);
+    //! Returns the list of available controllers.
+    QList<ExperimentControllerType::Enum> availableControllers() const
+    {
+        return m_controllerSettings.keys();
+    }
+
 private:
     //! Constructor. Defining it here prevents construction.
     RobotControlSettings() {}
@@ -216,6 +216,10 @@ private:
     int m_numberOfAnimals;
     //! The fish model parameters.
     FishModelSettings m_fishModelSettings;
+
+    //! The settings for specific experiment controllers.
+    QMap<ExperimentControllerType::Enum,
+         ExperimentControllerSettingsPtr> m_controllerSettings;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP

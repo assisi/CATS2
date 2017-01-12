@@ -15,7 +15,10 @@ ViewerHandler::ViewerHandler(SetupType::Enum setupType,
                              CoordinatesConversionPtr coordinatesConversion) :
     QObject(nullptr),
     m_data(new ViewerData(inputQueue, coordinatesConversion)),
-    m_widget(new ViewerWidget(m_data, ViewerSettings::get().frameSize(setupType), nullptr)) // on creation the widget's parent is not set, it is treated in the destructor
+    m_widget(new ViewerWidget(m_data,
+                              ViewerSettings::get().frameSize(setupType),
+                              nullptr)) // on creation the widget's parent is
+                                        // not set, it is treated in the destructor
 {
     // some security: when the viewer widget is destroyed, reset the pointer to it
     connect(m_widget, &QObject::destroyed, [=]() { m_widget = nullptr; });

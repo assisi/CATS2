@@ -17,7 +17,8 @@ BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrame
     m_backgroundCalculationStepCounter(0),
     m_backgroundSubtractor(cv::bgsegm::createBackgroundSubtractorMOG(200, 5, 0.3))
 {
-    // HACK : to get parameters specific for this tracker we need to convert the settings to the corresponding format
+    // NOTE : to get parameters specific for this tracker we need to convert
+    // the settings to the corresponding format
     BlobDetectorSettings* blobDetectorSettings = dynamic_cast<BlobDetectorSettings*>(settings.data());
     if (blobDetectorSettings != nullptr){
         // copy the parameters

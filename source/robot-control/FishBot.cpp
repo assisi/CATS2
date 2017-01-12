@@ -12,14 +12,14 @@
 /*!
  * Constructor.
  */
-FishBot::FishBot(QString id, QString controlAreasPath) :
+FishBot::FishBot(QString id) :
     QObject(nullptr),
     m_id(id),
     m_name(QString("Fish_bot_%1").arg(m_id)),
     m_ledColor(Qt::black),
     m_state(),
     m_robotInterface(nullptr),
-    m_experimentManager(this, controlAreasPath),
+    m_experimentManager(this),
     m_controlStateMachine(this),
     m_navigation(this)
 {
