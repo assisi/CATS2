@@ -148,7 +148,7 @@
  </widget>
  <resources>
   <include location="../pixel-locator/icons.qrc"/>
-  <include location="icons.qrc"/>
+  <include location="../../source/cats/icons.qrc"/>
  </resources>
  <connections/>
 </ui>
