@@ -20,7 +20,32 @@ TrackingDataManager::TrackingDataManager() :
     m_typeForGenericAgents(AgentType::FISH), // TODO : find a better way to do this(?)
     m_trajectoryWriter()
 {
-
+#if 1
+    // this code is used purely for a debug when in a no-setup mode
+    // it starts the timer that sends a data with the fake robots and fish
+    // positions.
+    connect(&timerForTest, &QTimer::timeout,
+            [=]()
+            {
+                QList<AgentDataWorld> agentDataList;
+                // add one robot
+                AgentDataWorld robotData("H", AgentType::FISH_CASU,
+                                         StateWorld(PositionMeters(0.1, 0.1),
+                                                    OrientationRad(M_PI_4)));
+                agentDataList << robotData;
+                // add two fish
+                AgentDataWorld fishOneData("0", AgentType::FISH,
+                                           StateWorld(PositionMeters(0.3, 0.3),
+                                                      OrientationRad(M_PI_2)));
+                AgentDataWorld fishTwoData("1", AgentType::FISH,
+                                           StateWorld(PositionMeters(0.3, 0.5),
+                                                      OrientationRad(M_PI_2)));
+                agentDataList << fishOneData << fishTwoData;
+                // send the results
+                emit notifyAgentDataWorldMerged(agentDataList);
+            });
+    timerForTest.start(1000);
+#endif
 }
 
 /*!

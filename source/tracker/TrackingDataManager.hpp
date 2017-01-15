@@ -10,6 +10,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QQueue>
 #include <QtCore/QtMath>
+#include <QtCore/QTimer>
 
 #include <chrono>
 
@@ -101,6 +102,11 @@ private:
     //! Keeps the coordinates conversion map in case if we need to export results in
     //! the image coordinates.
     QMap<SetupType::Enum, CoordinatesConversionPtr> m_coordinatesConversions;
+
+    // TODO : this class seems to be a good place to connect a simulator's agent
+    // positions' output
+    //! A timer used for debug purposes.
+    QTimer timerForTest;
 };
 
 #endif // CATS2_TRACKING_DATA_MANAGER_HPP
