@@ -13,6 +13,7 @@ Navigation::Navigation(FishBot* robot):
     m_motionPattern(MotionPatternType::PID),
     m_pathPlanner(),
     m_usePathPlanning(false),
+    m_currentWaypoint(PositionMeters::invalidPosition()),
     m_obstacleAvoidance(robot),
     m_useObstacleAvoidance(false),
     m_needOrientationToNavigate(RobotControlSettings::get().needOrientationToNavigate()),
