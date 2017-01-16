@@ -17,12 +17,12 @@
         </pathPlanning>
         <obstacleAvoidance>
             <potentialField>
-                <influenceDistanceArenaM>0.10</influenceDistanceArenaM>
-                <influenceStrengthArena>1000</influenceStrengthArena>
+                <influenceDistanceArenaM>0.03</influenceDistanceArenaM>
+                <influenceStrengthArena>20</influenceStrengthArena>
                 <influenceDistanceRobotsM>0.05</influenceDistanceRobotsM>
-                <influenceStrengthRobots>2000</influenceStrengthRobots>
+                <influenceStrengthRobots>200</influenceStrengthRobots>
                 <influenceDistanceTargetM>0.05</influenceDistanceTargetM>
-                <influenceStrengthTarget>2</influenceStrengthTarget>
+                <influenceStrengthTarget>400</influenceStrengthTarget>
                 <maxForce>1000</maxForce>
                 <maxAngleDeg>60</maxAngleDeg>
                 <obstacleAvoidanceAreaDiameterM>0.1</obstacleAvoidanceAreaDiameterM>
