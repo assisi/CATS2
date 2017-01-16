@@ -302,7 +302,11 @@ int Navigation::motionPatternFrequencyDivider(MotionPatternType::Enum type)
 void Navigation::setUsePathPlanning(bool usePathPlanning) 
 { 
     if (m_usePathPlanning != usePathPlanning) {
-        m_usePathPlanning = usePathPlanning; 
+        m_usePathPlanning = usePathPlanning;
+        // clean up when path planning is disactivated
+        if (!m_usePathPlanning)
+            m_pathPlanner.clearTrajectory();
+        // notify on the status change
         emit notifyUsePathPlanningChanged(m_usePathPlanning);
     }
 }
