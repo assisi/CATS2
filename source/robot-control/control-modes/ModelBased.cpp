@@ -5,6 +5,7 @@
 #include "model/model.hpp"
 
 #include <QtCore/QDebug>
+#include <QtCore/QtMath>
 
 /*!
  * Constructor.
@@ -50,8 +51,8 @@ void ModelBased::initModel()
         cv::Mat arenaMatrix = generateGrid();
         if ((arenaMatrix.rows > 0) && (arenaMatrix.cols > 0))  {
             // size of the area covered by the matrix
-            Fishmodel::Coord_t size = {m_setupMap.maxX() - m_setupMap.minX(),
-                                       m_setupMap.maxY() - m_setupMap.minY()};
+            Fishmodel::Coord_t size = {arenaMatrix.cols * m_gridSizeMeters,
+                                       arenaMatrix.rows * m_gridSizeMeters};
             // create the arena
             m_arena.reset(new Fishmodel::Arena(arenaMatrix, size));
             Fishmodel::SimulationFactory factory(*m_arena);
@@ -99,8 +100,13 @@ PositionMeters ModelBased::computeTargetPosition()
     for (StateWorld& state : m_robot->fishStates()){
         if (agentIndex < m_sim->fishes.size()) {
             if (state.position().isValid() && m_setupMap.containsPoint(state.position())) {
-                m_sim->fishes[agentIndex].first->headPos.first = state.position().x() - m_setupMap.minX(); // NOTE : the positions are normalized to fit the matrix
-                m_sim->fishes[agentIndex].first->headPos.second = state.position().y() - m_setupMap.minY();
+                // NOTE : the positions are normalized to fit the matrix, they
+                // are compared with the 0 as the grid is slightly shifted with
+                // respect to the setup min borders
+                m_sim->fishes[agentIndex].first->headPos.first =
+                        qMax(state.position().x() - minX(), 0.);
+                m_sim->fishes[agentIndex].first->headPos.second =
+                        qMax(state.position().y() - minY(), 0.);
                 if (state.orientation().isValid())
                     m_sim->fishes[agentIndex].first->direction = state.orientation().angleRad();
                 else
@@ -117,8 +123,10 @@ PositionMeters ModelBased::computeTargetPosition()
     }
 
     // update the position of the current robot
-    m_sim->robots[0].first->headPos.first = m_robot->state().position().x() - m_setupMap.minX();
-    m_sim->robots[0].first->headPos.second = m_robot->state().position().y() - m_setupMap.minY();
+    m_sim->robots[0].first->headPos.first =
+            qMax(m_robot->state().position().x() - minX(), 0.);
+    m_sim->robots[0].first->headPos.second =
+            qMax(m_robot->state().position().y() - minY(), 0.);
     if (m_robot->state().orientation().isValid())
         m_sim->robots[0].first->direction = m_robot->state().orientation().angleRad();
     m_sim->robots[0].first->present = true;
@@ -143,8 +151,10 @@ PositionMeters ModelBased::computeTargetPosition()
         m_sim->step();
         // get the target value
         if (m_sim->robots.size() > 0) { // we have only one robot so it is #0
-            targetPosition.setX((m_sim->robots[0].first->headPos.first + m_sim->robots[0].first->tailPos.first) / 2. + m_setupMap.minX());
-            targetPosition.setY((m_sim->robots[0].first->headPos.second + m_sim->robots[0].first->tailPos.second) / 2. + m_setupMap.minY());
+            targetPosition.setX((m_sim->robots[0].first->headPos.first +
+                                m_sim->robots[0].first->tailPos.first) / 2. + minX());
+            targetPosition.setY((m_sim->robots[0].first->headPos.second +
+                                m_sim->robots[0].first->tailPos.second) / 2. + minY());
             targetPosition.setValid(true);
         }
     }

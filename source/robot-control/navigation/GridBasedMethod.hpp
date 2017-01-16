@@ -29,6 +29,14 @@ protected:
     QPoint positionToGridNode(PositionMeters position) const;
     //! Computes the world position corresponding to the grid node point.
     PositionMeters gridNodeToPosition(QPoint gridNode) const;
+    //! Returns the graph's minimal value of the x coordinate. It's shifted by a
+    //! half-grid size from the border of the setup to insure that all grid
+    //! nodes are inside of the setup.
+    inline double minX() const { return m_setupMap.minX() + m_gridSizeMeters / 2;}
+    //! Returns the graph's minimal value of the y coordinate. It's shifted by a
+    //! half-grid size from the border of the setup to insure that all grid
+    //! nodes are inside of the setup.
+    inline double minY() const { return m_setupMap.minY() + m_gridSizeMeters / 2;}
     //! Returns the grid matrix corresponding to the setup map.
     cv::Mat generateGrid();
 
