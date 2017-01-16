@@ -57,7 +57,9 @@ bool RobotsWidget::eventFilter(QObject *obj, QEvent *event)
         QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
         bool isNumber;
         int index = keyEvent->text().toInt(&isNumber) - 1; // map to [0,...]
-        if (isNumber && (index >= 0) && (index < m_ui->robotsTabWidget->count())) {
+        if (isNumber && keyEvent->modifiers().testFlag(Qt::AltModifier) &&
+                (index >= 0) && (index < m_ui->robotsTabWidget->count()))
+        {
             m_ui->robotsTabWidget->setCurrentIndex(index);
             return true;
         } else
