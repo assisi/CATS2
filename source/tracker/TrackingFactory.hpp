@@ -29,11 +29,11 @@ public:
         if (!settings.isNull()) {
             switch (settings->type()) {
             case TrackingRoutineType::BLOB_DETECTOR:
-                return TrackingRoutinePtr(new BlobDetector(settings, inputQueue, debugQueue));
+                return TrackingRoutinePtr(new BlobDetector(settings, inputQueue, debugQueue), &QObject::deleteLater);
             case TrackingRoutineType::COLOR_DETECTOR:
-                return TrackingRoutinePtr(new ColorDetector(settings, inputQueue, debugQueue));
+                return TrackingRoutinePtr(new ColorDetector(settings, inputQueue, debugQueue), &QObject::deleteLater);
             case TrackingRoutineType::FISHBOT_LEDS_TRACKING:
-                return TrackingRoutinePtr(new FishBotLedsTracking(settings, inputQueue, debugQueue));
+                return TrackingRoutinePtr(new FishBotLedsTracking(settings, inputQueue, debugQueue), &QObject::deleteLater);
             default:
                 qDebug() << Q_FUNC_INFO << "Tracking routine could not be created.";
                 break;
