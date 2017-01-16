@@ -13,6 +13,10 @@ Navigation::Navigation(FishBot* robot):
     m_motionPattern(MotionPatternType::PID),
     m_pathPlanner(),
     m_usePathPlanning(false),
+    m_currentWaypoint(PositionMeters::invalidPosition()),
+    m_obstacleAvoidance(robot),
+    m_useObstacleAvoidance(false),
+    m_needOrientationToNavigate(RobotControlSettings::get().needOrientationToNavigate()),
     m_fishMotionPatternSettings(RobotControlSettings::get().fishMotionPatternSettings()),
     m_fishMotionFrequencyDivider(RobotControlSettings::get().fishMotionPatternFrequencyDivider()),
     m_fishMotionStepCounter(0),
@@ -173,11 +177,16 @@ double Navigation::computeAngleToTurn(PositionMeters position)
     //    double robotCenteredTargetPositionY = qSin(robotOrientation) * dx + qCos(robotOrientation) * dy;
     //    double angleToTurn = qAtan2(robotCenteredTargetPositionY, robotCenteredTargetPositionX);
 
-    double dx = position.x() - m_robot->state().position().x();
-    double dy = position.y() - m_robot->state().position().y();
-    double angleToTarget = qAtan2(dy, dx);
+    double targetOrientation;
+    if (m_useObstacleAvoidance) {
+        targetOrientation = m_obstacleAvoidance.targetOrientationRad(position);
+    } else {
+        double dx = position.x() - m_robot->state().position().x();
+        double dy = position.y() - m_robot->state().position().y();
+        targetOrientation = qAtan2(dy, dx);
+    }
     double robotOrientation = m_robot->state().orientation().angleRad();
-    double angleToTurn = robotOrientation - angleToTarget;
+    double angleToTurn = robotOrientation - targetOrientation;
     // normalize to [-pi;pi]
     if (angleToTurn < - M_PI)
         angleToTurn += 2 * M_PI;
@@ -192,7 +201,7 @@ double Navigation::computeAngleToTurn(PositionMeters position)
  */
 void Navigation::fishMotionToPosition(PositionMeters targetPosition)
 {
-    if (m_robot->state().orientation().isValid()) {
+    if (m_robot->state().orientation().isValid() || !m_needOrientationToNavigate) {
         m_fishMotionStepCounter++;
         // if we waited enough steps
         if (m_fishMotionStepCounter >=  m_fishMotionFrequencyDivider) {
@@ -211,7 +220,7 @@ void Navigation::fishMotionToPosition(PositionMeters targetPosition)
  */
 void Navigation::pidControlToPosition(PositionMeters targetPosition)
 {
-    if (m_robot->state().orientation().isValid()) {
+    if (m_robot->state().orientation().isValid() || !m_needOrientationToNavigate) {
         double angleToTurn = computeAngleToTurn(targetPosition);
         // proportional term
         double proportionalTerm = angleToTurn;
@@ -293,11 +302,25 @@ int Navigation::motionPatternFrequencyDivider(MotionPatternType::Enum type)
 void Navigation::setUsePathPlanning(bool usePathPlanning) 
 { 
     if (m_usePathPlanning != usePathPlanning) {
-        m_usePathPlanning = usePathPlanning; 
+        m_usePathPlanning = usePathPlanning;
+        // clean up when path planning is disactivated
+        if (!m_usePathPlanning)
+            m_pathPlanner.clearTrajectory();
+        // notify on the status change
         emit notifyUsePathPlanningChanged(m_usePathPlanning);
     }
 }
 
+/*!
+ * Sets the obstacle avoidance usage flag.
+ */
+void Navigation::setUseObstacleAvoidance(bool useObstacleAvoidance)
+{
+    if (m_useObstacleAvoidance != useObstacleAvoidance) {
+        m_useObstacleAvoidance = useObstacleAvoidance;
+        emit notifyUseObstacleAvoidanceChanged(m_useObstacleAvoidance);
+    }
+}
 
 /*!
  * Requests the robot to stop.

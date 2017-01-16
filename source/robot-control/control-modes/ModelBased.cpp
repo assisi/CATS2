@@ -11,7 +11,7 @@
  */
 ModelBased::ModelBased(FishBot* robot) :
     ControlMode(robot, ControlModeType::MODEL_BASED),
-    m_setupMap(RobotControlSettings::get().setupMap()),
+    GridBasedMethod(ModelResolutionM),
     m_arena(nullptr),
     m_sim(nullptr)
 {
@@ -30,6 +30,7 @@ ControlTargetPtr ModelBased::step()
             return ControlTargetPtr(new TargetPosition(targetPosition));
         }
     }
+    return ControlTargetPtr();
 }
 
 /*!
@@ -46,28 +47,11 @@ QList<ControlTargetType> ModelBased::supportedTargets()
 void ModelBased::initModel()
 {
     if (m_setupMap.isValid()) {
-        // build the matrix
-        int cols = floor((m_setupMap.maxX() - m_setupMap.minX()) / ModelResolutionM + 0.5);
-        int rows = floor((m_setupMap.maxY() - m_setupMap.minY()) / ModelResolutionM + 0.5);
-        if ((cols > 0) && (rows > 0)) {
-            // a matrix representing the setup
-            cv::Mat arenaMatrix(rows, cols, CV_8U);
+        cv::Mat arenaMatrix = generateGrid();
+        if ((arenaMatrix.rows > 0) && (arenaMatrix.cols > 0))  {
             // size of the area covered by the matrix
             Fishmodel::Coord_t size = {m_setupMap.maxX() - m_setupMap.minX(),
                                        m_setupMap.maxY() - m_setupMap.minY()};
-            // fill the matrix
-            double y = m_setupMap.minY();
-            for (int row = 0; row < rows; ++row) { // rows go from min_y up to max_y
-                double x = m_setupMap.minX();
-                for (int col = 0; col < cols; ++col) { // cols go from min_x right to max_x
-                    if (m_setupMap.containsPoint(PositionMeters(x, y)))
-                        arenaMatrix.at<uchar>(row, col) = 1;
-                    else
-                        arenaMatrix.at<uchar>(row, col) = 0;
-                    x += ModelResolutionM;
-                }
-                y += ModelResolutionM;
-            }
             // create the arena
             m_arena.reset(new Fishmodel::Arena(arenaMatrix, size));
             Fishmodel::SimulationFactory factory(*m_arena);

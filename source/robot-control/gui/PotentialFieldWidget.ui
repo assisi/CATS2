@@ -1,0 +1,177 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>PotentialFieldWidget</class>
+ <widget class="QWidget" name="PotentialFieldWidget">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>231</width>
+    <height>296</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <property name="leftMargin">
+    <number>0</number>
+   </property>
+   <property name="topMargin">
+    <number>0</number>
+   </property>
+   <property name="rightMargin">
+    <number>0</number>
+   </property>
+   <property name="bottomMargin">
+    <number>0</number>
+   </property>
+   <property name="spacing">
+    <number>0</number>
+   </property>
+   <item row="8" column="4">
+    <widget class="QDoubleSpinBox" name="obstacleAvoidanceAreaDiameterSpinBox">
+     <property name="suffix">
+      <string> meters</string>
+     </property>
+     <property name="maximum">
+      <double>1000.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0" colspan="2">
+    <widget class="QLabel" name="label">
+     <property name="text">
+      <string>Arena distance</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QLabel" name="label_2">
+     <property name="text">
+      <string>Arena strength</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="0" colspan="2">
+    <widget class="QLabel" name="label_3">
+     <property name="text">
+      <string>Robots distance</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0" colspan="3">
+    <widget class="QLabel" name="label_4">
+     <property name="text">
+      <string>Robots strength</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="3" colspan="2">
+    <widget class="QSpinBox" name="influenceStrengthRobotsSpinBox">
+     <property name="maximum">
+      <number>2000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="0" colspan="4">
+    <widget class="QLabel" name="label_6">
+     <property name="text">
+      <string>Target strength</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="4">
+    <widget class="QSpinBox" name="influenceStrengthTargetSpinBox">
+     <property name="maximum">
+      <number>2000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="0">
+    <widget class="QLabel" name="label_7">
+     <property name="text">
+      <string>Max force</string>
+     </property>
+    </widget>
+   </item>
+   <item row="6" column="4">
+    <widget class="QSpinBox" name="maxForceSpinBox">
+     <property name="maximum">
+      <number>2000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="0">
+    <widget class="QLabel" name="label_8">
+     <property name="text">
+      <string>Max angle</string>
+     </property>
+    </widget>
+   </item>
+   <item row="7" column="4">
+    <widget class="QSpinBox" name="maxAngleDegSpinBox">
+     <property name="suffix">
+      <string> deg</string>
+     </property>
+     <property name="maximum">
+      <number>1000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="8" column="0">
+    <widget class="QLabel" name="label_9">
+     <property name="text">
+      <string>Area diameter</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="0" colspan="3">
+    <widget class="QLabel" name="label_5">
+     <property name="text">
+      <string>Target distance</string>
+     </property>
+    </widget>
+   </item>
+   <item row="4" column="3" colspan="2">
+    <widget class="QDoubleSpinBox" name="influenceDistanceTargetSpinBox">
+     <property name="suffix">
+      <string> meters</string>
+     </property>
+     <property name="maximum">
+      <double>1000.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="3" colspan="2">
+    <widget class="QDoubleSpinBox" name="influenceDistanceRobotsSpinBox">
+     <property name="suffix">
+      <string> meters</string>
+     </property>
+     <property name="maximum">
+      <double>1000.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="3" colspan="2">
+    <widget class="QSpinBox" name="influenceStrengthArenaSpinBox">
+     <property name="maximum">
+      <number>2000</number>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="3" colspan="2">
+    <widget class="QDoubleSpinBox" name="influenceDistanceArenaSpinBox">
+     <property name="suffix">
+      <string> meters</string>
+     </property>
+     <property name="maximum">
+      <double>1000.000000000000000</double>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

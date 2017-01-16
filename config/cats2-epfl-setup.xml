@@ -4,17 +4,30 @@
         <name>TestExperiment</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>5</numberOfAnimals>
+            <numberOfAnimals>0</numberOfAnimals>
         </agents>
         <setupMapPath>setup/epfl-two-rooms.xml</setupMapPath>
     </experiment>
     <robots>
         <numberOfRobots>1</numberOfRobots>
-        <controlFrequencyHz>20</controlFrequencyHz>
+        <controlFrequencyHz>10</controlFrequencyHz>
         <fishMotionPatternFrequencyDivider>5</fishMotionPatternFrequencyDivider>
         <pathPlanning>
             <gridSizeM>0.01</gridSizeM>
         </pathPlanning>
+        <obstacleAvoidance>
+            <potentialField>
+                <influenceDistanceArenaM>0.03</influenceDistanceArenaM>
+                <influenceStrengthArena>20</influenceStrengthArena>
+                <influenceDistanceRobotsM>0.05</influenceDistanceRobotsM>
+                <influenceStrengthRobots>200</influenceStrengthRobots>
+                <influenceDistanceTargetM>0.05</influenceDistanceTargetM>
+                <influenceStrengthTarget>400</influenceStrengthTarget>
+                <maxForce>1000</maxForce>
+                <maxAngleDeg>60</maxAngleDeg>
+                <obstacleAvoidanceAreaDiameterM>0.1</obstacleAvoidanceAreaDiameterM>
+            </potentialField>
+        </obstacleAvoidance>
         <fishMotionPattern>
             <distanceCm>25</distanceCm>
             <speedCmSec>15</speedCmSec>
@@ -25,6 +38,7 @@
             <kd>0.00</kd>
         </pid>
         <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
+        <needOrientationToNavigate>0</needOrientationToNavigate>
         <fishBot_1>
             <id>H</id>
             <ledColor>
@@ -36,20 +50,20 @@
             <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_1>
         <fishBot_2>
-            <id>B</id>
-            <ledColor>
-                <r>255</r>
-                <g>160</g>
-                <b>200</b>
-            </ledColor>
-            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
-        </fishBot_2>
-        <fishBot_3>
             <id>C</id>
             <ledColor>
                 <r>190</r>
                 <g>255</g>
                 <b>190</b>
+            </ledColor>
+            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
+        </fishBot_2>
+        <fishBot_3>
+            <id>B</id>
+            <ledColor>
+                <r>207</r>
+                <g>91</g>
+                <b>93</b>
             </ledColor>
             <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_3>
@@ -67,7 +81,7 @@
             <cameraCalibrationFile>camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
-                <numberOfAgents>7</numberOfAgents>
+                <numberOfAgents>2</numberOfAgents>
                 <blobDetector>
                     <minBlobSizePx>0</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
@@ -89,13 +103,13 @@
                 <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
                     <fishBot_H>
-                        <threshold>30</threshold>
+                        <threshold>20</threshold>
                     </fishBot_H>
                     <fishBot_B>
-                        <threshold>40</threshold>
+                        <threshold>70</threshold>
                     </fishBot_B>
                     <fishBot_C>
-                        <threshold>40</threshold>
+                        <threshold>30</threshold>
                     </fishBot_C>
                 </fishBotLedsTracking>
             </tracking>

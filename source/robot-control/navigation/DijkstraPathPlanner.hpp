@@ -2,6 +2,7 @@
 #define CATS2_DIJKSTRA_PATH_PLANNER_HPP
 
 #include "SetupMap.hpp"
+#include "GridBasedMethod.hpp"
 
 #include <AgentState.hpp>
 
@@ -20,9 +21,8 @@ bool operator<(QPoint const& p1, QPoint const& p2);
  * Runs the path planner to safety reach the target position by using the
  * Dijkstra path planner.
  */
-class DijkstraPathPlanner : public QObject
+class DijkstraPathPlanner : public GridBasedMethod
 {
-    Q_OBJECT
 public:
     //! Constructor.
     DijkstraPathPlanner();
@@ -31,8 +31,6 @@ public:
     QQueue<PositionMeters> plan(PositionMeters start, PositionMeters goal);
 
 public:
-    //! Returns the polygon representing the setup.
-    WorldPolygon polygon() const { return m_setupMap.polygon(); }
     //! Returns the validity flag.
     bool isValid() const { return m_valid; }
 
@@ -42,22 +40,6 @@ private:
 
     //! Adds an edge between two points.
     void addEdge(PositionMeters startPoint, PositionMeters endPoint);
-
-    //! Computes the grid node point from the world position.
-    QPoint positionToGridNode(PositionMeters position) const;
-    //! Computes the world position corresponding to the grid node point.
-    PositionMeters gridNodeToPosition(QPoint gridNode) const;
-    //! Simplifies the resulted path by removing the points lying on the same
-    //! line.
-    void simplifyPath(QQueue<PositionMeters>& path);
-    //! Returns the graph's minimal value of the x coordinate. It's shifted by a
-    //! half-grid size from the border of the setup to insure that all grid
-    //! nodes are inside of the setup.
-    inline double minX() const { return m_setupMap.minX() + m_gridSizeMeters / 2;}
-    //! Returns the graph's minimal value of the y coordinate. It's shifted by a
-    //! half-grid size from the border of the setup to insure that all grid
-    //! nodes are inside of the setup.
-    inline double minY() const { return m_setupMap.minY() + m_gridSizeMeters / 2;}
 
 private:
     struct vertexInfo {
@@ -90,11 +72,6 @@ private:
     bool m_valid;
     //! The graph representing the setup.
     UndirectedGraph m_graph;
-
-    //! The setup map.
-    SetupMap m_setupMap;
-    //! The size of the grid square.
-    double m_gridSizeMeters;
 
     //! Maps the grid nodes' coordinates to the vertices descriptors in the graph.
     QMap <QPoint, Vertex>  m_gridNodeToVertexMap;

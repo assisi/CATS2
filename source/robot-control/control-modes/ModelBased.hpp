@@ -3,6 +3,7 @@
 
 #include "ControlMode.hpp"
 #include "SetupMap.hpp"
+#include "navigation/GridBasedMethod.hpp"
 #include "model/bm.hpp"
 
 #include <AgentState.hpp>
@@ -10,7 +11,7 @@
 /*!
  * Makes the robots to follow the fish mode.
  */
-class ModelBased : public ControlMode
+class ModelBased : public ControlMode, public GridBasedMethod
 {
     Q_OBJECT
 public:
@@ -31,9 +32,6 @@ private:
     PositionMeters computeTargetPosition();
 
 private:
-    //! The map of the setup, used in path planning and modelling.
-    SetupMap m_setupMap;
-
     //! The resolution of the setup matrix.
     static constexpr double ModelResolutionM = 0.005; // i.e. 5 mm
 

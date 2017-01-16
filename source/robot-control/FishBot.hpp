@@ -79,8 +79,19 @@ public:
     //! Returns the path planning usage from from the navigation.
     bool usePathPlanning() const { return m_navigation.usePathPlanning(); }
 
+    //! Sets the obstacle avoidance usage flag in the navigation.
+    void setUseObstacleAvoidance(bool useObstacleAvoidance);
+    //! Returns the obstacle avoidance usage from from the navigation.
+    bool useObstacleAvoidance() const { return m_navigation.useObstacleAvoidance(); }
+
     //! Steps the control for the robot.
     void stepControl();
+
+public:
+    // FIXME : this is a temporary code, to be removed once the parameters of the
+    // obstacle avoidance are tuned
+    //! Returns a pointer to the potential field obstacle avoidance module.
+    PotentialFieldPtr potentialField() { return m_navigation.potentialField(); }
 
 public:
     //! The target position received from the viewer; it's transfered further
@@ -96,6 +107,8 @@ public:
     //! Receives data of all tracked robots, finds and sets the one corresponding
     //! to this robot and keeps the rest in case it's needed by the control mode.
     void setRobotsData(QList<AgentDataWorld> robotsPositions);
+    //! Returns the data of other robots.
+    const QList<AgentDataWorld>& otherRobotsData() const { return m_otherRobotsData; }
     //! Received states of all tracked fish, keeps them in case it's needed by
     //! the control mode.
     void setFishStates(QList<StateWorld> fishStates);
@@ -127,6 +140,8 @@ signals: // control states
     void notifyInManualMode(QString id);
     //! Informs that the path planning is on/off in the navigation.
     void notifyUsePathPlanningChanged(bool value);
+    //! Informs that the obstacle avoidance is on/off in the navigation.
+    void notifyUseObstacleAvoidanceChanged(bool value);
 
 signals: // navigation
     //! Sends the control map areas' polygons.

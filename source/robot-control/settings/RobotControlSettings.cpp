@@ -92,6 +92,10 @@ bool RobotControlSettings::init(QString configurationFileName)
     settings.readVariable("robots/defaultLinearSpeedCmSec", m_defaultLinearSpeedCmSec);
     settingsAccepted = settingsAccepted && (m_defaultLinearSpeedCmSec > 0);
 
+    // read the navigation flag
+    m_needOrientationToNavigate = false;
+    settings.readVariable("robots/needOrientationToNavigate", m_needOrientationToNavigate);
+
     // read the setup map
     std::string setupMap = "";
     settings.readVariable(QString("experiment/setupMapPath"), setupMap, setupMap);
@@ -104,6 +108,35 @@ bool RobotControlSettings::init(QString configurationFileName)
     double gridSizeMeters = 0;
     settings.readVariable("robots/pathPlanning/gridSizeM", gridSizeMeters, gridSizeMeters);
     m_pathPlanningSettings.setGridSizeMeters(gridSizeMeters);
+
+    // read the potential field settings
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceDistanceArenaM",
+                          m_potentialFieldSettings.influenceDistanceArenaMeters,
+                          m_potentialFieldSettings.influenceDistanceArenaMeters);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceStrengthArena",
+                          m_potentialFieldSettings.influenceStrengthArena,
+                          m_potentialFieldSettings.influenceStrengthArena);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceDistanceRobotsM",
+                          m_potentialFieldSettings.influenceDistanceRobotsMeters,
+                          m_potentialFieldSettings.influenceDistanceRobotsMeters);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceStrengthRobots",
+                          m_potentialFieldSettings.influenceStrengthRobots,
+                          m_potentialFieldSettings.influenceStrengthRobots);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceDistanceTargetM",
+                          m_potentialFieldSettings.influenceDistanceTargetMeters,
+                          m_potentialFieldSettings.influenceDistanceTargetMeters);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceStrengthTarget",
+                          m_potentialFieldSettings.influenceStrengthTarget,
+                          m_potentialFieldSettings.influenceStrengthTarget);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/maxForce",
+                          m_potentialFieldSettings.maxForce,
+                          m_potentialFieldSettings.maxForce);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/maxAngleDeg",
+                          m_potentialFieldSettings.maxAngleDeg,
+                          m_potentialFieldSettings.maxAngleDeg);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/obstacleAvoidanceAreaDiameterM",
+                          m_potentialFieldSettings.obstacleAvoidanceAreaDiameterMeters,
+                          m_potentialFieldSettings.obstacleAvoidanceAreaDiameterMeters);
 
     return settingsAccepted;
 }

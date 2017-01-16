@@ -4,6 +4,7 @@
 #include "RobotControlPointerTypes.hpp"
 #include "MotionPatternType.hpp"
 #include "PathPlanner.hpp"
+#include "ObstacleAvoidance.hpp"
 #include "settings/RobotControlSettings.hpp"
 
 #include <AgentState.hpp>
@@ -41,7 +42,16 @@ public:
     //! Returns the path planning usage flag.
     bool usePathPlanning() const { return m_usePathPlanning; }
 
-public slots:
+    //! Returns the obstacle avoidance usage flag.
+    bool useObstacleAvoidance() const { return m_useObstacleAvoidance; }
+
+public:
+    // FIXME : this is a temporary code, to be removed once the parameters of the
+    // obstacle avoidance are tuned
+    //! Returns a pointer to the potential field obstacle avoidance module.
+    PotentialFieldPtr potentialField() { return m_obstacleAvoidance.potentialField(); }
+
+public:
     //! Sets the requested motion pattern.
     void setMotionPattern(MotionPatternType::Enum type);
     //! Sets the frequency divider for the motion pattern. At the moment this
@@ -51,6 +61,8 @@ public slots:
                                           int frequencyDivider);
     //! Sets the path planning usage flag.
     void setUsePathPlanning(bool usePathPlanning);
+    //! Sets the obstacle avoidance usage flag.
+    void setUseObstacleAvoidance(bool useObstacleAvoidance);
 
 public slots:
     //! Requests to sends the current target.
@@ -69,6 +81,8 @@ signals:
     void notifyTargetPositionChanged(PositionMeters PositionMeters);
     //! Informs that the path planning is on/off in the navigation.
     void notifyUsePathPlanningChanged(bool value);
+    //! Informs that the obstacle avoidance is on/off in the navigation.
+    void notifyUseObstacleAvoidanceChanged(bool value);
     //! Informs that the robot's trajectory has changed.
     void notifyTrajectoryChanged(QQueue<PositionMeters>);
     
@@ -109,6 +123,16 @@ private:
     bool m_usePathPlanning;
     //! The current waypoint to follow. It's stored to be given upon request.
     PositionMeters m_currentWaypoint;
+
+    //! The obstacle avoidance module.
+    ObstacleAvoidance m_obstacleAvoidance;
+    //! The flag that says if the obstacle avoidance is to be used.
+    bool m_useObstacleAvoidance;
+
+    //! If the robot needs to have a valid orientation to navigate. It's
+    //! important when the precise navigation is required, but might be very
+    //! restrictive as the robot won't move untill it's orientation is known.
+    bool m_needOrientationToNavigate;
 
     //! Local copy of fish motion pattern settings.
     FishMotionPatternSettings m_fishMotionPatternSettings;

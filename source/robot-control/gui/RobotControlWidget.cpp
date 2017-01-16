@@ -4,6 +4,7 @@
 #include "MotionPatternType.hpp"
 #include "FishBot.hpp"
 #include "settings/RobotControlSettings.hpp"
+#include "PotentialFieldWidget.hpp"
 
 #include <QtCore/QDebug>
 
@@ -52,6 +53,7 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
                 // show the navigation pattern choice when it's supported or
                 // hide when it is not supported
                 m_ui->navigationWidget->setVisible(m_robot->supportsMotionPatterns());
+                m_ui->navigationParametersGroupBox->setVisible(m_robot->supportsMotionPatterns());
             });
 
     // set the control mode from the robot
@@ -128,8 +130,32 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
                 if (m_ui->pathPlanningCheckBox->isChecked() != value)
                     m_ui->pathPlanningCheckBox->setChecked(value);
             });
-    // set the current value
+    // set the current path planning ussage
     m_ui->pathPlanningCheckBox->setChecked(m_robot->usePathPlanning());
+
+    // set the robot's obstacle avoidance usage flag on change
+    connect(m_ui->obstacleAvoidanceCheckBox, static_cast<void (QCheckBox::*)(bool)>(&QCheckBox::toggled),
+            [=](bool value) { m_robot->setUseObstacleAvoidance(value); });
+
+    // set the s obstacle avoidance gui from the robot
+    connect(m_robot.data(), &FishBot::notifyUseObstacleAvoidanceChanged,
+            [=](bool value)
+            {
+                if (m_ui->obstacleAvoidanceCheckBox->isChecked() != value)
+                    m_ui->obstacleAvoidanceCheckBox->setChecked(value);
+            });
+    // set the current value
+    m_ui->obstacleAvoidanceCheckBox->setChecked(m_robot->useObstacleAvoidance());
+
+    // create the obstacle avoidance settings widget
+    if (!m_ui->obstacleAvoidanceSettingsWidget->layout()) {
+        QHBoxLayout* layout = new QHBoxLayout(m_ui->obstacleAvoidanceSettingsWidget);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setSpacing(3);
+    }
+    m_ui->obstacleAvoidanceSettingsWidget->layout()->addWidget(new PotentialFieldWidget(m_robot->potentialField()));
+    m_ui->obstacleAvoidanceSettingsWidget->hide();
+    connect(m_ui->showDetailsButton, &QPushButton::toggled, [=](bool checked){ m_ui->obstacleAvoidanceSettingsWidget->setVisible(checked); });
 }
 
 /*!
