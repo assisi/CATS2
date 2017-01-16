@@ -130,7 +130,7 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
                 if (m_ui->pathPlanningCheckBox->isChecked() != value)
                     m_ui->pathPlanningCheckBox->setChecked(value);
             });
-    // set the current value
+    // set the current path planning ussage
     m_ui->pathPlanningCheckBox->setChecked(m_robot->usePathPlanning());
 
     // set the robot's obstacle avoidance usage flag on change
