@@ -42,8 +42,8 @@ bool DijkstraPathPlanner::init()
         // add vertices
         int row = 0; // left to right
         int col = 0; // down to up
-        while (m_setupMap.minX() + col * m_gridSizeMeters < m_setupMap.maxX()) {
-            while (m_setupMap.minY() + row * m_gridSizeMeters < m_setupMap.maxY()) {
+        while (minX() + col * m_gridSizeMeters < m_setupMap.maxX()) {
+            while (minY() + row * m_gridSizeMeters < m_setupMap.maxY()) {
                 Vertex vertex = boost::add_vertex(m_graph);
                 m_graph[boost::num_vertices(m_graph) - 1].row = row;
                 m_graph[boost::num_vertices(m_graph) - 1].col = col;
@@ -57,8 +57,8 @@ bool DijkstraPathPlanner::init()
         // add edges
         row = 0; // left to right
         col = 0; // down to up
-        double x = m_setupMap.minX();
-        double y = m_setupMap.minY();
+        double x = minX();
+        double y = minY();
         while (x < m_setupMap.maxX()) {
             while (y < m_setupMap.maxY()) {
                 // make the connections with four neighbours to the right, up,
@@ -79,7 +79,7 @@ bool DijkstraPathPlanner::init()
             col++;
             x += m_gridSizeMeters;
             row = 0;
-            y = m_setupMap.minY();
+            y = minY();
         }
     }
 
@@ -142,9 +142,58 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint, Posi
             path.enqueue(position);
         }
         qDebug() << Q_FUNC_INFO << QString("Shortest distance to the target is %1").arg(shortestDistance);
+
+        // simplify the path
+        simplifyPath(path);
         return path;
     } else {
         qDebug() << Q_FUNC_INFO << "At least start or goal position are outside of the working space, path planning stopped";
         return QQueue<PositionMeters>();
     }
+}
+
+/*!
+ * Simplifies the resulted path by removing the points lying on the same line.
+ */
+void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
+{
+    double previousDx, currentDx, previousDy, currentDy;
+    QQueue<PositionMeters> reducedPath;
+
+    // if the computed dijkstra path is not empty
+    if (!path.empty()) {
+        // add the starting point
+        PositionMeters previousPosition = path.dequeue();
+        reducedPath.enqueue(previousPosition);
+        // if there are more than 2 nodes in the path
+        if(path.size()>2) {
+            PositionMeters currentPosition = path.dequeue();
+            // compute the fisrt difference of position along x and y
+            previousDx = currentPosition.x() - previousPosition.x();
+            previousDy = currentPosition.y() - previousPosition.y();
+
+            // for all the other points in the path
+            while (path.size() > 1) {
+                // update the positions
+                previousPosition = currentPosition;
+                currentPosition = path.dequeue();
+                // compute the curent difference of position along x and y
+                currentDx = currentPosition.x() - previousPosition.x();
+                currentDy = currentPosition.y() - previousPosition.y();
+
+                // if the slope is different
+                if(!qFuzzyCompare(previousDx, currentDx) || !qFuzzyCompare(previousDy, currentDy)) {
+                    // add the new point to the path
+                    reducedPath.enqueue(previousPosition);
+                }
+                // update the current differences of positions along x and y
+                previousDx = currentDx;
+                previousDy = currentDy;
+            }
+        }
+        // the last element
+        reducedPath.enqueue(path.dequeue());
+    }
+    // return the reduced path
+    path = reducedPath;
 }

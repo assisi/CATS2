@@ -41,6 +41,10 @@ private:
     //! Adds an edge between two points.
     void addEdge(PositionMeters startPoint, PositionMeters endPoint);
 
+    //! Simplifies the resulted path by removing the points lying on the same
+    //! line.
+    void simplifyPath(QQueue<PositionMeters>& path);
+
 private:
     struct vertexInfo {
         int row; // up
