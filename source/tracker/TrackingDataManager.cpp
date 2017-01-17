@@ -30,7 +30,7 @@ TrackingDataManager::TrackingDataManager() :
                 QList<AgentDataWorld> agentDataList;
                 // add one robot
                 AgentDataWorld robotData("H", AgentType::FISH_CASU,
-                                         StateWorld(PositionMeters(0.1, 0.1),
+                                         StateWorld(PositionMeters(-0.1, -0.1),
                                                     OrientationRad(M_PI_4)));
                 agentDataList << robotData;
                 // add two fish

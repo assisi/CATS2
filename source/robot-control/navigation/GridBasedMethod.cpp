@@ -23,8 +23,8 @@ QPoint GridBasedMethod::positionToGridNode(PositionMeters position) const
     QPoint point;
     // NOTE : qMax is used to prevent negative values when the point is just
     // between the grid and the setup border
-    point.setX(qMax(floor((position.x() - minX()) / m_gridSizeMeters)), 0.);
-    point.setY(qMax(floor((position.y() - minY()) / m_gridSizeMeters)), 0.);
+    point.setX(qMax(floor((position.x() - minX()) / m_gridSizeMeters), 0.));
+    point.setY(qMax(floor((position.y() - minY()) / m_gridSizeMeters), 0.));
     return point;
 }
 

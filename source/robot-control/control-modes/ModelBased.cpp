@@ -25,7 +25,9 @@ ModelBased::ModelBased(FishBot* robot) :
 ControlTargetPtr ModelBased::step()
 {
     // if we track any fish
-    if ((m_robot->fishStates().size() > 0) &&  m_sim) {
+    if ((m_robot->fishStates().size() > 0) &&
+            m_sim &&
+            (m_sim->fishes.size() > 0)) {
         PositionMeters targetPosition = computeTargetPosition();
         if (targetPosition.isValid()) {
             return ControlTargetPtr(new TargetPosition(targetPosition));
@@ -101,7 +103,8 @@ PositionMeters ModelBased::computeTargetPosition()
     size_t agentIndex = 0;
     for (StateWorld& state : m_robot->fishStates()){
         if (agentIndex < m_sim->fishes.size()) {
-            if (state.position().isValid() && m_setupMap.containsPoint(state.position())) {
+            if (state.position().isValid() &&
+                    m_setupMap.containsPoint(state.position())) {
                 // NOTE : the positions are normalized to fit the matrix, they
                 // are compared with the 0 as the grid is slightly shifted with
                 // respect to the setup min borders
@@ -109,16 +112,19 @@ PositionMeters ModelBased::computeTargetPosition()
                         qMax(state.position().x() - minX(), 0.);
                 m_sim->fishes[agentIndex].first->headPos.second =
                         qMax(state.position().y() - minY(), 0.);
+
                 if (state.orientation().isValid())
-                    m_sim->fishes[agentIndex].first->direction = state.orientation().angleRad();
+                    m_sim->fishes[agentIndex].first->direction =
+                            state.orientation().angleRad();
                 else
                     m_sim->fishes[agentIndex].first->direction = 0;
+
                 m_sim->fishes[agentIndex].first->present = true;
                 agentIndex++;
             }
         } else {
-           qDebug() << Q_FUNC_INFO
-                     << "Number of fish in the simulator is wrongly initialized.";
+            qDebug() << Q_FUNC_INFO
+                << "Number of fish in the simulator is wrongly initialized.";
             break;
         }
     }
@@ -133,11 +139,10 @@ PositionMeters ModelBased::computeTargetPosition()
     if (robotPosition.isValid() &&
             m_setupMap.containsPoint(robotPosition) &&
             (m_sim->robots.size() == 1)) {
-    m_sim->robots[0].first->headPos.first =
-            qMax(robotPosition.x() - minX(), 0.);
-    m_sim->robots[0].first->headPos.second =
-            qMax(robotPosition.y() - minY(), 0.);
-    
+        m_sim->robots[0].first->headPos.first =
+                qMax(robotPosition.x() - minX(), 0.);
+        m_sim->robots[0].first->headPos.second =
+                qMax(robotPosition.y() - minY(), 0.);
 
         if (robotOrientation.isValid()) {
             m_sim->robots[0].first->direction =
@@ -147,7 +152,7 @@ PositionMeters ModelBased::computeTargetPosition()
         }
 
         m_sim->robots[0].first->present = true;
-}
+    }
 
     // FIXME : what to do with this?
 //		// XXX dirty

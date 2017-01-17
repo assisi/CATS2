@@ -4,7 +4,7 @@
         <name>TestExperiment</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>0</numberOfAnimals>
+            <numberOfAnimals>2</numberOfAnimals>
         </agents>
         <setupMapPath>setup/epfl-two-rooms.xml</setupMapPath>
     </experiment>
