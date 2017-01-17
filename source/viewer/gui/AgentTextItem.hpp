@@ -1,5 +1,7 @@
-﻿#ifndef CATS2_AGENT_TEXT_HPP
-#define CATS2_AGENT_TEXT_HPP
+﻿#ifndef CATS2_AGENT_TEXT_ITEM_HPP
+#define CATS2_AGENT_TEXT_ITEM_HPP
+
+#include "ColoredItem.hpp"
 
 #include <QtWidgets/QGraphicsItem>
 #include <QtCore/QString>
@@ -8,13 +10,13 @@
  * This class with show on the graphics scene a label corresponding to the
  * detected agent.
  */
-class AgentText : public QGraphicsItem
+class AgentTextItem : public QGraphicsItem, public ColoredItem
 {
 public:
     enum { Type = UserType + 16 };
 
     //! Constructor.
-    AgentText(QString text) { setLabel(text); }
+    AgentTextItem(QString text) { setLabel(text); }
 
 public:
     //! Set label.
@@ -34,4 +36,4 @@ private:
     static constexpr int Size = 30;
 };
 
-#endif // CATS2_AGENT_TEXT_HPP
+#endif // CATS2_AGENT_TEXT_ITEM_HPP

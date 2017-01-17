@@ -37,8 +37,8 @@ signals:
     void notifyControlModeChanged(ControlModeType::Enum type);
 
 public slots:
-    //! Sets the requested control mode.
-    void setControlMode(ControlModeType::Enum type);
+    //! Sets the requested control mode. Returns true is the mode changes.
+    bool setControlMode(ControlModeType::Enum type);
     //! Sets the position for the GO_TO_POSITION control mode.
     void setUserDefinedTargetPosition(PositionMeters position);
 

@@ -10,13 +10,16 @@ ControlLoop::ControlLoop() :
     QObject(nullptr),
     m_robotsInterface(new Aseba::DBusInterface()),
     m_selectedRobot(),
-    m_sendMaps(false)
+    m_sendNavigationData(false),
+    m_sendControlAreas(false)
 {
     // create the robots
     for (QString id : RobotControlSettings::get().ids()) {
-        QString controlMapPath = RobotControlSettings::get().robotSettings(id).controlMapFilePath();
-        m_robots.append(FishBotPtr(new FishBot(id, controlMapPath)));
+        QString controlAreasPath = RobotControlSettings::get().robotSettings(id).controlAreasFilePath();
+        m_robots.append(FishBotPtr(new FishBot(id, controlAreasPath)));
+        m_robots.last()->setLedColor(RobotControlSettings::get().robotSettings(id).ledColor());
         m_robots.last()->setRobotInterface(m_robotsInterface);
+
         // ensure that only one robot can be in manual mode
         connect(m_robots.last().data(), &FishBot::notifyInManualMode,
                 [=](QString senderId)
@@ -25,19 +28,44 @@ ControlLoop::ControlLoop() :
                         if ((robot->id() != senderId) && (robot->currentControlMode() == ControlModeType::MANUAL))
                             robot->setControlMode(ControlModeType::IDLE);
                 });
-        // send the cotrol maps
-        connect(m_robots.last().data(), &FishBot::notifyControlMapsPolygons,
-                this, &ControlLoop::notifyCurrentRobotControlMapsPolygons);
+
+        // send the cotrol areas for the _selected_ robot if the corresponding flag is set
+        connect(m_robots.last().data(), &FishBot::notifyControlAreasPolygons,
+                [=](QString agentId, QList<AnnotatedPolygons> polygons)
+                {
+                    if (m_sendControlAreas && (m_selectedRobot->id() == agentId))
+                        emit notifyRobotControlAreasPolygons(agentId, polygons);
+                });
+
+        // send the robot trajectory for all robots if the corresponding flag is set
+        connect(m_robots.last().data(), &FishBot::notifyTrajectoryChanged,
+                [=](QString agentId, QQueue<PositionMeters> trajectory)
+                {
+                    if (m_sendNavigationData)
+                        emit notifyRobotTrajectoryChanged(agentId, trajectory);
+                });
+
+        // send the robot target for all robots if the corresponding flag is set
+        connect(m_robots.last().data(), &FishBot::notifyTargetPositionChanged,
+                [=](QString agentId, PositionMeters position)
+                {
+                    if (m_sendNavigationData)
+                        emit notifyRobotTargetPositionChanged(agentId, position);
+                });
+        // send the robot trajectory for all robots if the corresponding flag is set
+        connect(m_robots.last().data(), &FishBot::notifyTrajectoryChanged,
+                [=](QString agentId, QQueue<PositionMeters> trajectory)
+                {
+                    if (m_sendNavigationData)
+                        emit notifyRobotTrajectoryChanged(agentId, trajectory);
+                });
+
+        // send the robot color
+        connect(m_robots.last().data(), &FishBot::notifyLedColor, this, &ControlLoop::notifyRobotLedColor);
     }
 
     // conect the robots
-    if (m_robotsInterface->checkConnection()) {
-        // TODO : to make this initialization logics more robust, to allow the
-        // (re)connection when medula is (re)launched after CATS2.
-        initializeRobotsInterfaces();
-    } else {
-        qDebug() << Q_FUNC_INFO << "The connection with the dbus could not be established.";
-    }
+    initializeRobotsInterfaces();
 
     // start the control timer
     int stepMsec = static_cast<int>(1000. / RobotControlSettings::get().controlFrequencyHz());
@@ -78,8 +106,14 @@ void ControlLoop::step()
  */
 void ControlLoop::initializeRobotsInterfaces()
 {
-    for (int index = 0; index < m_robots.size(); ++index) {
-        m_robots[index]->setupConnection(index);
+    if (m_robotsInterface->checkConnection()) {
+        // TODO : to make this initialization logics more robust, to allow the
+        // (re)connection when medula is (re)launched after CATS2.
+        for (int index = 0; index < m_robots.size(); ++index) {
+            m_robots[index]->setupConnection(index);
+        }
+    } else {
+        qDebug() << Q_FUNC_INFO << "The connection with the dbus could not be established.";
     }
 }
 
@@ -118,8 +152,10 @@ void ControlLoop::selectRobot(QString name)
             if (m_selectedRobot != robot) {
                 qDebug() << Q_FUNC_INFO << name << "is selected";
                 m_selectedRobot = robot;
-                // update the control maps
-                sendControlMaps(m_sendMaps);
+                // inform about the change
+                emit notifySelectedRobotChanged(m_selectedRobot->id());
+                // update the navigation data
+                sendNavigationData(m_sendNavigationData);
             }
             break;
         }
@@ -138,12 +174,44 @@ void ControlLoop::selectRobot(QString name)
  }
 
  /*!
-  * Asks to send control maps for the currently selected robot.
+  * Asks the robots to send their navigation data (trajectories, targets, etc).
   */
- void ControlLoop::sendControlMaps(bool sendMaps)
+ void ControlLoop::sendNavigationData(bool sendData)
  {
-     m_sendMaps = sendMaps;
-     if (m_sendMaps && m_selectedRobot.data()) {
-         m_selectedRobot->requestControlMapsPolygons();
+     m_sendNavigationData = sendData;
+     if (m_sendNavigationData) {
+         for(auto& robot : m_robots) {
+             robot->requestCurrentTarget();
+             robot->requestTrajectory();
+         }
+     }
+ }
+
+ /*!
+  * Asks to send the control areas for the selected robot.
+  */
+ void ControlLoop::sendControlAreas(bool sendAreas)
+ {
+     m_sendControlAreas = sendAreas;
+     if (m_sendControlAreas && m_selectedRobot.data()) {
+         m_selectedRobot->requestControlAreasPolygons();
+     }
+ }
+
+ /*!
+  * Asks to send the current robot id.
+  */
+ void ControlLoop::requestSelectedRobot()
+ {
+     emit notifySelectedRobotChanged(m_selectedRobot->id());
+ }
+
+ /*!
+  * Asks to send the colors of all robots.
+  */
+ void ControlLoop::requestRobotsLedColors()
+ {
+     for(auto& robot : m_robots) {
+         robot->requestLedColor();
      }
  }

@@ -1,7 +1,8 @@
 #ifndef CATS2_SETUP_TYPE_HPP
 #define CATS2_SETUP_TYPE_HPP
 
-#include <QMap>
+#include <QtCore/QMap>
+#include <QtCore/QString>
 
 /*!
  * Provides an enum for various setup types and toString method.

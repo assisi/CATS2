@@ -36,14 +36,22 @@ set(srcs
     dbusinterface.cpp
     gui/RobotControlWidget.cpp
     gui/RobotsWidget.cpp
+    gui/PotentialFieldWidget.cpp
     RobotsHandler.cpp
-    Navigation.cpp
-    control-maps/ControlArea.cpp
-    control-maps/ControlMap.cpp
+    experiment-controllers/ControlArea.cpp
+    experiment-controllers/MapController.cpp
+    experiment-controllers/ExperimentController.cpp
+    experiment-controllers/ExperimentManager.cpp
     model/model.cpp
     model/factory.cpp
     model/bm.cpp
     model/random.cpp
+    navigation/Navigation.cpp
+    navigation/DijkstraPathPlanner.cpp
+    navigation/PathPlanner.cpp
+    navigation/ObstacleAvoidance.cpp
+    navigation/PotentialField.cpp
+    navigation/GridBasedMethod.cpp
     SetupMap.cpp
 )
 
@@ -53,9 +61,10 @@ set(hdrs
     RobotControlPointerTypes.hpp
     MotionPatternType.hpp
     control-modes/ControlModeType.hpp
+    experiment-controllers/ExperimentControllerType.hpp
 )
 
-qt5_wrap_ui(uis_hdrs gui/RobotControlWidget.ui gui/RobotsWidget.ui)
+qt5_wrap_ui(uis_hdrs gui/RobotControlWidget.ui gui/RobotsWidget.ui gui/PotentialFieldWidget.ui)
 #qt5_add_resources(resources icons.qrc)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)

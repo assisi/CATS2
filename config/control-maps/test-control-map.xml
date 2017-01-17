@@ -2,6 +2,8 @@
 <opencv_storage>
   <numberOfAreas>2</numberOfAreas>
   <area_1>
+    <id>bottom</id>
+    <type>room</type>
     <polygons>
       <numberOfPolygons>1</numberOfPolygons>
       <polygon_1>
@@ -17,6 +19,8 @@
     <motionPattern>pidController</motionPattern>
   </area_1>
   <area_2>
+    <id>top</id>
+    <type>room</type>
     <polygons>
       <numberOfPolygons>1</numberOfPolygons>
       <polygon_1>
@@ -28,7 +32,7 @@
       <g>0</g>
       <b>0</b>
     </color>
-    <controlMode>Manual</controlMode>
+    <controlMode>manual</controlMode>
     <motionPattern>pidController</motionPattern>
   </area_2>
 </opencv_storage>

@@ -33,20 +33,20 @@ ControlModeStateMachine::ControlModeStateMachine(FishBot* robot, QObject *parent
 }
 
 /*!
- * Sets the requested control mode.
+ * Sets the requested control mode. Returns true is the mode changes.
  */
-void ControlModeStateMachine::setControlMode(ControlModeType::Enum type)
+bool ControlModeStateMachine::setControlMode(ControlModeType::Enum type)
 {
     if (!m_controlModes.contains(type)) {
         qDebug() << Q_FUNC_INFO << "Requested control mode is not available";
-        return;
+        return false;
     }
 
     if (!isTransitionAuthorized(type)) {
         qDebug() << Q_FUNC_INFO << QString("Impossible to change the control mode from %1 to %2")
                     .arg(ControlModeType::toString(m_currentControlMode))
                     .arg(ControlModeType::toString(type));
-        return;
+        return false;
     }
 
     if (type != m_currentControlMode) {
@@ -64,6 +64,7 @@ void ControlModeStateMachine::setControlMode(ControlModeType::Enum type)
 
         emit notifyControlModeChanged(type);
     }
+    return true;
 }
 
 /*!

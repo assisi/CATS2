@@ -6,7 +6,6 @@
 #include "ViewerData.hpp"
 #include <settings/CommandLineParameters.hpp>
 #include <settings/ReadSettingsHelper.hpp>
-
 #include <QtWidgets/QGraphicsPixmapItem>
 #include <QtWidgets/QFileDialog>
 #include <QtWidgets/QStatusBar>
@@ -58,13 +57,16 @@ void MainWindow::openControlMap()
     QString fileName = QFileDialog::getOpenFileName(this, tr("Choose File"),"",tr("XML files (*.xml)"));
     if (!fileName.isEmpty()){
         // first clean up
-        if (m_controlMap.data())
-            m_controlMap.reset();
+        if (m_mapController.data())
+            m_mapController.reset();
         // now make a new one
-        m_controlMap = QSharedPointer<ControlMap>(new ControlMap(fileName));
-        connect(m_controlMap.data(), &ControlMap::notifyPolygons, m_viewerHandler->widget(), &ViewerWidget::updateAreas);
-        m_viewerHandler->widget()->showAreas(true);
+        m_mapController = QSharedPointer<MapController>(new MapController(nullptr, fileName));
+        connect(m_mapController.data(), &ExperimentController::notifyPolygons,
+                [=](QList<AnnotatedPolygons> polygons) {
+                    m_viewerHandler->widget()->updateControlAreas("Z", polygons);
+                });
+        m_viewerHandler->widget()->setShowControlAreas(true);
         // send out polygons to draw
-        m_controlMap->requestPolygons();
+        m_mapController->requestPolygons();
     }
 }

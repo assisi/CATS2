@@ -6,6 +6,8 @@
 #include "gui/RobotControlWidget.hpp"
 
 #include <QtCore/QDebug>
+#include <QtCore/QEvent>
+#include <QtGui/QKeyEvent>
 
 /*!
  * Constructor.
@@ -17,12 +19,12 @@ RobotsWidget::RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent) :
     m_ui->setupUi(this);
 
     // connect tab change with the robot selection
-    connect(this, &RobotsWidget::notifyCurrentRobotChanged, contolLoop.data(), &ControlLoop::selectRobot);
+    connect(this, &RobotsWidget::notifySelectedRobotChanged, contolLoop.data(), &ControlLoop::selectRobot);
 
     // select a robot when a tab is changed
     connect(m_ui->robotsTabWidget, &QTabWidget::currentChanged,
             [=](int index) {
-                emit notifyCurrentRobotChanged(m_ui->robotsTabWidget->tabText(index));
+                emit notifySelectedRobotChanged(m_ui->robotsTabWidget->tabText(index));
             });
     // populate the tabs with the robots' information
     for (auto& robot : contolLoop->robots()) {
@@ -32,6 +34,8 @@ RobotsWidget::RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent) :
     if (m_ui->robotsTabWidget->count() > 0) {
         m_ui->robotsTabWidget->setCurrentIndex(0);
     }
+    // install the event filter
+    qApp->installEventFilter(this);
 }
 
 /*!
@@ -41,4 +45,25 @@ RobotsWidget::~RobotsWidget()
 {
     qDebug() << Q_FUNC_INFO << "Destroying the object";
     delete m_ui;
+}
+
+/*!
+ * Intercepts all events. If it's a "number" key pressed than
+ * the corresponding robot is selected.
+ */
+bool RobotsWidget::eventFilter(QObject *obj, QEvent *event)
+{
+    if (event->type() == QEvent::KeyPress) {
+        QKeyEvent *keyEvent = static_cast<QKeyEvent *>(event);
+        bool isNumber;
+        int index = keyEvent->text().toInt(&isNumber) - 1; // map to [0,...]
+        if (isNumber && keyEvent->modifiers().testFlag(Qt::AltModifier) &&
+                (index >= 0) && (index < m_ui->robotsTabWidget->count()))
+        {
+            m_ui->robotsTabWidget->setCurrentIndex(index);
+            return true;
+        } else
+            return false;
+    }
+    return false;
 }

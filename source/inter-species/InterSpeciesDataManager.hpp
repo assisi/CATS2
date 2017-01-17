@@ -32,7 +32,7 @@ private:
     //! Publishes the message.
     //! name : message type, used to restore the message.
     //! device : message data producer (if applied).
-    //! desc : supplementary data // TODO : to check.
+    //! desc : supplementary data // TODO : to check
     //! data : message data.
     void publishMessage(std::string& name,std::string& device,std::string& desc,std::string& data);
 

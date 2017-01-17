@@ -4,14 +4,30 @@
         <name>TestExperiment</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>2</numberOfAnimals>
+            <numberOfAnimals>0</numberOfAnimals>
         </agents>
-        <setupMapPath>/home/gribovsk/Software/CATS2/config/setup/two-rooms.xml</setupMapPath>
+        <setupMapPath>setup/epfl-two-rooms.xml</setupMapPath>
     </experiment>
     <robots>
         <numberOfRobots>1</numberOfRobots>
-        <controlFrequencyHz>20</controlFrequencyHz>
+        <controlFrequencyHz>10</controlFrequencyHz>
         <fishMotionPatternFrequencyDivider>5</fishMotionPatternFrequencyDivider>
+        <pathPlanning>
+            <gridSizeM>0.01</gridSizeM>
+        </pathPlanning>
+        <obstacleAvoidance>
+            <potentialField>
+                <influenceDistanceArenaM>0.03</influenceDistanceArenaM>
+                <influenceStrengthArena>20</influenceStrengthArena>
+                <influenceDistanceRobotsM>0.05</influenceDistanceRobotsM>
+                <influenceStrengthRobots>200</influenceStrengthRobots>
+                <influenceDistanceTargetM>0.05</influenceDistanceTargetM>
+                <influenceStrengthTarget>400</influenceStrengthTarget>
+                <maxForce>1000</maxForce>
+                <maxAngleDeg>60</maxAngleDeg>
+                <obstacleAvoidanceAreaDiameterM>0.1</obstacleAvoidanceAreaDiameterM>
+            </potentialField>
+        </obstacleAvoidance>
         <fishMotionPattern>
             <distanceCm>25</distanceCm>
             <speedCmSec>15</speedCmSec>
@@ -22,14 +38,35 @@
             <kd>0.00</kd>
         </pid>
         <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
+        <needOrientationToNavigate>0</needOrientationToNavigate>
         <fishBot_1>
             <id>H</id>
-            <controlMapPath>/home/gribovsk/Software/CATS2/config/control-maps/test-control-map.xml</controlMapPath>
+            <ledColor>
+                <r>90</r>
+                <g>150</g>
+                <b>200</b>
+            </ledColor>
+            <!-- TODO : move this out into the experiment section. -->
+            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_1>
         <fishBot_2>
-            <id>F</id>
-            <controlMapPath>/home/gribovsk/Software/CATS2/config/control-maps/test-control-map.xml</controlMapPath>
+            <id>C</id>
+            <ledColor>
+                <r>190</r>
+                <g>255</g>
+                <b>190</b>
+            </ledColor>
+            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
         </fishBot_2>
+        <fishBot_3>
+            <id>B</id>
+            <ledColor>
+                <r>207</r>
+                <g>91</g>
+                <b>93</b>
+            </ledColor>
+            <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
+        </fishBot_3>
     </robots>
     <setups>
         <mainCamera>
@@ -41,10 +78,10 @@
                 <width>512</width>
                 <height>512</height>
             </imageSize>
-            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
+            <cameraCalibrationFile>camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
-                <numberOfAgents>7</numberOfAgents>
+                <numberOfAgents>2</numberOfAgents>
                 <blobDetector>
                     <minBlobSizePx>0</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
@@ -60,28 +97,20 @@
                 <width>640</width>
                 <height>480</height>
             </imageSize>
-            <cameraCalibrationFile>/home/gribovsk/Software/CATS2/config/camera-calibration/epfl-setup-180/cats2-epfl-180-angle-below-camera.xml</cameraCalibrationFile>
+            <cameraCalibrationFile>camera-calibration/epfl-setup-180/cats2-epfl-180-angle-below-camera.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>fishBotLedsTracking</trackingMethod>
-                <maskFile>/home/gribovsk/Software/CATS2/config/bottom-camera-mask.png</maskFile>
+                <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
-                    <!-- TODO : consider moving this to the robot's specific section. -->
                     <fishBot_H>
-                        <color>
-                            <r>90</r>
-                            <g>150</g>
-                            <b>200</b>
-                        </color>
-                        <threshold>30</threshold>
-                    </fishBot_H>
-                    <fishBot_F>
-                        <color>
-                            <r>45</r>
-                            <g>130</g>
-                            <b>220</b>
-                        </color>
                         <threshold>20</threshold>
-                    </fishBot_F>
+                    </fishBot_H>
+                    <fishBot_B>
+                        <threshold>70</threshold>
+                    </fishBot_B>
+                    <fishBot_C>
+                        <threshold>30</threshold>
+                    </fishBot_C>
                 </fishBotLedsTracking>
             </tracking>
         </cameraBelow>

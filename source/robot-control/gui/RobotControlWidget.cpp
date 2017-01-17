@@ -4,6 +4,7 @@
 #include "MotionPatternType.hpp"
 #include "FishBot.hpp"
 #include "settings/RobotControlSettings.hpp"
+#include "PotentialFieldWidget.hpp"
 
 #include <QtCore/QDebug>
 
@@ -21,13 +22,28 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
     m_ui->robotNameLabel->setText(robot->name());
 
     // set the controls
-    // disable controls when the map-based control is active
-    connect(m_ui->controlMapCheckBox, &QCheckBox::toggled,
-            [=](bool checked){ m_ui->controlModeComboBox->setEnabled(!checked);
-                               m_ui->navigationComboBox->setEnabled(!checked);
-                               m_ui->frequencyDividerSpinBox->setEnabled(!checked);
-                               m_robot->setUseControlMap(checked);
-                             });
+    // set the robot's controller when it is changed in the combobox
+    connect(m_ui->experimentControllerComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
+            [=](int index)
+            {
+                m_robot->setController(static_cast<ExperimentControllerType::Enum>(m_ui->experimentControllerComboBox->currentData().toInt()));
+                // disable controls when the experiment control is active
+                m_ui->controllerGroupBox->setEnabled(m_robot->currentController() == ExperimentControllerType::NONE);
+            });
+    // when the controller is changed on the robot
+    connect(m_robot.data(), &FishBot::notifyControllerChanged,
+            [=](ExperimentControllerType::Enum type)
+            {
+                QString controllerTypeString = ExperimentControllerType::toString(type);
+                if (m_ui->experimentControllerComboBox->currentText() != controllerTypeString)
+                    m_ui->experimentControllerComboBox->setCurrentText(controllerTypeString);
+            });
+    // fill the controllers
+    QList<ExperimentControllerType::Enum> controllerTypes = robot->supportedControllers();
+    foreach (ExperimentControllerType::Enum type, controllerTypes) {
+        m_ui->experimentControllerComboBox->addItem(ExperimentControllerType::toString(type), type);
+    }
+    m_ui->experimentControllerComboBox->setCurrentText(ExperimentControllerType::toString(m_robot->currentController()));
 
     // set the robot's control mode when it is changed in the combobox
     connect(m_ui->controlModeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
@@ -37,6 +53,7 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
                 // show the navigation pattern choice when it's supported or
                 // hide when it is not supported
                 m_ui->navigationWidget->setVisible(m_robot->supportsMotionPatterns());
+                m_ui->navigationParametersGroupBox->setVisible(m_robot->supportsMotionPatterns());
             });
 
     // set the control mode from the robot
@@ -101,6 +118,44 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
                 if (m_ui->frequencyDividerSpinBox->value() != value)
                     m_ui->frequencyDividerSpinBox->setValue(value);
             });
+
+    // set the robot's motion path planning usage flag on change
+    connect(m_ui->pathPlanningCheckBox, static_cast<void (QCheckBox::*)(bool)>(&QCheckBox::toggled),
+            [=](bool value) { m_robot->setUsePathPlanning(value); });
+
+    // set the path planning gui from the robot
+    connect(m_robot.data(), &FishBot::notifyUsePathPlanningChanged,
+            [=](bool value)
+            {
+                if (m_ui->pathPlanningCheckBox->isChecked() != value)
+                    m_ui->pathPlanningCheckBox->setChecked(value);
+            });
+    // set the current path planning ussage
+    m_ui->pathPlanningCheckBox->setChecked(m_robot->usePathPlanning());
+
+    // set the robot's obstacle avoidance usage flag on change
+    connect(m_ui->obstacleAvoidanceCheckBox, static_cast<void (QCheckBox::*)(bool)>(&QCheckBox::toggled),
+            [=](bool value) { m_robot->setUseObstacleAvoidance(value); });
+
+    // set the s obstacle avoidance gui from the robot
+    connect(m_robot.data(), &FishBot::notifyUseObstacleAvoidanceChanged,
+            [=](bool value)
+            {
+                if (m_ui->obstacleAvoidanceCheckBox->isChecked() != value)
+                    m_ui->obstacleAvoidanceCheckBox->setChecked(value);
+            });
+    // set the current value
+    m_ui->obstacleAvoidanceCheckBox->setChecked(m_robot->useObstacleAvoidance());
+
+    // create the obstacle avoidance settings widget
+    if (!m_ui->obstacleAvoidanceSettingsWidget->layout()) {
+        QHBoxLayout* layout = new QHBoxLayout(m_ui->obstacleAvoidanceSettingsWidget);
+        layout->setContentsMargins(0, 0, 0, 0);
+        layout->setSpacing(3);
+    }
+    m_ui->obstacleAvoidanceSettingsWidget->layout()->addWidget(new PotentialFieldWidget(m_robot->potentialField()));
+    m_ui->obstacleAvoidanceSettingsWidget->hide();
+    connect(m_ui->showDetailsButton, &QPushButton::toggled, [=](bool checked){ m_ui->obstacleAvoidanceSettingsWidget->setVisible(checked); });
 }
 
 /*!

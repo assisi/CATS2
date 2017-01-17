@@ -212,7 +212,7 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     QVector<QVector<float>> costMatrix(listOne.size());
     float maxCost = initializeCostMatrices(listOne, listTwo, costMatrix);
 
-//    // TODO : uncomment to debug agent matching
+//    // NOTE : uncomment to debug agent matching
 //    qDebug() << Q_FUNC_INFO;
 //    qDebug() << "Cost matrix" ;
 //    qDebug() << "Threshold" << WeightedThreshold;

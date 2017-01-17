@@ -12,24 +12,50 @@
 /*!
  * Constructor.
  */
-FishBot::FishBot(QString id, QString controlMapPath) :
+FishBot::FishBot(QString id, QString controlAreasPath) :
     QObject(nullptr),
     m_id(id),
     m_name(QString("Fish_bot_%1").arg(m_id)),
+    m_ledColor(Qt::black),
     m_state(),
     m_robotInterface(nullptr),
-    m_useControlMap(false),
-    m_controlMap(controlMapPath),
+    m_experimentManager(this, controlAreasPath),
     m_controlStateMachine(this),
     m_navigation(this)
 {
+    // control areas
+    connect(&m_experimentManager, &ExperimentManager::notifyPolygons,
+            [=](QList<AnnotatedPolygons> polygons)
+            {
+                emit notifyControlAreasPolygons(m_id, polygons);
+            });
+    // navigation data
+    connect(&m_navigation, &Navigation::notifyTargetPositionChanged,
+            [=](PositionMeters position)
+            {
+                emit notifyTargetPositionChanged(m_id, position);
+            });
+    connect(&m_navigation, &Navigation::notifyTrajectoryChanged,
+            [=](QQueue<PositionMeters> trajectory)
+            {
+                emit notifyTrajectoryChanged(m_id, trajectory);
+            });
+    // controller data
+    connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
+            this, &FishBot::notifyControllerChanged);
+    // control modes
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternChanged,
             this, &FishBot::notifyMotionPatternChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
             this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
-    connect(&m_controlMap, &ControlMap::notifyPolygons, this, &FishBot::notifyControlMapsPolygons);
+    connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
+            this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
+    connect(&m_navigation, &Navigation::notifyUsePathPlanningChanged,
+            this, &FishBot::notifyUsePathPlanningChanged);
+    connect(&m_navigation, &Navigation::notifyUseObstacleAvoidanceChanged,
+            this, &FishBot::notifyUseObstacleAvoidanceChanged);
 }
 
 /*!
@@ -56,7 +82,8 @@ void FishBot::setRobotInterface(Aseba::DBusInterfacePtr robotInterface)
 void FishBot::setupConnection(int robotIndex)
 {
     if (m_robotInterface.data()) {
-        if (m_robotInterface->nodeList.contains(m_name)) {
+        // FIXME : in the multi-robot/node mode aseba doesn't provide the node list correctly
+//        if (m_robotInterface->nodeList.contains(m_name)) {
             QString scriptDirPath = QCoreApplication::applicationDirPath() + QDir::separator() + "aesl";
             QString scriptPath = scriptDirPath + QDir::separator() + m_name + ".aesl";
             if (QFileInfo(scriptPath).exists()) {
@@ -68,7 +95,7 @@ void FishBot::setupConnection(int robotIndex)
             } else {
                 qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
             }
-        }
+//        }
     } else {
         qDebug() << Q_FUNC_INFO << "The robot's interface is not set";
     }
@@ -79,9 +106,10 @@ void FishBot::setupConnection(int robotIndex)
  */
 void FishBot::stepControl()
 {
-    // check the area map to see if the control mode is to be changed
-    if (m_useControlMap)
-        consultControlMap();
+    // check the experiment controller to see if the control mode is to be changed
+    if (m_experimentManager.isActive()) {
+        stepExperimentManager();
+    }
 
     // check the incoming events to see if the control mode is to be changed
     // due to the low-power or the obstacle-avoidance routine - THIS CAN BE DONE
@@ -90,20 +118,12 @@ void FishBot::stepControl()
 
     // step the control mode state machine with the robot's position and
     // other agents positions.
-    // TODO : to define how to pass the other agents positions
     ControlTargetPtr controlTarget = m_controlStateMachine.step();
 
     // step the navigation with the resulted target values
     // it's the navigation that sends commands to robots via the dbus interface
-    m_navigation.step(controlTarget);
-}
-
-/*!
- * Returns the supported control modes.
- */
-QList<ControlModeType::Enum> FishBot::supportedControlModes()
-{
-    return m_controlStateMachine.supportedControlModes();
+    if (!controlTarget.isNull())
+        m_navigation.step(controlTarget);
 }
 
 /*!
@@ -111,12 +131,18 @@ QList<ControlModeType::Enum> FishBot::supportedControlModes()
  */
 void FishBot::setControlMode(ControlModeType::Enum type)
 {
-    m_controlStateMachine.setControlMode(type);
+    if (m_controlStateMachine.currentControlMode() != type) {
+        // stop the robot for safety reason
+        m_navigation.stop();
 
-    // a check for a special case - joystick controlled manual mode, only one
-    // robot can be controlled, hence other robots in manual mode switch to idle
-    if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
-        emit notifyInManualMode(m_id);
+        // change the control mode
+        m_controlStateMachine.setControlMode(type);
+
+        // a check for a special case - joystick controlled manual mode, only one
+        // robot can be controlled, hence other robots in manual mode switch to idle
+        if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
+            emit notifyInManualMode(m_id);
+    }
 }
 
 /*! Received positions of all tracked robots, finds and sets the one
@@ -190,11 +216,27 @@ int FishBot::motionPatternFrequencyDivider(MotionPatternType::Enum type)
 }
 
 /*!
+ * Sets the path planning usage flag in the navigation.
+ */
+void FishBot::setUsePathPlanning(bool usePathPlanning)
+{
+    m_navigation.setUsePathPlanning(usePathPlanning);
+}
+
+/*!
+ * Sets the obstacle avoidance usage flag in the navigation.
+ */
+void FishBot::setUseObstacleAvoidance(bool useObstacleAvoidance)
+{
+    m_navigation.setUseObstacleAvoidance(useObstacleAvoidance);
+}
+
+/*!
  * Sets the control parameters based on the control map.
  */
-void FishBot::consultControlMap()
+void FishBot::stepExperimentManager()
 {
-    ControlMap::ControlData controlData = m_controlMap.controlDataAtPosition(m_state.position());
+    ExperimentController::ControlData controlData = m_experimentManager.step();
     if (controlData.controlMode != ControlModeType::UNDEFINED) {
         setControlMode(controlData.controlMode);
 

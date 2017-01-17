@@ -44,10 +44,6 @@ protected:
     FishBot* m_robot;
     //! A type of the control mode.
     ControlModeType::Enum m_type;
-
-    //! The threshold to decide that the robot is on the target position.
-    //! It's used by all the control modes that need such a check.
-    static constexpr float TargetReachedDistanceThresholdM = 0.05; // [m]
 };
 
 #endif // CATS2_CONTROL_MODE_HPP

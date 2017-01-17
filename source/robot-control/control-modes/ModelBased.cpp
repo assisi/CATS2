@@ -5,13 +5,14 @@
 #include "model/model.hpp"
 
 #include <QtCore/QDebug>
+#include <QtCore/QtMath>
 
 /*!
  * Constructor.
  */
 ModelBased::ModelBased(FishBot* robot) :
     ControlMode(robot, ControlModeType::MODEL_BASED),
-    m_setupMap(RobotControlSettings::get().setupMap()),
+    GridBasedMethod(ModelResolutionM),
     m_arena(nullptr),
     m_sim(nullptr)
 {
@@ -51,27 +52,11 @@ void ModelBased::initModel()
         // build the matrix representing the setup map
         // it's a binary matrix, with 1 corresponding to the free space and 0 to
         // occupied area
-        int cols = floor((m_setupMap.maxX() - m_setupMap.minX()) / ModelResolutionM + 0.5);
-        int rows = floor((m_setupMap.maxY() - m_setupMap.minY()) / ModelResolutionM + 0.5);
-        if ((cols > 0) && (rows > 0)) {
-            // a matrix representing the setup
-            cv::Mat arenaMatrix(rows, cols, CV_8U);
+        cv::Mat arenaMatrix = generateGrid();
+        if ((arenaMatrix.rows > 0) && (arenaMatrix.cols > 0))  {
             // size of the area covered by the matrix
-            Fishmodel::Coord_t size = {m_setupMap.maxX() - m_setupMap.minX(),
-                                       m_setupMap.maxY() - m_setupMap.minY()};
-            // fill the setup matrix
-            double y = m_setupMap.minY();
-            for (int row = 0; row < rows; ++row) { // rows go from min_y up to max_y
-                double x = m_setupMap.minX();
-                for (int col = 0; col < cols; ++col) { // cols go from min_x right to max_x
-                    if (m_setupMap.containsPoint(PositionMeters(x, y)))
-                        arenaMatrix.at<uchar>(row, col) = 1;
-                    else
-                        arenaMatrix.at<uchar>(row, col) = 0;
-                    x += ModelResolutionM;
-                }
-                y += ModelResolutionM;
-            }
+            Fishmodel::Coord_t size = {arenaMatrix.cols * m_gridSizeMeters,
+                                       arenaMatrix.rows * m_gridSizeMeters};
             // create the arena
             m_arena.reset(new Fishmodel::Arena(arenaMatrix, size));
             Fishmodel::SimulationFactory factory(*m_arena);
@@ -111,40 +96,34 @@ PositionMeters ModelBased::computeTargetPosition()
     // set the target invalid until it's computed
     PositionMeters targetPosition;
     targetPosition.setValid(false);
+
     // update the fish positions in the model
     size_t agentIndex = 0;
     for (StateWorld& state : m_robot->fishStates()){
-        if (agentIndex == m_sim->fishes.size()) {
-            qDebug() << Q_FUNC_INFO
+        if (agentIndex < m_sim->fishes.size()) {
+            if (state.position().isValid() && m_setupMap.containsPoint(state.position())) {
+                // NOTE : the positions are normalized to fit the matrix, they
+                // are compared with the 0 as the grid is slightly shifted with
+                // respect to the setup min borders
+                m_sim->fishes[agentIndex].first->headPos.first =
+                        qMax(state.position().x() - minX(), 0.);
+                m_sim->fishes[agentIndex].first->headPos.second =
+                        qMax(state.position().y() - minY(), 0.);
+                if (state.orientation().isValid())
+                    m_sim->fishes[agentIndex].first->direction = state.orientation().angleRad();
+                else
+                    m_sim->fishes[agentIndex].first->direction = 0;
+                m_sim->fishes[agentIndex].first->present = true;
+                agentIndex++;
+            }
+        } else {
+           qDebug() << Q_FUNC_INFO
                      << "Number of fish in the simulator is wrongly initialized.";
             break;
         }
-
-        if (state.position().isValid() &&
-                m_setupMap.containsPoint(state.position())) {
-
-            // NOTE : the positions are normalized to fit the matrix
-            m_sim->fishes[agentIndex].first->headPos.first =
-                    state.position().x() - m_setupMap.minX();
-
-            m_sim->fishes[agentIndex].first->headPos.second =
-                    state.position().y() - m_setupMap.minY();
-
-            if (state.orientation().isValid()) {
-                m_sim->fishes[agentIndex].first->direction =
-                        state.orientation().angleRad();
-            } else {
-                m_sim->fishes[agentIndex].first->direction = 0;
-            }
-
-            m_sim->fishes[agentIndex].first->present = true;
-            agentIndex++;
-        }
     }
     size_t detectedAgentNum = agentIndex;
-    for (agentIndex = detectedAgentNum;
-         agentIndex < RobotControlSettings::get().numberOfAnimals();
-         ++agentIndex) {
+    for (agentIndex = detectedAgentNum; agentIndex < RobotControlSettings::get().numberOfAnimals(); ++agentIndex) {
         m_sim->fishes[agentIndex].first->present = false;
     }
 
@@ -154,11 +133,11 @@ PositionMeters ModelBased::computeTargetPosition()
     if (robotPosition.isValid() &&
             m_setupMap.containsPoint(robotPosition) &&
             (m_sim->robots.size() == 1)) {
-        m_sim->robots[0].first->headPos.first =
-                robotPosition.x() - m_setupMap.minX();
-
-        m_sim->robots[0].first->headPos.second =
-                robotPosition.y() - m_setupMap.minY();
+    m_sim->robots[0].first->headPos.first =
+            qMax(robotPosition.x() - minX(), 0.);
+    m_sim->robots[0].first->headPos.second =
+            qMax(robotPosition.y() - minY(), 0.);
+    
 
         if (robotOrientation.isValid()) {
             m_sim->robots[0].first->direction =
@@ -168,7 +147,7 @@ PositionMeters ModelBased::computeTargetPosition()
         }
 
         m_sim->robots[0].first->present = true;
-    }
+}
 
     // FIXME : what to do with this?
 //		// XXX dirty
@@ -182,11 +161,9 @@ PositionMeters ModelBased::computeTargetPosition()
         // get the target value
         if (m_sim->robots.size() > 0) { // we have only one robot so it is #0
             targetPosition.setX((m_sim->robots[0].first->headPos.first +
-                                m_sim->robots[0].first->tailPos.first) / 2. +
-                                m_setupMap.minX());
+                                m_sim->robots[0].first->tailPos.first) / 2. + minX());
             targetPosition.setY((m_sim->robots[0].first->headPos.second +
-                                m_sim->robots[0].first->tailPos.second) / 2. +
-                                m_setupMap.minY());
+                                m_sim->robots[0].first->tailPos.second) / 2. + minY());
             targetPosition.setValid(true);
             qDebug() << Q_FUNC_INFO  << QString("New target is %1")
                         .arg(targetPosition.toString());

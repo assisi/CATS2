@@ -1,6 +1,7 @@
 #include "RobotControlSettings.hpp"
 
 #include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 #include <settings/ReadSettingsHelper.hpp>
 
@@ -19,6 +20,9 @@ RobotControlSettings& RobotControlSettings::get()
 bool RobotControlSettings::init(QString configurationFileName)
 {
     bool settingsAccepted = true;
+
+    // get the path of the configuration file
+    QString configurationFolder = QFileInfo(configurationFileName).path();
 
     ReadSettingsHelper settings(configurationFileName);
 
@@ -39,15 +43,24 @@ bool RobotControlSettings::init(QString configurationFileName)
     settingsAccepted = settingsAccepted && (m_fishMotionPatternFrequencyDivider > 0);
 
     // read settings for every robot.
-    for (int i = 1; i <= m_numberOfRobots; i++) {
+    for (int index = 1; index <= m_numberOfRobots; index++) {
         RobotSettings robotSettings;
         std::string id = "";
-        settings.readVariable(QString("robots/fishBot_%1/id").arg(i), id, id);
+        settings.readVariable(QString("robots/fishBot_%1/id").arg(index), id, id);
         robotSettings.setId(QString::fromStdString(id));
 
-        std::string controlMapFilePath = "";
-        settings.readVariable(QString("robots/fishBot_%1/controlMapPath").arg(i), controlMapFilePath, controlMapFilePath);
-        robotSettings.setControlMapPath(QString::fromStdString(controlMapFilePath));
+        // read the robot led's color
+        int red;
+        settings.readVariable(QString("robots/fishBot_%1/ledColor/r").arg(index), red);
+        int green;
+        settings.readVariable(QString("robots/fishBot_%1/ledColor/g").arg(index), green);
+        int blue;
+        settings.readVariable(QString("robots/fishBot_%1/ledColor/b").arg(index), blue);
+        robotSettings.setLedColor(QColor(red, green, blue));
+
+        std::string controlAreasFilePath = "";
+        settings.readVariable(QString("robots/fishBot_%1/controlAreasPath").arg(index), controlAreasFilePath, controlAreasFilePath);
+        robotSettings.setControlAreasFilePath(configurationFolder + QDir::separator() + QString::fromStdString(controlAreasFilePath));
 
         m_robotsSettings.insert(robotSettings.id(), robotSettings);
         settingsAccepted = settingsAccepted && (id.size() > 0);
@@ -79,13 +92,51 @@ bool RobotControlSettings::init(QString configurationFileName)
     settings.readVariable("robots/defaultLinearSpeedCmSec", m_defaultLinearSpeedCmSec);
     settingsAccepted = settingsAccepted && (m_defaultLinearSpeedCmSec > 0);
 
+    // read the navigation flag
+    m_needOrientationToNavigate = false;
+    settings.readVariable("robots/needOrientationToNavigate", m_needOrientationToNavigate);
+
     // read the setup map
     std::string setupMap = "";
     settings.readVariable(QString("experiment/setupMapPath"), setupMap, setupMap);
-    m_setupMap.init(QString::fromStdString(setupMap));
+    m_setupMap.init(configurationFolder + QDir::separator() + QString::fromStdString(setupMap));
 
     // read the number of animals used in experimetns
     settings.readVariable("experiment/agents/numberOfAnimals", m_numberOfAnimals, 0);
+
+    // read the path planning settings
+    double gridSizeMeters = 0;
+    settings.readVariable("robots/pathPlanning/gridSizeM", gridSizeMeters, gridSizeMeters);
+    m_pathPlanningSettings.setGridSizeMeters(gridSizeMeters);
+
+    // read the potential field settings
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceDistanceArenaM",
+                          m_potentialFieldSettings.influenceDistanceArenaMeters,
+                          m_potentialFieldSettings.influenceDistanceArenaMeters);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceStrengthArena",
+                          m_potentialFieldSettings.influenceStrengthArena,
+                          m_potentialFieldSettings.influenceStrengthArena);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceDistanceRobotsM",
+                          m_potentialFieldSettings.influenceDistanceRobotsMeters,
+                          m_potentialFieldSettings.influenceDistanceRobotsMeters);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceStrengthRobots",
+                          m_potentialFieldSettings.influenceStrengthRobots,
+                          m_potentialFieldSettings.influenceStrengthRobots);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceDistanceTargetM",
+                          m_potentialFieldSettings.influenceDistanceTargetMeters,
+                          m_potentialFieldSettings.influenceDistanceTargetMeters);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/influenceStrengthTarget",
+                          m_potentialFieldSettings.influenceStrengthTarget,
+                          m_potentialFieldSettings.influenceStrengthTarget);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/maxForce",
+                          m_potentialFieldSettings.maxForce,
+                          m_potentialFieldSettings.maxForce);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/maxAngleDeg",
+                          m_potentialFieldSettings.maxAngleDeg,
+                          m_potentialFieldSettings.maxAngleDeg);
+    settings.readVariable("robots/obstacleAvoidance/potentialField/obstacleAvoidanceAreaDiameterM",
+                          m_potentialFieldSettings.obstacleAvoidanceAreaDiameterMeters,
+                          m_potentialFieldSettings.obstacleAvoidanceAreaDiameterMeters);
 
     return settingsAccepted;
 }

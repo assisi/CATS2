@@ -176,7 +176,7 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
             if (agentVector.dot(agentDisplacementVector) < 0)
                 agentOrientation += M_PI;
             robot.mutableState()->setOrientation(agentOrientation);
-        } // FIXME : debug this part asap
+        } // FIXME : debug this part
          /*else if (previousState.orientation().isValid()) {
             // otherwise we try to define the correct orientation with the previous orientation
             cv::Point2f previousAgentUnitVector(qCos(previousState.orientation().angleRad()),

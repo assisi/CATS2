@@ -13,13 +13,37 @@
 #include <opencv2/core/types.hpp>
 
 /*!
+ * Provides an enum for control area type.
+ */
+class ControlAreaType
+{
+public:
+    enum Enum {
+        CORRIDOR,
+        ROOM,
+        UNDEFINED
+    };
+
+    //! Gets the type of the control area type from the settings' string.
+    static Enum fromSettingsString(QString areaTypeName)
+    {
+        if (areaTypeName.toLower() == "corridor")
+            return CORRIDOR;
+        else if (areaTypeName.toLower() == "room")
+            return ROOM;
+        else
+            return UNDEFINED;
+    }
+};
+
+/*!
  * Describes an area of the control map defined by the same control behavior.
  */
 class ControlArea
 {
 public:
     //! Constructor.
-    ControlArea(QString label);
+    ControlArea(QString id, ControlAreaType::Enum type);
 
 public:
     //! Sets the color.
@@ -49,7 +73,9 @@ public:
 
 private:
     //! Area's label.
-    QString m_label;
+    QString m_id;
+    //! Area type.
+    ControlAreaType::Enum m_type;
     //! Area's color (for gui).
     QColor m_color;
     //! The control mode corresponding to this area.
@@ -57,7 +83,7 @@ private:
     //! The motion pattern corresponding to this area.
     MotionPatternType::Enum m_motionPattern;
 
-    // TODO : it's more logical to use QList<PositionMeters> instead of
+    // TODO : it's more logical to use WorldPolygon instead of
     // QPolygonF. But we use QPolygonF because it has already contains()
     // method
     //! Polygons of this area.

@@ -25,7 +25,11 @@ public:
 signals:
     //! When a tab is changed the corresponding robot is considered as
     //! selected.
-    void notifyCurrentRobotChanged(QString robotName);
+    void notifySelectedRobotChanged(QString robotName);
+
+protected:
+    //! Intercepts all events.
+    bool eventFilter(QObject *obj, QEvent *event) override;
 
 private:
     //! The gui form.
