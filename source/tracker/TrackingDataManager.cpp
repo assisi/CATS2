@@ -202,6 +202,8 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     float minCost = maxCost + 1; // +1 to make it work for single agent case when minCost is equal to maxCost
     searchBestMatch(0, listOne.size(), listTwo.size(), usedIndices, combination, bestCombination,  minCost, costMatrix);
 
+//    qDebug() << "Best combination" << bestCombination;
+
     // generate the joined list
     // first add duplicated agents to the output list
     QList<QPair<int, int>> indecesToRemove;
@@ -256,19 +258,32 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
             }
             indecesToRemove.append(qMakePair(i1, bestCombination[i1]));
         } else {
-//            qDebug() <<  Q_FUNC_INFO << costMatrix[i1][bestCombination[i1]] << WeightedThreshold;
+//            qDebug() <<  Q_FUNC_INFO << QString("Matched agents at %2 and %3 are too far : %1")
+//                                            .arg(costMatrix[i1][bestCombination[i1]])
+//                    .arg(listOne.at(i1).state().position().toString())
+//                    .arg(listTwo.at(bestCombination[i1]).state().position().toString());
         }
     }
-    // remove duplicated elements from both input lists
+
+    // take only elements that are not duplicated
+    QList<int> listOneIndicesToJoin;
+    for (int i = 0; i < listOne.size(); ++i)
+        listOneIndicesToJoin << i;
+    QList<int> listTwoIndicesToJoin;
+    for (int i = 0; i < listTwo.size(); ++i)
+        listTwoIndicesToJoin << i;
+
+    // remove the indeces of the matched agents from both lists
     for (int i = 0; i < indecesToRemove.size(); i++) {
-        // remove these agents from both lists
-        listOne.removeAt(indecesToRemove[i].first);
-        listTwo.removeAt(indecesToRemove[i].second);
+        listOneIndicesToJoin.removeOne(indecesToRemove[i].first);
+        listTwoIndicesToJoin.removeOne(indecesToRemove[i].second);
     }
 
     // add remaining items
-    joinedAgentsList.append(listOne);
-    joinedAgentsList.append(listTwo);
+    for (const int& index : listOneIndicesToJoin)
+        joinedAgentsList << listOne.at(index);
+    for (const int& index : listTwoIndicesToJoin)
+        joinedAgentsList << listTwo.at(index);
 }
 
 /*!
