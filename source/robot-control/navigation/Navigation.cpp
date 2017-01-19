@@ -17,6 +17,7 @@ Navigation::Navigation(FishBot* robot):
     m_obstacleAvoidance(robot),
     m_useObstacleAvoidance(false),
     m_needOrientationToNavigate(RobotControlSettings::get().needOrientationToNavigate()),
+    m_stopOnceOnTarget(false),
     m_fishMotionPatternSettings(RobotControlSettings::get().fishMotionPatternSettings()),
     m_fishMotionFrequencyDivider(RobotControlSettings::get().fishMotionPatternFrequencyDivider()),
     m_fishMotionStepCounter(0),
@@ -71,7 +72,7 @@ void Navigation::setTargetPosition(TargetPosition* targetPosition)
 {
     if (m_robot->state().position().isValid() && targetPosition->position().isValid()) {
         // first check if we are already in the target position
-        if (m_robot->state().position().closeTo(targetPosition->position())) {
+        if (m_robot->state().position().closeTo(targetPosition->position()) && m_stopOnceOnTarget) {
 //            qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
             // stop the robot
             stop();

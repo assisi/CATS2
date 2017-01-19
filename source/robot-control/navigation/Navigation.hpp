@@ -133,6 +133,9 @@ private:
     //! important when the precise navigation is required, but might be very
     //! restrictive as the robot won't move untill it's orientation is known.
     bool m_needOrientationToNavigate;
+    //! The robot stops when it arrives to the target. The fish never stop and
+    //! thus this flag was introduced.
+    bool m_stopOnceOnTarget;
 
     //! Local copy of fish motion pattern settings.
     FishMotionPatternSettings m_fishMotionPatternSettings;
