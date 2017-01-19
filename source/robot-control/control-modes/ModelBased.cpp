@@ -14,9 +14,29 @@ ModelBased::ModelBased(FishBot* robot) :
     ControlMode(robot, ControlModeType::MODEL_BASED),
     GridBasedMethod(ModelResolutionM),
     m_arena(nullptr),
-    m_sim(nullptr)
+    m_sim(nullptr),
+    m_targetPosition(PositionMeters::invalidPosition()),
+    m_targetUpdateTimer()
 {
     initModel();
+}
+
+/*!
+ * Destructor.
+ */
+ModelBased::~ModelBased()
+{
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
+}
+
+/*!
+ * Called when the control mode is activated. Used to reset mode's parameters.
+ */
+void ModelBased::start()
+{
+    m_targetUpdateTimer.reset();
+    // compute the first target position
+    m_targetPosition = computeTargetPosition();
 }
 
 /*!
@@ -24,14 +44,14 @@ ModelBased::ModelBased(FishBot* robot) :
  */
 ControlTargetPtr ModelBased::step()
 {
-    // if we track any fish
-    if ((m_robot->fishStates().size() > 0) &&
-            m_sim &&
-            (m_sim->fishes.size() > 0)) {
-        PositionMeters targetPosition = computeTargetPosition();
-        if (targetPosition.isValid()) {
-            return ControlTargetPtr(new TargetPosition(targetPosition));
-        }
+    // if it's the time to update the model
+    if (m_sim && m_targetUpdateTimer.isTimedOutSec(m_sim->dt)) {
+        m_targetPosition = computeTargetPosition();
+        m_targetUpdateTimer.reset();
+    }
+
+    if (m_targetPosition.isValid()) {
+        return ControlTargetPtr(new TargetPosition(m_targetPosition));
     }
     // otherwise the robot doesn't move
     return ControlTargetPtr(new TargetSpeed(0, 0));
@@ -95,6 +115,12 @@ void ModelBased::initModel()
  */
 PositionMeters ModelBased::computeTargetPosition()
 {
+    // if no data is available, don't update the target
+    if ((m_robot->fishStates().size() == 0) ||
+            (m_sim == nullptr) ||
+            (m_sim && (m_sim->fishes.size() == 0)))
+        return PositionMeters::invalidPosition();
+
     // set the target invalid until it's computed
     PositionMeters targetPosition;
     targetPosition.setValid(false);
