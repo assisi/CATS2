@@ -39,7 +39,8 @@ bool RobotControlSettings::init(QString configurationFileName)
     }
 
     // read the frequency divider for the fish motion pattern
-    settings.readVariable("robots/fishMotionPatternFrequencyDivider", m_fishMotionPatternFrequencyDivider);
+    settings.readVariable("robots/navigation/fishMotionPatternFrequencyDivider",
+                          m_fishMotionPatternFrequencyDivider);
     settingsAccepted = settingsAccepted && (m_fishMotionPatternFrequencyDivider > 0);
 
     // read settings for every robot.
@@ -68,33 +69,33 @@ bool RobotControlSettings::init(QString configurationFileName)
 
     // read the fish motion pattern settings
     int distanceCm = 0;
-    settings.readVariable("robots/fishMotionPattern/distanceCm", distanceCm, distanceCm);
+    settings.readVariable("robots/navigation/fishMotionPattern/distanceCm", distanceCm, distanceCm);
     m_fishMotionPatternSettings.setDistanceCm(distanceCm);
     int speedCmSec = 0;
-    settings.readVariable("robots/fishMotionPattern/speedCmSec", speedCmSec, speedCmSec);
+    settings.readVariable("robots/navigation/fishMotionPattern/speedCmSec", speedCmSec, speedCmSec);
     m_fishMotionPatternSettings.setSpeedCmSec(speedCmSec);
     settingsAccepted = settingsAccepted && m_fishMotionPatternSettings.isValid();
 
     // read the pid controller settings
     double kp = 0;
-    settings.readVariable("robots/pid/kp", kp, kp);
+    settings.readVariable("robots/navigation/pid/kp", kp, kp);
     m_pidControllerSettings.setKp(kp);
     double ki = 0;
-    settings.readVariable("robots/pid/ki", ki, ki);
+    settings.readVariable("robots/navigation/pid/ki", ki, ki);
     m_pidControllerSettings.setKi(ki);
     double kd = 0;
-    settings.readVariable("robots/pid/kd", kd, kd);
+    settings.readVariable("robots/navigation/pid/kd", kd, kd);
     m_pidControllerSettings.setKd(kd);
     settingsAccepted = settingsAccepted && (m_pidControllerSettings.kp() != 0);
 
     // read the default linear speed
     m_defaultLinearSpeedCmSec = 0;
-    settings.readVariable("robots/defaultLinearSpeedCmSec", m_defaultLinearSpeedCmSec);
+    settings.readVariable("robots/navigation/defaultLinearSpeedCmSec", m_defaultLinearSpeedCmSec);
     settingsAccepted = settingsAccepted && (m_defaultLinearSpeedCmSec > 0);
 
     // read the navigation flag
     m_needOrientationToNavigate = false;
-    settings.readVariable("robots/needOrientationToNavigate", m_needOrientationToNavigate);
+    settings.readVariable("robots/navigation/needOrientationToNavigate", m_needOrientationToNavigate);
 
     // read the setup map
     std::string setupMap = "";

@@ -11,7 +11,6 @@
     <robots>
         <numberOfRobots>1</numberOfRobots>
         <controlFrequencyHz>10</controlFrequencyHz>
-        <fishMotionPatternFrequencyDivider>5</fishMotionPatternFrequencyDivider>
         <pathPlanning>
             <gridSizeM>0.01</gridSizeM>
         </pathPlanning>
@@ -28,17 +27,20 @@
                 <obstacleAvoidanceAreaDiameterM>0.1</obstacleAvoidanceAreaDiameterM>
             </potentialField>
         </obstacleAvoidance>
-        <fishMotionPattern>
-            <distanceCm>25</distanceCm>
-            <speedCmSec>15</speedCmSec>
-        </fishMotionPattern>
-        <pid>
-            <kp>1.10</kp>
-            <ki>0.03</ki>
-            <kd>0.00</kd>
-        </pid>
-        <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
-        <needOrientationToNavigate>0</needOrientationToNavigate>
+        <navigation>
+            <fishMotionPatternFrequencyDivider>5</fishMotionPatternFrequencyDivider>
+            <fishMotionPattern>
+                <distanceCm>25</distanceCm>
+                <speedCmSec>15</speedCmSec>
+            </fishMotionPattern>
+            <pid>
+                <kp>1.10</kp>
+                <ki>0.03</ki>
+                <kd>0.00</kd>
+            </pid>
+            <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
+            <needOrientationToNavigate>0</needOrientationToNavigate>
+        </navigation>
         <fishBot_1>
             <id>H</id>
             <ledColor>
