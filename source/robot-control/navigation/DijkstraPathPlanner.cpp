@@ -165,15 +165,15 @@ void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
         // add the starting point
         PositionMeters previousPosition = path.dequeue();
         reducedPath.enqueue(previousPosition);
-        // if there are more than 2 nodes in the path
-        if(path.size()>2) {
+        // if there were more than 2 nodes in the path
+        if (path.size() > 1) {
             PositionMeters currentPosition = path.dequeue();
             // compute the fisrt difference of position along x and y
             previousDx = currentPosition.x() - previousPosition.x();
             previousDy = currentPosition.y() - previousPosition.y();
 
             // for all the other points in the path
-            while (path.size() > 1) {
+            while (path.size() > 0) {
                 // update the positions
                 previousPosition = currentPosition;
                 currentPosition = path.dequeue();
@@ -190,9 +190,13 @@ void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
                 previousDx = currentDx;
                 previousDy = currentDy;
             }
+            // add the last point
+            reducedPath.enqueue(currentPosition);
+        } else {
+            // all the last element
+            if (path.size() > 0)
+                reducedPath.enqueue(path.dequeue());
         }
-        // the last element
-        reducedPath.enqueue(path.dequeue());
     }
     // return the reduced path
     path = reducedPath;
