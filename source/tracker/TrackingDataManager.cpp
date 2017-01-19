@@ -20,7 +20,7 @@ TrackingDataManager::TrackingDataManager() :
     m_typeForGenericAgents(AgentType::FISH), // TODO : find a better way to do this(?)
     m_trajectoryWriter()
 {
-#if 1
+#if 0
     // this code is used purely for a debug when in a no-setup mode
     // it starts the timer that sends a data with the fake robots and fish
     // positions.
