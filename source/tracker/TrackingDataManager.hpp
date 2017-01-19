@@ -86,13 +86,13 @@ private:
 
     // TODO : to move this values out to the settings
     //! If two agents are closer than this value they are considered as the same.
-    static constexpr float IdentityDistanceThresholdMeters = 0.025; // [m], i.e. 2.5 cm
+    static constexpr float IdentityDistanceThresholdMeters = 0.05; // [m], i.e. 5 cm
     //! The threshold for the orientations to check that they correspond.
     static constexpr float OrientationThresholdRad = M_PI / 8; // i.e. 22.5 degrees
     //! The weight coefficient for the angle in the cost function.
     static constexpr float OrientationWeightCoefficient = 0.001 * 180 / M_PI; // i.e. 10 degrees of disallignment correspond to the offset of 1 cm
     //! The weighted threshold taking into account the orientation and distance thresholds.
-    static constexpr float WeightedThreshold = IdentityDistanceThresholdMeters + OrientationThresholdRad * OrientationWeightCoefficient;
+    static constexpr float WeightedThreshold = IdentityDistanceThresholdMeters /*+ OrientationThresholdRad * OrientationWeightCoefficient*/;
     //! The penalty for the invalid orientation.
     static constexpr float InvalidOrientationPenaltyRad = M_PI / 16; // i.e. 11.25 degrees
 
