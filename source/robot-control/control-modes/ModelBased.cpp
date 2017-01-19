@@ -116,10 +116,15 @@ void ModelBased::initModel()
 PositionMeters ModelBased::computeTargetPosition()
 {
     // if no data is available, don't update the target
-    if ((m_robot->fishStates().size() == 0) ||
-            (m_sim == nullptr) ||
-            (m_sim && (m_sim->fishes.size() == 0)))
+    if (m_robot->fishStates().size() == 0) {
+        qDebug() << Q_FUNC_INFO << "No fish detected, impossible to run the model";
+        // returning the previous target
+        return m_targetPosition;
+    }
+
+    if ((m_sim == nullptr) || (m_sim && (m_sim->fishes.size() == 0))) {
         return PositionMeters::invalidPosition();
+    }
 
     // set the target invalid until it's computed
     PositionMeters targetPosition;
