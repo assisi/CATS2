@@ -139,5 +139,42 @@ bool RobotControlSettings::init(QString configurationFileName)
                           m_potentialFieldSettings.obstacleAvoidanceAreaDiameterMeters,
                           m_potentialFieldSettings.obstacleAvoidanceAreaDiameterMeters);
 
+    // read the model settings
+    settings.readVariable("robots/fishModel/agent/length",
+                          m_fishModelSettings.length,
+                          m_fishModelSettings.length);
+    settings.readVariable("robots/fishModel/agent/width",
+                          m_fishModelSettings.width,
+                          m_fishModelSettings.width);
+    settings.readVariable("robots/fishModel/agent/height",
+                          m_fishModelSettings.height,
+                          m_fishModelSettings.height);
+    settings.readVariable("robots/fishModel/agent/fov",
+                          m_fishModelSettings.fov,
+                          m_fishModelSettings.fov);
+    settings.readVariable("robots/fishModel/agent/meanSpeed",
+                          m_fishModelSettings.meanSpeed,
+                          m_fishModelSettings.meanSpeed);
+    settings.readVariable("robots/fishModel/agent/varSpeed",
+                          m_fishModelSettings.varSpeed,
+                          m_fishModelSettings.varSpeed);
+
+    settings.readVariable("robots/fishModel/BM/kappaFishes",
+                          m_fishModelSettings.kappaFishes,
+                          m_fishModelSettings.kappaFishes);
+    settings.readVariable("robots/fishModel/BM/alphasCenter",
+                          m_fishModelSettings.alphasCenter,
+                          m_fishModelSettings.alphasCenter);
+    settings.readVariable("robots/fishModel/BM/kappaNeutCenter",
+                          m_fishModelSettings.kappaNeutCenter,
+                          m_fishModelSettings.kappaNeutCenter);
+    settings.readVariable("robots/fishModel/BM/repulsionFromAgentsAtDist",
+                          m_fishModelSettings.repulsionFromAgentsAtDist,
+                          m_fishModelSettings.repulsionFromAgentsAtDist);
+
+    settings.readVariable("robots/fishModel/simulation/dt",
+                          m_fishModelSettings.dt,
+                          m_fishModelSettings.dt);
+
     return settingsAccepted;
 }

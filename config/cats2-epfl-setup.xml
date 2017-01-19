@@ -11,6 +11,25 @@
     <robots>
         <numberOfRobots>1</numberOfRobots>
         <controlFrequencyHz>10</controlFrequencyHz>
+        <fishModel>
+            <agent>
+                <length>0.02</length>
+                <width>0.02</width>
+                <height>0.01</height>
+                <fov>169</fov>
+                <meanSpeed>-2.65</meanSpeed>
+                <varSpeed>0.51</varSpeed>
+            </agent>
+            <BM>
+                <kappaFishes>20.0</kappaFishes>
+                <alphasCenter>55.0</alphasCenter>
+                <kappaNeutCenter>6.3</kappaNeutCenter>
+                <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+            </BM>
+            <simulation>
+                <dt>1</dt>
+            </simulation>
+        </fishModel>
         <pathPlanning>
             <gridSizeM>0.01</gridSizeM>
         </pathPlanning>
