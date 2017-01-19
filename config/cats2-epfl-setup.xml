@@ -47,7 +47,7 @@
             </potentialField>
         </obstacleAvoidance>
         <navigation>
-            <fishMotionPatternFrequencyDivider>5</fishMotionPatternFrequencyDivider>
+            <fishMotionPatternFrequencyDivider>10</fishMotionPatternFrequencyDivider>
             <fishMotionPattern>
                 <distanceCm>25</distanceCm>
                 <speedCmSec>15</speedCmSec>
