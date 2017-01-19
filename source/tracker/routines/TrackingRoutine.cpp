@@ -46,7 +46,11 @@ void TrackingRoutine::process()
             } catch(cv::Exception& e) {
                 qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
             }
-            emit trackedAgents(m_agents);
+            // send the results
+            TimestampedImageAgentsData timestampedAgentsData;
+            timestampedAgentsData.agentsData = m_agents;
+            timestampedAgentsData.timestamp = m_currentTimestamp;
+            emit trackedAgents(timestampedAgentsData);
         }
     }
     emit finished();
@@ -154,7 +158,6 @@ void TrackingRoutine::naiveClosestNeighbour(std::vector<cv::Point2f>& centers, s
                 agent.mutableState()->invalidateOrientation();
             }
 
-            agent.setTimestamp(m_currentTimestamp);
             // remove this agent's index from the list
             remainingAgents.erase(std::remove(remainingAgents.begin(), remainingAgents.end(), agentIndex), remainingAgents.end()); // https://en.wikipedia.org/wiki/Erase–remove_idiom
         }

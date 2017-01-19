@@ -53,14 +53,14 @@ public:
 
 signals:
     //! Sends out the tracked agents in world coordinates. Also the setup type is send to "sign" the signal.
-    void trackedAgents(SetupType::Enum setupType, TimestampedWorldAgentData worldAgents);
+    void trackedAgents(SetupType::Enum setupType, TimestampedWorldAgentsData worldAgents);
     //! Request to start/stop enqueueing the debug images to the debug queue.
     void sendDebugImages(bool send);
 
 private slots:
     //! Gets the agents from the tracking routine, converts their position in the
     //! world coordinates and sends them further.
-    void onTrackedAgents(QList<AgentDataImage> agents);
+    void onTrackedAgents(TimestampedImageAgentsData agents);
 
 private:
     //! The type of setup, for instance, main camera or the camera below.

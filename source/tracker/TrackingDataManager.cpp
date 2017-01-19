@@ -64,7 +64,7 @@ void TrackingDataManager::addDataSource(SetupType::Enum setupType,
                                            QList<AgentType> capabilities)
 {
     // add new data source
-    m_trackingData[setupType] = QQueue<TimestampedWorldAgentData>();
+    m_trackingData[setupType] = QQueue<TimestampedWorldAgentsData>();
 
     // update the primary data source if necessary (smaller value means more data)
     foreach (AgentType capability, capabilities) {
@@ -90,7 +90,7 @@ void TrackingDataManager::addCoordinatesConversion(SetupType::Enum setupType, Co
  * there are recent data from the secondary source then we try to merge them together
  * otherwise the primary source data is sent as it is.
  */
-void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldAgentData timestampedAgentsData)
+void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldAgentsData timestampedAgentsData)
 {
     // if the new data comes from a secondary data source then it is stored in the input queue
     if (setupType != m_primaryDataSource) {
@@ -110,7 +110,7 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
         foreach (SetupType::Enum dataSource, m_trackingData.keys()) {
             if (dataSource != m_primaryDataSource) {
                 // we look for the data with the closest timestamp.
-                TimestampedWorldAgentData closestAgentData;
+                TimestampedWorldAgentsData closestAgentData;
                 if (getDataByTimestamp(timestamp, m_trackingData[dataSource], closestAgentData)) {
                     // if the data list is found than we take the agent from this list that are not
                     // yet in the final list
@@ -148,8 +148,8 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
  * Find the best match to the provided timestamp in the given queue.
  */
 bool TrackingDataManager::getDataByTimestamp(std::chrono::milliseconds timestamp,
-                                             QQueue<TimestampedWorldAgentData>& dataQueue,
-                                             TimestampedWorldAgentData& bestMatchData)
+                                             QQueue<TimestampedWorldAgentsData>& dataQueue,
+                                             TimestampedWorldAgentsData& bestMatchData)
 {
     if (dataQueue.size() == 0) {
 //        qDebug() << Q_FUNC_INFO << "The data queue is empty";
@@ -164,7 +164,9 @@ bool TrackingDataManager::getDataByTimestamp(std::chrono::milliseconds timestamp
             bestMatchData = dataQueue.dequeue();
             return true;
         } else {
-            qDebug() << Q_FUNC_INFO << "Data with an old timestamped received";
+            qDebug() << Q_FUNC_INFO << QString("Data with an old timestamp received (%1 vs present %2)")
+                        .arg(dataQueue.head().timestamp.count())
+                        .arg(timestamp.count());
             return false;
         }
     }

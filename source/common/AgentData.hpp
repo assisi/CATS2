@@ -40,11 +40,6 @@ public:
     //! Mutable getter for the agent's state.
     StateImage* mutableState() { return &m_state; }
 
-    //! Sets the timestamp.
-    void setTimestamp(std::chrono::milliseconds timestamp) { m_timestamp = timestamp; }
-    //! Returns the timastamp.
-    std::chrono::milliseconds timestamp() const { return m_timestamp; }
-
 private:
     //! Agent's id.
     QString m_id;
@@ -52,10 +47,16 @@ private:
     AgentType m_type;
     //! The position of the agent (center) in [px], and it's orientation.
     StateImage m_state;
+};
+
+struct TimestampedImageAgentsData
+{
+    //! The agent's data.
+    QList<AgentDataImage> agentsData;
     //! The corresponding timestamp, in number of milliseconds since 1970-01-01T00:00:00
-    //! Universal Coordinated Time. The timestamp is to be used to detect the
-    //! outdated data when tracking (assigning ids) to the agents.
-    std::chrono::milliseconds m_timestamp;
+    //! Universal Coordinated Time. The timestamp is used to combine the tracking results
+    //! from different concurrent trackers.
+    std::chrono::milliseconds timestamp;
 };
 
 /*!
@@ -97,7 +98,7 @@ private:
     StateWorld m_state;
 };
 
-struct TimestampedWorldAgentData
+struct TimestampedWorldAgentsData
 {
     //! The agent's data.
     QList<AgentDataWorld> agentsData;

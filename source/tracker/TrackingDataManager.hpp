@@ -43,13 +43,13 @@ signals:
 
 public slots:
     //! New tracking results arrive.
-    void onNewData(SetupType::Enum setupType, TimestampedWorldAgentData agentsData);
+    void onNewData(SetupType::Enum setupType, TimestampedWorldAgentsData agentsData);
 
 private:
     //! Find the best match to the provided timestamp in the given queue.
     bool getDataByTimestamp(std::chrono::milliseconds timestamp,
-                              QQueue<TimestampedWorldAgentData>&,
-                              TimestampedWorldAgentData&);
+                              QQueue<TimestampedWorldAgentsData>&,
+                              TimestampedWorldAgentsData&);
     //! Merges together two data sets by adding newly received agents to
     //! already available and removing the duplicates.
     void matchAgents(QList<AgentDataWorld>& currentAgents, QList<AgentDataWorld>& agentsToJoin, QList<AgentDataWorld>& joinedAgentsList);
@@ -68,7 +68,7 @@ private:
 
 private:
     //! The tracking results recieved from various sources.
-    QMap<SetupType::Enum, QQueue<TimestampedWorldAgentData>> m_trackingData;
+    QMap<SetupType::Enum, QQueue<TimestampedWorldAgentsData>> m_trackingData;
 
     //! The source whose input that triggers the input data processing,
     //! normally it's the source that provide the most advanced data.

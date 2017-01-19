@@ -193,14 +193,12 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
 
          // set the position
         robot.mutableState()->setPosition(agentPosition);
-        robot.setTimestamp(m_currentTimestamp);
     } else if (contours.size() == 1){
         // if only one blob is detected, then we take its position as the robot's position
         cv::Moments moments = cv::moments(contours[0]);
         agentPosition = cv::Point2f(static_cast<float>(moments.m10/moments.m00+0.5),
                                     static_cast<float>(moments.m01/moments.m00+0.5));
         robot.mutableState()->setPosition(agentPosition);
-        robot.setTimestamp(m_currentTimestamp);
     } else {
         // TODO : add a Kalman here to avoid loosing the robot when sometimes
         // it's hidden by other objects on the arena.
