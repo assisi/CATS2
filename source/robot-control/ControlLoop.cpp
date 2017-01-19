@@ -135,10 +135,19 @@ void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
             fishStates.append(agentData.state());
         }
     }
+
+//    qDebug() << Q_FUNC_INFO << robotsData.size() << fishStates.size();
+
     // transfers the data to all robots
     for (auto& robot : m_robots) {
         robot->setRobotsData(robotsData);
-        robot->setFishStates(fishStates);
+        // HACK : update only when any fish found, it's done to prevent setting
+        // zero fish in a case when fish tracker is slower than the the robot
+        // tracker and thus we don't receive its data in time; as a result in
+        // this case the robot will be using the positions of fish previously
+        // detected
+        if (fishStates.size() > 0)
+            robot->setFishStates(fishStates);
     }
 }
 
