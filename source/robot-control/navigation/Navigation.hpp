@@ -64,6 +64,15 @@ public:
     //! Sets the obstacle avoidance usage flag.
     void setUseObstacleAvoidance(bool useObstacleAvoidance);
 
+public:
+    //! The type of the on-board obstacle avoidance
+    enum LocalObstacleAvoidanceType
+    {
+        DISABLED,
+        BRAITENBERG,
+        TURN_AND_GO
+    };
+
 public slots:
     //! Requests to sends the current target.
     void requestTargetPosition() { emit notifyTargetPositionChanged(m_currentWaypoint); }
@@ -106,6 +115,8 @@ private:
     void sendMotorSpeed(double angularSpeedCmSec);
     //! Sends the fish behavior parameters to the robot.
     void sendFishMotionParameters(int angle, int distance, int speed);
+    //! Sends the local obstacle type to the robot.
+    void sendLocalObstacleAvoidance(LocalObstacleAvoidanceType type);
 
     //! Updates the current waypoint. Notifies on the change.
     void updateCurrentWaypoint(PositionMeters currentWaypoint);

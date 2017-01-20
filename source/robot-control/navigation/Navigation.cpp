@@ -16,15 +16,19 @@ Navigation::Navigation(FishBot* robot):
     m_currentWaypoint(PositionMeters::invalidPosition()),
     m_obstacleAvoidance(robot),
     m_useObstacleAvoidance(false),
-    m_needOrientationToNavigate(RobotControlSettings::get().needOrientationToNavigate()),
+    m_needOrientationToNavigate(RobotControlSettings::get().
+                                needOrientationToNavigate()),
     m_stopOnceOnTarget(false),
-    m_fishMotionPatternSettings(RobotControlSettings::get().fishMotionPatternSettings()),
-    m_fishMotionFrequencyDivider(RobotControlSettings::get().fishMotionPatternFrequencyDivider()),
+    m_fishMotionPatternSettings(RobotControlSettings::get().
+                                fishMotionPatternSettings()),
+    m_fishMotionFrequencyDivider(RobotControlSettings::get().
+                                 fishMotionPatternFrequencyDivider()),
     m_fishMotionStepCounter(0),
     m_pidControllerSettings(RobotControlSettings::get().pidControllerSettings()),
     m_dt(1. / RobotControlSettings::get().controlFrequencyHz())
 {
-    connect(&m_pathPlanner, &PathPlanner::notifyTrajectoryChanged, this, &Navigation::notifyTrajectoryChanged);
+    connect(&m_pathPlanner, &PathPlanner::notifyTrajectoryChanged,
+            this, &Navigation::notifyTrajectoryChanged);
 }
 
 /*!
@@ -83,7 +87,8 @@ void Navigation::setTargetPosition(TargetPosition* targetPosition)
             PositionMeters currentWaypoint;
             if (m_usePathPlanning)
                 // get the new position from the path planner
-                currentWaypoint = m_pathPlanner.currentWaypoint(m_robot->state().position(), targetPosition->position());
+                currentWaypoint = m_pathPlanner.currentWaypoint(m_robot->state().position(),
+                                                                targetPosition->position());
             else
                 currentWaypoint = targetPosition->position();
             // check the validity of the current target
@@ -164,6 +169,21 @@ void Navigation::sendFishMotionParameters(int angle, int distance, int speed)
     data.append(angle);
     data.append(distance);
     data.append(speed);
+    m_robot->robotInterface()->sendEventName(eventName, data);
+}
+
+/*!
+ * Sends the local obstacle type to the robot.
+ */
+void Navigation::sendLocalObstacleAvoidance(LocalObstacleAvoidanceType type)
+{
+    // event to send
+    QString eventName;
+    // data to send
+    Values data;
+
+    data.append(type);
+    eventName = "SetObstacleAvoidance" + m_robot->name();
     m_robot->robotInterface()->sendEventName(eventName, data);
 }
 
@@ -261,6 +281,18 @@ void Navigation::setMotionPattern(MotionPatternType::Enum type)
         // reset the steps counter
         m_fishMotionStepCounter = 0;
 
+        // set the corresponding obstacle avoidance type on the robot
+        switch (type) {
+        case MotionPatternType::FISH_MOTION:
+            sendLocalObstacleAvoidance(LocalObstacleAvoidanceType::TURN_AND_GO);
+            break;
+        case MotionPatternType::PID:
+        default:
+            sendLocalObstacleAvoidance(LocalObstacleAvoidanceType::BRAITENBERG);
+            break;
+        }
+
+        // notify on changes
         emit notifyMotionPatternChanged(type);
     }
 }
