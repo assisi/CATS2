@@ -2,7 +2,7 @@ function(makeLink sourceFilePath destinationFilePath)
     if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${destinationFilePath})
         execute_process(COMMAND ln -s ${CMAKE_SOURCE_DIR}/${sourceFilePath} ${destinationFilePath}
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-endif()
+    endif()
 endfunction()
 
 # Add the qt-aseba interface files to the project, before tried with add_custom_command but it never worked
@@ -39,8 +39,8 @@ set(srcs
     dbusinterface.cpp
     gui/RobotControlWidget.cpp
     gui/RobotsWidget.cpp
+    gui/PotentialFieldWidget.cpp
     RobotsHandler.cpp
-    Navigation.cpp
     experiment-controllers/ControlArea.cpp
     experiment-controllers/MapController.cpp
     experiment-controllers/ExperimentController.cpp
@@ -50,6 +50,12 @@ set(srcs
     model/factory.cpp
     model/bm.cpp
     model/random.cpp
+    navigation/Navigation.cpp
+    navigation/DijkstraPathPlanner.cpp
+    navigation/PathPlanner.cpp
+    navigation/ObstacleAvoidance.cpp
+    navigation/PotentialField.cpp
+    navigation/GridBasedMethod.cpp
     SetupMap.cpp
 )
 
@@ -63,7 +69,7 @@ set(hdrs
     experiment-controllers/ExperimentControllerFactory.hpp
 )
 
-qt5_wrap_ui(uis_hdrs gui/RobotControlWidget.ui gui/RobotsWidget.ui)
+qt5_wrap_ui(uis_hdrs gui/RobotControlWidget.ui gui/RobotsWidget.ui gui/PotentialFieldWidget.ui)
 #qt5_add_resources(resources icons.qrc)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)

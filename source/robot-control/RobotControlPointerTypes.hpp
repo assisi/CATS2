@@ -48,6 +48,12 @@ class ExperimentController;
 using ExperimentControllerPtr = QSharedPointer<ExperimentController>;
 
 /*!
+ * The alias for the shared pointer to potential field obstacle avoidance routine.
+ */
+class PotentialField;
+using PotentialFieldPtr = QSharedPointer<PotentialField>;
+
+/*!
  * The alias for the shared pointer to the control area class.
  */
 class ControlArea;

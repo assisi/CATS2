@@ -1,7 +1,6 @@
 set(srcs
     main.cpp
     MainWindow.cpp
-    FrameScene.cpp
 )
 
 include_directories(${CMAKE_SOURCE_DIR}/source/grabber)

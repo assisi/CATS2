@@ -47,7 +47,7 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     // create the scene
     m_scene = new FrameScene(this);
     connect(m_scene, &FrameScene::mouseMoved, this, &ViewerWidget::onMouseMoved);
-    connect(m_scene, &FrameScene::rightButtonClicked, this, &ViewerWidget::onRightButtonClicked);
+    connect(m_scene, &FrameScene::buttonClicked, this, &ViewerWidget::onButtonClicked);
     m_uiViewer->view->setScene(m_scene);
 
     // create the video frame item
@@ -267,14 +267,14 @@ void ViewerWidget::updateAgents(QList<AgentDataWorld> agentDataList)
 }
 
 /*!
- * Triggered when a right button click is received from the scene.
+ * Triggered when a button click is received from the scene.
  */
-void ViewerWidget::onRightButtonClicked(QPointF scenePosition)
+void ViewerWidget::onButtonClicked(Qt::MouseButton button, QPointF scenePosition)
 {
     PositionPixels imagePosition(scenePosition.x(), scenePosition.y());
     PositionMeters worldPosition;
     if (convertScenePosition(imagePosition, worldPosition))
-        emit notifyRightButtonClick(worldPosition);
+        emit notifyButtonClick(button, worldPosition);
 }
 
 /*!
@@ -500,17 +500,6 @@ void ViewerWidget::setControlAreasVisible(QString agentId, bool visible)
             item->setVisible(visible);
         }
     }
-}
-
-/*!
- * Context menu.
- */
-void ViewerWidget::contextMenuEvent(QContextMenuEvent *event)
-{
-    QMenu menu(this);
-    menu.addAction(m_adjustAction);
-
-    menu.exec(event->globalPos());
 }
 
 /*!

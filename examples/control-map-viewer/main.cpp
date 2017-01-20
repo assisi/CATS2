@@ -3,6 +3,7 @@
 #include <settings/CommandLineParameters.hpp>
 #include <settings/CalibrationSettings.hpp>
 #include <settings/GrabberSettings.hpp>
+#include <settings/ViewerSettings.hpp>
 #include <settings/RobotControlSettings.hpp>
 #include <CoordinatesConversion.hpp>
 #include <CommonPointerTypes.hpp>
@@ -43,15 +44,16 @@ int main(int argc, char *argv[])
             if (GrabberSettings::get().init(CommandLineParameters::get().configurationFilePath(),
                                             setupType, needTargetFrameSize)) {
                 grabberHandler = GrabberHandlerPtr(new GrabberHandler(setupType));
-
-                // initialize the robot controller settings
-                if ((RobotControlSettings::get().init(CommandLineParameters::get().configurationFilePath()))) {
-                    MainWindow mainWindow(setupType, grabberHandler->inputQueue(), coordinatesConversion);
-                    mainWindow.show();
-                    return app.exec();
-                } else {
-                    qDebug() << Q_FUNC_INFO << "Could not initialize the robot controllers";
-                    return false;
+                if (ViewerSettings::get().init(CommandLineParameters::get().configurationFilePath(), setupType)){
+                    // initialize the robot controller settings
+                    if ((RobotControlSettings::get().init(CommandLineParameters::get().configurationFilePath()))) {
+                        MainWindow mainWindow(setupType, grabberHandler->inputQueue(), coordinatesConversion);
+                        mainWindow.show();
+                        return app.exec();
+                    } else {
+                        qDebug() << Q_FUNC_INFO << "Could not initialize the robot controllers";
+                        return false;
+                    }
                 }
             } else {
                 qDebug() << Q_FUNC_INFO << "Grabber settings are not defined";

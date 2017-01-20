@@ -44,7 +44,7 @@ public:
 
 signals:
     //! Sends out the tracked agents.
-    void trackedAgents(QList<AgentDataImage> agents);
+    void trackedAgents(TimestampedImageAgentsData agents);
     //! Notifies that the tracking is stopped.
     void finished();
     //! Notifies about an error.

@@ -35,7 +35,11 @@ FishBot::FishBot(QString id) :
             {
                 emit notifyTargetPositionChanged(m_id, position);
             });
-    // TODO : add the trajectory here
+    connect(&m_navigation, &Navigation::notifyTrajectoryChanged,
+            [=](QQueue<PositionMeters> trajectory)
+            {
+                emit notifyTrajectoryChanged(m_id, trajectory);
+            });
     // controller data
     connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
             this, &FishBot::notifyControllerChanged);
@@ -46,6 +50,12 @@ FishBot::FishBot(QString id) :
             this, &FishBot::notifyMotionPatternChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
             this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
+    connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
+            this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
+    connect(&m_navigation, &Navigation::notifyUsePathPlanningChanged,
+            this, &FishBot::notifyUsePathPlanningChanged);
+    connect(&m_navigation, &Navigation::notifyUseObstacleAvoidanceChanged,
+            this, &FishBot::notifyUseObstacleAvoidanceChanged);
 }
 
 /*!
@@ -108,12 +118,12 @@ void FishBot::stepControl()
 
     // step the control mode state machine with the robot's position and
     // other agents positions.
-    // TODO : to define how to pass the other agents positions
     ControlTargetPtr controlTarget = m_controlStateMachine.step();
 
     // step the navigation with the resulted target values
     // it's the navigation that sends commands to robots via the dbus interface
-    m_navigation.step(controlTarget);
+    if (!controlTarget.isNull())
+        m_navigation.step(controlTarget);
 }
 
 /*!
@@ -121,12 +131,18 @@ void FishBot::stepControl()
  */
 void FishBot::setControlMode(ControlModeType::Enum type)
 {
-    m_controlStateMachine.setControlMode(type);
+    if (m_controlStateMachine.currentControlMode() != type) {
+        // stop the robot for safety reason
+        m_navigation.stop();
 
-    // a check for a special case - joystick controlled manual mode, only one
-    // robot can be controlled, hence other robots in manual mode switch to idle
-    if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
-        emit notifyInManualMode(m_id);
+        // change the control mode
+        m_controlStateMachine.setControlMode(type);
+
+        // a check for a special case - joystick controlled manual mode, only one
+        // robot can be controlled, hence other robots in manual mode switch to idle
+        if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
+            emit notifyInManualMode(m_id);
+    }
 }
 
 /*! Received positions of all tracked robots, finds and sets the one
@@ -197,6 +213,22 @@ void FishBot::setMotionPatternFrequencyDivider(MotionPatternType::Enum type,
 int FishBot::motionPatternFrequencyDivider(MotionPatternType::Enum type)
 {
     return m_navigation.motionPatternFrequencyDivider(type);
+}
+
+/*!
+ * Sets the path planning usage flag in the navigation.
+ */
+void FishBot::setUsePathPlanning(bool usePathPlanning)
+{
+    m_navigation.setUsePathPlanning(usePathPlanning);
+}
+
+/*!
+ * Sets the obstacle avoidance usage flag in the navigation.
+ */
+void FishBot::setUseObstacleAvoidance(bool useObstacleAvoidance)
+{
+    m_navigation.setUseObstacleAvoidance(useObstacleAvoidance);
 }
 
 /*!

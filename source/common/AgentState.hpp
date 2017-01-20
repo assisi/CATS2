@@ -22,6 +22,14 @@ class OrientationRad
 public:
     //! Constructor.
     explicit OrientationRad(double angleRad = 0, bool valid = true): m_angleRad(angleRad), m_valid(valid) { }
+    //! Copy constructor.
+    OrientationRad(const OrientationRad&) = default;
+    //! Copy operator.
+    OrientationRad& operator=(const OrientationRad&) = default;
+    //! Move operator.
+    OrientationRad& operator=(OrientationRad&&) = default;
+    //! Destructor.
+    ~OrientationRad() = default;
 
     //! Sets the angle.
     void setAngleRad(double angleRad) { m_angleRad = angleRad; }
@@ -50,6 +58,14 @@ class PositionMeters
 public:
     //! Constructor.
     explicit PositionMeters(double x = 0, double y = 0, double z = 0, bool valid = true): m_x(x), m_y(y), m_z(z), m_valid(valid) { }
+    //! Copy constructor.
+    PositionMeters(const PositionMeters&) = default;
+    //! Copy operator.
+    PositionMeters& operator=(const PositionMeters&) = default;
+    //! Move operator.
+    PositionMeters& operator=(PositionMeters&&) = default;
+    //! Destructor.
+    ~PositionMeters() = default;
 
     //! Sets the x coordinate.
     void setX(double x) { m_x = x; }
@@ -86,6 +102,7 @@ public:
                      (m_y - other.y()) * (m_y - other.y()) +
                      (m_z - other.z()) * (m_z - other.z()));
     }
+
     /*!
      * Only x and y coordinates are taken into account.
      */
@@ -126,6 +143,14 @@ public:
         return *this;
     }
 
+    /*!
+     * Return an invalid point.
+     */
+    static PositionMeters invalidPosition()
+    {
+        return PositionMeters(0, 0, 0, false);
+    }
+
 private:
     //! Position x.
     double m_x;  // [m]
@@ -144,6 +169,38 @@ private:
 Q_DECLARE_METATYPE(PositionMeters)
 
 /*!
+ * Addition operator.
+ */
+inline PositionMeters operator+(const PositionMeters& lhs, const PositionMeters& rhs)
+{
+    return PositionMeters(lhs.x() + rhs.x(), lhs.y() + rhs.y());
+}
+
+/*!
+ * Subtraction operator.
+ */
+inline PositionMeters operator-(const PositionMeters& lhs, const PositionMeters& rhs)
+{
+    return PositionMeters(lhs.x() - rhs.x(), lhs.y() - rhs.y());
+}
+
+/*!
+ * Comparison operator.
+ */
+inline bool operator==(const PositionMeters& lhs, const PositionMeters& rhs)
+{
+    return (qFuzzyCompare(lhs.x(), rhs.x())
+            && qFuzzyCompare(lhs.y(), rhs.y())
+            && qFuzzyCompare(lhs.z(), rhs.z())
+            && (lhs.isValid() == rhs.isValid()));
+}
+
+inline bool operator!=(const PositionMeters& lhs, const PositionMeters& rhs)
+{
+    return !operator==(lhs,rhs);
+}
+
+/*!
  * \brief The class that stores the position in frame pixels.
  * Use CoordiantesTransformation class to convert the position in pixels to
  * the position in meters.
@@ -155,6 +212,14 @@ public:
     PositionPixels(cv::Point2f point, bool valid = true) : m_x(point.x), m_y(point.y), m_valid(valid) { }
     //! Constructor.
     PositionPixels(double x = 0, double y = 0, bool valid = true) : m_x(x), m_y(y), m_valid(valid) { }
+    //! Copy constructor.
+    PositionPixels(const PositionPixels&) = default;
+    //! Copy operator.
+    PositionPixels& operator=(const PositionPixels&) = default;
+    //! Move operator.
+    PositionPixels& operator=(PositionPixels&&) = default;
+    //! Destructor.
+    ~PositionPixels() = default;
 
     //! Sets the x coordinate.
     void setX(double x) { m_x = x; }
@@ -217,6 +282,14 @@ public:
         m_orientationRad(orientation)
     {
     }
+    //! Copy constructor.
+    StateWorld(const StateWorld&) = default;
+    //! Copy operator.
+    StateWorld& operator=(const StateWorld&) = default;
+    //! Move operator.
+    StateWorld& operator=(StateWorld&&) = default;
+    //! Destructor.
+    ~StateWorld() = default;
 
     //! Sets the position.
     void setPosition(PositionMeters position) { m_positionMeters = position; }
@@ -249,6 +322,14 @@ public:
         m_orientationRad(orientation)
     {
     }
+    //! Copy constructor.
+    StateImage(const StateImage&) = default;
+    //! Copy operator.
+    StateImage& operator=(const StateImage&) = default;
+    //! Move operator.
+    StateImage& operator=(StateImage&&) = default;
+    //! Destructor.
+    ~StateImage() = default;
 
     //! Invalidates the state.
     void invalidateState()
@@ -291,6 +372,8 @@ class WorldPolygon : public QList<PositionMeters>
 public:
     //! Checks if the polygon contains given point.
     // FIXME FIXME FIXME : fast and dirty implementation, redo
+    // NOTE : QPolygonF::containsPoint returns true only when the point is
+    // _inside_ the polygon, not on the edge(!)
     bool containsPoint(PositionMeters position) const
     {
         QPolygonF polygon;

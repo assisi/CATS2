@@ -175,14 +175,20 @@ void MainWindow::connectPrimaryView()
                 viewerWidget, &ViewerWidget::updateAgents);
 
         // connect to the robots controller
-        connect(viewerWidget, &ViewerWidget::notifyRightButtonClick,
-                m_robotsHandler->contolLoop().data(), &ControlLoop::goToPosition);
+        connect(viewerWidget, &ViewerWidget::notifyButtonClick,
+                [=](Qt::MouseButton button,PositionMeters worldPosition)
+                {
+                    if (button = Qt::RightButton)
+                        m_robotsHandler->contolLoop().data()->goToPosition(worldPosition);
+                });
         connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotControlAreasPolygons,
                 viewerWidget, &ViewerWidget::updateControlAreas);
         connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifySelectedRobotChanged,
                 viewerWidget, &ViewerWidget::updateCurrentAgent);
         connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTargetPositionChanged,
                 viewerWidget, &ViewerWidget::updateTarget);
+        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTrajectoryChanged,
+                viewerWidget, &ViewerWidget::updateTrajectory);
         connect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
                 viewerWidget, &ViewerWidget::updateSetup);
         connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotLedColor,
@@ -230,6 +236,8 @@ void MainWindow::disconnectPrimaryView()
                 viewerWidget, &ViewerWidget::updateCurrentAgent);
         disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTargetPositionChanged,
                 viewerWidget, &ViewerWidget::updateTarget);
+        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTrajectoryChanged,
+                viewerWidget, &ViewerWidget::updateTrajectory);
         disconnect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
                 viewerWidget, &ViewerWidget::updateSetup);
     }

@@ -20,7 +20,32 @@ TrackingDataManager::TrackingDataManager() :
     m_typeForGenericAgents(AgentType::FISH), // TODO : find a better way to do this(?)
     m_trajectoryWriter()
 {
-
+#if 0
+    // this code is used purely for a debug when in a no-setup mode
+    // it starts the timer that sends a data with the fake robots and fish
+    // positions.
+    connect(&timerForTest, &QTimer::timeout,
+            [=]()
+            {
+                QList<AgentDataWorld> agentDataList;
+                // add one robot
+                AgentDataWorld robotData("H", AgentType::FISH_CASU,
+                                         StateWorld(PositionMeters(-0.1, -0.1),
+                                                    OrientationRad(M_PI_4)));
+                agentDataList << robotData;
+                // add two fish
+                AgentDataWorld fishOneData("0", AgentType::FISH,
+                                           StateWorld(PositionMeters(0.3, 0.3),
+                                                      OrientationRad(M_PI_2)));
+                AgentDataWorld fishTwoData("1", AgentType::FISH,
+                                           StateWorld(PositionMeters(0.3, 0.5),
+                                                      OrientationRad(M_PI_2)));
+                agentDataList << fishOneData << fishTwoData;
+                // send the results
+                emit notifyAgentDataWorldMerged(agentDataList);
+            });
+    timerForTest.start(1000);
+#endif
 }
 
 /*!
@@ -39,7 +64,7 @@ void TrackingDataManager::addDataSource(SetupType::Enum setupType,
                                            QList<AgentType> capabilities)
 {
     // add new data source
-    m_trackingData[setupType] = QQueue<TimestampedWorldAgentData>();
+    m_trackingData[setupType] = QQueue<TimestampedWorldAgentsData>();
 
     // update the primary data source if necessary (smaller value means more data)
     foreach (AgentType capability, capabilities) {
@@ -65,7 +90,7 @@ void TrackingDataManager::addCoordinatesConversion(SetupType::Enum setupType, Co
  * there are recent data from the secondary source then we try to merge them together
  * otherwise the primary source data is sent as it is.
  */
-void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldAgentData timestampedAgentsData)
+void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldAgentsData timestampedAgentsData)
 {
     // if the new data comes from a secondary data source then it is stored in the input queue
     if (setupType != m_primaryDataSource) {
@@ -85,7 +110,7 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
         foreach (SetupType::Enum dataSource, m_trackingData.keys()) {
             if (dataSource != m_primaryDataSource) {
                 // we look for the data with the closest timestamp.
-                TimestampedWorldAgentData closestAgentData;
+                TimestampedWorldAgentsData closestAgentData;
                 if (getDataByTimestamp(timestamp, m_trackingData[dataSource], closestAgentData)) {
                     // if the data list is found than we take the agent from this list that are not
                     // yet in the final list
@@ -123,8 +148,8 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
  * Find the best match to the provided timestamp in the given queue.
  */
 bool TrackingDataManager::getDataByTimestamp(std::chrono::milliseconds timestamp,
-                                             QQueue<TimestampedWorldAgentData>& dataQueue,
-                                             TimestampedWorldAgentData& bestMatchData)
+                                             QQueue<TimestampedWorldAgentsData>& dataQueue,
+                                             TimestampedWorldAgentsData& bestMatchData)
 {
     if (dataQueue.size() == 0) {
 //        qDebug() << Q_FUNC_INFO << "The data queue is empty";
@@ -139,7 +164,9 @@ bool TrackingDataManager::getDataByTimestamp(std::chrono::milliseconds timestamp
             bestMatchData = dataQueue.dequeue();
             return true;
         } else {
-            qDebug() << Q_FUNC_INFO << "Data with an old timestamped received";
+            qDebug() << Q_FUNC_INFO << QString("Data with an old timestamp received (%1 vs present %2)")
+                        .arg(dataQueue.head().timestamp.count())
+                        .arg(timestamp.count());
             return false;
         }
     }
@@ -202,6 +229,8 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     float minCost = maxCost + 1; // +1 to make it work for single agent case when minCost is equal to maxCost
     searchBestMatch(0, listOne.size(), listTwo.size(), usedIndices, combination, bestCombination,  minCost, costMatrix);
 
+//    qDebug() << "Best combination" << bestCombination;
+
     // generate the joined list
     // first add duplicated agents to the output list
     QList<QPair<int, int>> indecesToRemove;
@@ -256,19 +285,32 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
             }
             indecesToRemove.append(qMakePair(i1, bestCombination[i1]));
         } else {
-//            qDebug() <<  Q_FUNC_INFO << costMatrix[i1][bestCombination[i1]] << WeightedThreshold;
+//            qDebug() <<  Q_FUNC_INFO << QString("Matched agents at %2 and %3 are too far : %1")
+//                                            .arg(costMatrix[i1][bestCombination[i1]])
+//                    .arg(listOne.at(i1).state().position().toString())
+//                    .arg(listTwo.at(bestCombination[i1]).state().position().toString());
         }
     }
-    // remove duplicated elements from both input lists
+
+    // take only elements that are not duplicated
+    QList<int> listOneIndicesToJoin;
+    for (int i = 0; i < listOne.size(); ++i)
+        listOneIndicesToJoin << i;
+    QList<int> listTwoIndicesToJoin;
+    for (int i = 0; i < listTwo.size(); ++i)
+        listTwoIndicesToJoin << i;
+
+    // remove the indeces of the matched agents from both lists
     for (int i = 0; i < indecesToRemove.size(); i++) {
-        // remove these agents from both lists
-        listOne.removeAt(indecesToRemove[i].first);
-        listTwo.removeAt(indecesToRemove[i].second);
+        listOneIndicesToJoin.removeOne(indecesToRemove[i].first);
+        listTwoIndicesToJoin.removeOne(indecesToRemove[i].second);
     }
 
     // add remaining items
-    joinedAgentsList.append(listOne);
-    joinedAgentsList.append(listTwo);
+    for (const int& index : listOneIndicesToJoin)
+        joinedAgentsList << listOne.at(index);
+    for (const int& index : listTwoIndicesToJoin)
+        joinedAgentsList << listTwo.at(index);
 }
 
 /*!

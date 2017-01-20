@@ -11,13 +11,24 @@ Navigation::Navigation(FishBot* robot):
     QObject(nullptr),
     m_robot(robot),
     m_motionPattern(MotionPatternType::PID),
-    m_fishMotionPatternSettings(RobotControlSettings::get().fishMotionPatternSettings()),
-    m_fishMotionFrequencyDivider(RobotControlSettings::get().fishMotionPatternFrequencyDivider()),
+    m_pathPlanner(),
+    m_usePathPlanning(false),
+    m_currentWaypoint(PositionMeters::invalidPosition()),
+    m_obstacleAvoidance(robot),
+    m_useObstacleAvoidance(false),
+    m_needOrientationToNavigate(RobotControlSettings::get().
+                                needOrientationToNavigate()),
+    m_stopOnceOnTarget(false),
+    m_fishMotionPatternSettings(RobotControlSettings::get().
+                                fishMotionPatternSettings()),
+    m_fishMotionFrequencyDivider(RobotControlSettings::get().
+                                 fishMotionPatternFrequencyDivider()),
     m_fishMotionStepCounter(0),
     m_pidControllerSettings(RobotControlSettings::get().pidControllerSettings()),
     m_dt(1. / RobotControlSettings::get().controlFrequencyHz())
 {
-
+    connect(&m_pathPlanner, &PathPlanner::notifyTrajectoryChanged,
+            this, &Navigation::notifyTrajectoryChanged);
 }
 
 /*!
@@ -27,7 +38,7 @@ Navigation::~Navigation()
 {
     qDebug() << Q_FUNC_INFO << "Destroying the object";
     // stop the robot before quiting
-    sendMotorSpeed(0, 0);
+    stop();
 }
 
 /*!
@@ -57,20 +68,50 @@ void Navigation::setTargetSpeed(TargetSpeed* targetSpeed)
 }
 
 /*!
- * Manages the target position control.
+ * Manages the target position control. Receives a goal, runs a path planning
+ * if necessary to generate collisions free intermediate goals and navigates
+ * between these goals.
  */
-void Navigation::setTargetPosition(TargetPosition* targetPostion)
+void Navigation::setTargetPosition(TargetPosition* targetPosition)
 {
-    // FIXME : temporary code
-    emit notifyTargetPositionChanged(targetPostion->position());
-    switch (m_motionPattern) {
-    case MotionPatternType::FISH_MOTION:
-        fishMotionToTargetPosition(targetPostion);
-        break;
-    case MotionPatternType::PID:
-    default:
-        pidControlToTargetPosition(targetPostion);
-        break;
+    if (m_robot->state().position().isValid() && targetPosition->position().isValid()) {
+        // first check if we are already in the target position
+        if (m_robot->state().position().closeTo(targetPosition->position()) && m_stopOnceOnTarget) {
+//            qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
+            // stop the robot
+            stop();
+            // reset the path planner
+            if (m_usePathPlanning)
+                m_pathPlanner.clearTrajectory();
+        } else {
+            PositionMeters currentWaypoint;
+            if (m_usePathPlanning)
+                // get the new position from the path planner
+                currentWaypoint = m_pathPlanner.currentWaypoint(m_robot->state().position(),
+                                                                targetPosition->position());
+            else
+                currentWaypoint = targetPosition->position();
+            // check the validity of the current target
+            if (!currentWaypoint.isValid()) {
+                // stop the robot and return
+                stop();
+                return;
+            }
+            // update the current waypoint
+            updateCurrentWaypoint(currentWaypoint);
+            // go to the target
+            switch (m_motionPattern) {
+            case MotionPatternType::FISH_MOTION:
+                fishMotionToPosition(currentWaypoint);
+                break;
+            case MotionPatternType::PID:
+            default:
+                pidControlToPosition(currentWaypoint);
+                break;
+            }
+        }
+    } else {
+        qDebug() << Q_FUNC_INFO << "Invalid robot or target position";
     }
 }
 
@@ -132,21 +173,41 @@ void Navigation::sendFishMotionParameters(int angle, int distance, int speed)
 }
 
 /*!
+ * Sends the local obstacle type to the robot.
+ */
+void Navigation::sendLocalObstacleAvoidance(LocalObstacleAvoidanceType type)
+{
+    // event to send
+    QString eventName;
+    // data to send
+    Values data;
+
+    data.append(type);
+    eventName = "SetObstacleAvoidance" + m_robot->name();
+    m_robot->robotInterface()->sendEventName(eventName, data);
+}
+
+/*!
  * Computes the turn angle based on the robot's orientation, position
  * and the target position.
  */
-double Navigation::computeAngleToTurn(TargetPosition* targetPostion)
+double Navigation::computeAngleToTurn(PositionMeters position)
 {
     // FIXME : consider making calculations in the body frame
     //    double robotCenteredTargetPositionX = qCos(robotOrientation) * dx - qSin(robotOrientation) * dy;
     //    double robotCenteredTargetPositionY = qSin(robotOrientation) * dx + qCos(robotOrientation) * dy;
     //    double angleToTurn = qAtan2(robotCenteredTargetPositionY, robotCenteredTargetPositionX);
 
-    double dx = targetPostion->position().x() - m_robot->state().position().x();
-    double dy = targetPostion->position().y() - m_robot->state().position().y();
-    double angleToTarget = qAtan2(dy, dx);
+    double targetOrientation;
+    if (m_useObstacleAvoidance) {
+        targetOrientation = m_obstacleAvoidance.targetOrientationRad(position);
+    } else {
+        double dx = position.x() - m_robot->state().position().x();
+        double dy = position.y() - m_robot->state().position().y();
+        targetOrientation = qAtan2(dy, dx);
+    }
     double robotOrientation = m_robot->state().orientation().angleRad();
-    double angleToTurn = robotOrientation - angleToTarget;
+    double angleToTurn = robotOrientation - targetOrientation;
     // normalize to [-pi;pi]
     if (angleToTurn < - M_PI)
         angleToTurn += 2 * M_PI;
@@ -157,18 +218,16 @@ double Navigation::computeAngleToTurn(TargetPosition* targetPostion)
 }
 
 /*!
- * Excecutes fish motion pattern while going to target.
+ * Executes fish motion pattern while going to target.
  */
-void Navigation::fishMotionToTargetPosition(TargetPosition* targetPostion)
+void Navigation::fishMotionToPosition(PositionMeters targetPosition)
 {
-    if (m_robot->state().position().isValid()
-            && m_robot->state().orientation().isValid()
-            && targetPostion->position().isValid()) {
+    if (m_robot->state().orientation().isValid() || !m_needOrientationToNavigate) {
         m_fishMotionStepCounter++;
         // if we waited enough steps
         if (m_fishMotionStepCounter >=  m_fishMotionFrequencyDivider) {
             m_fishMotionStepCounter = 0;
-            double angleToTurn = computeAngleToTurn(targetPostion);
+            double angleToTurn = computeAngleToTurn(targetPosition);
             // FIXME : to check why the angle to send is negative
             sendFishMotionParameters(- angleToTurn * 180 / M_PI,
                                      m_fishMotionPatternSettings.distanceCm(), // FIXME : store this parameters somewhere in this class
@@ -178,14 +237,12 @@ void Navigation::fishMotionToTargetPosition(TargetPosition* targetPostion)
 }
 
 /*!
- * Excecutes PID while going to target.
+ * Executes PID while going to target.
  */
-void Navigation::pidControlToTargetPosition(TargetPosition* targetPostion)
+void Navigation::pidControlToPosition(PositionMeters targetPosition)
 {
-    if (m_robot->state().position().isValid()
-            && m_robot->state().orientation().isValid()
-            && targetPostion->position().isValid()) {
-        double angleToTurn = computeAngleToTurn(targetPostion);
+    if (m_robot->state().orientation().isValid() || !m_needOrientationToNavigate) {
+        double angleToTurn = computeAngleToTurn(targetPosition);
         // proportional term
         double proportionalTerm = angleToTurn;
         // derivative term
@@ -203,8 +260,8 @@ void Navigation::pidControlToTargetPosition(TargetPosition* targetPostion)
                 integralTerm += error;
         }
         double angularVelocity = m_pidControllerSettings.kp() * proportionalTerm +
-                                 m_pidControllerSettings.ki() * integralTerm +
-                                 m_pidControllerSettings.kd() * derivativeTerm;
+                m_pidControllerSettings.ki() * integralTerm +
+                m_pidControllerSettings.kd() * derivativeTerm;
         sendMotorSpeed(angularVelocity);
     }
 }
@@ -224,6 +281,18 @@ void Navigation::setMotionPattern(MotionPatternType::Enum type)
         // reset the steps counter
         m_fishMotionStepCounter = 0;
 
+        // set the corresponding obstacle avoidance type on the robot
+        switch (type) {
+        case MotionPatternType::FISH_MOTION:
+            sendLocalObstacleAvoidance(LocalObstacleAvoidanceType::TURN_AND_GO);
+            break;
+        case MotionPatternType::PID:
+        default:
+            sendLocalObstacleAvoidance(LocalObstacleAvoidanceType::BRAITENBERG);
+            break;
+        }
+
+        // notify on changes
         emit notifyMotionPatternChanged(type);
     }
 }
@@ -257,6 +326,53 @@ int Navigation::motionPatternFrequencyDivider(MotionPatternType::Enum type)
         qDebug() << QString("The motion frequency divider is not supported for %1")
                     .arg(MotionPatternType::toString(type));
         return 1;
+    }
+}
+
+/*! 
+ * Sets the path planning usage flag.
+ */ 
+void Navigation::setUsePathPlanning(bool usePathPlanning) 
+{ 
+    if (m_usePathPlanning != usePathPlanning) {
+        m_usePathPlanning = usePathPlanning;
+        // clean up when path planning is disactivated
+        if (!m_usePathPlanning)
+            m_pathPlanner.clearTrajectory();
+        // notify on the status change
+        emit notifyUsePathPlanningChanged(m_usePathPlanning);
+    }
+}
+
+/*!
+ * Sets the obstacle avoidance usage flag.
+ */
+void Navigation::setUseObstacleAvoidance(bool useObstacleAvoidance)
+{
+    if (m_useObstacleAvoidance != useObstacleAvoidance) {
+        m_useObstacleAvoidance = useObstacleAvoidance;
+        emit notifyUseObstacleAvoidanceChanged(m_useObstacleAvoidance);
+    }
+}
+
+/*!
+ * Requests the robot to stop.
+ */
+void Navigation::stop()
+{
+    sendMotorSpeed(0, 0);
+    // the current waypoint is not valid anymore
+    updateCurrentWaypoint(PositionMeters::invalidPosition());
+}
+
+/*!
+ * Updates the current waypoint. Notifies on the change.
+ */
+void Navigation::updateCurrentWaypoint(PositionMeters currentWaypoint)
+{
+    if (m_currentWaypoint != currentWaypoint) {
+        m_currentWaypoint = currentWaypoint;
+        emit notifyTargetPositionChanged(m_currentWaypoint);
     }
 }
 

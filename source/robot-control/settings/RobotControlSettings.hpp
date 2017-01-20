@@ -125,6 +125,54 @@ private:
 };
 
 /*!
+ * Stores settings of path planning.
+ */
+class PathPlanningSettings
+{
+public:
+    //! Constructor.
+    explicit PathPlanningSettings() : m_gridSizeMeters(0.0)
+    { }
+
+    //! Sets the grid size.
+    void setGridSizeMeters(double gridSize) { m_gridSizeMeters = gridSize; }
+    //! Returns the grid size.
+    double gridSizeMeters() const { return m_gridSizeMeters; }
+
+private:
+    //! The size of the grid square for the grid based path planning.
+    double m_gridSizeMeters; // meters
+};
+
+/*!
+ * Stores settings for the potential field obstacle avoidance
+ */
+struct PotentialFieldSettings
+{
+    //! Constructor.
+    PotentialFieldSettings() :
+        influenceStrengthTarget(2), influenceDistanceTargetMeters(0.03),
+        influenceStrengthArena(10), influenceDistanceArenaMeters(0.03),
+        influenceStrengthRobots(20),influenceDistanceRobotsMeters(0.09),
+        maxForce(1000),maxAngleDeg(60),
+        obstacleAvoidanceAreaDiameterMeters(0.1)
+    { }
+
+    //! Repulsive parameters rho0 being the distance of influence and nu the "strength" of the repulsion.
+    float influenceDistanceArenaMeters, influenceStrengthArena;
+    float influenceDistanceRobotsMeters, influenceStrengthRobots;
+    //! Attractive parameters.
+    float influenceDistanceTargetMeters;
+    float influenceStrengthTarget;
+    //! Maximal acceptable force, an empirical parameter,
+    float maxForce;
+    //! A cone where we check the presence of other robots to avoid.
+    float maxAngleDeg;
+    //! The local window size around the robot.
+    float obstacleAvoidanceAreaDiameterMeters;
+};
+
+/*!
  * Class-signleton that is used to store parameters of the robot control system.
  * Their values are loaded from the configuration file.
  * NOTE : All the settings are made as singltons to simplify the access to them;
@@ -171,6 +219,10 @@ public:
     //! Returns the default linear speed.
     int defaultLinearSpeedCmSec() const { return m_defaultLinearSpeedCmSec; }
 
+    //! Returns the flag that defines if the robot needs an orientation to
+    //! navigate.
+    int needOrientationToNavigate() const { return m_needOrientationToNavigate; }
+
     //! Gives the const reference to the experimental setup map.
     const SetupMap& setupMap() const { return m_setupMap; }
 
@@ -187,6 +239,12 @@ public:
     {
         return m_controllerSettings.keys();
     }
+
+    //! Gives the reference to the path planning settings.
+    const PathPlanningSettings& pathPlanningSettings() const { return m_pathPlanningSettings; }
+
+    //! Gives the reference to the potential field obstacle avoidance settings.
+    const PotentialFieldSettings& potentialFieldSettings() const { return m_potentialFieldSettings; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -210,8 +268,14 @@ private:
     PidControllerSettings m_pidControllerSettings;
     //! Default linear speed of the robot.
     int m_defaultLinearSpeedCmSec;
+    //! If the robot needs to have a valid orientation to navigate.
+    bool m_needOrientationToNavigate;
     //! The map of the setup, used in path planning and modelling.
     SetupMap m_setupMap;
+    //! The path planning settings.
+    PathPlanningSettings m_pathPlanningSettings;
+    //! The potential field obstacle avoidance settings.
+    PotentialFieldSettings m_potentialFieldSettings;
     //! The number of animals used in the experiment.
     int m_numberOfAnimals;
     //! The fish model parameters.

@@ -10,6 +10,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QQueue>
 #include <QtCore/QtMath>
+#include <QtCore/QTimer>
 
 #include <chrono>
 
@@ -42,13 +43,13 @@ signals:
 
 public slots:
     //! New tracking results arrive.
-    void onNewData(SetupType::Enum setupType, TimestampedWorldAgentData agentsData);
+    void onNewData(SetupType::Enum setupType, TimestampedWorldAgentsData agentsData);
 
 private:
     //! Find the best match to the provided timestamp in the given queue.
     bool getDataByTimestamp(std::chrono::milliseconds timestamp,
-                              QQueue<TimestampedWorldAgentData>&,
-                              TimestampedWorldAgentData&);
+                              QQueue<TimestampedWorldAgentsData>&,
+                              TimestampedWorldAgentsData&);
     //! Merges together two data sets by adding newly received agents to
     //! already available and removing the duplicates.
     void matchAgents(QList<AgentDataWorld>& currentAgents, QList<AgentDataWorld>& agentsToJoin, QList<AgentDataWorld>& joinedAgentsList);
@@ -67,7 +68,7 @@ private:
 
 private:
     //! The tracking results recieved from various sources.
-    QMap<SetupType::Enum, QQueue<TimestampedWorldAgentData>> m_trackingData;
+    QMap<SetupType::Enum, QQueue<TimestampedWorldAgentsData>> m_trackingData;
 
     //! The source whose input that triggers the input data processing,
     //! normally it's the source that provide the most advanced data.
@@ -85,13 +86,13 @@ private:
 
     // TODO : to move this values out to the settings
     //! If two agents are closer than this value they are considered as the same.
-    static constexpr float IdentityDistanceThresholdMeters = 0.025; // [m], i.e. 2.5 cm
+    static constexpr float IdentityDistanceThresholdMeters = 0.05; // [m], i.e. 5 cm
     //! The threshold for the orientations to check that they correspond.
     static constexpr float OrientationThresholdRad = M_PI / 8; // i.e. 22.5 degrees
     //! The weight coefficient for the angle in the cost function.
     static constexpr float OrientationWeightCoefficient = 0.001 * 180 / M_PI; // i.e. 10 degrees of disallignment correspond to the offset of 1 cm
     //! The weighted threshold taking into account the orientation and distance thresholds.
-    static constexpr float WeightedThreshold = IdentityDistanceThresholdMeters + OrientationThresholdRad * OrientationWeightCoefficient;
+    static constexpr float WeightedThreshold = IdentityDistanceThresholdMeters /*+ OrientationThresholdRad * OrientationWeightCoefficient*/;
     //! The penalty for the invalid orientation.
     static constexpr float InvalidOrientationPenaltyRad = M_PI / 16; // i.e. 11.25 degrees
 
@@ -101,6 +102,11 @@ private:
     //! Keeps the coordinates conversion map in case if we need to export results in
     //! the image coordinates.
     QMap<SetupType::Enum, CoordinatesConversionPtr> m_coordinatesConversions;
+
+    // TODO : this class seems to be a good place to connect a simulator's agent
+    // positions' output
+    //! A timer used for debug purposes.
+    QTimer timerForTest;
 };
 
 #endif // CATS2_TRACKING_DATA_MANAGER_HPP

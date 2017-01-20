@@ -20,7 +20,7 @@ TrackingData::TrackingData(SetupType::Enum setupType,
     m_setupType(setupType),
     m_coordinatesConversion(coordinatesConversion)
 {
-    qRegisterMetaType<QList<AgentDataImage>>("QList<AgentDataImage>");
+    qRegisterMetaType<TimestampedImageAgentsData>("TimestampedImageAgentsData");
 
     // create the tracking routine
     m_trackingRoutine = TrackerFactory::createTrackingRoutine(setupType, inputQueue, debugQueue);
@@ -55,11 +55,11 @@ TrackingData::~TrackingData()
  * Gets the agents from the tracking routine, converts their position in the  world coordinates
  * and sends them further.
  */
-void TrackingData::onTrackedAgents(QList<AgentDataImage> imageAgents)
+void TrackingData::onTrackedAgents(TimestampedImageAgentsData timestampedImageAgents)
 {
     if (!m_coordinatesConversion.isNull() && m_coordinatesConversion->isValid()) {
-        TimestampedWorldAgentData timestampedAgentsData;
-        foreach (AgentDataImage imageAgent, imageAgents) {
+        TimestampedWorldAgentsData timestampedWorldAgents;
+        foreach (AgentDataImage imageAgent, timestampedImageAgents.agentsData) {
             // only agents with valid positions are sent further
             if (imageAgent.state().position().isValid()) {
                 PositionMeters worldPosition = m_coordinatesConversion->imageToWorldPosition(imageAgent.state().position());
@@ -68,16 +68,18 @@ void TrackingData::onTrackedAgents(QList<AgentDataImage> imageAgents)
                 AgentDataWorld worldAgent(imageAgent.id(),
                                           imageAgent.type(),
                                           StateWorld(worldPosition, worldOrientation));
-                timestampedAgentsData.agentsData.append(worldAgent);
-                // all agents with valid positions must share the same timestamp
-                timestampedAgentsData.timestamp = imageAgent.timestamp();
+                timestampedWorldAgents.agentsData.append(worldAgent);
             }
         }
-        if (!timestampedAgentsData.agentsData.isEmpty())
-            emit trackedAgents(m_setupType, timestampedAgentsData);
-        else {
+//        if (!timestampedAgentsData.agentsData.isEmpty()) {
+            // NOTE : we send the data even if the tracking doesn't find any
+            // agents and thus we don't block the tracking result's matching and
+            // the visualization.
+            timestampedWorldAgents.timestamp = timestampedImageAgents.timestamp;
+            emit trackedAgents(m_setupType, timestampedWorldAgents);
+//        } else {
 //            qDebug() << Q_FUNC_INFO << "Among received agents there is no one with valid position";
-        }
+//        }
     } else {
         qDebug() << Q_FUNC_INFO << "Unable to convert the image coordinates to the world coordinates";
     }

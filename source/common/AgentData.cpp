@@ -42,8 +42,7 @@ QString AgentDataWorld::label() const
 AgentDataImage::AgentDataImage(QString id, AgentType type, StateImage stateImage) :
     m_id(id),
     m_type(type),
-    m_state(stateImage),
-    m_timestamp(std::chrono::milliseconds())
+    m_state(stateImage)
 {
 
 }

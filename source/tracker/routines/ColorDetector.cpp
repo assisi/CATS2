@@ -122,7 +122,6 @@ void ColorDetector::doTracking(const TimestampedFrame& frame)
             if (agentIndex < m_agents.size()) {
                 m_agents[agentIndex].mutableState()->setPosition(cv::Point2f(static_cast<float>(moments.m10/moments.m00+0.5),
                                                                              static_cast<float>(moments.m01/moments.m00+0.5)));
-                m_agents[agentIndex].setTimestamp(m_currentTimestamp);
                 agentIndex++;
             } else {
                 break;

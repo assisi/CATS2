@@ -35,11 +35,13 @@ public:
     {
         if (isSet()) {
             std::chrono::milliseconds timeNow = std::chrono::duration_cast
-                     <std::chrono::milliseconds>(std::chrono::system_clock::now()
-                                                 .time_since_epoch());
-                     return (std::chrono::duration_cast
-                             <std::chrono::duration<double,std::ratio<1,1>>>
-                             (timeNow - m_startTime).count() >  timeOutSec);
+                    <std::chrono::milliseconds>(std::chrono::system_clock::now()
+                                                .time_since_epoch());
+//            qDebug() << Q_FUNC_INFO << QString("Count %1 seconds")
+//                        .arg(std::chrono::duration_cast<std::chrono::duration<double,std::ratio<1,1>>>(timeNow - m_startTime).count());
+            return (std::chrono::duration_cast
+                    <std::chrono::duration<double,std::ratio<1,1>>>
+                    (timeNow - m_startTime).count() >  timeOutSec);
         } else {
             qDebug() << Q_FUNC_INFO << "Timer is not set";
             return true;
