@@ -240,9 +240,29 @@ void FishBot::stepExperimentManager()
     if (controlData.controlMode != ControlModeType::UNDEFINED) {
         setControlMode(controlData.controlMode);
 
-        // if the control map is set and we can set motion patterns
-        if ((currentControlMode() == controlData.controlMode) && supportsMotionPatterns())
-            if (controlData.motionPattern != MotionPatternType::UNDEFINED)
+        // if the control map is set 
+        if ((currentControlMode() == controlData.controlMode)) {
+            // and if we can set motion patterns
+            if (supportsMotionPatterns() && (controlData.motionPattern != MotionPatternType::UNDEFINED))
                 setMotionPattern(controlData.motionPattern);
+        
+            // if the control mode is uses the extra control data
+            switch (controlData.controlMode) {
+            case ControlModeType::GO_TO_POSITION:
+            {
+                PositionMeters targetPosition;
+                controlData.data.fromValue(targetPosition);
+                goToPosition(targetPosition);
+                break;
+            }
+            case ControlModeType::GO_STRAIGHT:
+            case ControlModeType::IDLE:
+            case ControlModeType::MANUAL:
+            case ControlModeType::MODEL_BASED:
+            case ControlModeType::UNDEFINED:
+            default:
+                break;
+            }
+        }
     }
 }
