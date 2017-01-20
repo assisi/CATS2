@@ -2,7 +2,7 @@ function(makeLink sourceFilePath destinationFilePath)
     if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/${destinationFilePath})
         execute_process(COMMAND ln -s ${CMAKE_SOURCE_DIR}/${sourceFilePath} ${destinationFilePath}
                         WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
-endif()
+    endif()
 endfunction()
 
 # Add the qt-aseba interface files to the project, before tried with add_custom_command but it never worked
