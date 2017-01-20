@@ -10,11 +10,33 @@
 class InitiationControllerSettingsData
 {
 public:
+    //! The trigger event to leave the room.
+    enum DepartureTrigger
+    {
+        ON_TIME_OUT,
+        WHEN_IN_GROUP
+    };
+
     //! Constructor.
     InitiationControllerSettingsData() :
         m_controlAreasFileName(),
-        m_departureTimeOutSec(5.)
+        m_depatureTrigger(ON_TIME_OUT),
+        m_departureTimeOutSec(5.),
+        m_fishFollowCheckTimeOutSec(5.),
+        m_maximalFishNumberAllowedToStay(0)
     {}
+
+public:
+    //! Gets the type of the departure trigger from the settings' string.
+    static DepartureTrigger depatureTriggerFromSettingsString(QString name)
+    {
+        if (name.toLower() == "timeOut")
+            return ON_TIME_OUT;
+        else if (name.toLower() == "inGroup")
+            return WHEN_IN_GROUP;
+        else
+            return ON_TIME_OUT;
+    }
 
 public:
     //! Returns the path to the file describine the control areas.
@@ -25,6 +47,31 @@ public:
         m_controlAreasFileName = controlAreasFileName;
     }
 
+    //! Sets the departure trigger.
+    void setDepartureTrigger(QString name)
+    {
+        m_depatureTrigger = depatureTriggerFromSettingsString(name);
+    }
+
+    //! Returns the number of fish that should be around the robot when it leaves.
+    int fishNumberAroundOnDeparture() const
+    {
+        return m_fishNumberAroundOnDeparture;
+    }
+    //! Set the number of fish that should be around the robot when it leaves.
+    void setFishNumberAroundOnDeparture(int fishNumberAroundOnDeparture)
+    {
+        m_fishNumberAroundOnDeparture = fishNumberAroundOnDeparture;
+    }
+
+    //! Returns the radius around the robot where we search for fish.
+    double groupRadius() const { return m_groupRadius; }
+    //! Set the radius around the robot where we search for fish.
+    void setGroupRadius(double groupRadius)
+    {
+        m_groupRadius = groupRadius;
+    }
+
     //! Returns the time to wait before trying the initiation procedure.
     double departureTimeOutSec() const { return m_departureTimeOutSec; }
     //! Set the time to wait before trying the initiation procedure.
@@ -33,9 +80,9 @@ public:
         m_departureTimeOutSec = departureTimeOutSec;
     }
 
-    //! Returns the time to wait before trying the initiation procedure.
+    //! Returns the time to wait before checking that the fish follow.
     double fishFollowCheckTimeOutSec() const { return m_fishFollowCheckTimeOutSec; }
-    //! Set the time to wait before trying the initiation procedure.
+    //! Set the time to wait before checking that the fihs follow.
     void setFishFollowCheckTimeOutSec(double fishFollowCheckTimeOutSec)
     {
         m_fishFollowCheckTimeOutSec = fishFollowCheckTimeOutSec;
@@ -52,11 +99,22 @@ public:
         m_maximalFishNumberAllowedToStay = maximalFishNumberAllowedToStay;
     }
 
+    //! Does the robot try initiation on the timeout?
+    bool departureOnTimeOut() const { return (m_depatureTrigger == ON_TIME_OUT);}
+    //! Does the robot try initiation when it's in a group?
+    bool departureWhenInGroup() const { return (m_depatureTrigger == WHEN_IN_GROUP);}
+
 protected:
     //! The path to the file describine the control areas.
     QString m_controlAreasFileName;
+    //! The trigger event to leave the room.
+    DepartureTrigger m_depatureTrigger;
     //! The time the robot waits before trying the initiation procedure.
     double m_departureTimeOutSec;
+    //! The number of fish that should be around the robot when it leaves.
+    int m_fishNumberAroundOnDeparture;
+    //! The radius around the robot where we search for fish.
+    double m_groupRadius;
     //! The time the robot waits before checking if the fish follow it.
     double m_fishFollowCheckTimeOutSec;
     //! The maximal number of fish that is allowed to stay behind the robot.

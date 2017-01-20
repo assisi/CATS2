@@ -66,9 +66,17 @@
             </controlMap>
             <initiation>
                 <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
-                <departureTimeOutSec>5</departureTimeOutSec>
                 <fishFollowCheckTimeOutSec>5</fishFollowCheckTimeOutSec>
                 <maximalFishNumberAllowedToStay>3</maximalFishNumberAllowedToStay>
+                <!-- timeOut / inGroup -->
+                <departureTrigger>timeOut</departureTrigger>
+                <departureOnTimeOut>
+                    <departureTimeOutSec>5</departureTimeOutSec>
+                </departureOnTimeOut>
+                <departureWhenInGroup>
+                    <fishNumberAround>2</fishNumberAround>
+                    <groupRadius>0.20</groupRadius>
+                </departureWhenInGroup>
             </initiation>
         </controllers>
         <fishBot_1>

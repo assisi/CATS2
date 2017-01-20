@@ -44,11 +44,29 @@ bool InitiationControllerSettings::init(QString configurationFileName)
                                    QDir::separator() +
                                    QString::fromStdString(controlAreasFilePath));
 
+    // read the departure trigger
+    std::string departureTrigger = "";
+    settings.readVariable(QString("%1/departureTrigger").arg(m_settingPathPrefix),
+                          departureTrigger, departureTrigger);
+    m_data.setDepartureTrigger(QString::fromStdString(departureTrigger));
+
     // read the departure timeout
     double value;
-    settings.readVariable(QString("%1/departureTimeOutSec").arg(m_settingPathPrefix),
+    settings.readVariable(QString("%1/departureOnTimeOut/departureTimeOutSec")
+                          .arg(m_settingPathPrefix),
                           value, m_data.departureTimeOutSec());
     m_data.setDepartureTimeOutSec(value);
+
+    // read the departure number of fish
+    int fishNumber;
+    settings.readVariable(QString("%1/departureWhenInGroup/fishNumberAround").arg(m_settingPathPrefix),
+                          fishNumber, m_data.fishNumberAroundOnDeparture());
+    m_data.setFishNumberAroundOnDeparture(fishNumber);
+
+    // read the radius around the robot where we search for fish.
+    settings.readVariable(QString("%1/departureWhenInGroup/groupRadius").arg(m_settingPathPrefix),
+                          value, m_data.groupRadius());
+    m_data.setGroupRadius(value);
 
     // read the following check timeout
     settings.readVariable(QString("%1/fishFollowCheckTimeOutSec").arg(m_settingPathPrefix),
@@ -56,7 +74,6 @@ bool InitiationControllerSettings::init(QString configurationFileName)
     m_data.setFishFollowCheckTimeOutSec(value);
 
     // read the fish staying limit number
-    int fishNumber;
     settings.readVariable(QString("%1/maximalFishNumberAllowedToStay").arg(m_settingPathPrefix),
                           fishNumber, m_data.maximalFishNumberAllowedToStay());
     m_data.setMaximalFishNumberAllowedToStay(fishNumber);

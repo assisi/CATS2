@@ -188,23 +188,42 @@ ExperimentController::ControlData InitiationController::changeRoom()
  */
 bool InitiationController::timeToDepart()
 {
-
-    // timer started
-    if (m_departureTimer.isSet()) {
-        // if time out?
-        if (m_departureTimer.isTimedOutSec(m_settings.departureTimeOutSec())) {
-            qDebug() << Q_FUNC_INFO << "Changing the room on timeout";
-            // change the room
-            m_departureTimer.clear();
-            return true;
+    if (m_settings.departureOnTimeOut()) {
+        // timer started
+        if (m_departureTimer.isSet()) {
+            // if time out?
+            if (m_departureTimer.isTimedOutSec(m_settings.departureTimeOutSec())) {
+                qDebug() << Q_FUNC_INFO << "Changing the room on timeout";
+                // change the room
+                m_departureTimer.clear();
+                return true;
+            } else {
+                // need to wait more => do nothing
+                return false;
+            }
         } else {
-            // need to wait more => do nothing
+            // start the timer
+            m_departureTimer.reset();
             return false;
         }
-    } else {
-        // start the timer
-        m_departureTimer.reset();
-        return false;
+    } else if (m_settings.departureWhenInGroup()) {
+        int fishAroundRobot = 0;
+        PositionMeters robotPosition = m_robot->state().position();
+        if (robotPosition.isValid()) {
+            for (auto const& fishState : m_robot->fishStates()) {
+                if (fishState.position().isValid() &&
+                        (fishState.position().distance2DTo(robotPosition)
+                         < m_settings.groupRadius())) {
+                    fishAroundRobot++;
+                }
+            }
+            // if enough fish are close to the robot
+            if (fishAroundRobot >= m_settings.fishNumberAroundOnDeparture())
+                return true;
+            else
+                return false;
+        } else
+            return false;
     }
 }
 
