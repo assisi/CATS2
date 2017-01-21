@@ -64,6 +64,9 @@ public:
     //! Sets the obstacle avoidance usage flag.
     void setUseObstacleAvoidance(bool useObstacleAvoidance);
 
+    //! Sets the local obstacle avoidance on the robot.
+    void updateLocalObstacleAvoidance();
+
 public:
     //! The type of the on-board obstacle avoidance
     enum LocalObstacleAvoidanceType
@@ -100,6 +103,8 @@ private:
     void setTargetSpeed(TargetSpeed* targetSpeed);
     //! Manages the target position control.
     void setTargetPosition(TargetPosition* targetPostion);
+    //! Manages the local obstacle avoidance on the robot.
+    void setLocalObstacleAvoidanceForMotionPattern(MotionPatternType::Enum motionPattern);
 
     //! Computes the turn angle based on the robot's orientation,
     //! position and the target position.

@@ -15,7 +15,7 @@
 FishBot::FishBot(QString id) :
     QObject(nullptr),
     m_id(id),
-    m_name(QString("Fish_bot_%1").arg(m_id)),
+    m_name(QString("Fish_bot_%1").arg(m_id)), // NOTE : don't change this name as the .aesl files are searched by it
     m_ledColor(Qt::black),
     m_state(),
     m_robotInterface(nullptr),
@@ -92,6 +92,8 @@ void FishBot::setupConnection(int robotIndex)
                 Values data;
                 data.append(robotIndex);
                 m_robotInterface->setVariable(m_name, "IDControl", data);
+                // set the obstacle avoidance on the robot
+                m_navigation.updateLocalObstacleAvoidance();
             } else {
                 qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
             }

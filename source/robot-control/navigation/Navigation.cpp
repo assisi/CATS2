@@ -116,21 +116,39 @@ void Navigation::setTargetPosition(TargetPosition* targetPosition)
 }
 
 /*!
+ * Manages the local obstacle avoidance on the robot.
+ */
+void Navigation::setLocalObstacleAvoidanceForMotionPattern(MotionPatternType::Enum motionPattern)
+{
+    switch (motionPattern) {
+    case MotionPatternType::FISH_MOTION:
+        sendLocalObstacleAvoidance(LocalObstacleAvoidanceType::TURN_AND_GO);
+        break;
+    case MotionPatternType::PID:
+    default:
+        sendLocalObstacleAvoidance(LocalObstacleAvoidanceType::BRAITENBERG);
+        break;
+    }
+}
+
+/*!
  * Sends the motor speed to the robot.
  */
 void Navigation::sendMotorSpeed(int leftSpeed, int rightSpeed)
 {
-    // TODO : to add some safety checks on the speed and eventually convertions
+    if (m_robot->robotInterface()) {
+        // TODO : to add some safety checks on the speed and eventually convertions
 
-    // event to send
-    QString eventName;
-    // data to send
-    Values data;
+        // event to send
+        QString eventName;
+        // data to send
+        Values data;
 
-    eventName = "MotorControl" + m_robot->name();
-    data.append(leftSpeed);
-    data.append(rightSpeed);
-    m_robot->robotInterface()->sendEventName(eventName, data);
+        eventName = "MotorControl" + m_robot->name();
+        data.append(leftSpeed);
+        data.append(rightSpeed);
+        m_robot->robotInterface()->sendEventName(eventName, data);
+    }
 }
 
 /*!
@@ -152,24 +170,26 @@ void Navigation::sendMotorSpeed(double angularSpeed)
  */
 void Navigation::sendFishMotionParameters(int angle, int distance, int speed)
 {
-    // event to send
-    QString eventName;
-    // data to send
-    Values data;
+    if (m_robot->robotInterface()) {
+        // event to send
+        QString eventName;
+        // data to send
+        Values data;
 
-    // bound the angle
-    if(angle >100)
-        angle = 100;
-    else if (angle <-100)
-        angle = -100;
+        // bound the angle
+        if(angle >100)
+            angle = 100;
+        else if (angle <-100)
+            angle = -100;
 
-    // TODO : to check other parameters
+        // TODO : to check other parameters
 
-    eventName = "FishBehavior" + m_robot->name();
-    data.append(angle);
-    data.append(distance);
-    data.append(speed);
-    m_robot->robotInterface()->sendEventName(eventName, data);
+        eventName = "FishBehavior" + m_robot->name();
+        data.append(angle);
+        data.append(distance);
+        data.append(speed);
+        m_robot->robotInterface()->sendEventName(eventName, data);
+    }
 }
 
 /*!
@@ -177,14 +197,16 @@ void Navigation::sendFishMotionParameters(int angle, int distance, int speed)
  */
 void Navigation::sendLocalObstacleAvoidance(LocalObstacleAvoidanceType type)
 {
-    // event to send
-    QString eventName;
-    // data to send
-    Values data;
+    if (m_robot->robotInterface()) {
+        // event to send
+        QString eventName;
+        // data to send
+        Values data;
 
-    data.append(type);
-    eventName = "SetObstacleAvoidance" + m_robot->name();
-    m_robot->robotInterface()->sendEventName(eventName, data);
+        data.append(type);
+        eventName = "SetObstacleAvoidance" + m_robot->name();
+        m_robot->robotInterface()->sendEventName(eventName, data);
+    }
 }
 
 /*!
@@ -282,15 +304,7 @@ void Navigation::setMotionPattern(MotionPatternType::Enum type)
         m_fishMotionStepCounter = 0;
 
         // set the corresponding obstacle avoidance type on the robot
-        switch (type) {
-        case MotionPatternType::FISH_MOTION:
-            sendLocalObstacleAvoidance(LocalObstacleAvoidanceType::TURN_AND_GO);
-            break;
-        case MotionPatternType::PID:
-        default:
-            sendLocalObstacleAvoidance(LocalObstacleAvoidanceType::BRAITENBERG);
-            break;
-        }
+        setLocalObstacleAvoidanceForMotionPattern(type);
 
         // notify on changes
         emit notifyMotionPatternChanged(type);
@@ -353,6 +367,14 @@ void Navigation::setUseObstacleAvoidance(bool useObstacleAvoidance)
         m_useObstacleAvoidance = useObstacleAvoidance;
         emit notifyUseObstacleAvoidanceChanged(m_useObstacleAvoidance);
     }
+}
+
+/*!
+ * Sets the local obstacle avoidance on the robot.
+ */
+void Navigation::updateLocalObstacleAvoidance()
+{
+    setLocalObstacleAvoidanceForMotionPattern(m_motionPattern);
 }
 
 /*!
