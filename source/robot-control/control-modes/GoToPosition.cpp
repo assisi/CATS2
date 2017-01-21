@@ -20,7 +20,7 @@ ControlTargetPtr GoToPosition::step()
     if (m_targetPosition.isValid())
         return ControlTargetPtr(new TargetPosition(m_targetPosition));
     else
-        return ControlTargetPtr();
+        return ControlTargetPtr(new TargetSpeed(0.0, 0.0));
 }
 
 /*!
@@ -28,8 +28,10 @@ ControlTargetPtr GoToPosition::step()
  */
 void GoToPosition::setTargetPosition(PositionMeters position)
 {
-    m_targetPosition = position;
-    qDebug() << Q_FUNC_INFO << m_robot->name() << "got new target position" << position.toString();
+    if (m_targetPosition != position) {
+        m_targetPosition = position;
+        qDebug() << Q_FUNC_INFO << m_robot->name() << "got new target position" << position.toString();
+    }
 }
 
 /*!
