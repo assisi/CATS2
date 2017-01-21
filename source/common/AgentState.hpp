@@ -93,7 +93,7 @@ public:
         if (m_valid)
             return QObject::tr("%1 m, %2 m").arg(m_x, 0, 'f', 3).arg(m_y, 0, 'f', 3);
         else
-            return QObject::tr("- m, - m");
+            return QObject::tr("%1 m, %2 m (invalid)").arg(m_x, 0, 'f', 3).arg(m_y, 0, 'f', 3);
     }
 
     double distanceTo(const PositionMeters& other)

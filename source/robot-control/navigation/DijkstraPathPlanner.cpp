@@ -18,7 +18,8 @@ bool operator<(QPoint const& p1, QPoint const& p2)
  * Constructor.
  */
 DijkstraPathPlanner::DijkstraPathPlanner() :
-    GridBasedMethod(RobotControlSettings::get().pathPlanningSettings().gridSizeMeters())
+    GridBasedMethod(RobotControlSettings::get().pathPlanningSettings().gridSizeMeters()),
+    m_gotErrorOnPreviousStep(false)
 {
     m_valid = init();
     if (m_valid)
@@ -106,50 +107,66 @@ void DijkstraPathPlanner::addEdge(PositionMeters firstPoint, PositionMeters seco
  */
 QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint, PositionMeters goalPoint)
 {
-    if (m_setupMap.containsPoint(startPoint) && m_setupMap.containsPoint(goalPoint)) {
-        Vertex startVertex = m_gridNodeToVertexMap[positionToGridNode(startPoint)];
-        Vertex goalVertex = m_gridNodeToVertexMap[positionToGridNode(goalPoint)];
-
-        // create vectors to store the predecessors (p) and the distances from the root (d)
-        std::vector<Vertex> predecessors(num_vertices(m_graph));
-        std::vector<float> distances(num_vertices(m_graph));
-
-        // evaluate Dijkstra on graph g with source s, predecessor_map p and distance_map d
-        boost::dijkstra_shortest_paths(m_graph, startVertex, boost::predecessor_map(&predecessors[0]).distance_map(&distances[0]));
-
-        //reconstruct the shortest path based on the parent list
-        std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor > shortestPath;
-        boost::graph_traits<UndirectedGraph>::vertex_descriptor currentVertex = goalVertex;
-        while(currentVertex != startVertex)
-        {
-            shortestPath.push_back(currentVertex);
-            currentVertex = predecessors[currentVertex];
+    if (! m_setupMap.containsPoint(startPoint)) {
+        if (! m_gotErrorOnPreviousStep) {
+            qDebug() << Q_FUNC_INFO
+                     << QString("Start position is outside of the working space: %1, path planning stopped")
+                        .arg(startPoint.toString());
+            m_gotErrorOnPreviousStep = true;
         }
-        shortestPath.push_back(startVertex);
-
-        // get the path in world coordinates
-        QQueue<PositionMeters> path;
-        std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor >::reverse_iterator it;
-        QPoint point;
-        double shortestDistance = 0;
-        for (it = shortestPath.rbegin(); it != shortestPath.rend(); ++it)
-        {
-            point.setX(m_graph[*it].col);
-            point.setY(m_graph[*it].row);
-            PositionMeters position = gridNodeToPosition(point);
-            if (path.size() > 0)
-                shortestDistance += path.last().distance2DTo(position);
-            path.enqueue(position);
-        }
-        qDebug() << Q_FUNC_INFO << QString("Shortest distance to the target is %1").arg(shortestDistance);
-
-        // simplify the path
-        simplifyPath(path);
-        return path;
-    } else {
-        qDebug() << Q_FUNC_INFO << "At least start or goal position are outside of the working space, path planning stopped";
         return QQueue<PositionMeters>();
     }
+    if (! m_setupMap.containsPoint(goalPoint)) {
+        if (! m_gotErrorOnPreviousStep) {
+            qDebug() << Q_FUNC_INFO
+                     << QString("Goal position is outside of the working space: %1, path planning stopped")
+                        .arg(goalPoint.toString());
+            m_gotErrorOnPreviousStep = true;
+        }
+        return QQueue<PositionMeters>();
+    }
+
+    m_gotErrorOnPreviousStep = false;
+
+    Vertex startVertex = m_gridNodeToVertexMap[positionToGridNode(startPoint)];
+    Vertex goalVertex = m_gridNodeToVertexMap[positionToGridNode(goalPoint)];
+
+    // create vectors to store the predecessors (p) and the distances from the root (d)
+    std::vector<Vertex> predecessors(num_vertices(m_graph));
+    std::vector<float> distances(num_vertices(m_graph));
+
+    // evaluate Dijkstra on graph g with source s, predecessor_map p and distance_map d
+    boost::dijkstra_shortest_paths(m_graph, startVertex, boost::predecessor_map(&predecessors[0]).distance_map(&distances[0]));
+
+    //reconstruct the shortest path based on the parent list
+    std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor > shortestPath;
+    boost::graph_traits<UndirectedGraph>::vertex_descriptor currentVertex = goalVertex;
+    while(currentVertex != startVertex)
+    {
+        shortestPath.push_back(currentVertex);
+        currentVertex = predecessors[currentVertex];
+    }
+    shortestPath.push_back(startVertex);
+
+    // get the path in world coordinates
+    QQueue<PositionMeters> path;
+    std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor >::reverse_iterator it;
+    QPoint point;
+    double shortestDistance = 0;
+    for (it = shortestPath.rbegin(); it != shortestPath.rend(); ++it)
+    {
+        point.setX(m_graph[*it].col);
+        point.setY(m_graph[*it].row);
+        PositionMeters position = gridNodeToPosition(point);
+        if (path.size() > 0)
+            shortestDistance += path.last().distance2DTo(position);
+        path.enqueue(position);
+    }
+//    qDebug() << Q_FUNC_INFO << QString("Shortest distance to the target is %1").arg(shortestDistance);
+
+    // simplify the path
+    simplifyPath(path);
+    return path;
 }
 
 /*!

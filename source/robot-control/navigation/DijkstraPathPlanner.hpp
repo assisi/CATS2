@@ -79,6 +79,9 @@ private:
 
     //! Maps the grid nodes' coordinates to the vertices descriptors in the graph.
     QMap <QPoint, Vertex>  m_gridNodeToVertexMap;
+
+    //! A flag to limit the number of error messages.
+    bool m_gotErrorOnPreviousStep;
 };
 
 #endif // CATS2_DIJKSTRA_PATH_PLANNER_HPP

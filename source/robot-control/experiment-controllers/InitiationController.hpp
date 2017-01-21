@@ -35,6 +35,9 @@ private:
         GOING_BACK          // return back to the original room if fail
     };
 
+    //! Converts the state to the string for the output.
+    QString stateToString(State state);
+
 private:
     //! Updates the current state.
     void updateState(State state);

@@ -50,7 +50,8 @@ bool ControlModeStateMachine::setControlMode(ControlModeType::Enum type)
     }
 
     if (type != m_currentControlMode) {
-        qDebug() << QString("Changing the control mode from %1 to %2 for %3")
+        qDebug() << Q_FUNC_INFO
+                 << QString("Changing the control mode from %1 to %2 for %3")
                     .arg(ControlModeType::toString(m_currentControlMode))
                     .arg(ControlModeType::toString(type))
                     .arg(m_robot->name());

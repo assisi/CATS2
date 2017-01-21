@@ -70,6 +70,11 @@ void InitiationController::start()
 void InitiationController::updateState(State state)
 {
     if (m_state != state) {
+        qDebug() << Q_FUNC_INFO
+                 << QString("%1 state changed from %2 to %3")
+                    .arg(m_robot->name())
+                    .arg(stateToString(m_state))
+                    .arg(stateToString(state));
         m_state = state;
     }
 }
@@ -128,10 +133,11 @@ ExperimentController::ControlData InitiationController::changeRoom()
             // save the original room
             m_departureAreaId = m_robotAreaId;
             // change the state to CHANGING_ROOM
+            qDebug() << Q_FUNC_INFO << QString("%1 changes the room to %2 (%3)")
+                        .arg(m_robot->name())
+                        .arg(m_targetAreaId)
+                        .arg(m_controlAreas[m_targetAreaId]->centroid().toString());
             updateState(CHANGING_ROOM);
-            qDebug() << Q_FUNC_INFO << QString("%1 changes the room to %2")
-                        .arg(m_robot->id())
-                        .arg(m_targetAreaId);
             // start the check-that-fish-follow timer
             m_fishFollowCheckTimer.reset();
         } else {
@@ -170,7 +176,7 @@ ExperimentController::ControlData InitiationController::changeRoom()
         if (m_robot->state().position().closeTo(m_controlAreas[m_departureAreaId]->centroid()))
         {
             qDebug() << Q_FUNC_INFO << QString("%1 returned to the departure room %2")
-                        .arg(m_robot->id())
+                        .arg(m_robot->name())
                         .arg(m_departureAreaId);
             // switch to SWIMMING_WITH_FISH
             updateState(SWIMMING_WITH_FISH);
@@ -218,8 +224,11 @@ bool InitiationController::timeToDepart()
                 }
             }
             // if enough fish are close to the robot
-            if (fishAroundRobot >= m_settings.fishNumberAroundOnDeparture())
+            if (fishAroundRobot >= m_settings.fishNumberAroundOnDeparture()) {
+                qDebug() << Q_FUNC_INFO << QString("Detected %1 fish, changing the room")
+                            .arg(fishAroundRobot);
                 return true;
+            }
             else
                 return false;
         } else
@@ -260,4 +269,25 @@ ExperimentController::ControlData InitiationController::stateControlData()
     }
 
     return controlData;
+}
+
+/*!
+ * Converts the state to the string for the output.
+ */
+QString InitiationController::stateToString(State state)
+{
+    switch (state) {
+    case SWIMMING_WITH_FISH:
+        return "Swimming-with-fish";
+        break;
+    case CHANGING_ROOM:
+        return "Changing-room";
+        break;
+    case GOING_BACK:
+        return "Going-back";
+        break;
+    default:
+        return "Undefined";
+        break;
+    }
 }

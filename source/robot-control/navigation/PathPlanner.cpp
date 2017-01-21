@@ -44,7 +44,7 @@ PositionMeters PathPlanner::currentWaypoint(PositionMeters currentPosition,
         if (! m_subTargetsQueue.isEmpty()) {
             m_currentSubTargetPosition = m_subTargetsQueue.dequeue();
         } else {
-            qDebug() << Q_FUNC_INFO << "At destination";
+//            qDebug() << Q_FUNC_INFO << "At destination";
             clearTrajectory();
         }
     }
