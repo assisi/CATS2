@@ -75,7 +75,7 @@ void ControlArea::updateCentroid()
         for (const auto& vertice : m_polygons.at(0)) {
             centroid += vertice;
         }
-        centroid /= m_polygons.size();
+        centroid /= m_polygons.at(0).size();
         m_centroid = centroid;
     }
 }
