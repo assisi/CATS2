@@ -6,7 +6,6 @@
 #include "RobotControlPointerTypes.hpp"
 
 #include <QtCore/QObject>
-#include <QtCore/QScopedPointer>
 #include <QtCore/QMap>
 
 class FishBot;

@@ -4,10 +4,13 @@
 #include "ViewerPointerTypes.hpp"
 
 #include <AgentData.hpp>
+#include <Timer.hpp>
 
 #include <QtCore/QObject>
 #include <QtWidgets/QWidget>
 #include <QtGui/QPixmap>
+
+#include <memory>
 
 class FrameScene;
 class QGraphicsPixmapItem;
@@ -137,8 +140,12 @@ private: // agents items
     // into account that theoretically two agents coming from different sources
     // can have the same id.
     //! The colors of agents. Updated by robots.
-    // TODO : not used at the moment, to implement
     QMap<QString, QColor> m_agentColors;
+
+    //! The last update time for every objects, too old objects are hidden.
+    std::map<QString, std::unique_ptr<Timer>> m_agentUpdateTimer;
+    //! The timeout value to hide an item.
+    const double MaxUpdateTimeSec = 1.; // [s]
 
     //! The map containing the agent's id's with the corresponding label
     //!  on the scene. Updated by the tracker, always shown.

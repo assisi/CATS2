@@ -195,6 +195,7 @@ void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
             if (m_agentColors.contains(id))
                 m_agentLabels[id]->setColor(m_agentColors[id]);
             m_scene->addItem(m_agentLabels[id]);
+            m_agentUpdateTimer[id] = std::unique_ptr<Timer>(new Timer());
         }
         // set the position
         if (agentData.state().position().isValid()) {
@@ -204,11 +205,24 @@ void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
                 PositionPixels imagePosition = coordinatesConversion->worldToImagePosition(agentData.state().position());
                 m_agentLabels[id]->setPos(imagePosition.x(), imagePosition.y());
                 m_agentLabels[id]->setVisible(true);
+                m_agentUpdateTimer[id]->reset();
             } else {
                 qDebug() << Q_FUNC_INFO << "Unable to convert agent's world position to the image position";
             }
         } else {
             qDebug() << Q_FUNC_INFO << QString("The postion of %1 is invalid").arg(agentData.label());
+        }
+    }
+
+    // hide all items that were not updated since long
+    for (const auto& record : m_agentUpdateTimer) {
+        if (record.second->isSet()) {
+            if (record.second->isTimedOutSec(MaxUpdateTimeSec)) {
+                m_agentLabels[record.first]->hide();
+                record.second->clear();
+            }
+        } else {
+            m_agentLabels[record.first]->hide();
         }
     }
 }
@@ -262,6 +276,18 @@ void ViewerWidget::updateAgents(QList<AgentDataWorld> agentDataList)
             }
         } else {
             qDebug() << Q_FUNC_INFO << QString("The postion of %1 is invalid").arg(agentData.label());
+        }
+    }
+
+    // hide all items that were not updated since long
+    for (const auto& record : m_agentUpdateTimer) {
+        if (record.second->isSet()) {
+            if (record.second->isTimedOutSec(MaxUpdateTimeSec)) {
+                m_agents[record.first]->hide();
+                record.second->clear();
+            }
+        } else {
+            m_agents[record.first]->hide();
         }
     }
 }
