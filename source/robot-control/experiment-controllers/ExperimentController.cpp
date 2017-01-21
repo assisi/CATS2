@@ -116,24 +116,29 @@ void ExperimentController::updateAreasOccupation()
     QString areaId;
     if (findRobotArea(areaId)) {
         if (m_robotAreaId != areaId) {
-            qDebug() << QString("Robot %1 changed the room from %2 to %3")
-                        .arg(m_robot->id())
+            qDebug() << Q_FUNC_INFO
+                     << QString("%1 changed the room from %2 to %3")
+                        .arg(m_robot->name())
                         .arg(m_robotAreaId)
                         .arg(areaId);
             m_robotAreaId = areaId;
-        } else { // reset the variable
-            m_robotAreaId = "";
         }
+    } else {
+        // reset the variable
+        m_robotAreaId = "";
     }
     if (findFishArea(areaId)) {
         if (m_fishAreaId != areaId) {
-            qDebug() << QString("Most of fish is now in room %1 (before %2)")
-                        .arg(areaId)
-                        .arg(m_fishAreaId);
+//            qDebug() << Q_FUNC_INFO
+//                     << QString("Most of fish is now in room %1 (before %2) : %3")
+//                        .arg(areaId)
+//                        .arg(m_fishAreaId)
+//                        .arg(m_fishNumberByArea[areaId]);
             m_fishAreaId = areaId;
-        } else { // reset the variable
-            m_fishAreaId = "";
         }
+    } else {
+        // reset the variable
+        m_fishAreaId = "";
     }
 }
 
