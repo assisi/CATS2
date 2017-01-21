@@ -255,9 +255,10 @@ void FishBot::stepExperimentManager()
             switch (controlData.controlMode) {
             case ControlModeType::GO_TO_POSITION:
             {
-                PositionMeters targetPosition;
-                controlData.data.fromValue(targetPosition);
-                goToPosition(targetPosition);
+                if (controlData.data.canConvert<PositionMeters>()) {
+                    PositionMeters targetPosition(controlData.data.value<PositionMeters>());
+                    goToPosition(targetPosition);
+                }
                 break;
             }
             case ControlModeType::GO_STRAIGHT:
