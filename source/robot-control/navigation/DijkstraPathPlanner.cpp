@@ -3,9 +3,13 @@
 #include "settings/RobotControlSettings.hpp"
 
 #include <AgentState.hpp>
+#include <Timer.hpp>
 
 #include <QtCore/QQueue>
 #include <QtCore/QDebug>
+
+#include <boost/graph/dijkstra_shortest_paths.hpp>
+#include <boost/graph/connected_components.hpp>
 
 #include <limits>
 
@@ -82,6 +86,13 @@ bool DijkstraPathPlanner::init()
             row = 0;
             y = minY();
         }
+
+        // find connected components
+        m_componentByVertex.resize(boost::num_vertices(m_graph));
+        int num = boost::connected_components(m_graph, &m_componentByVertex[0]);
+        qDebug() << Q_FUNC_INFO
+                 << QString("The graph contains %1 connected components")
+                    .arg(num);
     }
 
     return successful;
@@ -107,50 +118,87 @@ void DijkstraPathPlanner::addEdge(PositionMeters firstPoint, PositionMeters seco
  */
 QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint, PositionMeters goalPoint)
 {
-    if (! m_setupMap.containsPoint(startPoint)) {
+    // the backup path to be suggested when we can't generate a good one
+    QQueue<PositionMeters> backupPath;
+    backupPath.enqueue(goalPoint);
+
+    // the grid nodes corresponding to the start and goal positions
+    QPoint startGridNode = positionToGridNode(startPoint);
+    QPoint goalGridNode = positionToGridNode(goalPoint);
+
+    // sanity checks: we verify that both grid nodes are inside the setup and
+    // thus might be connected; if the path planning can not be run they return
+    // the path consisting from a goal position
+    PositionMeters startGridNodePosition = gridNodeToPosition(startGridNode);
+    if (! m_setupMap.containsPoint(startGridNodePosition)) {
         if (! m_gotErrorOnPreviousStep) {
             qDebug() << Q_FUNC_INFO
-                     << QString("Start position is outside of the working space: %1, path planning stopped")
-                        .arg(startPoint.toString());
+                     << QString("Start grid node position is outside of the "
+                                "working space: %1, path planning stopped")
+                        .arg(startGridNodePosition.toString());
             m_gotErrorOnPreviousStep = true;
         }
-        return QQueue<PositionMeters>();
+        return backupPath;
     }
-    if (! m_setupMap.containsPoint(goalPoint)) {
+    PositionMeters goalGridNodePosition = gridNodeToPosition(goalGridNode);
+    if (! m_setupMap.containsPoint(goalGridNodePosition)) {
         if (! m_gotErrorOnPreviousStep) {
             qDebug() << Q_FUNC_INFO
-                     << QString("Goal position is outside of the working space: %1, path planning stopped")
-                        .arg(goalPoint.toString());
+                     << QString("Goal grid node position is outside of the "
+                                "working space: %1, path planning stopped")
+                        .arg(goalGridNodePosition.toString());
             m_gotErrorOnPreviousStep = true;
         }
-        return QQueue<PositionMeters>();
+        return backupPath;
     }
 
     m_gotErrorOnPreviousStep = false;
 
-    Vertex startVertex = m_gridNodeToVertexMap[positionToGridNode(startPoint)];
-    Vertex goalVertex = m_gridNodeToVertexMap[positionToGridNode(goalPoint)];
+    Vertex startVertex = m_gridNodeToVertexMap[startGridNode];
+    Vertex goalVertex = m_gridNodeToVertexMap[goalGridNode];
+
+    // first we check that both vertices belong to the same component and thus
+    // can be connected
+    if (m_componentByVertex[startVertex] != m_componentByVertex[goalVertex]) {
+        qDebug() << Q_FUNC_INFO
+                 << "Start and goal vertices belong to different graph "
+                    "components and can not be connected";
+        return backupPath;
+    }
 
     // create vectors to store the predecessors (p) and the distances from the root (d)
     std::vector<Vertex> predecessors(num_vertices(m_graph));
     std::vector<float> distances(num_vertices(m_graph));
 
     // evaluate Dijkstra on graph g with source s, predecessor_map p and distance_map d
-    boost::dijkstra_shortest_paths(m_graph, startVertex, boost::predecessor_map(&predecessors[0]).distance_map(&distances[0]));
+    boost::dijkstra_shortest_paths(m_graph, startVertex,
+                                   boost::predecessor_map(&predecessors[0]).distance_map(&distances[0]));
 
     //reconstruct the shortest path based on the parent list
-    std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor > shortestPath;
-    boost::graph_traits<UndirectedGraph>::vertex_descriptor currentVertex = goalVertex;
+    std::vector<Vertex> shortestPath;
+    Vertex currentVertex = goalVertex;
+    // this loop theoretically might run forever, for the security a timer is
+    // added that execute an "emergency" exit
+    Timer timeOutBreakTimer;
+    timeOutBreakTimer.reset();
     while(currentVertex != startVertex)
     {
         shortestPath.push_back(currentVertex);
         currentVertex = predecessors[currentVertex];
+
+        if (timeOutBreakTimer.isTimedOutSec(1.)) {
+            qDebug() << Q_FUNC_INFO
+                     << "Path planner was interrupted by a time-out; normally "
+                        "this should never happen";
+            return backupPath;
+        }
     }
     shortestPath.push_back(startVertex);
 
-    // get the path in world coordinates
+    // the resulted path
     QQueue<PositionMeters> path;
-    std::vector<boost::graph_traits<UndirectedGraph>::vertex_descriptor >::reverse_iterator it;
+    // get the path in world coordinates
+    std::vector<Vertex>::reverse_iterator it;
     QPoint point;
     double shortestDistance = 0;
     for (it = shortestPath.rbegin(); it != shortestPath.rend(); ++it)

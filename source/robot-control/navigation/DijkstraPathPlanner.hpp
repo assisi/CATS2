@@ -12,7 +12,6 @@
 #include <boost/config.hpp>
 #include <boost/graph/graph_traits.hpp>
 #include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/property_map/property_map.hpp>
 
 bool operator<(QPoint const& p1, QPoint const& p2);
@@ -66,8 +65,10 @@ private:
     //! to define frequently used properties that are automatically recognized
     //! and used by algorithms. The second template parameter passed to boost::
     //! property is the type of the property.
-    using UndirectedGraph = boost::adjacency_list <boost::vecS, boost::vecS, boost::undirectedS, vertexInfo,  /* boost::no_property */
-    boost::property<boost::edge_weight_t, double >>;
+    using UndirectedGraph = boost::adjacency_list
+                                <boost::vecS, boost::vecS,
+                                 boost::undirectedS, vertexInfo,
+                                 boost::property<boost::edge_weight_t, double >>;
     //! The vertex class.
     using Vertex = boost::graph_traits<UndirectedGraph>::vertex_descriptor;
 
@@ -79,6 +80,8 @@ private:
 
     //! Maps the grid nodes' coordinates to the vertices descriptors in the graph.
     QMap <QPoint, Vertex>  m_gridNodeToVertexMap;
+    //! The vector that contains to which component belongs every vertex.
+    std::vector<Vertex> m_componentByVertex;
 
     //! A flag to limit the number of error messages.
     bool m_gotErrorOnPreviousStep;
