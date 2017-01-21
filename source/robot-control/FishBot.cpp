@@ -134,8 +134,11 @@ void FishBot::stepControl()
 void FishBot::setControlMode(ControlModeType::Enum type)
 {
     if (m_controlStateMachine.currentControlMode() != type) {
-        // stop the robot for safety reason
-        m_navigation.stop();
+        // NOTE : this is disabled because
+        // (1) the fish never stop
+        // (2) it's better to manage the safety on the level of control modes
+//        // stop the robot for safety reason
+//        m_navigation.stop();
 
         // change the control mode
         m_controlStateMachine.setControlMode(type);
