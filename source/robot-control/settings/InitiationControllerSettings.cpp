@@ -78,6 +78,5 @@ bool InitiationControllerSettings::init(QString configurationFileName)
                           fishNumber, m_data.maximalFishNumberAllowedToStay());
     m_data.setMaximalFishNumberAllowedToStay(fishNumber);
 
-    return (QFileInfo(m_data.controlAreasFileName()).exists() &&
-            m_data.departureTimeOutSec() > 0);
+    return (QFileInfo(m_data.controlAreasFileName()).exists());
 }

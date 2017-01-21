@@ -43,7 +43,7 @@ bool RobotControlSettings::init(QString configurationFileName)
     }
 
     // read the frequency divider for the fish motion pattern
-    settings.readVariable("robots/fishMotionPatternFrequencyDivider",
+    settings.readVariable("robots/navigation/fishMotionPatternFrequencyDivider",
                           m_fishMotionPatternFrequencyDivider);
     settingsAccepted = settingsAccepted &&
             (m_fishMotionPatternFrequencyDivider > 0);

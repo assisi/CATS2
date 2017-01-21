@@ -30,9 +30,9 @@ public:
     //! Gets the type of the departure trigger from the settings' string.
     static DepartureTrigger depatureTriggerFromSettingsString(QString name)
     {
-        if (name.toLower() == "timeOut")
+        if (name.toLower() == "timeout")
             return ON_TIME_OUT;
-        else if (name.toLower() == "inGroup")
+        else if (name.toLower() == "ingroup")
             return WHEN_IN_GROUP;
         else
             return ON_TIME_OUT;
