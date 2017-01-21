@@ -89,7 +89,9 @@ bool InitiationController::needToChangeRoom()
         return true; // continue
 
     // if it's the room with the majority of the fish?
-    if ((m_fishAreaId == m_robotAreaId) && m_controlAreas.contains(m_fishAreaId)) {
+    if ((m_fishAreaId == m_robotAreaId)
+            && m_controlAreas.contains(m_fishAreaId)
+            && (m_controlAreas[m_fishAreaId]->type() == ControlAreaType::ROOM)) {
         // if there is a preference for the room?
         if (m_controlAreas.contains(m_preferedAreaId)) {
             // if the robot is in the prefered room?
@@ -145,12 +147,8 @@ ExperimentController::ControlData InitiationController::changeRoom()
         }
         break;
     case CHANGING_ROOM:
-        // if arrived to to target
-        if (m_robot->state().position().closeTo(m_controlAreas[m_targetAreaId]->centroid()))
-        {
-            // switch to SWIMMING_WITH_FISH
-            updateState(SWIMMING_WITH_FISH);
-        } else {
+        // if the timer to check that fish follow is ticking
+        if (m_fishFollowCheckTimer.isSet()) {
             // check the check-that-fish-follow timer
             if (m_fishFollowCheckTimer.isTimedOutSec(m_settings.fishFollowCheckTimeOutSec())) {
                 //if the fish stay in the original room?
@@ -159,15 +157,29 @@ ExperimentController::ControlData InitiationController::changeRoom()
                           m_settings.maximalFishNumberAllowedToStay()))
                 {
                     //  fish don't follow, switch to GOING_BACK mode
-                    updateState(GOING_BACK);
                     qDebug() << Q_FUNC_INFO << QString("Fish don't follow %1, returning back to %2")
-                                    .arg(m_robot->id())
+                                    .arg(m_robot->name())
                                     .arg(m_departureAreaId);
+                    updateState(GOING_BACK);
                 } else {
                     // fish follow, continue transition
+                    m_fishFollowCheckTimer.clear();
+                    qDebug() << Q_FUNC_INFO << QString("Fish seems to follow %1, continue moving")
+                                    .arg(m_robot->name());
                 }
             } else {
                 // it's too early to check if fish follow, continue transition
+            }
+        } else {
+            // the timer is off meaning that the fish follow the robot
+            // if arrived to to target
+            if (m_robot->state().position().closeTo(m_controlAreas[m_targetAreaId]->centroid()))
+            {
+                qDebug() << Q_FUNC_INFO << QString("%1 arrived to the room %2")
+                            .arg(m_robot->name())
+                            .arg(m_targetAreaId);
+                // switch to SWIMMING_WITH_FISH
+                updateState(SWIMMING_WITH_FISH);
             }
         }
         break;
