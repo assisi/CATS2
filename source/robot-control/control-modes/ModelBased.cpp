@@ -115,15 +115,15 @@ void ModelBased::initModel()
  */
 PositionMeters ModelBased::computeTargetPosition()
 {
+    if ((m_sim == nullptr) || (m_sim && (m_sim->fishes.size() == 0))) {
+        return PositionMeters::invalidPosition();
+    }
+
     // if no data is available, don't update the target
     if (m_robot->fishStates().size() == 0) {
         qDebug() << Q_FUNC_INFO << "No fish detected, impossible to run the model";
         // returning the previous target
         return m_targetPosition;
-    }
-
-    if ((m_sim == nullptr) || (m_sim && (m_sim->fishes.size() == 0))) {
-        return PositionMeters::invalidPosition();
     }
 
     // set the target invalid until it's computed
@@ -155,11 +155,16 @@ PositionMeters ModelBased::computeTargetPosition()
             }
         } else {
             qDebug() << Q_FUNC_INFO
-                << "Number of fish in the simulator is wrongly initialized.";
+                     << "Number of fish in the simulator is wrongly initialized.";
             break;
         }
     }
     size_t detectedAgentNum = agentIndex;
+    if (detectedAgentNum == 0) {
+        qDebug() << Q_FUNC_INFO << "No fish was taken into account, returning previous target";
+        return m_targetPosition;
+    }
+
     for (agentIndex = detectedAgentNum; agentIndex < RobotControlSettings::get().numberOfAnimals(); ++agentIndex) {
         m_sim->fishes[agentIndex].first->present = false;
     }
@@ -181,29 +186,30 @@ PositionMeters ModelBased::computeTargetPosition()
         } else {
             m_sim->robots[0].first->direction = 0;
         }
-
         m_sim->robots[0].first->present = true;
+    } else {
+        m_sim->robots[0].first->present = false;
     }
 
     // FIXME : what to do with this?
-//		// XXX dirty
-//		BM* behav = (BM*)sim->robots[i].second;
-//		//behav->alphasCenter = 100. * 10. / (double)(detected + settings.numberOfCASUS);
-//		behav->alphasCenter = 5000. / (double)(detected + settings.numberOfCASUS);
-//	}
+    //		// XXX dirty
+    //		BM* behav = (BM*)sim->robots[i].second;
+    //		//behav->alphasCenter = 100. * 10. / (double)(detected + settings.numberOfCASUS);
+    //		behav->alphasCenter = 5000. / (double)(detected + settings.numberOfCASUS);
+    //	}
 
-    if ((m_robot->fishStates().size() > 0 ) && (detectedAgentNum > 0))  {
-        m_sim->step();
-        // get the target value
-        if (m_sim->robots.size() > 0) { // we have only one robot so it is #0
-            targetPosition.setX((m_sim->robots[0].first->headPos.first +
-                                m_sim->robots[0].first->tailPos.first) / 2. + minX());
-            targetPosition.setY((m_sim->robots[0].first->headPos.second +
-                                m_sim->robots[0].first->tailPos.second) / 2. + minY());
-            targetPosition.setValid(true);
-            qDebug() << Q_FUNC_INFO  << QString("New target is %1")
-                        .arg(targetPosition.toString());
-        }
+    // run the simulation
+    m_sim->step();
+    // get the target value
+    if (m_sim->robots.size() > 0) { // we have only one robot so it is #0
+        targetPosition.setX((m_sim->robots[0].first->headPos.first +
+                            m_sim->robots[0].first->tailPos.first) / 2. + minX());
+        targetPosition.setY((m_sim->robots[0].first->headPos.second +
+                            m_sim->robots[0].first->tailPos.second) / 2. + minY());
+        targetPosition.setValid(true);
+        qDebug() << Q_FUNC_INFO  << QString("New target is %1")
+                    .arg(targetPosition.toString());
     }
+
     return targetPosition;
 }
