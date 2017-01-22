@@ -121,9 +121,9 @@
                 <blobDetector>
                     <minBlobSizePx>0</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
-                    <minDistance>10.0</minDistance>
-                    <blockSize>3</blockSize>
-                    <useHarrisDetector>0</useHarrisDetector>
+                    <minDistance>5.0</minDistance>
+                    <blockSize>2</blockSize>
+                    <useHarrisDetector>1</useHarrisDetector>
                     <k>0.04</k>
             </blobDetector>
             </tracking>
