@@ -214,15 +214,18 @@ void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
         }
     }
 
+    // TODO : consider completely removing the item from the scene since it's most probably an artefact
     // hide all items that were not updated since long
     for (const auto& record : m_agentUpdateTimer) {
         if (record.second->isSet()) {
             if (record.second->isTimedOutSec(MaxUpdateTimeSec)) {
-                m_agentLabels[record.first]->hide();
+                if (m_agentLabels.contains(record.first))
+                    m_agentLabels[record.first]->hide();
                 record.second->clear();
             }
         } else {
-            m_agentLabels[record.first]->hide();
+            if (m_agentLabels.contains(record.first))
+                m_agentLabels[record.first]->hide();
         }
     }
 }
@@ -279,15 +282,18 @@ void ViewerWidget::updateAgents(QList<AgentDataWorld> agentDataList)
         }
     }
 
+    // TODO : consider completely removing the item from the scene since it's most probably an artefact
     // hide all items that were not updated since long
     for (const auto& record : m_agentUpdateTimer) {
         if (record.second->isSet()) {
             if (record.second->isTimedOutSec(MaxUpdateTimeSec)) {
-                m_agents[record.first]->hide();
+                if (m_agents.contains(record.first))
+                    m_agents[record.first]->hide();
                 record.second->clear();
             }
         } else {
-            m_agents[record.first]->hide();
+            if (m_agents.contains(record.first))
+                m_agents[record.first]->hide();
         }
     }
 }
