@@ -139,6 +139,11 @@ void Navigation::sendMotorSpeed(int leftSpeed, int rightSpeed)
     if (m_robot->robotInterface()) {
         // TODO : to add some safety checks on the speed and eventually convertions
 
+//        // debug info
+//        if ((leftSpeed == 0) && (rightSpeed == 0)) {
+//            qDebug() << Q_FUNC_INFO << "Got instructions to stop the robot, executing";
+//        }
+
         // event to send
         QString eventName;
         // data to send

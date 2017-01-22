@@ -92,7 +92,7 @@ void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp,
     // as a fish and thus "steals" someone's id, the corresponding fish gets
     // a bigger id and is not seen anymore by the code below; here we apply a
     // quick and dirty hack that makes the writer to forget all the mapping
-    // at every step and thus localizy the above-mentioned problem only to frames
+    // at every step and thus localize the above-mentioned problem only to frames
     // when the robot was not properly tracked
     m_fishIndexToId.clear(); // HACK FIXME : fix this code (see comment above)
     for (int i = 0; i < TrackingSettings::get().numberOfAnimals(); ++i) {
