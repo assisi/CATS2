@@ -26,8 +26,8 @@ void FrameScene::mouseMoveEvent( QGraphicsSceneMouseEvent * mouseEvent )
  */
 void FrameScene::mousePressEvent(QGraphicsSceneMouseEvent *mouseEvent)
 {
-    if (mouseEvent->button() == Qt::RightButton) {
-        emit rightButtonClicked(mouseEvent->scenePos());
+    if (mouseEvent->button() == Qt::RightButton || mouseEvent->button() == Qt::LeftButton) {
+        emit buttonClicked(mouseEvent->button(), mouseEvent->scenePos());
     }
     QGraphicsScene::mousePressEvent(mouseEvent);
 }

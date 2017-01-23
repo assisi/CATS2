@@ -16,7 +16,7 @@ enum class StreamType
     LOCAL_VIDEO_FILE,
     LOCAL_IMAGE_FILE, // still image (for the debug purposes)
     UNDEFINED
-    // TODO : to be extended
+    // NOTE : to be extended
 };
 
 /*!

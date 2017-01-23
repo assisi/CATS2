@@ -12,14 +12,14 @@
 /*!
  * Constructor.
  */
-FishBot::FishBot(QString id, QString controlAreasPath) :
+FishBot::FishBot(QString id) :
     QObject(nullptr),
     m_id(id),
-    m_name(QString("Fish_bot_%1").arg(m_id)),
+    m_name(QString("Fish_bot_%1").arg(m_id)), // NOTE : don't change this name as the .aesl files are searched by it
     m_ledColor(Qt::black),
     m_state(),
     m_robotInterface(nullptr),
-    m_experimentManager(this, controlAreasPath),
+    m_experimentManager(this),
     m_controlStateMachine(this),
     m_navigation(this)
 {
@@ -35,7 +35,11 @@ FishBot::FishBot(QString id, QString controlAreasPath) :
             {
                 emit notifyTargetPositionChanged(m_id, position);
             });
-    // TODO : add the trajectory here
+    connect(&m_navigation, &Navigation::notifyTrajectoryChanged,
+            [=](QQueue<PositionMeters> trajectory)
+            {
+                emit notifyTrajectoryChanged(m_id, trajectory);
+            });
     // controller data
     connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
             this, &FishBot::notifyControllerChanged);
@@ -46,6 +50,12 @@ FishBot::FishBot(QString id, QString controlAreasPath) :
             this, &FishBot::notifyMotionPatternChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
             this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
+    connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,
+            this, &FishBot::notifyMotionPatternFrequencyDividerChanged);
+    connect(&m_navigation, &Navigation::notifyUsePathPlanningChanged,
+            this, &FishBot::notifyUsePathPlanningChanged);
+    connect(&m_navigation, &Navigation::notifyUseObstacleAvoidanceChanged,
+            this, &FishBot::notifyUseObstacleAvoidanceChanged);
 }
 
 /*!
@@ -82,6 +92,8 @@ void FishBot::setupConnection(int robotIndex)
                 Values data;
                 data.append(robotIndex);
                 m_robotInterface->setVariable(m_name, "IDControl", data);
+                // set the obstacle avoidance on the robot
+                m_navigation.updateLocalObstacleAvoidance();
             } else {
                 qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
             }
@@ -108,12 +120,12 @@ void FishBot::stepControl()
 
     // step the control mode state machine with the robot's position and
     // other agents positions.
-    // TODO : to define how to pass the other agents positions
     ControlTargetPtr controlTarget = m_controlStateMachine.step();
 
     // step the navigation with the resulted target values
     // it's the navigation that sends commands to robots via the dbus interface
-    m_navigation.step(controlTarget);
+    if (!controlTarget.isNull())
+        m_navigation.step(controlTarget);
 }
 
 /*!
@@ -121,12 +133,21 @@ void FishBot::stepControl()
  */
 void FishBot::setControlMode(ControlModeType::Enum type)
 {
-    m_controlStateMachine.setControlMode(type);
+    if (m_controlStateMachine.currentControlMode() != type) {
+        // NOTE : this is disabled because
+        // (1) the fish never stop
+        // (2) it's better to manage the safety on the level of control modes
+//        // stop the robot for safety reason
+//        m_navigation.stop();
 
-    // a check for a special case - joystick controlled manual mode, only one
-    // robot can be controlled, hence other robots in manual mode switch to idle
-    if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
-        emit notifyInManualMode(m_id);
+        // change the control mode
+        m_controlStateMachine.setControlMode(type);
+
+        // a check for a special case - joystick controlled manual mode, only one
+        // robot can be controlled, hence other robots in manual mode switch to idle
+        if (m_controlStateMachine.currentControlMode() == ControlModeType::MANUAL)
+            emit notifyInManualMode(m_id);
+    }
 }
 
 /*! Received positions of all tracked robots, finds and sets the one
@@ -200,6 +221,22 @@ int FishBot::motionPatternFrequencyDivider(MotionPatternType::Enum type)
 }
 
 /*!
+ * Sets the path planning usage flag in the navigation.
+ */
+void FishBot::setUsePathPlanning(bool usePathPlanning)
+{
+    m_navigation.setUsePathPlanning(usePathPlanning);
+}
+
+/*!
+ * Sets the obstacle avoidance usage flag in the navigation.
+ */
+void FishBot::setUseObstacleAvoidance(bool useObstacleAvoidance)
+{
+    m_navigation.setUseObstacleAvoidance(useObstacleAvoidance);
+}
+
+/*!
  * Sets the control parameters based on the control map.
  */
 void FishBot::stepExperimentManager()
@@ -208,9 +245,30 @@ void FishBot::stepExperimentManager()
     if (controlData.controlMode != ControlModeType::UNDEFINED) {
         setControlMode(controlData.controlMode);
 
-        // if the control map is set and we can set motion patterns
-        if ((currentControlMode() == controlData.controlMode) && supportsMotionPatterns())
-            if (controlData.motionPattern != MotionPatternType::UNDEFINED)
+        // if the control map is set 
+        if ((currentControlMode() == controlData.controlMode)) {
+            // and if we can set motion patterns
+            if (supportsMotionPatterns() && (controlData.motionPattern != MotionPatternType::UNDEFINED))
                 setMotionPattern(controlData.motionPattern);
+        
+            // if the control mode is uses the extra control data
+            switch (controlData.controlMode) {
+            case ControlModeType::GO_TO_POSITION:
+            {
+                if (controlData.data.canConvert<PositionMeters>()) {
+                    PositionMeters targetPosition(controlData.data.value<PositionMeters>());
+                    goToPosition(targetPosition);
+                }
+                break;
+            }
+            case ControlModeType::GO_STRAIGHT:
+            case ControlModeType::IDLE:
+            case ControlModeType::MANUAL:
+            case ControlModeType::MODEL_BASED:
+            case ControlModeType::UNDEFINED:
+            default:
+                break;
+            }
+        }
     }
 }

@@ -7,7 +7,7 @@
  */
 AgentItem::AgentItem() :
     QGraphicsItem(),
-    m_hasOrientation(false)
+    m_hasOrientation(true)
 {
 
 }

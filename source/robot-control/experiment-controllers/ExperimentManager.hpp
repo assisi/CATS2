@@ -6,7 +6,6 @@
 #include "RobotControlPointerTypes.hpp"
 
 #include <QtCore/QObject>
-#include <QtCore/QScopedPointer>
 #include <QtCore/QMap>
 
 class FishBot;
@@ -14,12 +13,13 @@ class FishBot;
 /*!
  * Manages the different experiment controllers.
  */
+// TODO : to move this file/class to the main folder
 class ExperimentManager: public QObject
 {
     Q_OBJECT
 public:
     //! Constructor.
-    explicit ExperimentManager(FishBot* robot, QString controlAreasPath);
+    explicit ExperimentManager(FishBot* robot);
 
     //! The experiment manager step. Returns the control target values.
     ExperimentController::ControlData step();

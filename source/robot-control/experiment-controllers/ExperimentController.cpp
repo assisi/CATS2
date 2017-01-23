@@ -1,22 +1,25 @@
 #include "ExperimentController.hpp"
+#include "FishBot.hpp"
+#include "ControlArea.hpp"
 
 #include <settings/ReadSettingsHelper.hpp>
+
+#include <QtCore/QFileInfo>
 
 /*!
  * Constructor. Gets the file name containing the control areas description.
  */
-ExperimentController::ExperimentController(FishBot* robot,                                           
-                                           QString controlAreasFileName,
+ExperimentController::ExperimentController(FishBot* robot,
                                            ExperimentControllerType::Enum type) :
     QObject(nullptr),
     m_robot(robot),
+    m_controlAreas(),
+    m_preferedAreaId(""),
+    m_fishAreaId(""),
+    m_robotAreaId(""),
     m_type(type)
 {
-    m_valid = deserialize(controlAreasFileName);
-    if (m_valid)
-        qDebug() << Q_FUNC_INFO << "Successfully read a control map from" << controlAreasFileName;
-    else
-        qDebug() << Q_FUNC_INFO << "Could not read a control map from" << controlAreasFileName;
+
 }
 
 /*!
@@ -30,16 +33,13 @@ ExperimentController::ControlData ExperimentController::step()
 /*!
  * Reads the control map from a file.
  */
-bool ExperimentController::deserialize(QString controlAreasFileName)
+void ExperimentController::readControlMap(QString controlAreasFileName)
 {
-    bool successful = true;
-
     ReadSettingsHelper settings(controlAreasFileName);
 
     // read the number of areas
     int numberOfAreas;
     settings.readVariable("numberOfAreas", numberOfAreas);
-    successful = successful && (numberOfAreas > 0);
 
     // read settings for every area.
     for (int areaIndex = 1; areaIndex <= numberOfAreas; areaIndex++) {
@@ -51,41 +51,49 @@ bool ExperimentController::deserialize(QString controlAreasFileName)
         settings.readVariable(QString("area_%1/type").arg(areaIndex), type);
 
         // create the area object
-        ControlArea area(QString::fromUtf8(id.c_str()),
-                         ControlAreaType::fromSettingsString(QString::fromUtf8(type.c_str())));
+        ControlAreaType::Enum areaType =
+                ControlAreaType::fromSettingsString(QString::fromStdString(type.c_str()));
+        ControlAreaPtr area(new ControlArea(QString::fromStdString(id.c_str()),
+                                            areaType));
 
         // read polygons
         int numberOfPolygons;
-        settings.readVariable(QString("area_%1/polygons/numberOfPolygons").arg(areaIndex), numberOfPolygons);
+        settings.readVariable(QString("area_%1/polygons/numberOfPolygons")
+                              .arg(areaIndex), numberOfPolygons);
         for (int polygonIndex = 1; polygonIndex <= numberOfPolygons; polygonIndex++) {
             std::vector<cv::Point2f> polygon;
-            settings.readVariable(QString("area_%1/polygons/polygon_%2").arg(areaIndex).arg(polygonIndex), polygon);
-            area.addPolygon(polygon);
+            settings.readVariable(QString("area_%1/polygons/polygon_%2")
+                                  .arg(areaIndex).arg(polygonIndex), polygon);
+            area->addPolygon(polygon);
         }
 
-        // read color
+        // read the area color (for gui)
         int red;
         settings.readVariable(QString("area_%1/color/r").arg(areaIndex), red);
         int green;
         settings.readVariable(QString("area_%1/color/g").arg(areaIndex), green);
         int blue;
         settings.readVariable(QString("area_%1/color/b").arg(areaIndex), blue);
-        area.setColor(QColor(red, green, blue));
+        area->setColor(QColor(red, green, blue));
 
         // read control mode
         std::string controlModeName;
         settings.readVariable(QString("area_%1/controlMode").arg(areaIndex), controlModeName);
-        area.setControlMode(ControlModeType::fromSettingsString(QString::fromUtf8(controlModeName.c_str())));
+        area->setControlMode(ControlModeType::fromSettingsString(QString::fromStdString(controlModeName.c_str())));
 
         // read motion pattern
         std::string motionPatternName;
         settings.readVariable(QString("area_%1/motionPattern").arg(areaIndex), motionPatternName);
-        area.setMotionPattern(MotionPatternType::fromSettingsString(QString::fromUtf8(motionPatternName.c_str())));
+        area->setMotionPattern(MotionPatternType::fromSettingsString(QString::fromStdString(motionPatternName.c_str())));
 
-        m_controlAreas.append(area);
+        // add to the areas map
+        m_controlAreas[area->id()] = area;
     }
 
-    return successful;
+    // read the prefered area if available
+    std::string preferedAreaId;
+    settings.readVariable(QString("preferedAreaId"), preferedAreaId);
+    m_preferedAreaId = QString::fromStdString(preferedAreaId.c_str());
 }
 
 /*!
@@ -94,8 +102,112 @@ bool ExperimentController::deserialize(QString controlAreasFileName)
 void ExperimentController::requestPolygons()
 {
     QList<AnnotatedPolygons> polygons;
-    for (const auto& area : m_controlAreas) {
-        polygons.append(area.annotatedPolygons());
+    for (const auto area : m_controlAreas.values()) {
+        polygons.append(area->annotatedPolygons());
     }
     emit notifyPolygons(polygons);
 }
+
+/*!
+ * Find where the robot and the fish are.
+ */
+void ExperimentController::updateAreasOccupation()
+{
+    QString areaId;
+    if (findRobotArea(areaId)) {
+        if (m_robotAreaId != areaId) {
+            qDebug() << Q_FUNC_INFO
+                     << QString("%1 changed the room from %2 to %3")
+                        .arg(m_robot->name())
+                        .arg(m_robotAreaId)
+                        .arg(areaId);
+            m_robotAreaId = areaId;
+        }
+    } else {
+        // reset the variable
+        m_robotAreaId = "";
+    }
+    if (findFishArea(areaId)) {
+        if (m_fishAreaId != areaId) {
+//            qDebug() << Q_FUNC_INFO
+//                     << QString("Most of fish is now in room %1 (before %2) : %3")
+//                        .arg(areaId)
+//                        .arg(m_fishAreaId)
+//                        .arg(m_fishNumberByArea[areaId]);
+            m_fishAreaId = areaId;
+        }
+    } else {
+        // reset the variable
+        m_fishAreaId = "";
+    }
+}
+
+/*!
+ * Finds the room with the majority of fish. Returns the success status.
+ */
+bool ExperimentController::findFishArea(QString& maxFishNumberAreaId)
+{
+    if (m_robot) {
+        // get the fish states
+        QList<StateWorld> fishStates = m_robot->fishStates();
+        if (fishStates.size() > 0) {
+            // setup the map to count the fish
+            for (const auto& areaId : m_controlAreas.keys())
+                m_fishNumberByArea[areaId] = 0;
+            // for every fish check where it is
+            for (const auto& state : fishStates) {
+                QString areaId;
+                if (findAreaByPosition(areaId, state.position())) {
+                    m_fishNumberByArea[areaId]++;
+                }
+            }
+            // find the majority of fish
+            QString prevMaxFishNumberAreaId = maxFishNumberAreaId; // backup
+            int maxFishNumber = 0;
+            for (const auto& areaId : m_controlAreas.keys()) {
+                if (m_fishNumberByArea[areaId] > maxFishNumber) {
+                    maxFishNumber = m_fishNumberByArea[areaId];
+                    maxFishNumberAreaId = areaId;
+                }
+            }
+            // restore the valus if nothing found
+            if (maxFishNumber == 0) {
+                maxFishNumberAreaId = prevMaxFishNumberAreaId;
+                return false;
+            } else {
+                return true;
+            }
+
+        }
+    }
+    return false;
+}
+
+/*!
+ * Finds the room where the robot is. Returns the success status.
+ */
+bool ExperimentController::findRobotArea(QString& robotAreaId)
+{
+    if (m_robot) {
+        return findAreaByPosition(robotAreaId, m_robot->state().position());
+    }
+    return false;
+}
+
+/*!
+ * Finds the room that contains given point.
+ */
+bool ExperimentController::findAreaByPosition(QString& areaId,
+                                              const PositionMeters& position)
+{
+    if (position.isValid()) {
+        for (const auto controlArea : m_controlAreas.values()) {
+            if (controlArea->contains(position)) {
+                areaId = controlArea->id();
+                return true;
+            }
+        }
+    }
+    return false;
+}
+

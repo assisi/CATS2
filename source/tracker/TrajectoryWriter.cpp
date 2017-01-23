@@ -17,12 +17,14 @@
 TrajectoryWriter::TrajectoryWriter()
 {
     // create the output folder
-    QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation)).mkdir(QApplication::applicationName());
+    QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation))
+            .mkdir(QApplication::applicationName());
 
     QString filePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) +
                        QDir::separator() + QApplication::applicationName();
-    QString fileName = QString("%1 %2.txt").arg(TrackingSettings::get().experimentName())
-                                           .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"));
+    QString fileName = QString("%1 %2.txt")
+            .arg(TrackingSettings::get().experimentName())
+            .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"));
     // open the text where to write the tracking results
     m_resultsFile.setFileName(filePath + QDir::separator() + fileName);
     if (m_resultsFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -55,7 +57,8 @@ TrajectoryWriter::~TrajectoryWriter()
 /*!
  * Saves the tracking results to the ouptup file.
  */
-void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp, const QList<AgentDataWorld>& agentsData)
+void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp,
+                                 const QList<AgentDataWorld>& agentsData)
 {
     if (!m_resultsFile.isOpen())
         return;
@@ -65,8 +68,13 @@ void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp, const QLis
     m_resultsStream << QString::number(timeFromStartSec, 'f', 3) << "\t";
 
     // first write all the robots
+    // the robot tracking is very reliable and thus for every robot's we can fix
+    // a index in the output table
     for (int i = 0; i < TrackingSettings::get().numberOfRobots(); ++i) {
-        const AgentDataWorld* robotData = getAgentData(i, AgentType::FISH_CASU, m_robotsIndexToId, agentsData);
+        const AgentDataWorld* robotData = getAgentData(i,
+                                                       AgentType::FISH_CASU,
+                                                       m_robotsIndexToId,
+                                                       agentsData);
         if (robotData) {
             m_resultsStream << robotData->state().position().x() << "\t";
             m_resultsStream << robotData->state().position().y() << "\t";
@@ -79,8 +87,19 @@ void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp, const QLis
     }
 
     // then write the fish
+    // the fish tracking is less reliable, the danger is that ids swap and
+    // that when a robot is invisible by the tracking from below it's tracked
+    // as a fish and thus "steals" someone's id, the corresponding fish gets
+    // a bigger id and is not seen anymore by the code below; here we apply a
+    // quick and dirty hack that makes the writer to forget all the mapping
+    // at every step and thus localize the above-mentioned problem only to frames
+    // when the robot was not properly tracked
+    m_fishIndexToId.clear(); // HACK FIXME : fix this code (see comment above)
     for (int i = 0; i < TrackingSettings::get().numberOfAnimals(); ++i) {
-        const AgentDataWorld* animalData = getAgentData(i, AgentType::FISH, m_fishIndexToId, agentsData);
+        const AgentDataWorld* animalData = getAgentData(i,
+                                                        AgentType::FISH,
+                                                        m_fishIndexToId,
+                                                        agentsData);
         if (animalData) {
             m_resultsStream << animalData->state().position().x() << "\t";
             m_resultsStream << animalData->state().position().y() << "\t";
@@ -96,13 +115,16 @@ void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp, const QLis
 }
 
 /*!
- * Searches for the robot of the given type and corresponding to the given index
+ * Searches for the agent of the given type and corresponding to the given index
  * in the indexToId correspondence map, if the agent is not yet in the map but
  * there are free agents unassigned then one is taken and assigned;
  * the pointer to the agent is returned. If no agent is found then a nullptr
  * is returned.
   */
-const AgentDataWorld* TrajectoryWriter::getAgentData(int index, AgentType agentType, QMap<int, QString>& indexToId, const QList<AgentDataWorld>& agentsData)
+const AgentDataWorld* TrajectoryWriter::getAgentData(int index,
+                                                     AgentType agentType,
+                                                     QMap<int, QString>& indexToId,
+                                                     const QList<AgentDataWorld>& agentsData)
 {
     if (indexToId.contains(index)) {
         // the agent is known
@@ -118,7 +140,9 @@ const AgentDataWorld* TrajectoryWriter::getAgentData(int index, AgentType agentT
         QList<QString> usedIds = indexToId.values();
         // this index is not yet used, try to find any agent to assign
         for (int i = 0; i < agentsData.size(); i++) {
-            if ((agentsData[i].type() == agentType) && (!usedIds.contains(agentsData[i].id()))) {
+            if ((agentsData[i].type() == agentType) &&
+                    (!usedIds.contains(agentsData[i].id())))
+            {
                 // found one agent that is not yet used
                 indexToId.insert(index, agentsData[i].id());
                 return &agentsData[i];

@@ -17,8 +17,8 @@ public:
 signals:
     //! Sends out the mouse position.
     void mouseMoved(QPointF scenePosition);
-    //! Informs that a right button is clicked.
-    void rightButtonClicked(QPointF scenePosition);
+    //! Informs that a button is clicked.
+    void buttonClicked(Qt::MouseButton button, QPointF scenePosition);
 
 protected:
     //! Triggered when the mouse is moved on the scene.

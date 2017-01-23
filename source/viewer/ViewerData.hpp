@@ -41,7 +41,6 @@ private:
     FrameConvertorPtr m_frameConvertor;
     //! The coordinates transformation to convert positions between meters and camera frame's pixels.
     CoordinatesConversionPtr m_coordinatesConversion;
-    // TODO : to add the agents here (?)
 };
 
 #endif // CATS2_VIEWER_DATA_HPP

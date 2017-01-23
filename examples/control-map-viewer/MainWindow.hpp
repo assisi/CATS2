@@ -34,10 +34,6 @@ public:
     //! Destructor.
     virtual ~MainWindow() override;
 
-private slots:
-    //! Open control map.
-    void openControlMap();
-
 private:
     //! The form.
     Ui::MainWindow* m_ui;

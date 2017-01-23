@@ -5,7 +5,7 @@
 #include "ControlModeStateMachine.hpp"
 #include "control-modes/ControlTarget.hpp"
 #include "MotionPatternType.hpp"
-#include "Navigation.hpp"
+#include "navigation/Navigation.hpp"
 #include "experiment-controllers/ExperimentControllerType.hpp"
 #include "experiment-controllers/ExperimentManager.hpp"
 
@@ -26,7 +26,7 @@ class FishBot : public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    explicit FishBot(QString id, QString controlAreasPath);
+    explicit FishBot(QString id);
     //! Destructor.
     virtual ~FishBot() final;
 
@@ -74,9 +74,24 @@ public:
                                           int frequencyDivider);
     //! Return the motion pattern frequency divider.
     int motionPatternFrequencyDivider(MotionPatternType::Enum type);
+    //! Sets the path planning usage flag in the navigation.
+    void setUsePathPlanning(bool usePathPlanning);
+    //! Returns the path planning usage from from the navigation.
+    bool usePathPlanning() const { return m_navigation.usePathPlanning(); }
+
+    //! Sets the obstacle avoidance usage flag in the navigation.
+    void setUseObstacleAvoidance(bool useObstacleAvoidance);
+    //! Returns the obstacle avoidance usage from from the navigation.
+    bool useObstacleAvoidance() const { return m_navigation.useObstacleAvoidance(); }
 
     //! Steps the control for the robot.
     void stepControl();
+
+public:
+    // FIXME : this is a temporary code, to be removed once the parameters of the
+    // obstacle avoidance are tuned
+    //! Returns a pointer to the potential field obstacle avoidance module.
+    PotentialFieldPtr potentialField() { return m_navigation.potentialField(); }
 
 public:
     //! The target position received from the viewer; it's transfered further
@@ -92,6 +107,8 @@ public:
     //! Receives data of all tracked robots, finds and sets the one corresponding
     //! to this robot and keeps the rest in case it's needed by the control mode.
     void setRobotsData(QList<AgentDataWorld> robotsPositions);
+    //! Returns the data of other robots.
+    const QList<AgentDataWorld>& otherRobotsData() const { return m_otherRobotsData; }
     //! Received states of all tracked fish, keeps them in case it's needed by
     //! the control mode.
     void setFishStates(QList<StateWorld> fishStates);
@@ -102,9 +119,9 @@ public slots:
     //! Requests to sends the control map areas' polygons.
     void requestControlAreasPolygons() { m_experimentManager.requestPolygons(); }
     //! Requests to sends the control map areas' polygons.
-    void requestTrajectory() { /* TODO : to implement */}
+    void requestTrajectory() { m_navigation.requestTrajectory(); }
     //! Requests to sends the control map areas' polygons.
-    void requestCurrentTarget() { m_navigation.requestTargetPosion(); }
+    void requestCurrentTarget() { m_navigation.requestTargetPosition(); }
     //! Requests leds color.
     void requestLedColor() { emit notifyLedColor(m_id, m_ledColor); }
 
@@ -121,6 +138,10 @@ signals: // control states
                                                     int frequencyDivider);
     //! Informs that the robot is in manual control mode.
     void notifyInManualMode(QString id);
+    //! Informs that the path planning is on/off in the navigation.
+    void notifyUsePathPlanningChanged(bool value);
+    //! Informs that the obstacle avoidance is on/off in the navigation.
+    void notifyUseObstacleAvoidanceChanged(bool value);
 
 signals: // navigation
     //! Sends the control map areas' polygons.

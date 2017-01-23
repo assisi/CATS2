@@ -17,7 +17,8 @@ BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrame
     m_backgroundCalculationStepCounter(0),
     m_backgroundSubtractor(cv::bgsegm::createBackgroundSubtractorMOG(200, 5, 0.3))
 {
-    // HACK : to get parameters specific for this tracker we need to convert the settings to the corresponding format
+    // NOTE : to get parameters specific for this tracker we need to convert
+    // the settings to the corresponding format
     BlobDetectorSettings* blobDetectorSettings = dynamic_cast<BlobDetectorSettings*>(settings.data());
     if (blobDetectorSettings != nullptr){
         // copy the parameters
@@ -122,6 +123,10 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
     // tracking : assign the detected agents to id's
     assingIds(IdsAssignmentMethod::NAIVE_CLOSEST_NEIGHBOUR, centers, directions);
 
+//    qDebug() << Q_FUNC_INFO
+//             << QString("Found %1 agents out of %2")
+//                .arg(directions.size())
+//                .arg(m_agents.size());
 //    // print
 //    for (auto& agent : m_agents)
 //        qDebug() << QString("Found %1 at %2, orientation %3 (valid:%4)")

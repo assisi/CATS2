@@ -18,33 +18,51 @@ namespace Aseba {
 }
 
 /*!
- * The alias for the shared pointer to control target.
+ * The alias for the shared pointer to the control target.
  */
 class ControlTarget;
 using ControlTargetPtr = QSharedPointer<ControlTarget>;
 
 /*!
- * The alias for the shared pointer to control mode.
+ * The alias for the shared pointer to the control mode.
  */
 class ControlMode;
 using ControlModePtr = QSharedPointer<ControlMode>;
 
 /*!
- * The alias for the shared pointer to control loop class.
+ * The alias for the shared pointer to the control loop class.
  */
 class ControlLoop;
 using ControlLoopPtr = QSharedPointer<ControlLoop>;
 
 /*!
- * The alias for the shared pointer to robot handler class.
+ * The alias for the shared pointer to the robot handler class.
  */
 class RobotsHandler;
 using RobotsHandlerPtr = QSharedPointer<RobotsHandler>;
 
 /*!
- * The alias for the shared pointer to experiment controller class.
+ * The alias for the shared pointer to the experiment controller class.
  */
 class ExperimentController;
 using ExperimentControllerPtr = QSharedPointer<ExperimentController>;
+
+/*!
+ * The alias for the shared pointer to potential field obstacle avoidance routine.
+ */
+class PotentialField;
+using PotentialFieldPtr = QSharedPointer<PotentialField>;
+
+/*!
+ * The alias for the shared pointer to the control area class.
+ */
+class ControlArea;
+using ControlAreaPtr = QSharedPointer<ControlArea>;
+
+/*!
+ * The alias for the shared pointer to the controller settings class.
+ */
+class ExperimentControllerSettings;
+using ExperimentControllerSettingsPtr = QSharedPointer<ExperimentControllerSettings>;
 
 #endif // CATS2_ROBOT_CONTROL_POINTER_TYPES_HPP

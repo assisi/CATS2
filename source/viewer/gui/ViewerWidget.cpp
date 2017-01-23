@@ -47,7 +47,7 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     // create the scene
     m_scene = new FrameScene(this);
     connect(m_scene, &FrameScene::mouseMoved, this, &ViewerWidget::onMouseMoved);
-    connect(m_scene, &FrameScene::rightButtonClicked, this, &ViewerWidget::onRightButtonClicked);
+    connect(m_scene, &FrameScene::buttonClicked, this, &ViewerWidget::onButtonClicked);
     m_uiViewer->view->setScene(m_scene);
 
     // create the video frame item
@@ -195,6 +195,7 @@ void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
             if (m_agentColors.contains(id))
                 m_agentLabels[id]->setColor(m_agentColors[id]);
             m_scene->addItem(m_agentLabels[id]);
+            m_agentUpdateTimer[id] = std::unique_ptr<Timer>(new Timer());
         }
         // set the position
         if (agentData.state().position().isValid()) {
@@ -204,11 +205,27 @@ void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
                 PositionPixels imagePosition = coordinatesConversion->worldToImagePosition(agentData.state().position());
                 m_agentLabels[id]->setPos(imagePosition.x(), imagePosition.y());
                 m_agentLabels[id]->setVisible(true);
+                m_agentUpdateTimer[id]->reset();
             } else {
                 qDebug() << Q_FUNC_INFO << "Unable to convert agent's world position to the image position";
             }
         } else {
             qDebug() << Q_FUNC_INFO << QString("The postion of %1 is invalid").arg(agentData.label());
+        }
+    }
+
+    // TODO : consider completely removing the item from the scene since it's most probably an artefact
+    // hide all items that were not updated since long
+    for (const auto& record : m_agentUpdateTimer) {
+        if (record.second->isSet()) {
+            if (record.second->isTimedOutSec(MaxUpdateTimeSec)) {
+                if (m_agentLabels.contains(record.first))
+                    m_agentLabels[record.first]->hide();
+                record.second->clear();
+            }
+        } else {
+            if (m_agentLabels.contains(record.first))
+                m_agentLabels[record.first]->hide();
         }
     }
 }
@@ -264,17 +281,32 @@ void ViewerWidget::updateAgents(QList<AgentDataWorld> agentDataList)
             qDebug() << Q_FUNC_INFO << QString("The postion of %1 is invalid").arg(agentData.label());
         }
     }
+
+    // TODO : consider completely removing the item from the scene since it's most probably an artefact
+    // hide all items that were not updated since long
+    for (const auto& record : m_agentUpdateTimer) {
+        if (record.second->isSet()) {
+            if (record.second->isTimedOutSec(MaxUpdateTimeSec)) {
+                if (m_agents.contains(record.first))
+                    m_agents[record.first]->hide();
+                record.second->clear();
+            }
+        } else {
+            if (m_agents.contains(record.first))
+                m_agents[record.first]->hide();
+        }
+    }
 }
 
 /*!
- * Triggered when a right button click is received from the scene.
+ * Triggered when a button click is received from the scene.
  */
-void ViewerWidget::onRightButtonClicked(QPointF scenePosition)
+void ViewerWidget::onButtonClicked(Qt::MouseButton button, QPointF scenePosition)
 {
     PositionPixels imagePosition(scenePosition.x(), scenePosition.y());
     PositionMeters worldPosition;
     if (convertScenePosition(imagePosition, worldPosition))
-        emit notifyRightButtonClick(worldPosition);
+        emit notifyButtonClick(button, worldPosition);
 }
 
 /*!
@@ -500,17 +532,6 @@ void ViewerWidget::setControlAreasVisible(QString agentId, bool visible)
             item->setVisible(visible);
         }
     }
-}
-
-/*!
- * Context menu.
- */
-void ViewerWidget::contextMenuEvent(QContextMenuEvent *event)
-{
-    QMenu menu(this);
-    menu.addAction(m_adjustAction);
-
-    menu.exec(event->globalPos());
 }
 
 /*!

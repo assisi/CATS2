@@ -1,5 +1,6 @@
 #include "ExperimentManager.hpp"
 #include "MapController.hpp"
+#include "ExperimentControllerFactory.hpp"
 
 #include "FishBot.hpp"
 
@@ -8,18 +9,22 @@
 /*!
  * Constructor.
  */
-ExperimentManager::ExperimentManager(FishBot* robot, QString controlAreasPath) :
+ExperimentManager::ExperimentManager(FishBot* robot) :
     QObject(nullptr),
     m_currentController(ExperimentControllerType::NONE),
     m_robot(robot)
 {
     // fill the map will all controllers
+    // first we add an empty controller for the sake simplicity in the
+    // setController() implementation
     m_controllers.insert(ExperimentControllerType::NONE,
-                         ExperimentControllerPtr(new ExperimentController(m_robot,
-                                                                          controlAreasPath))); // empty controller for symmetry
-    m_controllers.insert(ExperimentControllerType::CONTROL_MAP,
-                         ExperimentControllerPtr(new MapController(m_robot,
-                                                                   controlAreasPath)));
+                         ExperimentControllerPtr(new ExperimentController(m_robot)));
+
+    // and then the rest of controllers available in the settings
+    for (auto controllerType : RobotControlSettings::get().availableControllers()) {
+        m_controllers.insert(controllerType,
+            ExperimentControllerFactory::createController(controllerType, m_robot));
+    }
 
     // make connections
     connect(m_controllers[m_currentController].data(), &ExperimentController::notifyPolygons,

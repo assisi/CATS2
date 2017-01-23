@@ -5,7 +5,8 @@
  */
 ControlArea::ControlArea(QString id, ControlAreaType::Enum type = ControlAreaType::UNDEFINED) :
     m_id(id),
-    m_type(type)
+    m_type(type),
+    m_centroid()
 {
 
 }
@@ -13,10 +14,10 @@ ControlArea::ControlArea(QString id, ControlAreaType::Enum type = ControlAreaTyp
 /*!
  * Checks if the point is inside this area.
  */
-bool ControlArea::contains(QPointF point) const
+bool ControlArea::contains(PositionMeters point) const
 {
-    foreach (const QPolygonF& polygon, m_polygons) {
-        if (polygon.containsPoint(point, Qt::OddEvenFill))
+    foreach (const WorldPolygon& polygon, m_polygons) {
+        if (polygon.containsPoint(point))
             return true;
     }
     return false;
@@ -25,12 +26,22 @@ bool ControlArea::contains(QPointF point) const
 /*!
  * Adds a polygon included in this area.
  */
+void ControlArea::addPolygon(WorldPolygon polygon)
+{
+    m_polygons.append(polygon);
+    // updates the area centroid
+    updateCentroid();
+}
+
+/*!
+ * Adds a polygon included in this area.
+ */
 void ControlArea::addPolygon(std::vector<cv::Point2f> cvPolygon)
 {
-    QPolygonF polygon;
+    WorldPolygon polygon;
 
     for (const auto& point : cvPolygon)
-        polygon.append(QPointF(point.x, point.y));
+        polygon.append(PositionMeters(point.x, point.y));
 
     addPolygon(polygon);
 }
@@ -51,4 +62,20 @@ AnnotatedPolygons ControlArea::annotatedPolygons() const
     polygons.color = m_color;
     polygons.label = m_id;
     return polygons;
+}
+
+/*!
+ * Computes the area centroid. For the areas composed of several polygons
+ * only the first polygon is taken into account.
+ */
+void ControlArea::updateCentroid()
+{
+    if (m_polygons.size() > 0) {
+        PositionMeters centroid;
+        for (const auto& vertice : m_polygons.at(0)) {
+            centroid += vertice;
+        }
+        centroid /= m_polygons.at(0).size();
+        m_centroid = centroid;
+    }
 }
