@@ -1,0 +1,59 @@
+<?xml version="1.0"?>
+<opencv_storage>
+  <numberOfAreas>3</numberOfAreas>
+  <area_1>
+    <id>bottom</id>
+    <type>room</type>
+    <polygons>
+      <numberOfPolygons>1</numberOfPolygons>
+      <polygon_1>
+          0.4 -0.19 0.75 -0.19 0.75 0.17 0.47 0.16 0.39 0.09
+      </polygon_1>
+    </polygons>
+    <color>
+      <r>45</r>
+      <g>130</g>
+      <b>220</b>
+    </color>
+    <controlMode>goStraight</controlMode>
+    <motionPattern>pidController</motionPattern>
+  </area_1>
+  <area_2>
+    <id>corridor</id>
+    <type>corridor</type>
+    <polygons>
+      <numberOfPolygons>1</numberOfPolygons>
+      <polygon_1>
+          0.47 0.16 0.18 0.46 0.1 0.37 0.39 0.09
+      </polygon_1>
+    </polygons>
+    <color>
+      <r>100</r>
+      <g>220</g>
+      <b>100</b>
+    </color>
+    <controlMode>manual</controlMode>
+    <motionPattern>pidController</motionPattern>
+  </area_2>
+  <area_3>
+    <id>top</id>
+    <type>room</type>
+    <polygons>
+      <numberOfPolygons>1</numberOfPolygons>
+      <polygon_1>
+          0.18 0.46 0.17 0.74 -0.18 0.73 -0.18 0.38 0.1 0.37
+      </polygon_1>
+    </polygons>
+    <color>
+      <r>220</r>
+      <g>0</g>
+      <b>0</b>
+    </color>
+    <controlMode>manual</controlMode>
+    <motionPattern>pidController</motionPattern>
+  </area_3>
+  <preferedAreaId>top</preferedAreaId>
+<!--
+  <preferedAreaId>top</preferedAreaId>
+-->
+</opencv_storage>
