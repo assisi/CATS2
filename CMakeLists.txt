@@ -18,7 +18,8 @@ find_package(Qt5GStreamer REQUIRED)
 find_package(GLIB2 REQUIRED)
 #find_package(Libtsai REQUIRED)
 find_package(Protobuf REQUIRED)
-find_package(Boost 1.40 COMPONENTS program_options REQUIRED )
+#find_package(Boost 1.40 COMPONENTS program_options REQUIRED )
+find_package(Boost COMPONENTS program_options REQUIRED )
 
 # SYSTEM is used to suppress GCC warnings in libraries headers
 include_directories(SYSTEM ${QT_INCLUDE_DIR})
