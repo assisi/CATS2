@@ -66,16 +66,16 @@
             </controlMap>
             <initiation>
                 <controlAreasPath>control-maps/paris-two-rooms-control-map.xml</controlAreasPath>
-                <fishFollowCheckTimeOutSec>20</fishFollowCheckTimeOutSec>
+                <fishFollowCheckTimeOutSec>10</fishFollowCheckTimeOutSec>
                 <maximalFishNumberAllowedToStay>1</maximalFishNumberAllowedToStay>
                 <!-- timeOut / inGroup -->
-                <departureTrigger>timeOut</departureTrigger>
+                <departureTrigger>inGroup</departureTrigger>
                 <departureOnTimeOut>
                     <departureTimeOutSec>10</departureTimeOutSec>
                 </departureOnTimeOut>
                 <departureWhenInGroup>
-                    <fishNumberAround>2</fishNumberAround>
-                    <groupRadius>0.20</groupRadius>
+                    <fishNumberAround>1</fishNumberAround>
+                    <groupRadius>0.10</groupRadius>
                 </departureWhenInGroup>
             </initiation>
         </controllers>
