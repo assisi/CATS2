@@ -89,9 +89,9 @@ bool InitiationController::needToChangeRoom()
         return true; // continue
 
     // if it's the room with the majority of the fish?
-    if ((m_fishAreaId == m_robotAreaId)
-            && m_controlAreas.contains(m_fishAreaId)
-            && (m_controlAreas[m_fishAreaId]->type() == ControlAreaType::ROOM)) {
+    if ((m_fishNumberByArea[m_robotAreaId] >= RobotControlSettings::get().numberOfAnimals() - m_settings.maximalFishNumberAllowedToStay())
+            && m_controlAreas.contains(m_robotAreaId)
+            && (m_controlAreas[m_robotAreaId]->type() == ControlAreaType::ROOM)) {
         // if there is a preference for the room?
         if (m_controlAreas.contains(m_preferedAreaId)) {
             // if the robot is in the prefered room?
@@ -240,9 +240,10 @@ bool InitiationController::timeToDepart()
                 qDebug() << Q_FUNC_INFO << QString("Detected %1 fish, changing the room")
                             .arg(fishAroundRobot);
                 return true;
-            }
-            else
+            } else {
+//                qDebug() << Q_FUNC_INFO << QString("Detected %1 fish").arg(fishAroundRobot);
                 return false;
+            }
         } else
             return false;
     }
