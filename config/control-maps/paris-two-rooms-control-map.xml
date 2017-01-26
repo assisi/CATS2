@@ -52,7 +52,6 @@
     <controlMode>manual</controlMode>
     <motionPattern>pidController</motionPattern>
   </area_3>
-  <preferedAreaId>top</preferedAreaId>
 <!--
   <preferedAreaId>top</preferedAreaId>
 -->
