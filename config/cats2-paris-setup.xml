@@ -88,15 +88,15 @@
             </ledColor>
         </fishBot_1>
         <fishBot_2>
-            <id>C</id>
+            <id>E</id>
             <ledColor>
-                <r>190</r>
-                <g>255</g>
-                <b>190</b>
+                <r>240</r>
+                <g>225</g>
+                <b>130</b>
             </ledColor>
         </fishBot_2>
         <fishBot_3>
-            <id>B</id>
+            <id>C</id>
             <ledColor>
                 <r>207</r>
                 <g>91</g>
@@ -141,9 +141,9 @@
                     <fishBot_F>
                         <threshold>20</threshold>
                     </fishBot_F>
-                    <fishBot_B>
-                        <threshold>70</threshold>
-                    </fishBot_B>
+                    <fishBot_E>
+                        <threshold>30</threshold>
+                    </fishBot_E>
                     <fishBot_C>
                         <threshold>30</threshold>
                     </fishBot_C>
