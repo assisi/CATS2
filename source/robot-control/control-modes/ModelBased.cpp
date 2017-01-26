@@ -207,8 +207,8 @@ PositionMeters ModelBased::computeTargetPosition()
         targetPosition.setY((m_sim->robots[0].first->headPos.second +
                             m_sim->robots[0].first->tailPos.second) / 2. + minY());
         targetPosition.setValid(true);
-        qDebug() << Q_FUNC_INFO  << QString("New target is %1")
-                    .arg(targetPosition.toString());
+//        qDebug() << Q_FUNC_INFO  << QString("New target is %1")
+//                    .arg(targetPosition.toString());
     }
 
     return targetPosition;

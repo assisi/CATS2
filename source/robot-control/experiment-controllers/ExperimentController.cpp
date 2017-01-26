@@ -116,11 +116,11 @@ void ExperimentController::updateAreasOccupation()
     QString areaId;
     if (findRobotArea(areaId)) {
         if (m_robotAreaId != areaId) {
-            qDebug() << Q_FUNC_INFO
-                     << QString("%1 changed the room from %2 to %3")
-                        .arg(m_robot->name())
-                        .arg(m_robotAreaId)
-                        .arg(areaId);
+//            qDebug() << Q_FUNC_INFO
+//                     << QString("%1 changed the room from %2 to %3")
+//                        .arg(m_robot->name())
+//                        .arg(m_robotAreaId)
+//                        .arg(areaId);
             m_robotAreaId = areaId;
         }
     } else {
