@@ -43,21 +43,21 @@
                 <influenceStrengthTarget>400</influenceStrengthTarget>
                 <maxForce>1000</maxForce>
                 <maxAngleDeg>60</maxAngleDeg>
-                <obstacleAvoidanceAreaDiameterM>0.1</obstacleAvoidanceAreaDiameterM>
+                <obstacleAvoidanceAreaDiameterM>0.15</obstacleAvoidanceAreaDiameterM>
             </potentialField>
         </obstacleAvoidance>
         <navigation>
             <fishMotionPatternFrequencyDivider>10</fishMotionPatternFrequencyDivider>
             <fishMotionPattern>
                 <distanceCm>25</distanceCm>
-                <speedCmSec>15</speedCmSec>
+                <speedCmSec>19</speedCmSec> <!--Speed fish behqviour -->
             </fishMotionPattern>
             <pid>
                 <kp>1.10</kp>
                 <ki>0.03</ki>
                 <kd>0.00</kd>
             </pid>
-            <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
+            <defaultLinearSpeedCmSec>17</defaultLinearSpeedCmSec>
             <needOrientationToNavigate>0</needOrientationToNavigate>
         </navigation>
         <controllers>
