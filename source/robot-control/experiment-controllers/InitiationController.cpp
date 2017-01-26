@@ -264,7 +264,7 @@ ExperimentController::ControlData InitiationController::stateControlData()
     case CHANGING_ROOM:
         if (m_controlAreas.contains(m_targetAreaId)) {
             controlData.controlMode = ControlModeType::GO_TO_POSITION;
-            controlData.motionPattern = MotionPatternType::FISH_MOTION;
+            controlData.motionPattern = MotionPatternType::PID;
             controlData.data =
                 QVariant::fromValue(m_controlAreas[m_targetAreaId]->centroid());
         }
@@ -272,7 +272,7 @@ ExperimentController::ControlData InitiationController::stateControlData()
     case GOING_BACK:
         if (m_controlAreas.contains(m_departureAreaId)) {
             controlData.controlMode = ControlModeType::GO_TO_POSITION;
-            controlData.motionPattern = MotionPatternType::FISH_MOTION;
+            controlData.motionPattern = MotionPatternType::PID;
             controlData.data =
                 QVariant::fromValue(m_controlAreas[m_departureAreaId]->centroid());
         }
