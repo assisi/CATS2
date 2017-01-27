@@ -43,6 +43,11 @@ FishBot::FishBot(QString id) :
     // controller data
     connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
             this, &FishBot::notifyControllerChanged);
+    connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
+            [=]()
+            {
+                releaseModelArea();
+            });
     // control modes
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);
@@ -283,10 +288,24 @@ void FishBot::stepExperimentManager()
                 }
                 break;
             }
+            case ControlModeType::MODEL_BASED:
+            {
+                if (controlData.data.canConvert<AnnotatedPolygons>()) {
+                    // the polygons that define the limits of the model
+                    AnnotatedPolygons annotatedPolygons(controlData.data.value<AnnotatedPolygons>());
+                    QString areaId = annotatedPolygons.label;
+                    // the id of the limits as they will be reused
+                    QString id = QString("%1%2")
+                            .arg(ExperimentControllerType::toSettingsString(
+                                     m_experimentManager.currentController()))
+                            .arg(areaId.left(1).toUpper() + areaId.mid(1));
+                    limitModelArea(id, annotatedPolygons.polygons);
+                }
+                break;
+            }
             case ControlModeType::GO_STRAIGHT:
             case ControlModeType::IDLE:
             case ControlModeType::MANUAL:
-            case ControlModeType::MODEL_BASED:
             case ControlModeType::UNDEFINED:
             default:
                 break;

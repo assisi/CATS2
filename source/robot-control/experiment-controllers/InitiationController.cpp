@@ -12,7 +12,8 @@ InitiationController::InitiationController(FishBot* robot,
                              ExperimentControllerSettingsPtr settings) :
     ExperimentController(robot, ExperimentControllerType::INITIATION),
     m_settings(),
-    m_state(SWIMMING_WITH_FISH),
+    m_state(UNDEFINED),
+    m_limitModelArea(false),
     m_targetAreaId(""),
     m_departureAreaId("")
 {
@@ -36,20 +37,23 @@ InitiationController::InitiationController(FishBot* robot,
  */
 ExperimentController::ControlData InitiationController::step()
 {
+    ControlData controlData;
+
     // a check for the valid robot pointer
-    if (!m_robot)
-        return ControlData();
+    if (m_robot) {
+        // check where the robot and fish are
+        updateAreasOccupation();
 
-    // check where the robot and fish are
-    updateAreasOccupation();
-
-    if (needToChangeRoom()) {
-        return changeRoom();
-    } else {
-        // swimming with fish
-        updateState(SWIMMING_WITH_FISH);
-        return stateControlData();
+        if (needToChangeRoom()) {
+            controlData = changeRoom();
+        } else {
+            // swimming with fish
+            updateState(SWIMMING_WITH_FISH);
+            controlData = stateControlData();
+        }
     }
+
+    return controlData;
 }
 
 /*!
@@ -76,6 +80,11 @@ void InitiationController::updateState(State state)
                     .arg(stateToString(m_state))
                     .arg(stateToString(state));
         m_state = state;
+
+        // a specific check for the case when the robot is switching to the
+        // model-based control mode
+        if (m_state == SWIMMING_WITH_FISH)
+            m_limitModelArea = true;
     }
 }
 
@@ -237,7 +246,8 @@ bool InitiationController::timeToDepart()
             }
             // if enough fish are close to the robot
             if (fishAroundRobot >= m_settings.fishNumberAroundOnDeparture()) {
-                qDebug() << Q_FUNC_INFO << QString("Detected %1 fish, changing the room")
+                qDebug() << Q_FUNC_INFO
+                         << QString("Detected %1 fish, changing the room")
                             .arg(fishAroundRobot);
                 return true;
             } else {
@@ -247,6 +257,7 @@ bool InitiationController::timeToDepart()
         } else
             return false;
     }
+    return false;
 }
 
 /*!
@@ -260,6 +271,14 @@ ExperimentController::ControlData InitiationController::stateControlData()
     case SWIMMING_WITH_FISH:
         controlData.controlMode = ControlModeType::MODEL_BASED;
         controlData.motionPattern = MotionPatternType::FISH_MOTION;
+        // if we need to limit the model
+        if (m_limitModelArea
+                && m_controlAreas[m_robotAreaId]->type() == ControlAreaType::ROOM)
+        {
+            m_limitModelArea = false;
+            controlData.data =
+                QVariant::fromValue(m_controlAreas[m_robotAreaId]->annotatedPolygons());
+        }
         break;
     case CHANGING_ROOM:
         if (m_controlAreas.contains(m_targetAreaId)) {
@@ -299,6 +318,7 @@ QString InitiationController::stateToString(State state)
     case GOING_BACK:
         return "Going-back";
         break;
+    case UNDEFINED:
     default:
         return "Undefined";
         break;
