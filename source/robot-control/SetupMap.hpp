@@ -15,6 +15,8 @@ public:
 
     //! Returns the polygon representing the setup.
     WorldPolygon polygon() const { return m_polygon; }
+    //! Returns the list of polygons excluded from the setup.
+    QList<WorldPolygon> excludedPolygons() const { return m_excludedPolygons; }
 
     //! Checks that the point is inside the setup.
     bool containsPoint(PositionMeters position) const;

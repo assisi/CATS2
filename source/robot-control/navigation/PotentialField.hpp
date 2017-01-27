@@ -43,9 +43,6 @@ private:
 private:
     //! A pointer to the robot that is controlled by this method.
     FishBot* m_robot;
-    
-    //! Contains the discretized configuration space
-    cv::Mat m_configurationSpace;
 
     //! Potential field settings.
     PotentialFieldSettings m_settings;

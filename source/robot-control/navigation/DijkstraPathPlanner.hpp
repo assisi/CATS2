@@ -34,11 +34,11 @@ public:
     bool isValid() const { return m_valid; }
 
 private:
-    //! Reads the configuration space and builds the graph.
+    //! Builds the graph.
     bool init();
 
-    //! Adds an edge between two points.
-    void addEdge(PositionMeters startPoint, PositionMeters endPoint);
+    //! Adds an edge between two grid nodes.
+    void addEdge(QPoint startNode, QPoint endNode);
 
     //! Simplifies the resulted path by removing the points lying on the same
     //! line.
