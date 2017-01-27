@@ -186,6 +186,28 @@ void FishBot::goToPosition(PositionMeters position)
 }
 
 /*!
+ * Limits the arena matrix of the model-based control mode by a mask. The mask
+ * is defined by a set of polygons and is labeled with an id.
+ */
+void FishBot::limitModelArea(QString maskId, QList<WorldPolygon> allowedArea)
+{
+    if (m_controlStateMachine.currentControlMode() == ControlModeType::MODEL_BASED) {
+        m_controlStateMachine.limitModelArea(maskId, allowedArea);
+    }
+}
+
+/*!
+ * Requests the state machine to remove the limitations on the model area that
+ * were applied by a experiment controller.
+ */
+void FishBot::releaseModelArea()
+{
+    // no check is done on the current control mode as the model might be
+    // released even when it's not active
+    m_controlStateMachine.releaseModelArea();
+}
+
+/*!
  * Checks that the current control modes can generate targets with
  * different motion patterns.
  */
@@ -251,7 +273,7 @@ void FishBot::stepExperimentManager()
             if (supportsMotionPatterns() && (controlData.motionPattern != MotionPatternType::UNDEFINED))
                 setMotionPattern(controlData.motionPattern);
         
-            // if the control mode is uses the extra control data
+            // if the control mode uses the extra control data
             switch (controlData.controlMode) {
             case ControlModeType::GO_TO_POSITION:
             {

@@ -400,4 +400,6 @@ struct AnnotatedPolygons {
     QList<WorldPolygon> polygons;
 };
 
+Q_DECLARE_METATYPE(AnnotatedPolygons)
+
 #endif // CATS2_POSITION_HPP
