@@ -6,6 +6,8 @@
 #include <opencv2/video.hpp>
 #include <opencv2/video/background_segm.hpp>
 
+#include <QtCore/QMap>
+
 /*!
  * Stores the setup map, and the grid step.
  */
@@ -94,6 +96,9 @@ protected:
 
     //! The rectangular grid covering the whole setup.
     cv::Mat m_setupGrid;
+    //! The masks that might be applied on the setup grid. They are ordered by
+    //! ids.
+    QMap<QString, cv::Mat> m_areaMasks;
     //! The current grid used by this method, it's the setup grid that might be
     //! limited by a mask.
     cv::Mat m_currentGrid;

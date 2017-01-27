@@ -111,6 +111,28 @@ bool GridBasedMethod::checkPointIncluded(PositionMeters position,
     }
 }
 
+/*! Applies the mask on the arena matrix; used to limit the model output to a
+ * specific area. Since the same mask can be requested to be applied several
+ * times, we keep a map of used matrices; that's why a maskId is requested.
+ */
+void GridBasedMethod::setAreaMask(QString maskId, QList<WorldPolygon> maskPolygons)
+{
+    // if the mask is not yet known then generate the matrix and put it to the map
+    if (! m_areaMasks.contains(maskId)) {
+        m_areaMasks[maskId] = generateGrid(maskPolygons);
+    }
+    // apply the mask
+    m_currentGrid = m_setupGrid & m_areaMasks[maskId];
+}
+
+/*!
+ * Removes the mask from the arena matrix.
+ */
+void GridBasedMethod::clearAreaMask()
+{
+    m_setupGrid.copyTo(m_currentGrid);
+}
+
 /*!
  * Checks that the point belongs to a setup. First checks for the current grid
  * (that is faster and takes into account the masks), if it's not yet generated
