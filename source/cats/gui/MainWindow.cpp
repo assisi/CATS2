@@ -152,21 +152,35 @@ void MainWindow::connectPrimaryView()
 {
     if (m_primarySetupType != SetupType::UNDEFINED) {
         ViewerWidget* viewerWidget = m_viewerHandlers[m_primarySetupType]->widget();
-        connect(viewerWidget, &ViewerWidget::mousePosition, [this](PositionPixels imagePosition, PositionMeters worldPosition) {
-            statusBar()->showMessage(tr("Image position: %1, world position: %2").arg(imagePosition.toString()).arg(worldPosition.toString()));
+        connect(viewerWidget, &ViewerWidget::mousePosition,
+                [this](PositionPixels imagePosition, PositionMeters worldPosition)
+        {
+            statusBar()->showMessage(tr("Image position: %1, world position: %2")
+                                     .arg(imagePosition.toString())
+                                     .arg(worldPosition.toString()));
         });
 
         // connect the window's actions
-        connect(m_ui->actionZoomIn, &QAction::triggered, viewerWidget, &ViewerWidget::onZoomIn);
-        connect(m_ui->actionZoomOut, &QAction::triggered, viewerWidget, &ViewerWidget::onZoomOut);
-        connect(m_ui->actionSaveCurrentView, &QAction::triggered, viewerWidget, &ViewerWidget::saveCurrentFrameToFile);
-        connect(m_ui->actionAdjustView, &QAction::triggered, viewerWidget, &ViewerWidget::adjust);
-        connect(m_ui->actionShowAgentsData, &QAction::toggled, viewerWidget, &ViewerWidget::setShowAgentsData);
-        connect(m_ui->actionShowAgentsData, &QAction::toggled, m_robotsHandler->contolLoop().data(), &ControlLoop::sendNavigationData);
-        connect(m_ui->actionShowControlAreas, &QAction::toggled, viewerWidget, &ViewerWidget::setShowControlAreas);
-        connect(m_ui->actionShowControlAreas, &QAction::toggled, m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlAreas);
-        connect(m_ui->actionShowSetupOutline, &QAction::toggled, viewerWidget, &ViewerWidget::setShowSetup);
-        connect(m_ui->actionShowSetupOutline, &QAction::toggled, m_robotsHandler.data(), &RobotsHandler::requestSetupMap);
+        connect(m_ui->actionZoomIn, &QAction::triggered,
+                viewerWidget, &ViewerWidget::onZoomIn);
+        connect(m_ui->actionZoomOut, &QAction::triggered,
+                viewerWidget, &ViewerWidget::onZoomOut);
+        connect(m_ui->actionSaveCurrentView, &QAction::triggered,
+                viewerWidget, &ViewerWidget::saveCurrentFrameToFile);
+        connect(m_ui->actionAdjustView, &QAction::triggered,
+                viewerWidget, &ViewerWidget::adjust);
+        connect(m_ui->actionShowAgentsData, &QAction::toggled,
+                viewerWidget, &ViewerWidget::setShowAgentsData);
+        connect(m_ui->actionShowAgentsData, &QAction::toggled,
+                m_robotsHandler->contolLoop().data(), &ControlLoop::sendNavigationData);
+        connect(m_ui->actionShowControlAreas, &QAction::toggled,
+                viewerWidget, &ViewerWidget::setShowControlAreas);
+        connect(m_ui->actionShowControlAreas, &QAction::toggled,
+                m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlAreas);
+        connect(m_ui->actionShowSetupOutline, &QAction::toggled,
+                viewerWidget, &ViewerWidget::setShowSetup);
+        connect(m_ui->actionShowSetupOutline, &QAction::toggled,
+                m_robotsHandler.data(), &RobotsHandler::requestSetupMap);
 
         // connect to the tracking data manager
         connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
@@ -212,16 +226,26 @@ void MainWindow::disconnectPrimaryView()
         viewerWidget->disconnect();
 
         // disconnect the window's actions
-        disconnect(m_ui->actionZoomIn, &QAction::triggered, viewerWidget, &ViewerWidget::onZoomIn);
-        disconnect(m_ui->actionZoomOut, &QAction::triggered, viewerWidget, &ViewerWidget::onZoomOut);
-        disconnect(m_ui->actionSaveCurrentView, &QAction::triggered, viewerWidget, &ViewerWidget::saveCurrentFrameToFile);
-        disconnect(m_ui->actionAdjustView, &QAction::triggered, viewerWidget, &ViewerWidget::adjust);
-        disconnect(m_ui->actionShowAgentsData, &QAction::toggled, viewerWidget, &ViewerWidget::setShowAgentsData);
-        disconnect(m_ui->actionShowAgentsData, &QAction::toggled, m_robotsHandler->contolLoop().data(), &ControlLoop::sendNavigationData);
-        disconnect(m_ui->actionShowControlAreas, &QAction::toggled, viewerWidget, &ViewerWidget::setShowControlAreas);
-        disconnect(m_ui->actionShowControlAreas, &QAction::toggled, m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlAreas);
-        disconnect(m_ui->actionShowSetupOutline, &QAction::toggled, viewerWidget, &ViewerWidget::setShowSetup);
-        disconnect(m_ui->actionShowSetupOutline, &QAction::toggled, m_robotsHandler.data(), &RobotsHandler::requestSetupMap);
+        disconnect(m_ui->actionZoomIn, &QAction::triggered,
+                   viewerWidget, &ViewerWidget::onZoomIn);
+        disconnect(m_ui->actionZoomOut, &QAction::triggered,
+                   viewerWidget, &ViewerWidget::onZoomOut);
+        disconnect(m_ui->actionSaveCurrentView, &QAction::triggered,
+                   viewerWidget, &ViewerWidget::saveCurrentFrameToFile);
+        disconnect(m_ui->actionAdjustView, &QAction::triggered,
+                   viewerWidget, &ViewerWidget::adjust);
+        disconnect(m_ui->actionShowAgentsData, &QAction::toggled,
+                   viewerWidget, &ViewerWidget::setShowAgentsData);
+        disconnect(m_ui->actionShowAgentsData, &QAction::toggled,
+                   m_robotsHandler->contolLoop().data(), &ControlLoop::sendNavigationData);
+        disconnect(m_ui->actionShowControlAreas, &QAction::toggled,
+                   viewerWidget, &ViewerWidget::setShowControlAreas);
+        disconnect(m_ui->actionShowControlAreas, &QAction::toggled,
+                   m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlAreas);
+        disconnect(m_ui->actionShowSetupOutline, &QAction::toggled,
+                   viewerWidget, &ViewerWidget::setShowSetup);
+        disconnect(m_ui->actionShowSetupOutline, &QAction::toggled,
+                   m_robotsHandler.data(), &RobotsHandler::requestSetupMap);
 
         // disconnect from the tracking data manager
         disconnect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,

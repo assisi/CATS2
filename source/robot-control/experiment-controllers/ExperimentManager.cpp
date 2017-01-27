@@ -62,6 +62,8 @@ void ExperimentManager::setController(ExperimentControllerType::Enum type)
         m_controllers[m_currentController]->start();
         // inform about changes
         emit notifyControllerChanged(type);
+        // requests the new controller's control areas polygons
+        m_controllers[m_currentController]->requestPolygons();
     }
 }
 
