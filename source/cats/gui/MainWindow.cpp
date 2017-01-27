@@ -68,6 +68,11 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // show the window maximazed
      setWindowState(Qt::WindowMaximized);
+
+     // automatically toogle some of the toolbar buttons
+     m_ui->actionShowAgentsData->toggle();
+     m_ui->actionShowControlAreas->toggle();
+     m_ui->actionShowSetupOutline->toggle();
 }
 
 /*!
