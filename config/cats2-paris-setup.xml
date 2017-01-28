@@ -50,7 +50,7 @@
             <fishMotionPatternFrequencyDivider>10</fishMotionPatternFrequencyDivider>
             <fishMotionPattern>
                 <distanceCm>25</distanceCm>
-                <speedCmSec>19</speedCmSec> <!--Speed fish behqviour -->
+                <speedCmSec>19</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
                 <kp>1.10</kp>

@@ -10,9 +10,11 @@
 class RobotsWidget;
 
 /*!
-* \brief This class manages the robots control process. It binds together the data and GUI.
- * NOTE : handler classes should be managed through smart pointers without using the Qt's mechanism
- * of ownership; thus we set the parent to nullptr in the constructor.
+* \brief This class manages the robots control process. It binds together the
+* data and GUI.
+* NOTE : handler classes should be managed through smart pointers without using
+* the Qt's mechanism of ownership; thus we set the parent to nullptr in the
+* constructor.
 */
 class RobotsHandler : public QObject
 {

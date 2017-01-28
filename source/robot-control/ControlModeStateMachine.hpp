@@ -29,8 +29,15 @@ public:
     //! different motion patterns.
     bool supportsMotionPatterns();
 
+public:
     //! Sets the target position for the go-to-position control mode.
     void setTargetPosition(PositionMeters targetPosition);
+    //! Limits the arena matrix of the model-based control mode by a mask.
+    //! The mask is defined by a set of polygons and is labeled with an id.
+    void limitModelArea(QString maskId, QList<WorldPolygon> allowedArea);
+    //! Removes the applied limitations on the model area. After this the model
+    //! will be applied on the whole setup.
+    void releaseModelArea();
 
 signals:
     //! Informs that the robot's control mode was modified.

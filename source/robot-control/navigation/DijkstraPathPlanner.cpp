@@ -5,11 +5,15 @@
 #include <AgentState.hpp>
 #include <Timer.hpp>
 
-#include <QtCore/QQueue>
-#include <QtCore/QDebug>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
 
 #include <boost/graph/dijkstra_shortest_paths.hpp>
 #include <boost/graph/connected_components.hpp>
+
+#include <QtCore/QQueue>
+#include <QtCore/QDebug>
+#include <QtGui/QVector2D>
 
 #include <limits>
 
@@ -30,62 +34,48 @@ DijkstraPathPlanner::DijkstraPathPlanner() :
         qDebug() << Q_FUNC_INFO << "Successfully initialized the dijkstra path planner";
     else
         qDebug() << Q_FUNC_INFO << "Could not initialize the path planner";
+
+//    cv::namedWindow("DijkstraGrid", cv::WINDOW_NORMAL);
 }
 
 /*!
- * Reads the configuration space from the file and builds the graph.
+ * Destructor.
+ */
+DijkstraPathPlanner::~DijkstraPathPlanner()
+{
+//    cv::destroyWindow("DijkstraGrid");
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
+}
+
+/*!
+ * Builds the graph.
  */
 bool DijkstraPathPlanner::init()
 {
-    bool successful = true;
-
-    // read the size of the grid square and the polygon
-    successful = (m_gridSizeMeters > 0) && m_setupMap.isValid();
+    bool successful = (!m_currentGrid.empty());
 
     // build a graph
     if (successful) {
-        // add vertices
-        int row = 0; // left to right
-        int col = 0; // down to up
-        while (minX() + col * m_gridSizeMeters < m_setupMap.maxX()) {
-            while (minY() + row * m_gridSizeMeters < m_setupMap.maxY()) {
+        // add vertices based on the grid
+        for (int col = 0; col < m_currentGrid.cols; ++col)
+            for (int row = 0; row < m_currentGrid.rows; ++row) {
                 Vertex vertex = boost::add_vertex(m_graph);
                 m_graph[boost::num_vertices(m_graph) - 1].row = row;
                 m_graph[boost::num_vertices(m_graph) - 1].col = col;
                 m_gridNodeToVertexMap.insert(QPoint(col, row), vertex);
-                row++;
             }
-            col++;
-            row = 0;
-        }
 
         // add edges
-        row = 0; // left to right
-        col = 0; // down to up
-        double x = minX();
-        double y = minY();
-        while (x < m_setupMap.maxX()) {
-            while (y < m_setupMap.maxY()) {
+        for (int col = 0; col < m_currentGrid.cols; ++col)
+            for (int row = 0; row < m_currentGrid.rows; ++row) {
                 // make the connections with four neighbours to the right, up,
                 // and up and down diagonal
-                PositionMeters currentPoint(x, y);
-                addEdge(currentPoint, PositionMeters(x + m_gridSizeMeters, y));
-                addEdge(currentPoint, PositionMeters(x, y + m_gridSizeMeters));
-                addEdge(currentPoint, PositionMeters(x + m_gridSizeMeters, y + m_gridSizeMeters));
-                addEdge(currentPoint, PositionMeters(x + m_gridSizeMeters, y - m_gridSizeMeters));
-                // not needed but added as a test
-//                addEdge(currentPoint, PositionMeters(x - m_gridSizeM, y));
-//                addEdge(currentPoint, PositionMeters(x, y - m_gridSizeM));
-//                addEdge(currentPoint, PositionMeters(x - m_gridSizeM, y + m_gridSizeM));
-//                addEdge(currentPoint, PositionMeters(x - m_gridSizeM, y - m_gridSizeM));
-                row++;
-                y += m_gridSizeMeters;
+                QPoint currentNode(col, row);
+                addEdge(currentNode, currentNode + QPoint(1, 0));
+                addEdge(currentNode, currentNode + QPoint(0, 1));
+                addEdge(currentNode, currentNode + QPoint(1, 1));
+                addEdge(currentNode, currentNode + QPoint(1, -1));
             }
-            col++;
-            x += m_gridSizeMeters;
-            row = 0;
-            y = minY();
-        }
 
         // find connected components
         m_componentByVertex.resize(boost::num_vertices(m_graph));
@@ -93,6 +83,8 @@ bool DijkstraPathPlanner::init()
         qDebug() << Q_FUNC_INFO
                  << QString("The graph contains %1 connected components")
                     .arg(num);
+
+//        cv::imshow( "DijkstraGrid", m_currentGrid);
     }
 
     return successful;
@@ -101,12 +93,14 @@ bool DijkstraPathPlanner::init()
 /*!
  * Adds an edge between two points.
  */
-void DijkstraPathPlanner::addEdge(PositionMeters firstPoint, PositionMeters secondPoint)
+void DijkstraPathPlanner::addEdge(QPoint firstNode, QPoint secondNode)
 {
-    if (m_setupMap.containsPoint(firstPoint) && m_setupMap.containsPoint(secondPoint)) {
-        double distance = firstPoint.distance2DTo(secondPoint);
-        Vertex firstVertex = m_gridNodeToVertexMap[positionToGridNode(firstPoint)];
-        Vertex secondVertex = m_gridNodeToVertexMap[positionToGridNode(secondPoint)];
+    if (containsNode(firstNode) && containsNode(secondNode)) {
+        // distance between two grid nodes
+        double distance = m_gridSizeMeters *
+                QVector2D(secondNode - firstNode).length();
+        Vertex firstVertex = m_gridNodeToVertexMap[firstNode];
+        Vertex secondVertex = m_gridNodeToVertexMap[secondNode];
         boost::add_edge(firstVertex, secondVertex, distance, m_graph);
     }
 }
@@ -114,9 +108,11 @@ void DijkstraPathPlanner::addEdge(PositionMeters firstPoint, PositionMeters seco
 /*!
  * Generates a path plan from the current to the target position.
  * Based on http://www.boost.org/doc/libs/1_46_1/libs/graph/example/dijkstra-example.cpp
- * and http://stackoverflow.com/questions/12675619/boost-dijkstra-shortest-path-how-can-you-get-the-shortest-path-and-not-just-th
+ * and http://stackoverflow.com/questions/12675619/boost-dijkstra-shortest-path-
+ * how-can-you-get-the-shortest-path-and-not-just-th
  */
-QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint, PositionMeters goalPoint)
+QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint,
+                                                 PositionMeters goalPoint)
 {
     // the backup path to be suggested when we can't generate a good one
     QQueue<PositionMeters> backupPath;
@@ -129,24 +125,24 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint, Posi
     // sanity checks: we verify that both grid nodes are inside the setup and
     // thus might be connected; if the path planning can not be run they return
     // the path consisting from a goal position
-    PositionMeters startGridNodePosition = gridNodeToPosition(startGridNode);
-    if (! m_setupMap.containsPoint(startGridNodePosition)) {
+    if (! containsNode(startGridNode)) {
         if (! m_gotErrorOnPreviousStep) {
             qDebug() << Q_FUNC_INFO
                      << QString("Start grid node position is outside of the "
                                 "working space: %1, path planning stopped")
-                        .arg(startGridNodePosition.toString());
+                        .arg(gridNodeToPosition(startGridNode).toString())
+                     << startGridNode;
             m_gotErrorOnPreviousStep = true;
         }
         return backupPath;
     }
-    PositionMeters goalGridNodePosition = gridNodeToPosition(goalGridNode);
-    if (! m_setupMap.containsPoint(goalGridNodePosition)) {
+    if (! containsNode(goalGridNode)) {
         if (! m_gotErrorOnPreviousStep) {
             qDebug() << Q_FUNC_INFO
                      << QString("Goal grid node position is outside of the "
                                 "working space: %1, path planning stopped")
-                        .arg(goalGridNodePosition.toString());
+                        .arg(gridNodeToPosition(goalGridNode).toString())
+                     << goalGridNode;
             m_gotErrorOnPreviousStep = true;
         }
         return backupPath;
@@ -237,6 +233,9 @@ void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
             previousDx = currentPosition.x() - previousPosition.x();
             previousDy = currentPosition.y() - previousPosition.y();
 
+            // the distance between two consequitive points
+            double accumulatedDistance = qSqrt(previousDx * previousDx +
+                                               previousDy * previousDy);
             // for all the other points in the path
             while (path.size() > 0) {
                 // update the positions
@@ -245,11 +244,18 @@ void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
                 // compute the curent difference of position along x and y
                 currentDx = currentPosition.x() - previousPosition.x();
                 currentDy = currentPosition.y() - previousPosition.y();
-
-                // if the slope is different
-                if(!qFuzzyCompare(previousDx, currentDx) || !qFuzzyCompare(previousDy, currentDy)) {
+                // update the accumulated distance
+                accumulatedDistance += qSqrt(currentDx * currentDx +
+                                             currentDy * currentDy);
+                // if the slope is different or if the distance between two
+                // points becomes too long
+                if(!qFuzzyCompare(previousDx, currentDx) ||
+                        !qFuzzyCompare(previousDy, currentDy) ||
+                        (accumulatedDistance > MaximalDistanceBetweenTwoPathPoints))
+                {
                     // add the new point to the path
                     reducedPath.enqueue(previousPosition);
+                    accumulatedDistance = 0;
                 }
                 // update the current differences of positions along x and y
                 previousDx = currentDx;

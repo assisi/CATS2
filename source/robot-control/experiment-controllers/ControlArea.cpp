@@ -52,13 +52,8 @@ void ControlArea::addPolygon(std::vector<cv::Point2f> cvPolygon)
 AnnotatedPolygons ControlArea::annotatedPolygons() const
 {
     AnnotatedPolygons polygons;
-    for (const auto& polygon : m_polygons) {
-        WorldPolygon worldPolygon;
-        for (const auto& point : polygon) {
-            worldPolygon.append(PositionMeters(point.x(), point.y()));
-        }
-        polygons.polygons.append(worldPolygon);
-    }
+
+    polygons.polygons = m_polygons;
     polygons.color = m_color;
     polygons.label = m_id;
     return polygons;

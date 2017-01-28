@@ -163,7 +163,10 @@ private:
 
     //! The threshold to decide that one point is close to another. It's used
     //! by in the control modes and navigation.
-    static constexpr double ProximityThreshold = 0.05; // [m]
+    // FIXME : it's increased to 10 cm to prevent the robot from blocking around
+    // the target, but it's a way too big, need to be reduced once the blocking
+    // is resolved
+    static constexpr double ProximityThreshold = 0.10; // [m]
 };
 
 Q_DECLARE_METATYPE(PositionMeters)
@@ -399,5 +402,7 @@ struct AnnotatedPolygons {
     //! Polygons.
     QList<WorldPolygon> polygons;
 };
+
+Q_DECLARE_METATYPE(AnnotatedPolygons)
 
 #endif // CATS2_POSITION_HPP

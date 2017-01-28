@@ -43,6 +43,11 @@ FishBot::FishBot(QString id) :
     // controller data
     connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
             this, &FishBot::notifyControllerChanged);
+    connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
+            [=]()
+            {
+                releaseModelArea();
+            });
     // control modes
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);
@@ -186,6 +191,28 @@ void FishBot::goToPosition(PositionMeters position)
 }
 
 /*!
+ * Limits the arena matrix of the model-based control mode by a mask. The mask
+ * is defined by a set of polygons and is labeled with an id.
+ */
+void FishBot::limitModelArea(QString maskId, QList<WorldPolygon> allowedArea)
+{
+    if (m_controlStateMachine.currentControlMode() == ControlModeType::MODEL_BASED) {
+        m_controlStateMachine.limitModelArea(maskId, allowedArea);
+    }
+}
+
+/*!
+ * Requests the state machine to remove the limitations on the model area that
+ * were applied by a experiment controller.
+ */
+void FishBot::releaseModelArea()
+{
+    // no check is done on the current control mode as the model might be
+    // released even when it's not active
+    m_controlStateMachine.releaseModelArea();
+}
+
+/*!
  * Checks that the current control modes can generate targets with
  * different motion patterns.
  */
@@ -251,7 +278,7 @@ void FishBot::stepExperimentManager()
             if (supportsMotionPatterns() && (controlData.motionPattern != MotionPatternType::UNDEFINED))
                 setMotionPattern(controlData.motionPattern);
         
-            // if the control mode is uses the extra control data
+            // if the control mode uses the extra control data
             switch (controlData.controlMode) {
             case ControlModeType::GO_TO_POSITION:
             {
@@ -261,10 +288,24 @@ void FishBot::stepExperimentManager()
                 }
                 break;
             }
+            case ControlModeType::MODEL_BASED:
+            {
+                if (controlData.data.canConvert<AnnotatedPolygons>()) {
+                    // the polygons that define the limits of the model
+                    AnnotatedPolygons annotatedPolygons(controlData.data.value<AnnotatedPolygons>());
+                    QString areaId = annotatedPolygons.label;
+                    // the id of the limits as they will be reused
+                    QString id = QString("%1%2")
+                            .arg(ExperimentControllerType::toSettingsString(
+                                     m_experimentManager.currentController()))
+                            .arg(areaId.left(1).toUpper() + areaId.mid(1));
+                    limitModelArea(id, annotatedPolygons.polygons);
+                }
+                break;
+            }
             case ControlModeType::GO_STRAIGHT:
             case ControlModeType::IDLE:
             case ControlModeType::MANUAL:
-            case ControlModeType::MODEL_BASED:
             case ControlModeType::UNDEFINED:
             default:
                 break;

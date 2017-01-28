@@ -35,7 +35,7 @@
         </pathPlanning>
         <obstacleAvoidance>
             <potentialField>
-                <influenceDistanceArenaM>0.03</influenceDistanceArenaM>
+                <influenceDistanceArenaM>0.04</influenceDistanceArenaM>
                 <influenceStrengthArena>20</influenceStrengthArena>
                 <influenceDistanceRobotsM>0.05</influenceDistanceRobotsM>
                 <influenceStrengthRobots>200</influenceStrengthRobots>
@@ -43,21 +43,21 @@
                 <influenceStrengthTarget>400</influenceStrengthTarget>
                 <maxForce>1000</maxForce>
                 <maxAngleDeg>60</maxAngleDeg>
-                <obstacleAvoidanceAreaDiameterM>0.1</obstacleAvoidanceAreaDiameterM>
+                <obstacleAvoidanceAreaDiameterM>0.15</obstacleAvoidanceAreaDiameterM>
             </potentialField>
         </obstacleAvoidance>
         <navigation>
             <fishMotionPatternFrequencyDivider>10</fishMotionPatternFrequencyDivider>
             <fishMotionPattern>
                 <distanceCm>25</distanceCm>
-                <speedCmSec>15</speedCmSec>
+                <speedCmSec>19</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
                 <kp>1.10</kp>
                 <ki>0.03</ki>
                 <kd>0.00</kd>
             </pid>
-            <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
+            <defaultLinearSpeedCmSec>17</defaultLinearSpeedCmSec>
             <needOrientationToNavigate>0</needOrientationToNavigate>
         </navigation>
         <controllers>
@@ -66,16 +66,16 @@
             </controlMap>
             <initiation>
                 <controlAreasPath>control-maps/epfl-two-rooms-control-map.xml</controlAreasPath>
-                <fishFollowCheckTimeOutSec>20</fishFollowCheckTimeOutSec>
+                <fishFollowCheckTimeOutSec>10</fishFollowCheckTimeOutSec>
                 <maximalFishNumberAllowedToStay>1</maximalFishNumberAllowedToStay>
                 <!-- timeOut / inGroup -->
-                <departureTrigger>timeOut</departureTrigger>
+                <departureTrigger>inGroup</departureTrigger>
                 <departureOnTimeOut>
                     <departureTimeOutSec>10</departureTimeOutSec>
                 </departureOnTimeOut>
                 <departureWhenInGroup>
-                    <fishNumberAround>2</fishNumberAround>
-                    <groupRadius>0.20</groupRadius>
+                    <fishNumberAround>1</fishNumberAround>
+                    <groupRadius>0.10</groupRadius>
                 </departureWhenInGroup>
             </initiation>
         </controllers>
@@ -139,7 +139,7 @@
                 <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
                     <fishBot_H>
-                        <threshold>20</threshold>
+                        <threshold>40</threshold>
                     </fishBot_H>
                     <fishBot_B>
                         <threshold>70</threshold>

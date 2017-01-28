@@ -32,7 +32,8 @@ private:
     enum State {
         SWIMMING_WITH_FISH, // fish model based
         CHANGING_ROOM,      // try to bring the fish to another room
-        GOING_BACK          // return back to the original room if fail
+        GOING_BACK,          // return back to the original room if fail
+        UNDEFINED
     };
 
     //! Converts the state to the string for the output.
@@ -58,6 +59,11 @@ private:
 
     //! The current state of the robot.
     State m_state;
+
+    //! The flag that defines that we need to limit the model area to the
+    //! current room occupied by the robot. The goal is to prevent the robot
+    //! from leaving the room when in the model-based control mode.
+    bool m_limitModelArea;
 
     //! The departure timer.
     Timer m_departureTimer;

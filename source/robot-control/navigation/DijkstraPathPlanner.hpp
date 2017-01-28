@@ -25,6 +25,8 @@ class DijkstraPathPlanner : public GridBasedMethod
 public:
     //! Constructor.
     DijkstraPathPlanner();
+    //! Destructor.
+    ~DijkstraPathPlanner();
 
     //! Generates a path plan from the current to the target position.
     QQueue<PositionMeters> plan(PositionMeters start, PositionMeters goal);
@@ -34,11 +36,11 @@ public:
     bool isValid() const { return m_valid; }
 
 private:
-    //! Reads the configuration space and builds the graph.
+    //! Builds the graph.
     bool init();
 
-    //! Adds an edge between two points.
-    void addEdge(PositionMeters startPoint, PositionMeters endPoint);
+    //! Adds an edge between two grid nodes.
+    void addEdge(QPoint startNode, QPoint endNode);
 
     //! Simplifies the resulted path by removing the points lying on the same
     //! line.
@@ -82,6 +84,12 @@ private:
     QMap <QPoint, Vertex>  m_gridNodeToVertexMap;
     //! The vector that contains to which component belongs every vertex.
     std::vector<Vertex> m_componentByVertex;
+
+    //! Defines the maximal distance between two points in the path. It's
+    //! introduced to prevent long lines between the intermediate points that
+    //! would make the robot to bump into walls in the setups with corridors
+    //! before entering to a corridor.
+    static constexpr double MaximalDistanceBetweenTwoPathPoints = 0.10;
 
     //! A flag to limit the number of error messages.
     bool m_gotErrorOnPreviousStep;

@@ -18,6 +18,8 @@ class PotentialField : public GridBasedMethod
 public:
     //! Constructor.
     PotentialField(FishBot* robot);
+    //! Destructor.
+    ~PotentialField();
     
     //! Updates the parameters of the potential field.
     void setSettings(PotentialFieldSettings settings);
@@ -43,9 +45,6 @@ private:
 private:
     //! A pointer to the robot that is controlled by this method.
     FishBot* m_robot;
-    
-    //! Contains the discretized configuration space
-    cv::Mat m_configurationSpace;
 
     //! Potential field settings.
     PotentialFieldSettings m_settings;

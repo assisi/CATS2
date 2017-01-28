@@ -109,6 +109,30 @@ void ControlModeStateMachine::setTargetPosition(PositionMeters position)
 }
 
 /*!
+ * Limits the arena matrix of the model-based control mode by a mask. The mask
+ * is defined by a set of polygons and is labeled with an id.
+ */
+void ControlModeStateMachine::limitModelArea(QString maskId,
+                                             QList<WorldPolygon> allowedArea)
+{
+    if (m_controlModes.contains(ControlModeType::MODEL_BASED)) {
+        ControlMode* mode = m_controlModes[ControlModeType::MODEL_BASED].data();
+        dynamic_cast<ModelBased*>(mode)->setAreaMask(maskId, allowedArea);
+    }
+}
+
+/*! Removes the applied limitations on the model area. After this the model
+ * will be applied on the whole setup.
+ */
+void ControlModeStateMachine::releaseModelArea()
+{
+    if (m_controlModes.contains(ControlModeType::MODEL_BASED)) {
+        ControlMode* mode = m_controlModes[ControlModeType::MODEL_BASED].data();
+        dynamic_cast<ModelBased*>(mode)->clearAreaMask();
+    }
+}
+
+/*!
  * Checks that the current control modes can generate targets with different
  *  motion patterns. At the moment the only such target is the position target.
  */
