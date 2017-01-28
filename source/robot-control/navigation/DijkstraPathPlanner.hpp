@@ -85,6 +85,12 @@ private:
     //! The vector that contains to which component belongs every vertex.
     std::vector<Vertex> m_componentByVertex;
 
+    //! Defines the maximal distance between two points in the path. It's
+    //! introduced to prevent long lines between the intermediate points that
+    //! would make the robot to bump into walls in the setups with corridors
+    //! before entering to a corridor.
+    static constexpr double MaximalDistanceBetweenTwoPathPoints = 0.10;
+
     //! A flag to limit the number of error messages.
     bool m_gotErrorOnPreviousStep;
 };

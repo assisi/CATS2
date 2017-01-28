@@ -6,6 +6,7 @@
 #include <AgentData.hpp>
 
 #include <QtGui/QVector2D>
+#include <QtCore/QDebug>
 
 /*!
  * Constructor.

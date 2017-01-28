@@ -233,6 +233,9 @@ void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
             previousDx = currentPosition.x() - previousPosition.x();
             previousDy = currentPosition.y() - previousPosition.y();
 
+            // the distance between two consequitive points
+            double accumulatedDistance = qSqrt(previousDx * previousDx +
+                                               previousDy * previousDy);
             // for all the other points in the path
             while (path.size() > 0) {
                 // update the positions
@@ -241,11 +244,18 @@ void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
                 // compute the curent difference of position along x and y
                 currentDx = currentPosition.x() - previousPosition.x();
                 currentDy = currentPosition.y() - previousPosition.y();
-
-                // if the slope is different
-                if(!qFuzzyCompare(previousDx, currentDx) || !qFuzzyCompare(previousDy, currentDy)) {
+                // update the accumulated distance
+                accumulatedDistance += qSqrt(currentDx * currentDx +
+                                             currentDy * currentDy);
+                // if the slope is different or if the distance between two
+                // points becomes too long
+                if(!qFuzzyCompare(previousDx, currentDx) ||
+                        !qFuzzyCompare(previousDy, currentDy) ||
+                        (accumulatedDistance > MaximalDistanceBetweenTwoPathPoints))
+                {
                     // add the new point to the path
                     reducedPath.enqueue(previousPosition);
+                    accumulatedDistance = 0;
                 }
                 // update the current differences of positions along x and y
                 previousDx = currentDx;
