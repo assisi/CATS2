@@ -18,6 +18,8 @@ class PotentialField : public GridBasedMethod
 public:
     //! Constructor.
     PotentialField(FishBot* robot);
+    //! Destructor.
+    ~PotentialField();
     
     //! Updates the parameters of the potential field.
     void setSettings(PotentialFieldSettings settings);

@@ -19,7 +19,7 @@ ModelBased::ModelBased(FishBot* robot) :
     m_targetUpdateTimer()
 {
     initModel();
-    cv::namedWindow( "ModelGrid", cv::WINDOW_NORMAL);
+//    cv::namedWindow("ModelGrid", cv::WINDOW_NORMAL);
 }
 
 /*!
@@ -27,6 +27,7 @@ ModelBased::ModelBased(FishBot* robot) :
  */
 ModelBased::~ModelBased()
 {
+//    cv::destroyWindow("ModelGrid");
     qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
 
@@ -103,7 +104,7 @@ void ModelBased::initModel()
             bm->repulsionFromAgentsAtDist = fishModelSettings.repulsionFromAgentsAtDist;
         }
 
-        cv::imshow( "ModelGrid", m_currentGrid);
+//        cv::imshow( "ModelGrid", m_currentGrid);
     }
 }
 
@@ -116,7 +117,7 @@ PositionMeters ModelBased::computeTargetPosition()
         return PositionMeters::invalidPosition();
     }
 
-    cv::imshow( "ModelGrid", m_currentGrid);
+//    cv::imshow( "ModelGrid", m_currentGrid);
 
 //    // if no data is available, don't update the target
 //    if (m_robot->fishStates().size() == 0) {

@@ -35,7 +35,16 @@ DijkstraPathPlanner::DijkstraPathPlanner() :
     else
         qDebug() << Q_FUNC_INFO << "Could not initialize the path planner";
 
-//    cv::namedWindow( "DijkstraGrid", cv::WINDOW_NORMAL);
+//    cv::namedWindow("DijkstraGrid", cv::WINDOW_NORMAL);
+}
+
+/*!
+ * Destructor.
+ */
+DijkstraPathPlanner::~DijkstraPathPlanner()
+{
+//    cv::destroyWindow("DijkstraGrid");
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
 
 /*!

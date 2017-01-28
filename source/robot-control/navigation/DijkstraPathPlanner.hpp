@@ -25,6 +25,8 @@ class DijkstraPathPlanner : public GridBasedMethod
 public:
     //! Constructor.
     DijkstraPathPlanner();
+    //! Destructor.
+    ~DijkstraPathPlanner();
 
     //! Generates a path plan from the current to the target position.
     QQueue<PositionMeters> plan(PositionMeters start, PositionMeters goal);
