@@ -272,8 +272,9 @@ ExperimentController::ControlData InitiationController::stateControlData()
         controlData.controlMode = ControlModeType::MODEL_BASED;
         controlData.motionPattern = MotionPatternType::FISH_MOTION;
         // if we need to limit the model
-        if (m_limitModelArea
-                && m_controlAreas[m_robotAreaId]->type() == ControlAreaType::ROOM)
+        if (m_limitModelArea &&
+                m_controlAreas.contains(m_robotAreaId) &&
+                m_controlAreas[m_robotAreaId]->type() == ControlAreaType::ROOM)
         {
             m_limitModelArea = false;
             controlData.data =
