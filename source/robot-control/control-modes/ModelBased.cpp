@@ -53,6 +53,11 @@ ControlTargetPtr ModelBased::step()
     }
 
     if (m_targetPosition.isValid()) {
+        PositionMeters robotPosition = m_robot->state().position();
+        if (robotPosition.isValid()) {
+            emit notifyControlModeStatus(QString("distance to target %1 m")
+                    .arg(robotPosition.distance2DTo(m_targetPosition), 0, 'f', 3));
+        }
         return ControlTargetPtr(new TargetPosition(m_targetPosition));
     }
     // otherwise the robot doesn't move
