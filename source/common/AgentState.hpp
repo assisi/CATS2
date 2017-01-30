@@ -166,7 +166,7 @@ private:
     // FIXME : it's increased to 10 cm to prevent the robot from blocking around
     // the target, but it's a way too big, need to be reduced once the blocking
     // is resolved
-    static constexpr double ProximityThreshold = 0.10; // [m]
+    static constexpr double ProximityThreshold = 0.05; // [m]
 };
 
 Q_DECLARE_METATYPE(PositionMeters)
