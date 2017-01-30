@@ -168,7 +168,7 @@ private:
     //! controller
     QQueue<double> m_errorBuffer;
     //! The number of errors to keep.
-    const int ErrorBufferDepth = 5;
+    const int ErrorBufferDepth = 20;
 
     //! The control loop duration.
     double m_dt;
