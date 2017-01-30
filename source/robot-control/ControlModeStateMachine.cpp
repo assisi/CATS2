@@ -29,6 +29,7 @@ ControlModeStateMachine::ControlModeStateMachine(FishBot* robot, QObject *parent
     // make necessary connections
     foreach (ControlModePtr controlMode, m_controlModes.values()) {
        connect(controlMode.data(), &ControlMode::requestControlModeChange, this, &ControlModeStateMachine::setControlMode);
+       connect(controlMode.data(), &ControlMode::notifyControlModeStatus, this, &ControlModeStateMachine::notifyControlModeStatus);
     }
 }
 
