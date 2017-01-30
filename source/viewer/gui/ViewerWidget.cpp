@@ -7,6 +7,7 @@
 #include "AnnotatedPolygonItem.hpp"
 #include "TrajectoryItem.hpp"
 #include "TargetItem.hpp"
+#include "RunTimer.h"
 
 #include <CoordinatesConversion.hpp>
 
@@ -16,6 +17,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QQueue>
 #include <QtCore/QtMath>
+#include <QtCore/QTimer>
 #include <QtCore/QStandardPaths>
 #include <QtCore/QDateTime>
 #include <QtWidgets/QMenu>
@@ -51,21 +53,33 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     m_uiViewer->view->setScene(m_scene);
 
     // create the video frame item
-    m_videoFrame = new QGraphicsPixmapItem();
-    m_videoFrame->setZValue(0);
-    m_videoFrame->setPos(0,0);
-    m_scene->addItem(m_videoFrame);
+    m_videoFrameItem = new QGraphicsPixmapItem();
+    m_videoFrameItem->setZValue(0);
+    m_videoFrameItem->setPos(0,0);
+    m_scene->addItem(m_videoFrameItem);
 
     // create the frame rate item
-    m_frameRate = new QGraphicsTextItem();
-    m_frameRate->setFont(QFont("Times", 12, QFont::Bold));
-    m_frameRate->setDefaultTextColor(Qt::white);
-    m_scene->addItem(m_frameRate);
-    m_frameRate->setPos(20,30);
+    m_frameRateItem = new QGraphicsTextItem();
+    m_frameRateItem->setFont(QFont("Times", 12, QFont::Bold));
+    m_frameRateItem->setDefaultTextColor(Qt::white);
+    m_scene->addItem(m_frameRateItem);
+    m_frameRateItem->setPos(20,30);
+
+    // create the program run time item
+    m_runTimeItem = new QGraphicsTextItem();
+    m_runTimeItem->setFont(QFont("Times", 12, QFont::Bold));
+    m_runTimeItem->setDefaultTextColor(Qt::white);
+    m_scene->addItem(m_runTimeItem);
+    m_runTimeItem->setVisible(false);
+
+    // connect the time
+    connect(&m_runTimeUpdateTimer, &QTimer::timeout,
+            this, &ViewerWidget::updateRunTime);
 
     // connect to the data class
     qRegisterMetaType<QSharedPointer<QPixmap>>("QSharedPointer<QPixmap>");
-    connect(m_data.data(), &ViewerData::newFrame, this, &ViewerWidget::onNewFrame);
+    connect(m_data.data(), &ViewerData::newFrame,
+            this, &ViewerWidget::onNewFrame);
 
     // create the context menu actions
     m_adjustAction = new QAction(tr("&Adjust"), this);
@@ -78,6 +92,7 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
 ViewerWidget::~ViewerWidget()
 {
     qDebug() << Q_FUNC_INFO << "Destroying the object";
+    m_runTimeUpdateTimer.stop();
     delete m_uiViewer;
 }
 
@@ -104,7 +119,7 @@ void ViewerWidget::onNewFrame(QSharedPointer<QPixmap> pixmap, int fps)
 {
     if (parent()) { // doesn't make sense to update the widget that belongs nowhere
         if (!pixmap.isNull()) {
-            m_videoFrame->setPixmap(*pixmap.data());
+            m_videoFrameItem->setPixmap(*pixmap.data());
             updateFrameRate(fps);
         }
     }
@@ -126,7 +141,18 @@ void ViewerWidget::updateFrameRate(int fps)
         // initialize the filter
         m_averageFps = fps;
     }
-    m_frameRate->setPlainText(QString::number(qFloor(m_averageFps + 0.5)) +" fps");
+    m_frameRateItem->setPlainText(QString::number(qFloor(m_averageFps + 0.5)) +" fps");
+}
+
+/*!
+ * Updates the run time of the application.
+ */
+void ViewerWidget::updateRunTime()
+{
+    double seconds = RunTimer::get().currentRuntimeSec();
+    m_runTimeItem->setPlainText(QDateTime::fromTime_t(seconds).toUTC().toString("hh:mm:ss"));
+    if (m_frameSize.isValid())
+        m_runTimeItem->setPos(m_frameSize.width() - 80, 30);
 }
 
 /*!
@@ -141,7 +167,7 @@ void ViewerWidget::saveCurrentFrameToFile()
 
     QString fileName = QFileDialog::getSaveFileName(this, tr("Save image"), defaultName, tr("Images (*.png *.bmp *.jpg)"));
     if (!fileName.isEmpty()) {
-        if (!m_videoFrame->pixmap().save(fileName)) {
+        if (!m_videoFrameItem->pixmap().save(fileName)) {
             QMessageBox::information(this, tr("Saving current frame..."), tr("Can't save image"));;
         }
     }
@@ -543,6 +569,20 @@ void ViewerWidget::setAutoAdjust(bool value)
     m_autoAdjust = value;
     if (m_autoAdjust)
         adjust();
+}
+
+/*!
+ * Show the time from the start of the the experiment on the screen.
+ */
+void ViewerWidget::setShowRunTime(bool value)
+{
+    m_runTimeItem->setVisible(value);
+    if (value) {
+        m_runTimeUpdateTimer.start(1000);
+        updateRunTime();
+    } else {
+        m_runTimeUpdateTimer.stop();
+    }
 }
 
 /*!

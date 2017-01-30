@@ -9,6 +9,7 @@
 #include <QtCore/QObject>
 #include <QtWidgets/QWidget>
 #include <QtGui/QPixmap>
+#include <QtCore/QTimer>
 
 #include <memory>
 
@@ -42,6 +43,8 @@ public:
     //! Sets the flag that defines if the viwer is adjusted to the view size
     //! automatically.
     void setAutoAdjust(bool value);
+    //! Show the time from the start of the the experiment on the screen.
+    void setShowRunTime(bool value);
 
 signals:
     //! Notifies that the mouse position has changed and sends it out in both
@@ -100,6 +103,8 @@ protected slots:
 protected:
     //! Computes new average frame rate value as exponential moving average.
     void updateFrameRate(int fps);
+    //! Updates the run time of the application.
+    void updateRunTime();
     //! Converts the scene position from PositionPixels to PositionMeters.
     bool convertScenePosition(const PositionPixels& imagePosition,
                               PositionMeters& worldPosition);
@@ -129,11 +134,15 @@ private: // video playback data
     //! The graphics scene to show the video stream and agents.
     FrameScene* m_scene;
     //! The item used to show the video stream.
-    QGraphicsPixmapItem* m_videoFrame;
+    QGraphicsPixmapItem* m_videoFrameItem;
     //! The item used to show the video's frame rate.
-    QGraphicsTextItem* m_frameRate;
+    QGraphicsTextItem* m_frameRateItem;
     //! The average frame rate.
     double m_averageFps;
+    //! The item used to show the program run time.
+    QGraphicsTextItem* m_runTimeItem;
+    //! The time to update the run time every second.
+    QTimer m_runTimeUpdateTimer;
 
 private: // agents items
     // FIXME : at the moment the agent's id is copied as it is without taking

@@ -28,6 +28,8 @@ public:
 public:
     //! The runtime in seconds to the provided timestamp.
     double runtimeSecTo(std::chrono::milliseconds timestamp);
+    //! The runtime in seconds to the current time moment.
+    double currentRuntimeSec();
 
 private:
     //! Constructor. Defining it here prevents construction.
