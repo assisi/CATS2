@@ -52,8 +52,9 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
                 m_robot->setControlMode(static_cast<ControlModeType::Enum>(m_ui->controlModeComboBox->currentData().toInt()));
                 // show the navigation pattern choice when it's supported or
                 // hide when it is not supported
-                m_ui->navigationWidget->setVisible(m_robot->supportsMotionPatterns());
-                m_ui->navigationParametersGroupBox->setVisible(m_robot->supportsMotionPatterns());
+                m_ui->navigationGroupBox->setVisible(m_robot->supportsMotionPatterns());
+//                m_ui->navigationWidget->setVisible(m_robot->supportsMotionPatterns());
+//                m_ui->navigationParametersGroupBox->setVisible(m_robot->supportsMotionPatterns());
             });
 
     // set the control mode from the robot
@@ -61,7 +62,7 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
             [=](ControlModeType::Enum type)
             {
                 QString controlModeString = ControlModeType::toString(type);
-                m_ui->controlModeStatusLabel->setText("");
+                m_ui->controlModeStatusLabel->setText("Status:");
                 if (m_ui->controlModeComboBox->currentText() != controlModeString)
                     m_ui->controlModeComboBox->setCurrentText(controlModeString);
             });
@@ -77,7 +78,7 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
     connect(m_robot.data(), &FishBot::notifyControlModeStatus,
             [=](QString status)
             {
-                QString text = QString("Control mode status: %1").arg(status);
+                QString text = QString("Status: %1").arg(status);
                 m_ui->controlModeStatusLabel->setText(text);
             });
 
