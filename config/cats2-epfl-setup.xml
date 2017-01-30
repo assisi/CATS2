@@ -53,8 +53,8 @@
                 <speedCmSec>19</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
-                <kp>1.10</kp>
-                <ki>0.03</ki>
+                <kp>1.15</kp>
+                <ki>0.05</ki>
                 <kd>0.00</kd>
             </pid>
             <defaultLinearSpeedCmSec>17</defaultLinearSpeedCmSec>
