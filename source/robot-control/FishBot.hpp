@@ -130,6 +130,8 @@ signals: // control states
     void notifyControllerChanged(ExperimentControllerType::Enum type);
     //! Informs that the robot's control mode was modified.
     void notifyControlModeChanged(ControlModeType::Enum type);
+    //! Sends out the current control mode status.
+    void notifyControlModeStatus(QString status);
     //! Informs that the robot's motion pattern was changed.
     void notifyMotionPatternChanged(MotionPatternType::Enum type);
     //! Informs that the value of the frequency divider of the robot's motion

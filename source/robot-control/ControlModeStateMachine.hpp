@@ -42,6 +42,8 @@ public:
 signals:
     //! Informs that the robot's control mode was modified.
     void notifyControlModeChanged(ControlModeType::Enum type);
+    //! Sends out the current control mode status.
+    void notifyControlModeStatus(QString status);
 
 public slots:
     //! Sets the requested control mode. Returns true is the mode changes.

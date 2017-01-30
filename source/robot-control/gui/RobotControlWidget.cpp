@@ -61,6 +61,7 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
             [=](ControlModeType::Enum type)
             {
                 QString controlModeString = ControlModeType::toString(type);
+                m_ui->controlModeStatusLabel->setText("");
                 if (m_ui->controlModeComboBox->currentText() != controlModeString)
                     m_ui->controlModeComboBox->setCurrentText(controlModeString);
             });
@@ -71,6 +72,14 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
         m_ui->controlModeComboBox->addItem(ControlModeType::toString(type), type);
     }
     m_ui->controlModeComboBox->setCurrentText(ControlModeType::toString(m_robot->currentControlMode()));
+
+    // set the control mode status
+    connect(m_robot.data(), &FishBot::notifyControlModeStatus,
+            [=](QString status)
+            {
+                QString text = QString("Control mode status: %1").arg(status);
+                m_ui->controlModeStatusLabel->setText(text);
+            });
 
     // set the robot's motion pattern when it is changed in the combobox
     connect(m_ui->navigationComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),

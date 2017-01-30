@@ -143,6 +143,13 @@
        </layout>
       </item>
       <item>
+       <widget class="QLabel" name="controlModeStatusLabel">
+        <property name="text">
+         <string>Control mode status: </string>
+        </property>
+       </widget>
+      </item>
+      <item>
        <widget class="QWidget" name="navigationWidget" native="true">
         <layout class="QGridLayout" name="gridLayout">
          <property name="leftMargin">

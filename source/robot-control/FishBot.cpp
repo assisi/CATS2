@@ -51,6 +51,8 @@ FishBot::FishBot(QString id) :
     // control modes
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);
+    connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeStatus,
+            this, &FishBot::notifyControlModeStatus);
     connect(&m_navigation, &Navigation::notifyMotionPatternChanged,
             this, &FishBot::notifyMotionPatternChanged);
     connect(&m_navigation, &Navigation::notifyMotionPatternFrequencyDividerChanged,

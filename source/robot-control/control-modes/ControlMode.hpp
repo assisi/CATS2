@@ -38,6 +38,8 @@ public:
 signals:
     //! Requests to change the control mode.
     void requestControlModeChange(ControlModeType::Enum desiredControlMode);
+    //! Sends out the current control mode status.
+    void notifyControlModeStatus(QString status);
 
 protected:
     //! A pointer to the robot that is controlled by this control mode.
