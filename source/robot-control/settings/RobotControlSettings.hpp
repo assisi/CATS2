@@ -103,17 +103,17 @@ public:
     //! Sets proportional coefficient.
     void setKp(double kp) { m_kp = kp; }
     //! Returns proportional coefficient.
-    int kp() const { return m_kp; }
+    double kp() const { return m_kp; }
 
     //! Sets integral coefficient.
     void setKi(double ki) { m_ki = ki; }
     //! Returns integral coefficient.
-    int ki() const { return m_ki; }
+    double ki() const { return m_ki; }
 
     //! Sets derivative coefficient.
     void setKd(double kd) { m_kd = kd; }
     //! Returns derivative coefficient.
-    int kd() const { return m_kd; }
+    double kd() const { return m_kd; }
 
 private:
     //! Proportional coefficient.
