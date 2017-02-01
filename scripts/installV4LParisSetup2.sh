@@ -48,14 +48,14 @@ sleep 5
 gst-launch-0.10 v4l2src device=/dev/video0  ! queue ! ffmpegcolorspace ! videorate ! videoscale ! video/x-raw-yuv,width=500,height=500,framerate=5/1 ! jpegenc ! multipartmux ! tcpserversink port=5202 host=127.0.0.1 sync=false &
 pid2=$!
 
-sleep 4
-#gst-launch-1.0 -v v4l2src device=/dev/video1  ! queue ! videoconvert ! videorate ! videoscale ! video/x-raw,width=500,height=500,framerate=5/1 !  x264enc ! flvmux !  rtmpsink location='rtmp://streamyfish.com/rtmp/paris2 live=1' &
-gst-launch-1.0 -v v4l2src device=/dev/video1  ! queue ! videoconvert ! videorate ! videoscale !  x264enc ! flvmux !  rtmpsink location='rtmp://streamyfish.com/rtmp/paris2 live=1' &
-pid3=$!
+#sleep 4
+##gst-launch-1.0 -v v4l2src device=/dev/video1  ! queue ! videoconvert ! videorate ! videoscale ! video/x-raw,width=500,height=500,framerate=5/1 !  x264enc ! flvmux !  rtmpsink location='rtmp://streamyfish.com/rtmp/paris2 live=1' &
+#gst-launch-1.0 -v v4l2src device=/dev/video1  ! queue ! videoconvert ! videorate ! videoscale !  x264enc ! flvmux !  rtmpsink location='rtmp://streamyfish.com/rtmp/paris2 live=1' &
+#pid3=$!
 
 sleep 1
 sudo modprobe uvcvideo
 
 wait $pid2
-wait $pid3
+#wait $pid3
 
