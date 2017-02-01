@@ -121,6 +121,7 @@ void MainWindow::setPrimaryView(SetupType::Enum setupType)
         // run the timer to adjust the size of the view to the available area
         QTimer::singleShot(1000, Qt::PreciseTimer, [=]{ m_viewerHandlers[setupType]->widget()->adjust(); } );
         m_viewerHandlers[setupType]->widget()->setAutoAdjust(false);
+        m_viewerHandlers[setupType]->widget()->setShowRunTime(true);
         m_viewerHandlers[setupType]->data()->blockSignals(false);
     } else {
         qDebug() << Q_FUNC_INFO << "Unable to set the primary view from setup:" << SetupType::toString(setupType);
@@ -144,6 +145,7 @@ void MainWindow::setSecondaryView(SetupType::Enum setupType)
         // run the timer to adjust the size of the view to the available area
         QTimer::singleShot(1000, Qt::PreciseTimer, [=]{ m_viewerHandlers[setupType]->widget()->adjust(); } );
         m_viewerHandlers[setupType]->widget()->setAutoAdjust(true);
+        m_viewerHandlers[setupType]->widget()->setShowRunTime(false);
         m_viewerHandlers[setupType]->data()->blockSignals(false);
     } else {
         qDebug() << Q_FUNC_INFO << "Unable to set the secondary view from setup:" << SetupType::toString(setupType);

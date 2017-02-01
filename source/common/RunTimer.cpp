@@ -38,6 +38,15 @@ void RunTimer::init()
 }
 
 /*!
+ * The runtime in seconds to the current time moment.
+ */
+double RunTimer::currentRuntimeSec()
+{
+    return runtimeSecTo(std::chrono::duration_cast<std::chrono::milliseconds>
+                        (std::chrono::system_clock::now().time_since_epoch()));
+}
+
+/*!
  * The runtime in seconds to the provided timestamp.
  */
 double RunTimer::runtimeSecTo(std::chrono::milliseconds timestamp)
