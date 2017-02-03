@@ -30,7 +30,7 @@ TrackingRoutine::~TrackingRoutine()
 }
 
 /*!
- * Starts the convertor.
+ * Starts the tracking.
  */
 void TrackingRoutine::process()
 {
@@ -57,7 +57,7 @@ void TrackingRoutine::process()
 }
 
 /*!
- * Stops the convertor.
+ * Stops the tracking.
  */
 void TrackingRoutine::stop()
 {

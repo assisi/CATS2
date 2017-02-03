@@ -26,6 +26,7 @@ GridBasedMethod::GridBasedMethod(double gridSizeMeters) :
 QPoint GridBasedMethod::positionToGridNode(PositionMeters position) const
 {
     QPoint point;
+    // FIXME : replace by std::round
     point.setX(floor((position.x() - minX()) / m_gridSizeMeters  + 0.5));
     point.setY(floor((position.y() - minY()) / m_gridSizeMeters  + 0.5));
     return point;
