@@ -18,13 +18,15 @@ include_directories(${CMAKE_SOURCE_DIR}/source/robot-control)
 
 add_executable(cats  ${srcs} ${uis_hdrs} ${resources})
 
-# copy .aesl scripts
+# make a link to .aesl scripts
 if(EXISTS ${CMAKE_CURRENT_BINARY_DIR}/aesl)
     execute_process(COMMAND rm -rf aesl
                         WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
 endif()
-execute_process(COMMAND cp -r ${CMAKE_SOURCE_DIR}/source/robot-control/aesl aesl
-                WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+if(NOT EXISTS ${CMAKE_CURRENT_BINARY_DIR}/aesl)
+    execute_process(COMMAND ln -s ${CMAKE_SOURCE_DIR}/source/robot-control/aesl aesl
+                        WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR})
+endif()
 
 target_link_libraries(cats common grabber tracker viewer hub
                         messages inter-species robot-control
