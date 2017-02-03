@@ -122,7 +122,7 @@ void Navigation::setLocalObstacleAvoidanceForMotionPattern(MotionPatternType::En
 {
     switch (motionPattern) {
     case MotionPatternType::FISH_MOTION:
-        sendLocalObstacleAvoidance(LocalObstacleAvoidanceType::DISABLED);
+        sendLocalObstacleAvoidance(LocalObstacleAvoidanceType::TURN_AND_GO);
         break;
     case MotionPatternType::PID:
     default:
