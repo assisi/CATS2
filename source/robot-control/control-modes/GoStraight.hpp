@@ -20,6 +20,10 @@ public:
 
     //! Informs on what kind of control targets this control mode generates.
     virtual QList<ControlTargetType> supportedTargets() override;
+
+private:
+    //! The speed to be sent to the robot.
+    int m_linearSpeed; // [cm/sec]
 };
 
 #endif // CATS2_GO_STRAIGHT_HPP

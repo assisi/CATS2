@@ -7,7 +7,9 @@
 /*!
  * Constructor.
  */
-GoStraight::GoStraight(FishBot* robot) : ControlMode(robot, ControlModeType::GO_STRAIGHT)
+GoStraight::GoStraight(FishBot* robot) :
+    ControlMode(robot, ControlModeType::GO_STRAIGHT),
+    m_linearSpeed(RobotControlSettings::get().defaultLinearSpeedCmSec())
 {
 
 }
@@ -25,8 +27,7 @@ GoStraight::~GoStraight()
  */
 ControlTargetPtr GoStraight::step()
 {
-    int linearSpeed = RobotControlSettings::get().defaultLinearSpeedCmSec();
-    return ControlTargetPtr(new TargetSpeed(linearSpeed, linearSpeed));
+    return ControlTargetPtr(new TargetSpeed(m_linearSpeed, m_linearSpeed));
 }
 
 /*!
