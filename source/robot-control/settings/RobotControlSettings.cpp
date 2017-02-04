@@ -177,7 +177,30 @@ bool RobotControlSettings::init(QString configurationFileName)
                           m_fishModelSettings.dt,
                           m_fishModelSettings.dt);
 
+    // read a trajectory for the Trajectory control mode
+    std::string relativeTrajectoryPath = "";
+    settings.readVariable("robots/controlModes/trajectory/points",
+                          relativeTrajectoryPath,
+                          relativeTrajectoryPath);
+    QString trajectoryPath = configurationFolder +
+                                QDir::separator() +
+                                QString::fromStdString(relativeTrajectoryPath);
+    QFileInfo trajectoryFile(trajectoryPath);
+    if (trajectoryFile.exists() && trajectoryFile.isFile()) {
+        ReadSettingsHelper trajectorySettings(trajectoryPath);
+        std::vector<cv::Point2f> polygon;
+        trajectorySettings.readVariable(QString("polygon"), polygon);
+        if (polygon.size() > 0) {
+            for (auto& point : polygon)
+                m_trajectory << PositionMeters(point);
+        } else {
+            qDebug() << Q_FUNC_INFO << "The trajectory is empty";
+        }
+    } else {
+        qDebug() << Q_FUNC_INFO << "Could not find the trajectory file";
+    }
     settings.close();
+
     // read the settings for all available controllers
     for (int type = ExperimentControllerType::CONTROL_MAP;
          type <= ExperimentControllerType::INITIATION; type++ )

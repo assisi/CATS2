@@ -46,6 +46,14 @@
                 <obstacleAvoidanceAreaDiameterM>0.15</obstacleAvoidanceAreaDiameterM>
             </potentialField>
         </obstacleAvoidance>
+        <!-- Specific settings for every control mode (e.g to use path planning or obstacle avoidance). -->
+        <controlModes>
+            <!-- TODO : to implement -->
+            <trajectory>
+                <points>trajectories/epfl-square.xml</points>
+            </trajectory>
+        </controlModes>
+        <!-- Navigation settings. -->
         <navigation>
             <fishMotionPatternFrequencyDivider>10</fishMotionPatternFrequencyDivider>
             <fishMotionPattern>

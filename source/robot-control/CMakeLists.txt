@@ -35,6 +35,7 @@ set(srcs
     control-modes/ModelBased.cpp
     control-modes/Manual.cpp
     control-modes/ControlMode.cpp
+    control-modes/Trajectory.cpp
     ControlModeStateMachine.cpp
     dbusinterface.cpp
     gui/RobotControlWidget.cpp

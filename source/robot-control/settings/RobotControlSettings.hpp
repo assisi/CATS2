@@ -246,6 +246,9 @@ public:
     //! Gives the reference to the potential field obstacle avoidance settings.
     const PotentialFieldSettings& potentialFieldSettings() const { return m_potentialFieldSettings; }
 
+    //! Returns the predefined trajectory for the Trajectory control mode.
+    QList<PositionMeters> trajectory() const { return m_trajectory; }
+
 private:
     //! Constructor. Defining it here prevents construction.
     RobotControlSettings() {}
@@ -284,6 +287,10 @@ private:
     //! The settings for specific experiment controllers.
     QMap<ExperimentControllerType::Enum,
          ExperimentControllerSettingsPtr> m_controllerSettings;
+
+    // TODO : to make a map of usefull settings for every control mode
+    //! The predefined trajectory for the Trajectory control mode.
+    QList<PositionMeters> m_trajectory;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP

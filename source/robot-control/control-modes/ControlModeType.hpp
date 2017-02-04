@@ -15,22 +15,25 @@ public:
         GO_TO_POSITION,
         GO_STRAIGHT,
         MODEL_BASED,
+        TRAJECTORY,
         UNDEFINED
     };
 
     //! Gets the type of the control mode from the settings' string.
     static Enum fromSettingsString(QString modeName)
     {
-        if (modeName.toLower() == "manual")
+        if (modeName.toLower() == "idle")
+            return IDLE;
+        else if (modeName.toLower() == "manual")
             return MANUAL;
         else if (modeName.toLower() == "gotoposition")
             return GO_TO_POSITION;
         else if (modeName.toLower() == "gostraight")
             return GO_STRAIGHT;
-        else if (modeName.toLower() == "idle")
-            return IDLE;
         else if (modeName.toLower() == "modelbased")
             return MODEL_BASED;
+        else if (modeName.toLower() == "trajectory")
+            return TRAJECTORY;
         else
             return UNDEFINED;
     }
@@ -51,6 +54,9 @@ public:
             break;
         case MODEL_BASED:
             string = "Model based";
+            break;
+        case TRAJECTORY:
+            string = "Trajectory";
             break;
         case IDLE:
         default:
