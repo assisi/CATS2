@@ -2,12 +2,22 @@
 #include "ControlModeType.hpp"
 #include "settings/RobotControlSettings.hpp"
 
+#include <QtCore/QDebug>
+
 /*!
  * Constructor.
  */
 GoStraight::GoStraight(FishBot* robot) : ControlMode(robot, ControlModeType::GO_STRAIGHT)
 {
 
+}
+
+/*!
+ * Destructor.
+ */
+GoStraight::~GoStraight()
+{
+    qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
 
 /*!
