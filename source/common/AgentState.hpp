@@ -58,6 +58,8 @@ class PositionMeters
 public:
     //! Constructor.
     explicit PositionMeters(double x = 0, double y = 0, double z = 0, bool valid = true): m_x(x), m_y(y), m_z(z), m_valid(valid) { }
+    //! Constructor.
+    explicit PositionMeters(cv::Point2f point, bool valid = true) : m_x(point.x), m_y(point.y), m_z(0.), m_valid(valid) { }
     //! Copy constructor.
     PositionMeters(const PositionMeters&) = default;
     //! Copy operator.
@@ -96,6 +98,7 @@ public:
             return QObject::tr("%1 m, %2 m (invalid)").arg(m_x, 0, 'f', 3).arg(m_y, 0, 'f', 3);
     }
 
+    //! Computes the distance to another position.
     double distanceTo(const PositionMeters& other)
     {
         return qSqrt((m_x - other.x()) * (m_x - other.x()) +
@@ -103,26 +106,20 @@ public:
                      (m_z - other.z()) * (m_z - other.z()));
     }
 
-    /*!
-     * Only x and y coordinates are taken into account.
-     */
+    //! Only x and y coordinates are taken into account.
     double distance2DTo(const PositionMeters& other)
     {
         return qSqrt((m_x - other.x()) * (m_x - other.x()) +
                      (m_y - other.y()) * (m_y - other.y()));
     }
 
-    /*!
-     * Checks if two points are close in 2D.
-     */
+    //! Checks if two points are close in 2D.
     bool closeTo(const PositionMeters& other, double threshold = ProximityThreshold)
     {
         return (distance2DTo(other) < threshold);
     }
 
-    /*!
-     * Operator +=.
-     */
+    //! Operator +=.
     PositionMeters& operator+=(const PositionMeters &rhs)
     {
         m_x += rhs.x();
@@ -132,9 +129,7 @@ public:
         return *this;
     }
 
-    /*!
-     * Operator /=.
-     */
+    //! Operator /=.
     PositionMeters& operator/=(const double &value)
     {
         m_x /= value;
@@ -143,9 +138,7 @@ public:
         return *this;
     }
 
-    /*!
-     * Return an invalid point.
-     */
+    //! Return an invalid point.
     static PositionMeters invalidPosition()
     {
         return PositionMeters(0, 0, 0, false);
@@ -171,25 +164,19 @@ private:
 
 Q_DECLARE_METATYPE(PositionMeters)
 
-/*!
- * Addition operator.
- */
+//! Addition operator.
 inline PositionMeters operator+(const PositionMeters& lhs, const PositionMeters& rhs)
 {
     return PositionMeters(lhs.x() + rhs.x(), lhs.y() + rhs.y());
 }
 
-/*!
- * Subtraction operator.
- */
+//! Subtraction operator.
 inline PositionMeters operator-(const PositionMeters& lhs, const PositionMeters& rhs)
 {
     return PositionMeters(lhs.x() - rhs.x(), lhs.y() - rhs.y());
 }
 
-/*!
- * Comparison operator.
- */
+//! Comparison operator.
 inline bool operator==(const PositionMeters& lhs, const PositionMeters& rhs)
 {
     return (qFuzzyCompare(lhs.x(), rhs.x())
@@ -212,9 +199,9 @@ class PositionPixels
 {
 public:
     //! Constructor.
-    PositionPixels(cv::Point2f point, bool valid = true) : m_x(point.x), m_y(point.y), m_valid(valid) { }
+    explicit PositionPixels(double x = 0, double y = 0, bool valid = true) : m_x(x), m_y(y), m_valid(valid) { }
     //! Constructor.
-    PositionPixels(double x = 0, double y = 0, bool valid = true) : m_x(x), m_y(y), m_valid(valid) { }
+    explicit PositionPixels(cv::Point2f point, bool valid = true) : m_x(point.x), m_y(point.y), m_valid(valid) { }
     //! Copy constructor.
     PositionPixels(const PositionPixels&) = default;
     //! Copy operator.
