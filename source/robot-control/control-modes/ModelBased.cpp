@@ -69,7 +69,8 @@ ControlTargetPtr ModelBased::step()
  */
 QList<ControlTargetType> ModelBased::supportedTargets()
 {
-    return QList<ControlTargetType>({ControlTargetType::POSITION});
+    return QList<ControlTargetType>({ControlTargetType::SPEED,
+                                     ControlTargetType::POSITION});
 }
 
 /*!
