@@ -34,8 +34,9 @@ ControlTargetPtr Trajectory::step()
             // the robot approaches the current waypoint, hence it needs to be
             // updated
             m_currentIndex = (m_currentIndex + 1) % m_trajectory.size();
-            return ControlTargetPtr(new TargetPosition(m_trajectory.at(m_currentIndex)));
         }
+        if ((m_currentIndex >= 0) && (m_currentIndex < m_trajectory.size()))
+            return ControlTargetPtr(new TargetPosition(m_trajectory.at(m_currentIndex)));
     }
     // if the trajectory is not defined then don't move
     return ControlTargetPtr(new TargetSpeed(0, 0));
