@@ -171,7 +171,7 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
         cv::Point2f agentDisplacementVector = agentPosition - previousState.position().toCvPoint2f(); // new postion minus previous position
         // first we define the orientation with the displacement, 0.3 px is an empirical parameter to
         // decide that the robot moves
-         if (previousState.position().isValid() && (cv::norm(agentDisplacementVector) > 0.30)) {
+         if (previousState.position().isValid() && (cv::norm(agentDisplacementVector) > 1.00)) {
             // if vectors are oppositely directed then we correct the orientation
             if (agentVector.dot(agentDisplacementVector) < 0)
                 agentOrientation += M_PI;
