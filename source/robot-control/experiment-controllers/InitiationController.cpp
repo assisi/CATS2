@@ -82,7 +82,7 @@ void InitiationController::updateState(State state)
                     .arg(stateToString(m_state))
                     .arg(stateToString(state));
         m_state = state;
-
+        emit notifyControllerStatus(stateToString(m_state).toLower());
         // a specific check for the case when the robot is switching to the
         // model-based control mode
         if (m_state == SWIMMING_WITH_FISH)
