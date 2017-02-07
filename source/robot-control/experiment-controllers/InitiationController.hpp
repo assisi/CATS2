@@ -52,6 +52,8 @@ private:
     inline bool changingRoom() const { return m_state != SWIMMING_WITH_FISH; }
     //! Checks the departure timer.
     bool timeToDepart();
+    //! Checks that the fish follow.
+    bool fishFollow();
 
 private:
     //! The settings for this controller.
@@ -71,6 +73,8 @@ private:
     //! the robot will start this timer to know when it needs to check that the
     //! fish follow it.
     Timer m_fishFollowCheckTimer;
+    //! The flag to check that we have entered to the target room. 
+    bool m_inTargetRoom;
 
     //! The room to bring fish.
     QString m_targetAreaId;
