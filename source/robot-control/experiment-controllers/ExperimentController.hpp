@@ -62,6 +62,8 @@ public slots:
 signals:
     //! Sends the map areas' polygons.
     void notifyPolygons(QList<AnnotatedPolygons>);
+    //! Sends out the current controller status.
+    void notifyControllerStatus(QString status);
 
 protected:
     //! Reads the control map from a file.

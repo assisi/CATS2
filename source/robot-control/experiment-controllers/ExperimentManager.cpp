@@ -27,8 +27,12 @@ ExperimentManager::ExperimentManager(FishBot* robot) :
     }
 
     // make connections
-    connect(m_controllers[m_currentController].data(), &ExperimentController::notifyPolygons,
+    connect(m_controllers[m_currentController].data(),
+            &ExperimentController::notifyPolygons,
             this, &ExperimentManager::notifyPolygons);
+    connect(m_controllers[m_currentController].data(),
+            &ExperimentController::notifyControllerStatus,
+            this, &ExperimentManager::notifyControllerStatus);
 }
 
 /*!
@@ -48,16 +52,24 @@ void ExperimentManager::setController(ExperimentControllerType::Enum type)
                     .arg(m_robot->name());
 
         // disable connections
-        disconnect(m_controllers[m_currentController].data(), &ExperimentController::notifyPolygons,
-                this, &ExperimentManager::notifyPolygons);
+        disconnect(m_controllers[m_currentController].data(),
+                   &ExperimentController::notifyPolygons,
+                   this, &ExperimentManager::notifyPolygons);
+        disconnect(m_controllers[m_currentController].data(),
+                &ExperimentController::notifyControllerStatus,
+                this, &ExperimentManager::notifyControllerStatus);
         // first stop the current controller
         m_controllers[m_currentController]->finish();
 
         // then start the new one
         m_currentController = type;
         // add connections
-        connect(m_controllers[m_currentController].data(), &ExperimentController::notifyPolygons,
+        connect(m_controllers[m_currentController].data(),
+                &ExperimentController::notifyPolygons,
                 this, &ExperimentManager::notifyPolygons);
+        connect(m_controllers[m_currentController].data(),
+                &ExperimentController::notifyControllerStatus,
+                this, &ExperimentManager::notifyControllerStatus);
         // prepare the controller
         m_controllers[m_currentController]->start();
         // inform about changes
