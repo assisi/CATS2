@@ -82,7 +82,7 @@ void InitiationController::updateState(State state)
                     .arg(stateToString(m_state))
                     .arg(stateToString(state));
         m_state = state;
-        emit notifyControllerStatus(stateToString(m_state).toLower());
+        emit notifyControllerStatus(stateToString(m_state).toLower().replace("-", " "));
         // a specific check for the case when the robot is switching to the
         // model-based control mode
         if (m_state == SWIMMING_WITH_FISH)
@@ -161,6 +161,18 @@ ExperimentController::ControlData InitiationController::changeRoom()
         }
         break;
     case CHANGING_ROOM:
+        // send the status on the timer
+        if (m_fishFollowCheckTimer.isSet()) {
+            QString stateString = stateToString(m_state).toLower().replace("-", " ");
+            double timeLeftSec = m_settings.fishFollowCheckTimeOutSec() -
+                    m_fishFollowCheckTimer.runTimeSec();
+            emit notifyControllerStatus(QString("%1 (%2s)")
+                                        .arg(stateString)
+                                        .arg(timeLeftSec, 0, 'f', 1));
+        } else {
+            QString stateString = stateToString(m_state).toLower().replace("-", " ");
+            emit notifyControllerStatus(QString("%1 (follow)").arg(stateString));
+        }
         // if we just arrived to the target room then we check right away that
         // the fish follow, if it's the case we swith to the model-based mode
         if (!m_inTargetRoom &&
