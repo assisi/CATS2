@@ -35,6 +35,7 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
             [=](ExperimentControllerType::Enum type)
             {
                 QString controllerTypeString = ExperimentControllerType::toString(type);
+                m_ui->experimentStatusLabel->setText("Status:");
                 if (m_ui->experimentControllerComboBox->currentText() != controllerTypeString)
                     m_ui->experimentControllerComboBox->setCurrentText(controllerTypeString);
             });
@@ -44,6 +45,13 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
         m_ui->experimentControllerComboBox->addItem(ExperimentControllerType::toString(type), type);
     }
     m_ui->experimentControllerComboBox->setCurrentText(ExperimentControllerType::toString(m_robot->currentController()));
+    // set the controller status
+    connect(m_robot.data(), &FishBot::notifyControllerStatus,
+            [=](QString status)
+            {
+                QString text = QString("Status: %1").arg(status);
+                m_ui->experimentStatusLabel->setText(text);
+            });
 
     // set the robot's control mode when it is changed in the combobox
     connect(m_ui->controlModeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),

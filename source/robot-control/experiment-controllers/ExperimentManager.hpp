@@ -40,6 +40,8 @@ public slots:
 signals:
     //! Informs that the robot's controller was modified.
     void notifyControllerChanged(ExperimentControllerType::Enum type);
+    //! Sends out the current controller status.
+    void notifyControllerStatus(QString status);
     //! Sends the map areas' polygons.
     void notifyPolygons(QList<AnnotatedPolygons>);
 

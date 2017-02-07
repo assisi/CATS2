@@ -128,6 +128,8 @@ public slots:
 signals: // control states
     //! Informs that the robot's experiment controller was modified.
     void notifyControllerChanged(ExperimentControllerType::Enum type);
+    //! Sends out the current controller status.
+    void notifyControllerStatus(QString status);
     //! Informs that the robot's control mode was modified.
     void notifyControlModeChanged(ControlModeType::Enum type);
     //! Sends out the current control mode status.

@@ -101,6 +101,13 @@
       <item row="0" column="1">
        <widget class="QComboBox" name="experimentControllerComboBox"/>
       </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="experimentStatusLabel">
+        <property name="text">
+         <string>Status:</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
    </item>

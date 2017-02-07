@@ -44,10 +44,9 @@ FishBot::FishBot(QString id) :
     connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
             this, &FishBot::notifyControllerChanged);
     connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
-            [=]()
-            {
-                releaseModelArea();
-            });
+            [=]() { releaseModelArea(); });
+    connect(&m_experimentManager, &ExperimentManager::notifyControllerStatus,
+            this, &FishBot::notifyControllerStatus);
     // control modes
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);
