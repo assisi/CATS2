@@ -4,7 +4,7 @@
         <name>TestExperiment</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>3</numberOfAnimals>
+            <numberOfAnimals>4</numberOfAnimals>
         </agents>
         <setupMapPath>setup/epfl-two-rooms.xml</setupMapPath>
     </experiment>
@@ -117,12 +117,12 @@
             <cameraCalibrationFile>camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
-                <numberOfAgents>4</numberOfAgents>
+                <numberOfAgents>5</numberOfAgents>
                 <blobDetector>
                     <minBlobSizePx>0</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
                     <minDistance>5.0</minDistance>
-                    <blockSize>2</blockSize>
+                    <blockSize>5</blockSize>
                     <useHarrisDetector>1</useHarrisDetector>
                     <k>0.04</k>
             </blobDetector>
