@@ -3,12 +3,14 @@ set(srcs
     routines/BlobDetector.cpp
     routines/ColorDetector.cpp
     routines/FishBotLedsTracking.cpp
+    routines/TwoColorsTagTracking.cpp
     settings/TrackingSettings.cpp
     settings/TrackingRoutineSettings.cpp
     settings/BlobDetectorSettings.cpp
     settings/FishBotLedsTrackingSettings.cpp
     settings/TrackingSetupSettings.cpp
     settings/ColorDetectorSettings.cpp
+    settings/TwoColorsTagTrackingSettings.cpp
     TrackingData.cpp
     TrackingDataManager.cpp
     TrackingSetup.cpp
