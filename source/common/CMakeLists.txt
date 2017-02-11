@@ -6,6 +6,8 @@ set(srcs
     RunTimer.cpp
     settings/CommandLineParameters.cpp
     settings/CalibrationSettings.cpp
+    settings/CommandLineParser.cpp
+    settings/StreamDescriptor.cpp
 )
 
 set(hdrs
