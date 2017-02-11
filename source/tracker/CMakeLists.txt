@@ -44,4 +44,13 @@ add_library(tracker SHARED ${srcs} ${hdrs} ${uis_hdrs} ${resources})
 target_link_libraries(tracker grabber common viewer hub
                       Qt5::Core Qt5::Widgets ${OpenCV_LIBS}) # ${LIBTSAI_LIBRARY})
 
+install(TARGETS tracker DESTINATION .)
+install(FILES
+        TrackerPointerTypes.hpp TrackingSetup.hpp TrackingDataManager.hpp
+        #TrackingHandler.hpp
+        DESTINATION include/tracker)
+install(FILES settings/TrackingSettings.hpp settings/TrackingSetupSettings.hpp
+        DESTINATION include/tracker/settings)
+#install(FILES gui/TrackingRoutineWidget.hpp
+#        DESTINATION include/tracker/gui)
 

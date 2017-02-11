@@ -34,5 +34,9 @@ target_link_libraries(cats common grabber tracker viewer hub
                         ${QTGSTREAMER_LIBRARY} ${QTGSTREAMER_LIBRARIES}
                         ${QTGSTREAMER_UTILS_LIBRARY} ${QTGSTREAMER_UTILS_LIBRARIES}
                         ${QTGSTREAMER_UTILS_LIBRARY} ${QTGSTREAMER_UTILS_LIBRARIES}
-                        ${QTGLIB_LIBRARIES} ${QTGSTREAMER_UI_LIBRARY} ${QTGSTREAMER_UI_LIBRARIES}
-                        ${GSTREAMER_LIBRARY} ${GSTREAMER_VIDEO_LIBRARY} ${PROTOBUF_LIBRARIES})
+                        ${QTGLIB_LIBRARIES} ${QTGSTREAMER_UI_LIBRARY}
+                        ${QTGSTREAMER_UI_LIBRARIES} ${GSTREAMER_LIBRARY}
+                        ${GSTREAMER_VIDEO_LIBRARY} ${PROTOBUF_LIBRARIES})
+
+#install(TARGETS cats DESTINATION .)
+#install(FILES ${CMAKE_CURRENT_BINARY_DIR}/aesl/* DESTINATION .)

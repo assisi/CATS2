@@ -16,3 +16,7 @@ target_link_libraries(messages Qt5::Core ${PROTOBUF_LIBRARIES})
 
 # set specific compile flags for this project, because otherwise the protobuf generated files trigger to many warnings
 set_target_properties(messages PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-float-equal -Wno-undef")
+
+#install(TARGETS messages DESTINATION .)
+#install(FILES
+#         DESTINATION include/messages)
