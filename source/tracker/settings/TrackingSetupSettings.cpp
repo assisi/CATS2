@@ -6,6 +6,8 @@
 #include <settings/CalibrationSettings.hpp>
 #include <settings/GrabberSettings.hpp>
 
+#include <QtCore/QDebug>
+
 /*!
  * Initializes the parameters for the tracking setup of given type.
  */

@@ -1,7 +1,10 @@
 #include "TrackingDataManager.hpp"
+#include "TrajectoryWriter.hpp"
 #include "settings/TrackingSettings.hpp"
 
 #include <CoordinatesConversion.hpp>
+
+#include <QtCore/QDebug>
 
 constexpr std::chrono::duration<double> TrackingDataManager::MaxTimeDifferenceMs;
 constexpr float TrackingDataManager::IdentityDistanceThresholdMeters;
@@ -18,7 +21,7 @@ TrackingDataManager::TrackingDataManager() :
     m_primaryDataSource(SetupType::UNDEFINED),
     m_primaryDataSourceCapability(AgentType::UNDEFINED),
     m_typeForGenericAgents(AgentType::FISH), // TODO : find a better way to do this(?)
-    m_trajectoryWriter()
+    m_trajectoryWriter(new TrajectoryWriter())
 {
 #if 0
     // this code is used purely for a debug when in a no-setup mode
@@ -140,7 +143,7 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
 
         // save the results to a file only if all the data could be merged
         if (allDataMerged)
-            m_trajectoryWriter.writeData(timestamp, agentDataList);
+            m_trajectoryWriter->writeData(timestamp, agentDataList);
     }
 }
 

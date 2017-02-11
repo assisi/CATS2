@@ -10,6 +10,7 @@
 #include <QtCore/QDir>
 
 #include <QtCore/QStandardPaths>
+#include <QtCore/QDateTime>
 
 /*!
  * Constructor.

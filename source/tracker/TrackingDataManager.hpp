@@ -1,7 +1,8 @@
 #ifndef CATS2_TRACKING_DATA_MANAGER_HPP
 #define CATS2_TRACKING_DATA_MANAGER_HPP
 
-#include "TrajectoryWriter.hpp"
+#include "TrackerPointerTypes.hpp"
+
 #include <CommonPointerTypes.hpp>
 
 #include <SetupType.hpp>
@@ -97,7 +98,7 @@ private:
     static constexpr float InvalidOrientationPenaltyRad = M_PI / 16; // i.e. 11.25 degrees
 
     //! Writes down the tracking results to the file.
-    TrajectoryWriter m_trajectoryWriter;
+    TrajectoryWriterPtr m_trajectoryWriter;
 
     //! Keeps the coordinates conversion map in case if we need to export results in
     //! the image coordinates.

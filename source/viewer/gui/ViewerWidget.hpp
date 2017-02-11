@@ -4,7 +4,6 @@
 #include "ViewerPointerTypes.hpp"
 
 #include <AgentData.hpp>
-#include <Timer.hpp>
 
 #include <QtCore/QObject>
 #include <QtWidgets/QWidget>
@@ -14,6 +13,7 @@
 #include <memory>
 
 class FrameScene;
+class Timer;
 class QGraphicsPixmapItem;
 class QGraphicsTextItem;
 class AgentTextItem;

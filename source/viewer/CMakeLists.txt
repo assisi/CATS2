@@ -2,10 +2,10 @@ set(srcs
     ViewerHandler.cpp
     ViewerData.cpp
     FrameConvertor.cpp
+    settings/ViewerSettings.cpp
     gui/ViewerWidget.cpp
     gui/FrameScene.cpp
     gui/ViewerWindow.cpp
-    settings/ViewerSettings.cpp
     gui/AgentTextItem.cpp
     gui/AgentItem.cpp
     gui/AnnotatedPolygonItem.cpp

@@ -9,6 +9,7 @@
 #include "TargetItem.hpp"
 #include "RunTimer.hpp"
 
+#include <Timer.hpp>
 #include <CoordinatesConversion.hpp>
 
 #include <QtWidgets/QGraphicsPixmapItem>

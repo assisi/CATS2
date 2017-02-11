@@ -1,13 +1,17 @@
 #include "TrackingSetup.hpp"
 #include "TrackingData.hpp"
 #include "TrackingDataManager.hpp"
+#include "TrackingHandler.hpp"
 
 #include <TimestampedFrame.hpp>
 #include <CoordinatesConversion.hpp>
-#include <settings/CalibrationSettings.hpp>
 #include <GrabberHandler.hpp>
 #include <QueueHub.hpp>
 #include <AgentData.hpp>
+
+#include <settings/CalibrationSettings.hpp>
+
+#include <gui/TrackingRoutineWidget.hpp>
 
 /*!
  * Constructor.
@@ -47,6 +51,14 @@ TimestampedFrameQueuePtr TrackingSetup::viewerQueue()
         return m_queueHub->addOutputQueue();
     else
         return TimestampedFrameQueuePtr();
+}
+
+/*!
+ * Returns the pointer to the tracking routine gui.
+ */
+QWidget* TrackingSetup::trackingWidget()
+{
+    return m_tracking->widget();
 }
 
 /*!
