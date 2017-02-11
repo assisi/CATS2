@@ -1,4 +1,4 @@
-#include "RunTimer.h"
+#include "RunTimer.hpp"
 
 #include <QtCore/QDebug>
 
