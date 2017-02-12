@@ -40,3 +40,4 @@ target_link_libraries(cats common grabber tracker viewer hub
 
 #install(TARGETS cats DESTINATION .)
 #install(FILES ${CMAKE_CURRENT_BINARY_DIR}/aesl/* DESTINATION .)
+#SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}")
