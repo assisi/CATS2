@@ -121,8 +121,16 @@ bool InitiationController::needToChangeRoom()
             return timeToDepart();
         }
     } else {
-        // do nothing, wait until the fish arrive
-        return false;
+        // so the robot is in the room where there is no or little fish
+        // now if there is a preference for the room?
+        if (m_controlAreas.contains(m_preferedAreaId)) {
+            // then let's go to catch the fish
+            return true;
+        } else {
+            // when there is no preference for a room then do nothing,
+            // wait until the fish arrive
+            return false;
+        }
     }
 }
 
