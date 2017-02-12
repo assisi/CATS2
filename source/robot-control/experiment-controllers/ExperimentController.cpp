@@ -170,7 +170,7 @@ bool ExperimentController::findFishArea(QString& maxFishNumberAreaId)
                     maxFishNumberAreaId = areaId;
                 }
             }
-            // restore the valus if nothing found
+            // restore the values if nothing found
             if (maxFishNumber == 0) {
                 maxFishNumberAreaId = prevMaxFishNumberAreaId;
                 return false;
@@ -211,3 +211,16 @@ bool ExperimentController::findAreaByPosition(QString& areaId,
     return false;
 }
 
+/*!
+ * Counts the fish number in all rooms different from the current one.
+ */
+int ExperimentController::fishNumberInOtherRooms(QString currentAreaId)
+{
+    // count the fish
+    int fishNumber = 0;
+    for (const auto& areaId : m_controlAreas.keys()) {
+        if (areaId != currentAreaId)
+            fishNumber += m_fishNumberByArea[areaId];
+    }
+    return fishNumber;
+}
