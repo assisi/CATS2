@@ -99,38 +99,48 @@ bool InitiationController::needToChangeRoom()
     if (changingRoom())
         return true; // continue
 
-    // if it's the room with the majority of the fish?
-    if ((m_fishNumberByArea[m_robotAreaId] >=
-         (RobotControlSettings::get().numberOfAnimals() - m_settings.maximalFishNumberAllowedToStay()))
-            && m_controlAreas.contains(m_robotAreaId)
-            && (m_controlAreas[m_robotAreaId]->type() == ControlAreaType::ROOM)) {
-        // if there is a preference for the room?
-        if (m_controlAreas.contains(m_preferedAreaId)) {
-            // if the robot is in the prefered room?
-            if (m_robotAreaId == m_preferedAreaId) {
-                // the robot is already in the prefered room and most of fish
-                // are with it as well => do nothing
-                return false;
+    // if the robot's position is a known room
+    if (m_controlAreas.contains(m_robotAreaId) &&
+            (m_controlAreas[m_robotAreaId]->type() == ControlAreaType::ROOM))
+    {
+        // if the majority of the fish is with the robot
+        if (m_fishNumberByArea[m_robotAreaId] >= fishNumberInOtherRooms(m_robotAreaId)) {
+            // if there is a preference for the room
+            if (m_controlAreas.contains(m_preferedAreaId)) {
+                // if the robot is in the prefered room
+                if (m_robotAreaId == m_preferedAreaId) {
+                    // the robot is already in the prefered room and most of fish
+                    // are with it as well => do nothing
+                    return false;
+                } else {
+                    // we are not in the prefered room => need to bring the fish
+                    // there; wait until the departure timer's signal
+                    return timeToDepart();
+                }
             } else {
+                // no preference for a room, so we can
                 // wait until the departure timer's signal
                 return timeToDepart();
             }
         } else {
-            // no preference for a room, so we can
-            // wait until the departure timer's signal
-            return timeToDepart();
+            // so the robot is in the room where there is no or little fish
+            // now if there is a preference for the room
+            if (m_controlAreas.contains(m_preferedAreaId)) {
+                // then let's go to catch the fish
+                qDebug() << Q_FUNC_INFO
+                         << QString("%1 go to catch %2 fish in another room")
+                            .arg(m_robot->name())
+                            .arg(fishNumberInOtherRooms(m_robotAreaId));
+                return true;
+            } else {
+                // when there is no preference for a room then do nothing,
+                // wait until the fish arrive
+                return false;
+            }
         }
     } else {
-        // so the robot is in the room where there is no or little fish
-        // now if there is a preference for the room?
-        if (m_controlAreas.contains(m_preferedAreaId)) {
-            // then let's go to catch the fish
-            return true;
-        } else {
-            // when there is no preference for a room then do nothing,
-            // wait until the fish arrive
-            return false;
-        }
+        // wait until the robot is detected in a room
+        return false;
     }
 }
 
