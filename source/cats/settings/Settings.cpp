@@ -43,11 +43,13 @@ bool Settings::init(int argc, char *argv[],
             qDebug() << Q_FUNC_INFO << "Main camera is not correctly set";
             return false;
         }
-        if (! TrackingSetupSettings::init(SetupType::MAIN_CAMERA, needCalibration)) {
+        if (!TrackingSetupSettings::init(CommandLineParameters::get().configurationFilePath(),
+                                         SetupType::MAIN_CAMERA, needCalibration)) {
             qDebug() << Q_FUNC_INFO << "Could not initialize the main camera setup";
             return false;
         }
-        if (!ViewerSettings::get().init(CommandLineParameters::get().configurationFilePath(), SetupType::MAIN_CAMERA)){
+        if (!ViewerSettings::get().init(CommandLineParameters::get().configurationFilePath(),
+                                        SetupType::MAIN_CAMERA)){
             qDebug() << Q_FUNC_INFO << "Could not initialize the main camera viewer";
             return false;
         }
@@ -59,7 +61,8 @@ bool Settings::init(int argc, char *argv[],
             qDebug() << Q_FUNC_INFO << "The camera below is not correctly set";
             return false;
         }
-        if (! TrackingSetupSettings::init(SetupType::CAMERA_BELOW, needCalibration)) {
+        if (!TrackingSetupSettings::init(CommandLineParameters::get().configurationFilePath(),
+                                         SetupType::CAMERA_BELOW, needCalibration)) {
             qDebug() << Q_FUNC_INFO << "Could not initialize the camera below setup";
             return false;
         }

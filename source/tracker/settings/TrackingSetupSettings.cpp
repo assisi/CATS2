@@ -11,9 +11,10 @@
 /*!
  * Initializes the parameters for the tracking setup of given type.
  */
-bool TrackingSetupSettings::init(SetupType::Enum setupType, bool needCalibration)
+bool TrackingSetupSettings::init(QString configurationFilePath,
+                                 SetupType::Enum setupType,
+                                 bool needCalibration)
 {
-    QString configurationFilePath = CommandLineParameters::get().configurationFilePath();
     // first check that the calibration settings are initialized
     if (CalibrationSettings::get().init(configurationFilePath, setupType) || (!needCalibration)) {
         // then check that the input stream is set

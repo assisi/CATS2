@@ -10,7 +10,9 @@ class TrackingSetupSettings
 {
 public:
     //! Initializes the parameters for the tracking setup.
-    static bool init(SetupType::Enum setupType, bool needCalibration = true);
+    static bool init(QString configurationFilePath,
+                     SetupType::Enum setupType,
+                     bool needCalibration = true);
 };
 
 #endif // CATS2_TRACKING_SETUP_SETTINGS_HPP

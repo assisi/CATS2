@@ -20,13 +20,14 @@ int main(int argc, char *argv[])
     QApplication app(argc, argv);
 
     // specify the setup type
-    SetupType::Enum setupType = SetupType::CAMERA_BELOW;
+    SetupType::Enum setupType = SetupType::MAIN_CAMERA;
 
     // parse input arguments to initialize the settings
     if (CommandLineParameters::get().init(argc, argv, true, false, false)) {
         if (CommandLineParameters::get().cameraDescriptor(setupType).isValid()) {
             bool needCalibration = false;
-            if (TrackingSetupSettings::init(setupType, needCalibration)) {
+            if (TrackingSetupSettings::init(CommandLineParameters::get().configurationFilePath(),
+                                            setupType, needCalibration)) {
                 MainWindow mainWindow(setupType);
                 mainWindow.show();
                 return app.exec();
