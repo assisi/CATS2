@@ -212,14 +212,16 @@ bool ExperimentController::findAreaByPosition(QString& areaId,
 }
 
 /*!
- * Counts the fish number in all rooms different from the current one.
+ * Counts the fish number in all rooms different from the current one. We don't
+ * take into account corridors.
  */
 int ExperimentController::fishNumberInOtherRooms(QString currentAreaId)
 {
     // count the fish
     int fishNumber = 0;
     for (const auto& areaId : m_controlAreas.keys()) {
-        if (areaId != currentAreaId)
+        if ((areaId != currentAreaId) &&
+                (m_controlAreas[areaId]->type() == ControlAreaType::ROOM))
             fishNumber += m_fishNumberByArea[areaId];
     }
     return fishNumber;
