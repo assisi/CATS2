@@ -128,9 +128,12 @@ bool InitiationController::needToChangeRoom()
             if (m_controlAreas.contains(m_preferedAreaId)) {
                 // then let's go to catch the fish
                 qDebug() << Q_FUNC_INFO
-                         << QString("%1 go to catch %2 fish in another room")
+                         << QString("%1 go to catch missing %2 fish, only %3 "
+                                    "fish out of %4 are present")
                             .arg(m_robot->name())
-                            .arg(fishNumberInOtherRooms(m_robotAreaId));
+                            .arg(fishNumberInOtherRooms(m_robotAreaId))
+                            .arg(m_fishNumberByArea[m_robotAreaId])
+                            .arg(RobotControlSettings::get().numberOfAnimals());
                 return true;
             } else {
                 // when there is no preference for a room then do nothing,
