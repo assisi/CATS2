@@ -37,7 +37,8 @@ public:
 
 signals:
     //! The results of merging the data from various sources.
-    void notifyAgentDataWorldMerged(QList<AgentDataWorld> agentsDataList);
+    void notifyAgentDataWorldMerged(QList<AgentDataWorld> agentsDataList,
+                                    std::chrono::milliseconds timestamp);
     //! The results of merging the data from various sources,
     //! converted to main setup's frame coordinates.
     void notifyAgentDataImageMerged(QList<AgentDataImage> agentsDataList);

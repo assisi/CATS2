@@ -134,7 +134,7 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
         }
 
         // send the results
-        emit notifyAgentDataWorldMerged(agentDataList);
+        emit notifyAgentDataWorldMerged(agentDataList, timestamp);
 
         // sends results in main setup image coordinates
         // NOTE : this is a temporary code to share results with CATS
