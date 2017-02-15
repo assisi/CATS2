@@ -43,11 +43,20 @@ public:
     CommandLineParameters& operator=(CommandLineParameters &&) = delete;
 
 public:
+    //! Add the camera descriptor for the given setup.
+    void addCameraDescriptor(SetupType::Enum setupType,
+                             StreamDescriptor descriptor)
+    {
+        m_cameraDescriptors[setupType] = descriptor;
+    }
+
     //! Returns the parameters of the given setup.
     StreamDescriptor cameraDescriptor(SetupType::Enum setupType) const
     {
         return m_cameraDescriptors[setupType];
     }
+    //! Sets the path to the configuration file.
+    void setConfigurationFilePath(QString path) { m_configurationFilePath = path; }
     //! Return the path to the configuration file.
     QString configurationFilePath() const { return m_configurationFilePath; }
     //! Returns the list of the setup types correspondign to provided input

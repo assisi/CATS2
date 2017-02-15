@@ -54,7 +54,8 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, boo
                                                    "--maincam", streamType, streamParameters));
     if (foundMainCameraParameters) {
         // the main camera
-        m_cameraDescriptors[SetupType::MAIN_CAMERA] = StreamDescriptor(streamType, streamParameters);
+        addCameraDescriptor(SetupType::MAIN_CAMERA,
+                            StreamDescriptor(streamType, streamParameters));
     } else {
         qDebug() << Q_FUNC_INFO << "Couldn't find the valid main camera parameters";
     }
@@ -66,7 +67,8 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, boo
              CommandLineParser::parseTypedArgument(argc, argv, "--belowcam", streamType, streamParameters));
     if (foundBelowCameraParameters) {
         // the below camera
-        m_cameraDescriptors[SetupType::CAMERA_BELOW] = StreamDescriptor(streamType, streamParameters);
+        addCameraDescriptor(SetupType::CAMERA_BELOW,
+                            StreamDescriptor(streamType, streamParameters));
     } else {
         qDebug() << Q_FUNC_INFO << "Couldn't find the valid camera below parameters";
     }
