@@ -36,6 +36,7 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIR} )
 
 #add_definitions(${QTGSTREAMER_DEFINITIONS}) # defines QT_NO_KEYWORDS that demands replacing all "signals" by "Q_SIGNALS"
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${QTGSTREAMER_FLAGS}")
+add_definitions(-DQT_MESSAGELOGCONTEXT)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # require at least gcc 4.4

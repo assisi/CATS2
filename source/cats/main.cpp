@@ -16,6 +16,9 @@ int main(int argc, char *argv[])
     QGst::init(&argc, &argv);
     QApplication app(argc, argv);
 
+    // set the debug message format
+     qSetMessagePattern("%{function} : %{message}");
+
     // initialize the settings
     // TODO : consider getting this parameters from the command line,
     // or based on the arguments of the command line?
