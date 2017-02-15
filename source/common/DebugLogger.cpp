@@ -1,4 +1,5 @@
 #include "DebugLogger.hpp"
+#include "RunTimer.h"
 
 #include <QtCore/QDebug>
 #include <QtCore/QStandardPaths>
@@ -61,7 +62,9 @@ void DebugLogger::messageOutput(QtMsgType type,
 {
     QMutexLocker locker(&m_mutex);
     QByteArray localMsg = msg.toLocal8Bit();
-    m_logStream << localMsg.constData() << endl;
+    double seconds = RunTimer::get().currentRuntimeSec();
+    m_logStream << QDateTime::fromTime_t(seconds).toUTC().toString("[hh:mm:ss]")
+                << localMsg.constData() << endl;
     // duplicate in the console
     std::cout << localMsg.constData() << std::endl;
 }
