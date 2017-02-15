@@ -16,15 +16,15 @@
  */
 TrajectoryWriter::TrajectoryWriter()
 {
-    // create the output folder
+    // create the output folder if necessary
     QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation))
             .mkdir(QApplication::applicationName());
 
     QString filePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) +
                        QDir::separator() + QApplication::applicationName();
-    QString fileName = QString("%1 %2.txt")
+    QString fileName = QString("%1-%2.txt")
             .arg(TrackingSettings::get().experimentName())
-            .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"));
+            .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd-hh:mm:ss"));
     // open the text where to write the tracking results
     m_resultsFile.setFileName(filePath + QDir::separator() + fileName);
     if (m_resultsFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
