@@ -7,7 +7,7 @@
 #include <settings/ViewerSettings.hpp>
 #include <settings/InterSpeciesSettings.hpp>
 #include <settings/RobotControlSettings.hpp>
-#include <RunTimer.h>
+#include <RunTimer.hpp>
 
 #include <QtCore/QDebug>
 

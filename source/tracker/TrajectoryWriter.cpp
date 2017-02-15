@@ -2,7 +2,7 @@
 
 #include "settings/TrackingSettings.hpp"
 
-#include <RunTimer.h>
+#include <RunTimer.hpp>
 
 #include <QtCore/QDebug>
 #include <QtCore/QPair>

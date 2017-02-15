@@ -7,7 +7,7 @@
 #include "AnnotatedPolygonItem.hpp"
 #include "TrajectoryItem.hpp"
 #include "TargetItem.hpp"
-#include "RunTimer.h"
+#include "RunTimer.hpp"
 
 #include <CoordinatesConversion.hpp>
 
