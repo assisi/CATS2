@@ -69,7 +69,7 @@ class AgentDataWorld
 {
 public:
     //! Constructor.
-    explicit AgentDataWorld(QString id,
+    explicit AgentDataWorld(QString id = "Undef",
                             AgentType type = AgentType::UNDEFINED,
                             StateWorld stateWorld = StateWorld());
 
