@@ -27,5 +27,6 @@ install(FILES SetupType.hpp CommonPointerTypes.hpp AgentState.hpp AgentData.hpp
         DESTINATION include/common)
 install(FILES settings/CalibrationSettings.hpp settings/CommandLineParser.hpp
         settings/StreamDescriptor.hpp settings/ReadSettingsHelper.hpp
+        settings/CommandLineParameters.hpp
         DESTINATION include/common/settings)
 
