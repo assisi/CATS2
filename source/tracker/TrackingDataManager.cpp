@@ -16,13 +16,17 @@ constexpr float TrackingDataManager::InvalidOrientationPenaltyRad;
 /*!
  * Constructor.
  */
-TrackingDataManager::TrackingDataManager() :
+TrackingDataManager::TrackingDataManager(bool logResults) :
     QObject(nullptr),
     m_primaryDataSource(SetupType::UNDEFINED),
     m_primaryDataSourceCapability(AgentType::UNDEFINED),
     m_typeForGenericAgents(AgentType::FISH), // TODO : find a better way to do this(?)
-    m_trajectoryWriter(new TrajectoryWriter())
+    m_trajectoryWriter(nullptr),
+    m_logResults(logResults)
 {
+    if (m_logResults) {
+        m_trajectoryWriter.reset(new TrajectoryWriter());
+    }
 #if 0
     // this code is used purely for a debug when in a no-setup mode
     // it starts the timer that sends a data with the fake robots and fish
@@ -87,6 +91,21 @@ void TrackingDataManager::addCoordinatesConversion(SetupType::Enum setupType, Co
 }
 
 /*!
+ * Specify if we need to log resulted data.
+ */
+void TrackingDataManager::setLogResults(bool value)
+{
+    if (m_logResults != value) {
+        m_logResults = value;
+        if (m_logResults) {
+            m_trajectoryWriter.reset(new TrajectoryWriter());
+        } else {
+            m_trajectoryWriter.reset();
+        }
+    }
+}
+
+/*!
  * New tracking results arrive. The data from the "secondary" data source (in our
  * case - the top camera) are placed in a queue, in the same time the data from
  * the "primary" data source (bottom camera) are treated right away. If in the queue
@@ -142,8 +161,11 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
         emit notifyAgentDataImageMerged(agentDataListImage);
 
         // save the results to a file only if all the data could be merged
-        if (allDataMerged)
-            m_trajectoryWriter->writeData(timestamp, agentDataList);
+        if (allDataMerged ) {
+            if (m_logResults && m_trajectoryWriter.data()) {
+                m_trajectoryWriter->writeData(timestamp, agentDataList);
+            }
+        }
     }
 }
 

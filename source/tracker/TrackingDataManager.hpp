@@ -24,8 +24,8 @@ class TrackingDataManager : public QObject
 {
     Q_OBJECT
 public:
-    //! Constructor.
-    explicit TrackingDataManager();
+    //! Constructor. Gets a flag specifying if the results are to be logged.
+    explicit TrackingDataManager(bool logResults = true);
     //! Destructor.
     virtual ~TrackingDataManager() final;
 
@@ -34,6 +34,9 @@ public:
     void addDataSource(SetupType::Enum setupType, QList<AgentType> capabilities);
     //! Adds new coordinates conversion.
     void addCoordinatesConversion(SetupType::Enum setupType, CoordinatesConversionPtr coordinatesConversion);
+
+    //! Specify if we need to log resulted data.
+    void setLogResults(bool value);
 
 signals:
     //! The results of merging the data from various sources.
@@ -100,6 +103,8 @@ private:
 
     //! Writes down the tracking results to the file.
     TrajectoryWriterPtr m_trajectoryWriter;
+    //! The flag that specify if to write trajectories.
+    bool m_logResults;
 
     //! Keeps the coordinates conversion map in case if we need to export results in
     //! the image coordinates.
