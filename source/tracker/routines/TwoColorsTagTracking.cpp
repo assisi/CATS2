@@ -54,6 +54,8 @@ void TwoColorsTagTracking::doTracking(const TimestampedFrame& frame)
 
     // limit the image format to three channels color images
     if (image.type() == CV_8UC3) {
+        // save the debug image
+        image.copyTo(m_debugImage);
         // first blur the image
         cv::blur(image, m_blurredImage, cv::Size(3, 3));
 
@@ -61,7 +63,7 @@ void TwoColorsTagTracking::doTracking(const TimestampedFrame& frame)
         cv::Point2f frontTagCenter;
         cv::Point2f backTagCenter;
         if (detectTags(TwoColorsTagTrackingSettingsData::TagType::FRONT, frontTagCenter) &&
-            detectTags(TwoColorsTagTrackingSettingsData::TagType::BACK, backTagCenter))
+                detectTags(TwoColorsTagTrackingSettingsData::TagType::BACK, backTagCenter))
         {
             // compute the orientation
             double orientation = qAtan2(frontTagCenter.y - backTagCenter.y,
@@ -76,9 +78,9 @@ void TwoColorsTagTracking::doTracking(const TimestampedFrame& frame)
             // submit the debug image
             if (m_enqueueDebugFrames) {
                 cv::Scalar color(255, 255, 255);
-                cv::circle(m_blurredImage, center, 2, color);
-                cv::arrowedLine(m_blurredImage, center, frontTagCenter, color);
-                enqueueDebugImage(m_blurredImage);
+                cv::circle(m_debugImage, center, 2, color);
+                cv::arrowedLine(m_debugImage, center, frontTagCenter, color);
+                enqueueDebugImage(m_debugImage);
             }
         }
 
@@ -126,6 +128,13 @@ bool TwoColorsTagTracking::detectTags(TwoColorsTagTrackingSettingsData::TagType 
     cv::dilate(m_binaryImage, m_binaryImage, element);
     cv::erode(m_binaryImage, m_binaryImage, element);
 
+    //    if (tagType == TwoColorsTagTrackingSettingsData::TagType::BACK) {
+    //        // submit the debug image
+    //        if (m_enqueueDebugFrames) {
+    //            enqueueDebugImage(m_binaryImage);
+    //        }
+    //    }
+
     // detect the blobs as contours
     std::vector<std::vector<cv::Point>> contours;
     try { // TODO : to check if this try-catch can be removed or if it should be used everywhere where opencv methods are used.
@@ -150,6 +159,14 @@ bool TwoColorsTagTracking::detectTags(TwoColorsTagTrackingSettingsData::TagType 
             tagGroupCenter += contourCenter(contours[i]);
         }
         tagGroupCenter /= description.numberOfTags;
+
+        // submit the debug image
+        if (m_enqueueDebugFrames) {
+            cv::Scalar color(255, 255, 255);
+            for (size_t i = 0; i < description.numberOfTags; ++i) {
+                cv::circle(m_debugImage, contourCenter(contours[i]), 2, color);
+            }
+        }
         return true;
     }
 

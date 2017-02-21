@@ -54,14 +54,10 @@ private:
     cv::Mat m_blurredImage;
     //! The image in HSV format.
     cv::Mat m_hsvImage;
-    //! The binary image after the color subtraction.
-    cv::Mat m_differenceImage;
-    //! The grayscale image.
-    cv::Mat m_grayscaleImage;
     //! The binary image after threshold was applied.
     cv::Mat m_binaryImage;
-    //! The foreground image.
-    cv::Mat m_foregroundImage;
+    //! The image to put the debug information.
+    cv::Mat m_debugImage;
 };
 
 #endif // CATS2_TWO_COLORS_TAG_TRACKING_HPP
