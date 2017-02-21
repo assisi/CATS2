@@ -447,3 +447,12 @@ QList<AgentDataImage> TrackingDataManager::convertToFrameCoordinates(SetupType::
     }
     return agentsDataImageList;
 }
+
+/*!
+ * Sets the type of the agent to use in the output data for a generic agent.
+ */
+void TrackingDataManager::setGenericAgentReplacementType(AgentType type)
+{
+    m_typeForGenericAgents = type;
+}
+

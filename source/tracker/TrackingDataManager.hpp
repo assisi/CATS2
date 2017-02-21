@@ -38,6 +38,9 @@ public:
     //! Specify if we need to log resulted data.
     void setLogResults(bool value);
 
+    //! Sets the type of the agent to use in the output data for a generic agent.
+    void setGenericAgentReplacementType(AgentType type);
+
 signals:
     //! The results of merging the data from various sources.
     void notifyAgentDataWorldMerged(QList<AgentDataWorld> agentsDataList,
