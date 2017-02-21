@@ -167,7 +167,7 @@ PositionMeters CameraCalibration::imageToWorld(PositionPixels imageCoordinates)
     // s * a = [wx wy wz]' + b, where a = R^{-1}*M^{-1}*[u v 1]', b = R^{-1}*t
     cv::Mat vectorA = m_rotationMatrixInvCameraMatrixInv * uvPoint;
     // TODO : to check if it works better when the height of the agent is taken into account
-    double wz = m_cameraHeight /*- m_agentHeight*/;
+    double wz = m_cameraHeight - m_agentHeight;
     double s = wz + m_rotationMatrixInvTranslationVector.at<double>(2, 0);
     s /= vectorA.at<double>(2, 0);
 
@@ -191,7 +191,7 @@ PositionPixels CameraCalibration::worldToImage(PositionMeters worldCoordinates)
     // HACK : since only "x" and "y" are sinchronized between the top and bottom setus,
     // the "z" value is to be set  to the "agent height" specific for this setup
     // TODO : to check if it works better when the height of the agent is taken into account
-    worldCoordinates.setZ(m_cameraHeight /*- m_agentHeight*/);
+    worldCoordinates.setZ(m_cameraHeight - m_agentHeight);
     // the calibration data is set in mm, hence the multiplication to change from meters
     worldPoint.push_back(cv::Point3f(m_xInversionCoefficient * worldCoordinates.x() * 1000,
                                      m_yInversionCoefficient * worldCoordinates.y() * 1000,
