@@ -139,23 +139,20 @@ bool TwoColorsTagTracking::detectTags(TwoColorsTagTrackingSettingsData::TagType 
     std::vector<int> indices(contours.size());
     std::iota(indices.begin(), indices.end(), 0);
     std::sort(indices.begin(), indices.end(), [&contours](int lhs, int rhs) {
-        return cv::contourArea(contours[lhs],false) > cv::contourArea(contours[rhs],false);
+        return cv::contourArea(contours[lhs]) > cv::contourArea(contours[rhs]);
     });
 
     // if we detected all the tags
     if (contours.size() >= description.numberOfTags) {
         // center of the contour
         tagGroupCenter = cv::Point2f(0, 0);
-        // contour's moments
-        cv::Moments moments;
         for (size_t i = 0; i < description.numberOfTags; ++i) {
-            moments = cv::moments(contours[i]);
-            tagGroupCenter += cv::Point2f(static_cast<float>(moments.m10/moments.m00 + 0.5),
-                                          static_cast<float>(moments.m01/moments.m00 + 0.5));
+            tagGroupCenter += contourCenter(contours[i]);
         }
         tagGroupCenter /= description.numberOfTags;
         return true;
     }
+
 
     return false;
 }
