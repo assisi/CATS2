@@ -114,7 +114,7 @@ bool TwoColorsTagTracking::detectTags(TwoColorsTagTrackingSettingsData::TagType 
                 m_binaryImage);
 
     // postprocessing of the binary image
-    int an = 1;
+    int an = 2;
     // TODO : inititialize this in the constructor
     cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE,
                                                 cv::Size(an*2+1, an*2+1),
