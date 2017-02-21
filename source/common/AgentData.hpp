@@ -12,7 +12,7 @@
  */
 enum class AgentType
 {
-    FISH_CASU,
+    CASU,
     FISH,
     GENERIC,    // any type of the agent, different from UNDEFINED
     UNDEFINED   // unknown, no data

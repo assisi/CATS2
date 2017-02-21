@@ -128,7 +128,7 @@ void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
     QList<StateWorld> fishStates;
 
     foreach (AgentDataWorld agentData, agentsData) {
-        if (agentData.type() == AgentType::FISH_CASU) {
+        if (agentData.type() == AgentType::CASU) {
             robotsData.append(agentData);
         } else if (agentData.type() == AgentType::FISH) {
             fishStates.append(agentData.state());

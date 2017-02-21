@@ -73,7 +73,7 @@ void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp,
     // a index in the output table
     for (int i = 0; i < TrackingSettings::get().numberOfRobots(); ++i) {
         const AgentDataWorld* robotData = getAgentData(i,
-                                                       AgentType::FISH_CASU,
+                                                       AgentType::CASU,
                                                        m_robotsIndexToId,
                                                        agentsData);
         if (robotData) {

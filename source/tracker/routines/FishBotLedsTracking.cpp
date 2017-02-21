@@ -34,7 +34,7 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings, Ti
     FishBotLedsTrackingSettingsData::FishBotDescription robotDescription;
     for (size_t robotIndex = 0; robotIndex < m_settings.numberOfAgents(); robotIndex++) {
         robotDescription = m_settings.robotDescription(robotIndex);
-        AgentDataImage agent(robotDescription.id, AgentType::FISH_CASU);
+        AgentDataImage agent(robotDescription.id, AgentType::CASU);
         m_agents.append(agent);
     }
 
@@ -210,7 +210,7 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
  */
 QList<AgentType> FishBotLedsTracking::capabilities() const
 {
-    return QList<AgentType>({AgentType::FISH_CASU});
+    return QList<AgentType>({AgentType::CASU});
 }
 
 /*!
