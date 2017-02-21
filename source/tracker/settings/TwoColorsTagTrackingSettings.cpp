@@ -66,5 +66,5 @@ void TwoColorsTagTrackingSettings::readTagGroup(ReadSettingsHelper& settings,
                           .arg(m_settingPathPrefix)
                           .arg(section),
                           description.colorThreshold, description.colorThreshold);
-    m_data.addTagGroupDescription(type, description);
+    m_data.updateTagGroupDescription(type, description);
 }

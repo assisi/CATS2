@@ -56,10 +56,10 @@ public:
     }
 
     //! Adds a tags group description of the given type.
-    void addTagGroupDescription(TagType tagType,
-                                TagGroupDescription description)
+    void updateTagGroupDescription(TagType tagType,
+                                   TagGroupDescription description)
     {
-        m_tagGroupDescription.insert(tagType, description);
+        m_tagGroupDescription[tagType] = description;
     }
 
     //! Set the center proportional position.
