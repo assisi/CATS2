@@ -21,6 +21,7 @@ set(srcs
     gui/FishBotLedsTrackingWidget.cpp
     gui/ColorDetectorWidget.cpp
     gui/TrackingUiFactory.cpp
+    gui/TwoColorsTagsTrackingWidget.cpp
 )
 
 set(hdrs
@@ -34,7 +35,8 @@ qt5_wrap_ui(uis_hdrs
             gui/TrackingRoutineWidget.ui
             gui/BlobDetectorWidget.ui
             gui/FishBotLedsTrackingWidget.ui
-            gui/ColorDetectorWidget.ui)
+            gui/ColorDetectorWidget.ui
+            gui/TwoColorsTagsTrackingWidget.ui)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 include_directories(${CMAKE_SOURCE_DIR}/source/grabber)
