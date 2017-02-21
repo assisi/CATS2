@@ -34,10 +34,14 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
 
     // check that the target size is compatible with the calibration size
     // meaning that the target size must be a scale of the calibration size
-    m_imageScaleCoefficientX = static_cast<double>(targetFrameSize.width()) / static_cast<double>(m_calibrationFrameSize.width());
-    m_imageScaleCoefficientY = static_cast<double>(targetFrameSize.height()) / static_cast<double>(m_calibrationFrameSize.height());
+    m_imageScaleCoefficientX = static_cast<double>(targetFrameSize.width()) /
+            static_cast<double>(m_calibrationFrameSize.width());
+    m_imageScaleCoefficientY = static_cast<double>(targetFrameSize.height()) /
+            static_cast<double>(m_calibrationFrameSize.height());
     if (! qFuzzyCompare(m_imageScaleCoefficientX, m_imageScaleCoefficientY)) {
-        qDebug() << Q_FUNC_INFO << "The requested target frame size is not compatible with the size used to generate the calibration data.";
+        qDebug() << Q_FUNC_INFO << "The requested target frame size is not "
+                                   "compatible with the size used to generate "
+                                   "the calibration data.";
         return;
     }
 
@@ -170,9 +174,10 @@ PositionMeters CameraCalibration::imageToWorld(PositionPixels imageCoordinates)
     double wx = s * vectorA.at<double>(0, 0) - m_rotationMatrixInvTranslationVector.at<double>(0, 0);
     double wy = s * vectorA.at<double>(1, 0) - m_rotationMatrixInvTranslationVector.at<double>(1, 0);
 
-    // NOTE : the Z-coordinate is not set is we work in 2D world
-    PositionMeters worldCoordinates(m_xInversionCoefficient * wx / 1000., m_yInversionCoefficient * wy / 1000.); // the calibration data is set in mm, hence the division
-
+    // NOTE : (1) the Z-coordinate is not set is we work in 2D world
+    // (2) the calibration data is set in mm, hence the division
+    PositionMeters worldCoordinates(m_xInversionCoefficient * wx / 1000.,
+                                    m_yInversionCoefficient * wy / 1000.);
     return worldCoordinates;
 }
 

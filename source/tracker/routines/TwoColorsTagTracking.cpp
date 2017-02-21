@@ -13,14 +13,16 @@
 #include <cmath>
 
 /*!
- * Constructor. Gets the settings, the input queue to process and a queue to place debug images on request.
+ * Constructor. Gets the settings, the input queue to process and a queue to
+ * place debug images on request.
  */
 TwoColorsTagTracking::TwoColorsTagTracking(TrackingRoutineSettingsPtr settings,
                                            TimestampedFrameQueuePtr inputQueue,
                                            TimestampedFrameQueuePtr debugQueue) :
     TrackingRoutine(inputQueue, debugQueue)
 {
-    // HACK : to get parameters specific for this tracker we need to convert the settings to the corresponding format
+    // HACK : to get parameters specific for this tracker we need to convert
+    // the settings to the corresponding format
     TwoColorsTagTrackingSettings* twoColorsTagTrackingSettings =
             dynamic_cast<TwoColorsTagTrackingSettings*>(settings.data());
     if (twoColorsTagTrackingSettings != nullptr){
@@ -89,7 +91,7 @@ void TwoColorsTagTracking::doTracking(const TimestampedFrame& frame)
  * Searches for the given tag group, returns it's centre of mass.
 */
 bool TwoColorsTagTracking::detectTags(TwoColorsTagTrackingSettingsData::TagType tagType,
-                                             cv::Point2f& tagGroupCenter)
+                                      cv::Point2f& tagGroupCenter)
 {
 
     TwoColorsTagTrackingSettingsData::TagGroupDescription description;
@@ -111,7 +113,10 @@ bool TwoColorsTagTracking::detectTags(TwoColorsTagTrackingSettingsData::TagType 
 
     // postprocessing of the binary image
     int an = 1;
-    cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(an*2+1, an*2+1), cv::Point(an, an)); // TODO : inititialize this in the constructor
+    // TODO : inititialize this in the constructor
+    cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE,
+                                                cv::Size(an*2+1, an*2+1),
+                                                cv::Point(an, an));
 
     //morphological opening (remove small objects from the foreground)
     cv::erode(m_binaryImage, m_binaryImage, element);

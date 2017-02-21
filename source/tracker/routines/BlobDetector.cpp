@@ -228,7 +228,8 @@ void BlobDetector::detectContours(cv::Mat& image,
         // take only the contours that contain corners
         if (cornersInContour.size() > 0) {
             moments = cv::moments(contours[i]);
-            centers.push_back(cv::Point2f(static_cast<float>(moments.m10/moments.m00+0.5),static_cast<float>(moments.m01/moments.m00+0.5)));
+            centers.push_back(cv::Point2f(static_cast<float>(moments.m10/moments.m00 + 0.5),
+                                          static_cast<float>(moments.m01/moments.m00 + 0.5)));
             cornersInContours.push_back(cornersInContour);
         }
     }
