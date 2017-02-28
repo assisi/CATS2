@@ -14,14 +14,19 @@
 /*!
  * Constructor.
  */
-TrajectoryWriter::TrajectoryWriter()
+TrajectoryWriter::TrajectoryWriter(QString dataLoggingPath)
 {
-    // create the output folder if necessary
-    QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation))
-            .mkdir(QApplication::applicationName());
+    QString filePath;
+    if (dataLoggingPath.isEmpty()) {
+        // create the output folder if necessary
+        QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation))
+                .mkdir(QApplication::applicationName());
 
-    QString filePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) +
-                       QDir::separator() + QApplication::applicationName();
+        filePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) +
+                           QDir::separator() + QApplication::applicationName();
+    } else {
+        filePath = dataLoggingPath;
+    }
     QString fileName = QString("%1-%2.txt")
             .arg(TrackingSettings::get().experimentName())
             .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd-hh:mm:ss"));

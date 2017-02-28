@@ -1,6 +1,10 @@
 #include "ui_MainWindow.h"
 #include "MainWindow.hpp"
+
+#include "PreferencesDialog.hpp"
+
 #include "settings/Settings.hpp"
+#include "settings/Registry.hpp"
 #include <settings/InterSpeciesSettings.hpp>
 
 #include <TrackingSetup.hpp>
@@ -40,7 +44,8 @@ MainWindow::MainWindow(QWidget *parent) :
     qInstallMessageHandler(messageOutput);
 
     // create the tracking data manager
-    m_trackingDataManager = TrackingDataManagerPtr(new TrackingDataManager());
+    QString path = Registry::get().dataLoggingPath();
+    m_trackingDataManager = TrackingDataManagerPtr(new TrackingDataManager(path));
 
     // create the inter-species data manager
     m_interSpeciesDataManager = InterSpeciesDataManagerPtr(new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress()));
@@ -83,6 +88,13 @@ MainWindow::MainWindow(QWidget *parent) :
      m_ui->actionShowAgentsData->toggle();
      m_ui->actionShowControlAreas->toggle();
      m_ui->actionShowSetupOutline->toggle();
+
+     // preferences dialog
+     connect(m_ui->actionPreferences, &QAction::triggered,
+             [=](){
+                QSharedPointer<PreferencesDialog> dialog(new PreferencesDialog());
+                dialog->exec();
+             });
 }
 
 /*!

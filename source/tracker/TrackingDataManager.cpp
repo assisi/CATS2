@@ -13,12 +13,12 @@ constexpr float TrackingDataManager::InvalidOrientationPenaltyRad;
 /*!
  * Constructor.
  */
-TrackingDataManager::TrackingDataManager() :
+TrackingDataManager::TrackingDataManager(QString dataLoggingPath) :
     QObject(nullptr),
     m_primaryDataSource(SetupType::UNDEFINED),
     m_primaryDataSourceCapability(AgentType::UNDEFINED),
     m_typeForGenericAgents(AgentType::FISH), // TODO : find a better way to do this(?)
-    m_trajectoryWriter()
+    m_trajectoryWriter(dataLoggingPath)
 {
 #if 0
     // this code is used purely for a debug when in a no-setup mode

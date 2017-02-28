@@ -1,10 +1,12 @@
 set(srcs
     main.cpp
     gui/MainWindow.cpp
+    gui/PreferencesDialog.cpp
     settings/Settings.cpp
+    settings/Registry.cpp
 )
 
-qt5_wrap_ui(uis_hdrs gui/MainWindow.ui)
+qt5_wrap_ui(uis_hdrs gui/MainWindow.ui gui/PreferencesDialog.ui)
 qt5_add_resources(resources icons.qrc)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/grabber)

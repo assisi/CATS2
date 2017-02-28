@@ -24,7 +24,7 @@ class TrackingDataManager : public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    explicit TrackingDataManager();
+    explicit TrackingDataManager(QString dataLoggingPath = "");
     //! Destructor.
     virtual ~TrackingDataManager() final;
 
