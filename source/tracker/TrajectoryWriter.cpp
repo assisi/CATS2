@@ -16,6 +16,7 @@
  */
 TrajectoryWriter::TrajectoryWriter(QString dataLoggingPath)
 {
+    QDir dir;
     QString filePath;
     if (dataLoggingPath.isEmpty()) {
         // create the output folder if necessary
@@ -26,9 +27,30 @@ TrajectoryWriter::TrajectoryWriter(QString dataLoggingPath)
                            QDir::separator() + QApplication::applicationName();
     } else {
         filePath = dataLoggingPath;
+        if (!dir.exists(filePath))
+            dir.mkpath(filePath);
     }
-    QString fileName = QString("%1-%2.txt")
-            .arg(TrackingSettings::get().experimentName())
+
+    // make a directory with the type name
+    QString experimentType = TrackingSettings::get().experimentType();
+    if (experimentType.isEmpty())
+        experimentType = "undefined";
+
+    filePath += QDir::separator() + experimentType;
+    if (!dir.exists(filePath))
+        dir.mkdir(filePath);
+
+    // make a directory with the experiment name
+    QString experimentName = TrackingSettings::get().experimentName();
+    if (experimentName.isEmpty())
+        experimentName = "undefined";
+
+    filePath += QDir::separator() + TrackingSettings::get().experimentName();
+    if (!dir.exists(filePath))
+        dir.mkdir(filePath);
+
+    // form the file name
+    QString fileName = QString("positions-%1.txt")
             .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd-hh:mm:ss"));
     // open the text where to write the tracking results
     m_resultsFile.setFileName(filePath + QDir::separator() + fileName);
