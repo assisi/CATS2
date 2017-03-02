@@ -64,6 +64,14 @@ bool RobotControlSettings::init(QString configurationFileName)
         settings.readVariable(QString("robots/fishBot_%1/ledColor/b").arg(index), blue);
         robotSettings.setLedColor(QColor(red, green, blue));
 
+        // read the connection target line
+        std::string target = "";
+        settings.readVariable(QString("robots/fishBot_%1/connectionTarget")
+                              .arg(index),
+                              target, target);
+        robotSettings.setConnectionTarget(QString::fromStdString(target));
+
+        // add settings
         m_robotsSettings.insert(robotSettings.id(), robotSettings);
         settingsAccepted = settingsAccepted && (id.size() > 0);
     }

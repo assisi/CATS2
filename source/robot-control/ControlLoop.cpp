@@ -4,12 +4,13 @@
 
 #include "interfaces/DBusInterface.hpp"
 
+#include <settings/CommandLineParameters.hpp>
+
 /*!
  * Constructor.
  */
 ControlLoop::ControlLoop() :
     QObject(nullptr),
-    m_robotsInterface(new DBusInterface()),
     m_selectedRobot(),
     m_sendNavigationData(false),
     m_sendControlAreas(false)
@@ -18,7 +19,6 @@ ControlLoop::ControlLoop() :
     for (QString id : RobotControlSettings::get().ids()) {
         m_robots.append(FishBotPtr(new FishBot(id)));
         m_robots.last()->setLedColor(RobotControlSettings::get().robotSettings(id).ledColor());
-        m_robots.last()->setRobotInterface(m_robotsInterface);
 
         // ensure that only one robot can be in manual mode
         connect(m_robots.last().data(), &FishBot::notifyInManualMode,
@@ -65,7 +65,17 @@ ControlLoop::ControlLoop() :
     }
 
     // conect the robots
-    initializeRobotsInterfaces();
+    if (CommandLineParameters::get().useSharedRobotInterface()) {
+        // if all robots share the same connection
+        // create the control interface
+        m_sharedRobotInterface = DBusInterfacePtr(new DBusInterface());
+        for (auto& robot : m_robots) {
+            robot->setSharedRobotInterface(m_sharedRobotInterface);
+        }
+        initializeSharedRobotInterface();
+    } else {
+        m_sharedRobotInterface = DBusInterfacePtr(nullptr);
+    }
 
     // start the control timer
     int stepMsec = static_cast<int>(1000. / RobotControlSettings::get().controlFrequencyHz());
@@ -102,15 +112,22 @@ void ControlLoop::step()
 }
 
 /*!
+ * Reconnect the robot's to the aseba interface.
+ */
+void ControlLoop::reconnectRobots()
+{
+    initializeSharedRobotInterface();
+}
+
+/*!
  * Loads and initialized the robots' firmware scripts.
  */
-void ControlLoop::initializeRobotsInterfaces()
+void ControlLoop::initializeSharedRobotInterface()
 {
-    if (m_robotsInterface->checkConnection()) {
-        // TODO : to make this initialization logics more robust, to allow the
-        // (re)connection when medula is (re)launched after CATS2.
+    if (m_sharedRobotInterface.data() &&
+            m_sharedRobotInterface->checkConnection()) {
         for (int index = 0; index < m_robots.size(); ++index) {
-            m_robots[index]->setupConnection(index);
+            m_robots[index]->setupSharedConnection(index);
         }
     } else {
         qDebug() << Q_FUNC_INFO << "The connection with the dbus could not be established.";

@@ -16,6 +16,12 @@ class DBusInterface;
 using DBusInterfacePtr = QSharedPointer<DBusInterface>;
 
 /*!
+ * The alias for the shared pointer to the dashel interface.
+ */
+class DashelInterface;
+using DashelInterfacePtr = QSharedPointer<DashelInterface>;
+
+/*!
  * The alias for the shared pointer to the control target.
  */
 class ControlTarget;

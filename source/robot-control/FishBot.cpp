@@ -2,6 +2,8 @@
 #include "control-modes/ControlMode.hpp"
 #include "control-modes/ControlTarget.hpp"
 
+#include "interfaces/DashelInterface.hpp"
+
 #include <AgentData.hpp>
 
 #include <QtCore/QCoreApplication>
@@ -16,7 +18,8 @@ FishBot::FishBot(QString id) :
     m_name(QString("Fish_bot_%1").arg(m_id)), // NOTE : don't change this name as the .aesl files are searched by it
     m_ledColor(Qt::black),
     m_state(),
-    m_robotInterface(nullptr),
+    m_sharedRobotInterface(nullptr),
+    m_uniqueRobotInterface(nullptr),
     m_experimentManager(this),
     m_controlStateMachine(this),
     m_navigation(this)
@@ -74,28 +77,30 @@ FishBot::~FishBot()
 /*!
  * Sets the robot's interface.
  */
-void FishBot::setRobotInterface(DBusInterfacePtr robotInterface)
+void FishBot::setSharedRobotInterface(DBusInterfacePtr sharedRobotInterface)
 {
-    m_robotInterface = robotInterface;
+    m_sharedRobotInterface = sharedRobotInterface;
     // TODO : to add a callback that sets the robot's state from the event
 }
 
 /*!
  * Inititialises the robot's firmaware.
  */
-void FishBot::setupConnection(int robotIndex)
+void FishBot::setupSharedConnection(int robotIndex)
 {
-    if (m_robotInterface.data()) {
+    if (m_sharedRobotInterface.data()) {
         // FIXME : in the multi-robot/node mode aseba doesn't provide the node list correctly
 //        if (m_robotInterface->nodeList.contains(m_name)) {
-            QString scriptDirPath = QCoreApplication::applicationDirPath() + QDir::separator() + "aesl";
-            QString scriptPath = scriptDirPath + QDir::separator() + m_name + ".aesl";
+            QString scriptDirPath = QCoreApplication::applicationDirPath() +
+                    QDir::separator() + "aesl";
+            QString scriptPath = scriptDirPath + QDir::separator() +
+                    m_name + ".aesl";
             if (QFileInfo(scriptPath).exists()) {
-                m_robotInterface->loadScript(scriptPath);
+                m_sharedRobotInterface->loadScript(scriptPath);
                 // set the robots id
                 Values data;
                 data.append(robotIndex);
-                m_robotInterface->setVariable(m_name, "IDControl", data);
+                m_sharedRobotInterface->setVariable(m_name, "IDControl", data);
                 // set the obstacle avoidance on the robot
                 m_navigation.updateLocalObstacleAvoidance();
             } else {
@@ -104,6 +109,36 @@ void FishBot::setupConnection(int robotIndex)
 //        }
     } else {
         qDebug() << Q_FUNC_INFO << "The robot's interface is not set";
+    }
+}
+
+/*!
+ * Connects to the robot via its own interface.
+ */
+void FishBot::setupUniqueConnection()
+{
+    // if the connection is open then close it
+    if (m_uniqueRobotInterface.data())
+        m_uniqueRobotInterface->disconnectAseba();
+
+    // make new connection
+    QString target = RobotControlSettings::get().robotSettings(m_id).connectionTarget();
+    m_uniqueRobotInterface = DashelInterfacePtr(new DashelInterface());
+
+    // FIXME : how to get a feedback if the connection is established
+    m_uniqueRobotInterface->connectAseba(target);
+
+    // load the script
+    QString scriptDirPath = QCoreApplication::applicationDirPath() +
+            QDir::separator() + "aesl";
+    QString scriptPath = scriptDirPath + QDir::separator() +
+            m_name + ".aesl";
+    if (QFileInfo(scriptPath).exists()) {
+        m_uniqueRobotInterface->loadScript(scriptPath);
+        // set the obstacle avoidance on the robot
+        m_navigation.updateLocalObstacleAvoidance();
+    } else {
+        qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
     }
 }
 
@@ -318,7 +353,9 @@ void FishBot::stepExperimentManager()
  */
 void FishBot::sendEvent(const QString& eventName, const Values& data)
 {
-    if (m_robotInterface) {
-        m_robotInterface->sendEventName(eventName, data);
+    if (m_sharedRobotInterface.data()) {
+        m_sharedRobotInterface->sendEventName(eventName, data);
+    } else if (m_uniqueRobotInterface.data()) {
+//        m_uniqueRobotInterface->sendEventName(eventName, data);
     }
 }

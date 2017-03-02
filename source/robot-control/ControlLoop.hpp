@@ -45,7 +45,7 @@ public slots:
     //! Asks to send the colors of all robots.
     void requestRobotsLedColors();
     //! Reconnect the robot's to the aseba interface.
-    void reconnectRobots() { initializeRobotsInterfaces(); }
+    void reconnectRobots();
 
 signals:
     //! Sends the control map areas' polygons of the robot.
@@ -61,12 +61,12 @@ signals:
 
 private:
     //! Loads and initialized the robots' firmware scripts.
-    void initializeRobotsInterfaces();
+    void initializeSharedRobotInterface();
 
 private:
     //! An inferface with the robots' Aseba firmware. It's shared by all
     //! robots, like this they have a direct access to set parameters.
-    DBusInterfacePtr m_robotsInterface;
+    DBusInterfacePtr m_sharedRobotInterface;
     //! A list of all connected robots.
     QList<FishBotPtr> m_robots;
     //! The robot selected in the GUI.

@@ -55,7 +55,7 @@ Values DBusInterface::dBusMessagetoValues(const QDBusMessage& dbmess, int index)
 std::string DBusInterface::toString(const Values& v)
 {
     std::string out = "[";
-    for (int i=0;i<v.size();i++)
+    for (int i = 0; i < v.size(); i++)
     {
         out += std::to_string(v[i]);
         if(i <(v.size()-1))
@@ -82,11 +82,11 @@ bool DBusInterface::checkConnection()
     }
     qDebug() << "You are connected to the D-Bus session bus";
 
-    QDBusMessage nodelist=m_dbusMainInterface.call("GetNodesList");
+    QDBusMessage nodelist = m_dbusMainInterface.call("GetNodesList");
 
-    for (int i=0;i<nodelist.arguments().size();++i)
+    for (int i = 0; i < nodelist.arguments().size(); ++i)
     {
-        m_nodeList<<nodelist.arguments().at(i).value<QString>();
+        m_nodeList << nodelist.arguments().at(i).value<QString>();
     }
 
     displayNodeList();
@@ -137,7 +137,7 @@ Values DBusInterface::getVariable(const QString& node, const QString& variable)
  */
 void DBusInterface::setVariable(const QString& node, const QString& variable, const Values& value)
 {
-    m_dbusMainInterface.call("SetVariable",node,variable,valuetoVariant(value));
+    m_dbusMainInterface.call("SetVariable", node, variable, valuetoVariant(value));
 }
 
 /*!
@@ -159,10 +159,10 @@ void DBusInterface::connectEvent(const QString& eventName, EventCallback callbac
 void DBusInterface::sendEvent(quint16 eventID, const Values& value)
 {
     QDBusArgument argument;
-    argument<<eventID;
+    argument << eventID;
     QVariant variant;
     variant.setValue(argument);
-    m_dbusMainInterface.call("SendEvent",variant,valuetoVariant(value));
+    m_dbusMainInterface.call("SendEvent", variant, valuetoVariant(value));
 }
 
 /*!
@@ -170,7 +170,7 @@ void DBusInterface::sendEvent(quint16 eventID, const Values& value)
  */
 void DBusInterface::sendEventName(const QString& eventName, const Values& value)
 {
-    m_dbusMainInterface.call("SendEventName",eventName,valuetoVariant(value));
+    m_dbusMainInterface.call("SendEventName", eventName, valuetoVariant(value));
 }
 
 /*!
@@ -189,4 +189,3 @@ void DBusInterface::dispatchEvent(const QDBusMessage& message)
             (iterator->second)(eventReceivedValues);
     }
 }
-
