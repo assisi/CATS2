@@ -1,6 +1,6 @@
 ﻿#include "Navigation.hpp"
 
-#include "dbusinterface.h"
+#include "interfaces/DBusInterface.hpp"
 #include "control-modes/ControlTarget.hpp"
 #include "FishBot.hpp"
 
@@ -136,24 +136,22 @@ void Navigation::setLocalObstacleAvoidanceForMotionPattern(MotionPatternType::En
  */
 void Navigation::sendMotorSpeed(int leftSpeed, int rightSpeed)
 {
-    if (m_robot->robotInterface()) {
-        // TODO : to add some safety checks on the speed and eventually convertions
+    // TODO : to add some safety checks on the speed and eventually convertions
 
-//        // debug info
-//        if ((leftSpeed == 0) && (rightSpeed == 0)) {
-//            qDebug() << Q_FUNC_INFO << "Got instructions to stop the robot, executing";
-//        }
+    //        // debug info
+    //        if ((leftSpeed == 0) && (rightSpeed == 0)) {
+    //            qDebug() << Q_FUNC_INFO << "Got instructions to stop the robot, executing";
+    //        }
 
-        // event to send
-        QString eventName;
-        // data to send
-        Values data;
+    // event to send
+    QString eventName;
+    // data to send
+    Values data;
 
-        eventName = "MotorControl" + m_robot->name();
-        data.append(leftSpeed);
-        data.append(rightSpeed);
-        m_robot->robotInterface()->sendEventName(eventName, data);
-    }
+    eventName = "MotorControl" + m_robot->name();
+    data.append(leftSpeed);
+    data.append(rightSpeed);
+    m_robot->sendEvent(eventName, data);
 }
 
 /*!
@@ -175,26 +173,24 @@ void Navigation::sendMotorSpeed(double angularSpeed)
  */
 void Navigation::sendFishMotionParameters(int angle, int distance, int speed)
 {
-    if (m_robot->robotInterface()) {
-        // event to send
-        QString eventName;
-        // data to send
-        Values data;
+    // event to send
+    QString eventName;
+    // data to send
+    Values data;
 
-        // bound the angle
-        if(angle >100)
-            angle = 100;
-        else if (angle <-100)
-            angle = -100;
+    // bound the angle
+    if(angle >100)
+        angle = 100;
+    else if (angle <-100)
+        angle = -100;
 
-        // TODO : to check other parameters
+    // TODO : to check other parameters
 
-        eventName = "FishBehavior" + m_robot->name();
-        data.append(angle);
-        data.append(distance);
-        data.append(speed);
-        m_robot->robotInterface()->sendEventName(eventName, data);
-    }
+    eventName = "FishBehavior" + m_robot->name();
+    data.append(angle);
+    data.append(distance);
+    data.append(speed);
+    m_robot->sendEvent(eventName, data);
 }
 
 /*!
@@ -202,16 +198,14 @@ void Navigation::sendFishMotionParameters(int angle, int distance, int speed)
  */
 void Navigation::sendLocalObstacleAvoidance(LocalObstacleAvoidanceType type)
 {
-    if (m_robot->robotInterface()) {
-        // event to send
-        QString eventName;
-        // data to send
-        Values data;
+    // event to send
+    QString eventName;
+    // data to send
+    Values data;
 
-        data.append(type);
-        eventName = "SetObstacleAvoidance" + m_robot->name();
-        m_robot->robotInterface()->sendEventName(eventName, data);
-    }
+    data.append(type);
+    eventName = "SetObstacleAvoidance" + m_robot->name();
+    m_robot->sendEvent(eventName, data);
 }
 
 /*!

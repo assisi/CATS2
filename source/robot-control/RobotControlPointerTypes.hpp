@@ -12,10 +12,8 @@ using FishBotPtr = QSharedPointer<FishBot>;
 /*!
  * The alias for the shared pointer to the dbus aseba interface.
  */
-namespace Aseba {
-    class DBusInterface;
-    using DBusInterfacePtr = QSharedPointer<DBusInterface>;
-}
+class DBusInterface;
+using DBusInterfacePtr = QSharedPointer<DBusInterface>;
 
 /*!
  * The alias for the shared pointer to the control target.

@@ -1,14 +1,15 @@
 #include "ControlLoop.hpp"
 #include "settings/RobotControlSettings.hpp"
 #include "FishBot.hpp"
-#include "dbusinterface.h"
+
+#include "interfaces/DBusInterface.hpp"
 
 /*!
  * Constructor.
  */
 ControlLoop::ControlLoop() :
     QObject(nullptr),
-    m_robotsInterface(new Aseba::DBusInterface()),
+    m_robotsInterface(new DBusInterface()),
     m_selectedRobot(),
     m_sendNavigationData(false),
     m_sendControlAreas(false)

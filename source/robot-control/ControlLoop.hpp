@@ -66,7 +66,7 @@ private:
 private:
     //! An inferface with the robots' Aseba firmware. It's shared by all
     //! robots, like this they have a direct access to set parameters.
-    Aseba::DBusInterfacePtr m_robotsInterface;
+    DBusInterfacePtr m_robotsInterface;
     //! A list of all connected robots.
     QList<FishBotPtr> m_robots;
     //! The robot selected in the GUI.

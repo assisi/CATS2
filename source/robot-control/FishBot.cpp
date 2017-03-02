@@ -2,8 +2,6 @@
 #include "control-modes/ControlMode.hpp"
 #include "control-modes/ControlTarget.hpp"
 
-#include "dbusinterface.h"
-
 #include <AgentData.hpp>
 
 #include <QtCore/QCoreApplication>
@@ -76,7 +74,7 @@ FishBot::~FishBot()
 /*!
  * Sets the robot's interface.
  */
-void FishBot::setRobotInterface(Aseba::DBusInterfacePtr robotInterface)
+void FishBot::setRobotInterface(DBusInterfacePtr robotInterface)
 {
     m_robotInterface = robotInterface;
     // TODO : to add a callback that sets the robot's state from the event
@@ -312,5 +310,15 @@ void FishBot::stepExperimentManager()
                 break;
             }
         }
+    }
+}
+
+/*!
+ * Sends an aseba event to the robot.
+ */
+void FishBot::sendEvent(const QString& eventName, const Values& data)
+{
+    if (m_robotInterface) {
+        m_robotInterface->sendEventName(eventName, data);
     }
 }

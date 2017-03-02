@@ -9,6 +9,8 @@
 #include "experiment-controllers/ExperimentControllerType.hpp"
 #include "experiment-controllers/ExperimentManager.hpp"
 
+#include "interfaces/DBusInterface.hpp"
+
 #include <AgentState.hpp>
 
 #include <QtCore/QObject>
@@ -39,12 +41,15 @@ public:
     void setLedColor(QColor color) { m_ledColor = color; }
 
     //! Sets the robot's interface.
-    void setRobotInterface(Aseba::DBusInterfacePtr robotInterface);
-    //! Returns the robot's interface.
-    Aseba::DBusInterfacePtr robotInterface() { return m_robotInterface; }
+    void setRobotInterface(DBusInterfacePtr robotInterface);
+//    //! Returns the robot's interface.
+//    DBusInterfacePtr robotInterface() { return m_robotInterface; }
     //! Inititialises the robot's firmware. The robot's index is used to
     //! initilize the robot's id in its firmware.
     void setupConnection(int robotIndex);
+
+    //! Sends an aseba event to the robot.
+    void sendEvent(const QString& eventName, const Values& value);
 
 public:
     //! Returns the supported controllers.
@@ -186,7 +191,7 @@ private:
     //! The robot's state.
     StateWorld m_state;
     //! The interface to communicate with the robot. Shared by all robots.
-    Aseba::DBusInterfacePtr m_robotInterface;
+    DBusInterfacePtr m_robotInterface;
 
     // TODO : to make this class members scopedpointers and use forward declaration
     // for efficiency
