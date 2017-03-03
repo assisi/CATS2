@@ -43,6 +43,15 @@ ExperimentController::ControlData MapController::step()
     if (m_controlAreas.contains(m_robotAreaId)) {
         controlData.controlMode = m_controlAreas[m_robotAreaId]->controlMode();
         controlData.motionPattern = m_controlAreas[m_robotAreaId]->motionPattern();
+
+        // if we are happen to be in the fish model control mode when we need
+        // to limit the model to the current area
+        if ((controlData.controlMode == ControlModeType::MODEL_BASED) &&
+                m_robotAreaChanged)
+        {
+            controlData.data =
+                QVariant::fromValue(m_controlAreas[m_robotAreaId]->annotatedPolygons());
+        }
         return controlData;
     }
 

@@ -95,6 +95,12 @@ protected:
     QString m_robotAreaId;
     //! Where the fish are.
     QMap<QString, int> m_fishNumberByArea;
+    //! The flag that shows that the robot's area has changed.
+    bool m_robotAreaChanged;
+
+private:
+    //! Sets the robot's area.
+    void updateRobotArea(QString areaId);
 
 private:
     //! A type of the controller.
