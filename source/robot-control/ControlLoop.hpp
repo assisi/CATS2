@@ -60,8 +60,12 @@ signals:
     void notifyRobotLedColor(QString agentId, QColor ledColor);
 
 private:
-    //! Loads and initialized the robots' firmware scripts.
-    void initializeSharedRobotInterface();
+    //! Loads and initializes the robots' firmware scripts for the shared
+    //! interface.
+    void reinitializeSharedRobotInterface();
+    //! Asks robots to setup unique connections with the hardware, to load and
+    //! initialize the firmware scripts.
+    void reinitializeUniqueRobotInterface();
 
 private:
     //! An inferface with the robots' Aseba firmware. It's shared by all

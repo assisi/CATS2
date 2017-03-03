@@ -11,6 +11,7 @@
  */
 ControlLoop::ControlLoop() :
     QObject(nullptr),
+    m_sharedRobotInterface(nullptr),
     m_selectedRobot(),
     m_sendNavigationData(false),
     m_sendControlAreas(false)
@@ -72,9 +73,9 @@ ControlLoop::ControlLoop() :
         for (auto& robot : m_robots) {
             robot->setSharedRobotInterface(m_sharedRobotInterface);
         }
-        initializeSharedRobotInterface();
+        reinitializeSharedRobotInterface();
     } else {
-        m_sharedRobotInterface = DBusInterfacePtr(nullptr);
+        reinitializeUniqueRobotInterface();
     }
 
     // start the control timer
@@ -116,13 +117,16 @@ void ControlLoop::step()
  */
 void ControlLoop::reconnectRobots()
 {
-    initializeSharedRobotInterface();
+    if (CommandLineParameters::get().useSharedRobotInterface())
+        reinitializeSharedRobotInterface();
+    else
+        reinitializeUniqueRobotInterface();
 }
 
 /*!
  * Loads and initialized the robots' firmware scripts.
  */
-void ControlLoop::initializeSharedRobotInterface()
+void ControlLoop::reinitializeSharedRobotInterface()
 {
     if (m_sharedRobotInterface.data() &&
             m_sharedRobotInterface->checkConnection()) {
@@ -131,6 +135,15 @@ void ControlLoop::initializeSharedRobotInterface()
         }
     } else {
         qDebug() << Q_FUNC_INFO << "The connection with the dbus could not be established.";
+    }
+}
+
+//! Asks robots to setup unique connections with the hardware, to load and
+//! initialize the firmware scripts.
+void ControlLoop::reinitializeUniqueRobotInterface()
+{
+    for (auto& robot : m_robots) {
+        robot->setupUniqueConnection();
     }
 }
 

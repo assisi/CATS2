@@ -30,8 +30,8 @@
 #include <cstdlib>
 #include <iostream>
 
-#include <libxml/parser.h>
-#include <libxml/tree.h>
+#include <QtCore/QFile>
+#include <QtXml/QDomDocument>
 
 using namespace std;
 using namespace Dashel;
@@ -85,7 +85,7 @@ void DashelInterface::disconnectAseba()
 /*!
  * Loads the script via dashel.
  */
-bool DashelInterface::loadScript(const QString& asebaScript)
+bool DashelInterface::loadScript(const QString& fileName)
 {
     if (!m_isConnected) {
         qDebug() << Q_FUNC_INFO << "There is no active connectin, use "
@@ -93,145 +93,131 @@ bool DashelInterface::loadScript(const QString& asebaScript)
         return false;
     }
 
-    std::string script = asebaScript.toStdString();
-    xmlDoc *doc = xmlReadFile(script.c_str(), NULL, 0);
-    if (!doc) {
+    QFile file(fileName);
+    if (!file.open(QFile::ReadOnly))
+    {
         qDebug() << Q_FUNC_INFO
-                 << QString("Cannot read/find the file %1").arg(script.c_str());
+                 << QString("The script file %1 doesn't exist")
+                    .arg(fileName);
         return false;
     }
-    if(!m_stream) {
-        qDebug() << Q_FUNC_INFO << "Target not detected, no script can be loaded";
+
+    QDomDocument document("aesl-source");
+    QString errorMsg;
+    int errorLine;
+    int errorColumn;
+    if (!document.setContent(&file, false, &errorMsg, &errorLine, &errorColumn))
+    {
+        qDebug() << Q_FUNC_INFO
+                 << QString("Error in XML source file: %0 at line %1, column %2")
+                    .arg(errorMsg).arg(errorLine)
+                    .arg(errorColumn);
         return false;
     }
-    xmlNode *domRoot = xmlDocGetRootElement(doc);
 
     commonDefinitions.events.clear();
     commonDefinitions.constants.clear();
-    allVariables.clear();
+//    userDefinedVariablesMap.clear();
 
     int noNodeCount = 0;
-    if (!xmlStrEqual(domRoot->name, BAD_CAST("network"))) {
-        qDebug() << Q_FUNC_INFO
-                 << "root node is not \"network\", XML considered as invalid";
-        return false;
-    } else {
-        for (xmlNode *domNode = xmlFirstElementChild(domRoot); domNode; domNode = domNode->next) {
-            if (domNode->type == XML_ELEMENT_NODE)  {
-                if (xmlStrEqual(domNode->name, BAD_CAST("node"))) {
-                    xmlChar *name = xmlGetProp(domNode, BAD_CAST("name"));
-                    if (!name) {
+    QDomNode domNode = document.documentElement().firstChild();
+
+    // FIXME: this code depends on event and contants being before any code
+    bool wasError = false;
+    while (!domNode.isNull())
+    {
+        if (domNode.isElement())
+        {
+            QDomElement element = domNode.toElement();
+            if (element.tagName() == "node")
+            {
+                bool ok;
+                const unsigned nodeId(getNodeId(element.attribute("name").toStdWString(),
+                                                element.attribute("nodeId", 0).toUInt(), &ok));
+                if (ok)
+                {
+                    std::wistringstream is(element.firstChild().toText().data().toStdWString());
+                    Error error;
+                    BytecodeVector bytecode;
+                    unsigned allocatedVariablesCount;
+
+                    Compiler compiler;
+                    compiler.setTargetDescription(getDescription(nodeId));
+                    compiler.setCommonDefinitions(&commonDefinitions);
+                    bool result = compiler.compile(is, bytecode, allocatedVariablesCount, error);
+
+                    if (result)
+                    {
+                        typedef std::vector<Message*> MessageVector;
+                        MessageVector messages;
+                        sendBytecode(messages, nodeId, std::vector<uint16>(bytecode.begin(), bytecode.end()));
+                        for (MessageVector::const_iterator it = messages.begin(); it != messages.end(); ++it)
+                        {
+                            sendMessage(**it);
+                            delete *it;
+                        }
+                        Run msg(nodeId);
+                        sendMessage(msg);
+                    }
+                    else
+                    {
                         qDebug() << Q_FUNC_INFO
-                                 << "missing \"name\" attribute in \"node\" entry";
-                    } else {
-                        const string _name((const char *)name);
-                        xmlChar * text = xmlNodeGetContent(domNode);
-                        if (!text) {
-                            qDebug() << Q_FUNC_INFO
-                                     <<"missing text in \"node\" entry";
-                        } else {
-                            unsigned preferedId(0);
-                            xmlChar *storedId = xmlGetProp(domNode, BAD_CAST("nodeId"));
-                            if (storedId) {
-                                preferedId = unsigned(atoi((char*)storedId));
-                            }
-                            bool ok;
-
-                            //get description of the node in order (Mandatory!!!)
-                            GetDescription getDes;
-                            getDes.serialize(m_stream);
-                            m_stream->flush();
-
-                            sleep(1); //Need to wait 1 sec to receive the description of the node
-
-                            //Call Description Manager for the Target description
-                            unsigned nodeId(getNodeId(widen(_name), preferedId, &ok));
-                            if (ok) {
-                                std::wistringstream is(widen((const char *)text));
-                                Error error;
-                                BytecodeVector bytecode;
-                                unsigned allocatedVariablesCount;
-
-                                //Instance compiler to load the code using description manager
-                                // -> common/msg/descriptions-manager.h/.cpp
-                                Compiler compiler;
-                                compiler.setTargetDescription(getDescription(nodeId));
-                                compiler.setCommonDefinitions(&commonDefinitions);
-                                bool result = compiler.compile(is, bytecode, allocatedVariablesCount, error);
-
-                                if (result) {
-                                    sendBytecode(m_stream, nodeId, std::vector<uint16>(bytecode.begin(), bytecode.end()));
-                                    Run msg(nodeId); //Run the Aseba script
-//                                    msg.serialize(m_stream);
-//                                    m_stream->flush();
-                                    sendMessage(msg);
-                                    qDebug() << Q_FUNC_INFO
-                                             << QString("The Script %1 has been "
-                                                        "loaded into node %2. "
-                                                        "Enjoy!")
-                                                .arg(script.c_str())
-                                                .arg(_name.c_str());
-                                } else {
-                                    qDebug() << Q_FUNC_INFO << "compilation failed";
-                                    return false;
-                                }
-                            } else {
-                                noNodeCount++;
-                            }
-                            xmlFree(text);
-                        }
-                        xmlFree(name);
+                                 << QString::fromStdWString(error.toWString());
+                        wasError = true;
+                        break;
                     }
-                } else if (xmlStrEqual(domNode->name, BAD_CAST("event"))) {
-                    // get attributes
-                    xmlChar *name = xmlGetProp(domNode, BAD_CAST("name"));
-                    if (!name)
-                        qDebug() << Q_FUNC_INFO << "missing event";
-                    xmlChar *size = xmlGetProp(domNode, BAD_CAST("size"));
-                    if (!size)
-                        qDebug() << Q_FUNC_INFO << "missing size";
-                    // add event
-                    if (name && size) {
-                        int eventSize(atoi((const char *)size));
-                        if (eventSize > ASEBA_MAX_EVENT_ARG_SIZE) {
-                            qDebug() << Q_FUNC_INFO << "event too big";
-                            break;
-                        } else {
-                            commonDefinitions.events.push_back(NamedValue(widen((const char *)name), eventSize));
-                        }
-                    }
-                    // free attributes
-                    if (name)
-                        xmlFree(name);
-                    if (size)
-                        xmlFree(size);
+//                    // retrieve user-defined variables for use in get/set
+//                    userDefinedVariablesMap[element.attribute("name")] = *compiler.getVariablesMap();
                 }
-                else if (xmlStrEqual(domNode->name, BAD_CAST("constant"))) {
-                    // get attributes
-                    xmlChar *name = xmlGetProp(domNode, BAD_CAST("name"));
-                    if (!name)
-                        qDebug() << Q_FUNC_INFO << "Missing event";
-                    xmlChar *value = xmlGetProp(domNode, BAD_CAST("value"));
-                    if (!value)
-                        qDebug() << Q_FUNC_INFO << "Missing constant";
-                    // add constant if attributes are valid
-                    if (name && value) {
-                        commonDefinitions.constants.push_back(NamedValue(widen((const char *)name), atoi((const char *)value)));
-                    }
-                    // free attributes
-                    if (name)
-                        xmlFree(name);
-                    if (value)
-                        xmlFree(value);
-                } else {
-                    qDebug() << Q_FUNC_INFO << "Unknown XML node seen in .aesl file";
+                else
+                    noNodeCount++;
+            }
+            else if (element.tagName() == "event")
+            {
+                const QString eventName(element.attribute("name"));
+                const unsigned eventSize(element.attribute("size").toUInt());
+                if (eventSize > ASEBA_MAX_EVENT_ARG_SIZE)
+                {
+                    qDebug() << Q_FUNC_INFO
+                             << QString("Event %1 has a length %2 larger than maximum %3")
+                                .arg(eventName)
+                                .arg(eventSize)
+                                .arg(ASEBA_MAX_EVENT_ARG_SIZE);
+                    wasError = true;
+                    break;
+                }
+                else
+                {
+                    commonDefinitions.events.push_back(NamedValue(eventName.toStdWString(), eventSize));
                 }
             }
-
+            else if (element.tagName() == "constant")
+            {
+                commonDefinitions.constants.push_back(NamedValue(element.attribute("name").toStdWString(), element.attribute("value").toInt()));
+            }
         }
+        domNode = domNode.nextSibling();
     }
-    xmlFreeDoc(doc);
-    return true;
+
+    // check if there was an error
+    if (wasError)
+    {
+        qDebug() << Q_FUNC_INFO
+                 << QString("There was an error while loading script %1")
+                    .arg(fileName);
+        commonDefinitions.events.clear();
+        commonDefinitions.constants.clear();
+//        userDefinedVariablesMap.clear();
+    }
+
+    // check if there was some matching problem
+    if (noNodeCount)
+    {
+        qDebug() << Q_FUNC_INFO
+                 << QString("%1 scripts have no corresponding nodes in the "
+                            "current network and have not been loaded.")
+                    .arg(noNodeCount);
+    }
 }
 
 /*!
@@ -255,18 +241,28 @@ void DashelInterface::incomingData(Dashel::Stream *stream)
 /*!
  * Send a UserMessage with ID 'id', and optionnally some data values.
  */
-void DashelInterface::sendEvent(unsigned id, const QVector<int>& values)
+void DashelInterface::sendEvent(unsigned id, const Values& values)
 {
     if (this->m_isConnected)
     {
         Aseba::UserMessage::DataVector data(values.size());
-        QVectorIterator<int> it(values);
+        QListIterator<qint16> it(values);
         unsigned i = 0;
         while (it.hasNext())
             data[i++] = it.next();
         Aseba::UserMessage(id, data).serialize(m_stream);
         m_stream->flush();
     }
+}
+
+void DashelInterface::sendEventName(const QString& name, const Values& data)
+{
+    size_t event;
+    if (commonDefinitions.events.contains(name.toStdWString(), &event))
+        sendEvent(event, data);
+    else
+        qDebug() << Q_FUNC_INFO
+                 << QString("No event named %1").arg(name);
 }
 
 /*!
@@ -283,23 +279,20 @@ void DashelInterface::connectionClosed(Dashel::Stream* stream, bool abnormal)
 // internals
 void DashelInterface::run()
 {
-    while (1)
-    {
-        try
-        {
+    while (1) {
+        try {
             m_stream = Dashel::Hub::connect(m_dashelParams.toStdString());
 
             emit dashelConnection();
-            qDebug() << "Connected to target: " << m_dashelParams;
+            qDebug()  << Q_FUNC_INFO
+                      << "Connected to target: " << m_dashelParams;
             m_isConnected = true;
             break;
-        }
-        catch (Dashel::DashelException e)
-        {
-            qDebug() << "Cannot connect to target: " << m_dashelParams;
+        } catch (Dashel::DashelException e) {
+            qDebug()  << Q_FUNC_INFO
+                      << "Cannot connect to target: " << m_dashelParams;
             sleep(1000000L); // 1s
         }
-
     }
 
     while (m_isRunning)
@@ -337,22 +330,16 @@ void DashelInterface::sendMessage(const Aseba::Message& message)
 {
     // this is called from the GUI thread through processMessage() or pingNetwork(), so we must lock the Hub before sending
     lock();
-    if (m_stream)
-    {
-        try
-        {
+    if (m_stream) {
+        try {
             message.serialize(m_stream);
             m_stream->flush();
             unlock();
-        }
-        catch(Dashel::DashelException e)
-        {
+        } catch(Dashel::DashelException e) {
             unlock();
             qDebug() << Q_FUNC_INFO << "Dashel exception: " << e.what();
         }
-    }
-    else
-    {
+    } else {
         unlock();
     }
 }
@@ -362,3 +349,5 @@ void DashelInterface::stop()
     m_isRunning = false;
     Dashel::Hub::stop();
 }
+
+

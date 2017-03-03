@@ -1,34 +1,12 @@
-/*
-    A Qt binding for Aseba that relies on DBus
-
-    Supports event sending/receiving, Aseba scripts Loading, as well as setting/getting an Aseba variable.
-
-    Authors: Frank Bonnet, Stefan Witwicki
-    Copyright (C) 2007--2016
-
-    This program is free software: you can redistribute it and/or modify
-    it under the terms of the GNU Lesser General Public License as published
-    by the Free Software Foundation, version 3 of the License.
-
-    This program is distributed in the hope that it will be useful,
-    but WITHOUT ANY WARRANTY; without even the implied warranty of
-    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-    GNU Lesser General Public License for more details.
-
-    You should have received a copy of the GNU Lesser General Public License
-    along with this program. If not, see <http://www.gnu.org/licenses/>.
-*/
-
 #ifndef CATS2_DBUS_INTERFACE_HPP
 #define CATS2_DBUS_INTERFACE_HPP
+
+#include "Values.hpp"
 
 #include <QtDBus/QtDBus>
 #include <functional>
 
 Q_DECLARE_METATYPE(QList<qint16>);
-
-
-typedef QList<qint16> Values;
 
 /*!
  * This class is a re-edited version of DBusInterface from aseba/examples/clients
@@ -60,7 +38,6 @@ public:
     Values getVariable(const QString& node, const QString& variable);
     //! Set an Aseba variable from a Aseba node.
     void setVariable(const QString& node, const QString& variable, const Values& value);
-
 
     typedef std::function<void(const Values&)> EventCallback;
     //! Flag an event to listen for, and associate callback function

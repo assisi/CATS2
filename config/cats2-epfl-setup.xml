@@ -86,6 +86,7 @@
                 <g>150</g>
                 <b>200</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm0</connectionTarget>
         </fishBot_1>
         <fishBot_2>
             <id>C</id>
@@ -94,6 +95,7 @@
                 <g>255</g>
                 <b>190</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm0</connectionTarget>
         </fishBot_2>
         <fishBot_3>
             <id>B</id>
@@ -102,6 +104,7 @@
                 <g>91</g>
                 <b>93</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm0</connectionTarget>
         </fishBot_3>
     </robots>
     <setups>

@@ -9,7 +9,7 @@ set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
 set(ENV{CATS2_DIR} ${CMAKE_SOURCE_DIR}) 
 
-find_package(Qt5 REQUIRED Core Widgets DBus)
+find_package(Qt5 REQUIRED Core Widgets DBus Xml)
 # SYSTEM is used to suppress GCC warnings in libraries headers
 include_directories(SYSTEM ${QT_INCLUDE_DIR})
 

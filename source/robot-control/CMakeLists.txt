@@ -60,6 +60,7 @@ set(hdrs
     control-modes/ControlTarget.hpp
     RobotControlPointerTypes.hpp
     MotionPatternType.hpp
+    interfaces/Values.hpp
     control-modes/ControlModeType.hpp
     experiment-controllers/ExperimentControllerType.hpp
     experiment-controllers/ExperimentControllerFactory.hpp
@@ -71,7 +72,7 @@ qt5_wrap_ui(uis_hdrs gui/RobotControlWidget.ui gui/RobotsWidget.ui gui/Potential
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 add_library(robot-control SHARED ${srcs} ${hdrs} ${uis_hdrs}) #${resources})
 target_link_libraries(robot-control common Qt5::Core Qt5::Widgets Qt5::DBus
-                      ${LIBXML2_LIBRARIES} ${Boost_LIBRARIES}
+                      Qt5::Xml ${Boost_LIBRARIES}
                       ${dashel_LIBRARIES} ${Aseba_LIBRARIES})
 
 

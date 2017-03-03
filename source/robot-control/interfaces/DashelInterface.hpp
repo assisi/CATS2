@@ -1,9 +1,11 @@
 #ifndef CATS2_DASHEL_INTERFACE_HPP
 #define CATS2_DASHEL_INTERFACE_HPP
 
-#include <QThread>
-#include <QVector>
-#include <QString>
+#include "Values.hpp"
+
+#include <QtCore/QThread>
+#include <QtCore/QVector>
+#include <QtCore/QString>
 
 #include <dashel/dashel.h>
 
@@ -15,6 +17,7 @@
 #include <common/msg/NodesManager.h>
 
 #include <string>
+#include <map>
 
 /*!
  * This class is a re-edited version of DashelInterface from aseba/examples/clients
@@ -38,8 +41,10 @@ public:
     bool loadScript(const QString& asebaScript);
     //! Cleanly disconnect.
     void disconnectAseba();
+
     //! Send a UserMessage with ID 'id', and optionnally some data values.
-    void sendEvent(unsigned id, const QVector<int> &values = QVector<int>(0));
+    void sendEvent(unsigned id, const Values& data = Values());
+    void sendEventName(const QString& name, const Values& data);
 
     //! From Dashel::Hub
     virtual void stop();
@@ -76,6 +81,9 @@ protected:
 
     Aseba::CommonDefinitions commonDefinitions;
     NodeNameToVariablesMap allVariables;
+//    typedef std::map<std::wstring, std::pair<unsigned, unsigned> > VariablesMap;
+//    typedef QMap<QString, VariablesMap> UserDefinedVariablesMap;
+//    UserDefinedVariablesMap userDefinedVariablesMap;
 
 private:
     // string operations
