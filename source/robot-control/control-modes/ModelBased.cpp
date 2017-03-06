@@ -81,33 +81,156 @@ void ModelBased::initModel()
         // size of the area covered by the matrix
         Fishmodel::Coord_t size = {m_currentGrid.cols * m_gridSizeMeters,
                                    m_currentGrid.rows * m_gridSizeMeters};
-        // create the arena
-        m_arena.reset(new Fishmodel::Arena(m_currentGrid, size));
+		// XXX HACK
+        m_arena.reset(new Fishmodel::Arena("./dependencies/fish-model/arenas/SetupLargeModelzoneBlack70x70v2.png", size));
         Fishmodel::SimulationFactory factory(*m_arena);
         factory.nbFishes = RobotControlSettings::get().numberOfAnimals();
         factory.nbRobots = 1; // we generate one simulator for every robot
         factory.nbVirtuals = 0;
-        factory.behaviorFishes = "BM";
-        factory.behaviorRobots = "BM";
-        factory.behaviorVirtuals = "BM";
+        factory.behaviorFishes = "ZoneDependantBM";
+        factory.behaviorRobots = "ZoneDependantBM";
+        factory.behaviorVirtuals = "ZoneDependantBM";
         // create the simulator
         m_sim = factory.create();
         const FishModelSettings& fishModelSettings = RobotControlSettings::get().fishModelSettings();
         m_sim->dt = fishModelSettings.dt;
+
+		std::vector<std::pair<Coord_t,Coord_t>> wallsCoord_ =
+		{	{{0.015, 0.980}, {0.430, 0.980}},
+			{{0.430, 0.980}, {0.430, 0.672}},
+			{{0.430, 0.672}, {0.690, 0.390}},
+			{{0.690, 0.390}, {0.980, 0.390}},
+			{{0.980, 0.390}, {0.980, 0.010}},
+			{{0.980, 0.010}, {0.580, 0.010}},
+			{{0.580, 0.010}, {0.580, 0.010}},
+			{{0.580, 0.314}, {0.315, 0.560}},
+			{{0.315, 0.560}, {0.015, 0.560}},
+			{{0.015, 0.560}, {0.015, 0.980}},
+		};
+
+		std::vector<std::pair<Coord_t,Coord_t>> wallsDirectionCoord_ =
+		{	{{0.015, 0.980}, {0.430, 0.980}},
+			{{0.430, 0.980}, {0.430, 0.672}},
+			{{0.430, 0.672}, {0.690, 0.390}},
+			{{0.690, 0.390}, {0.980, 0.390}},
+			{{0.980, 0.390}, {0.980, 0.010}},
+			{{0.980, 0.010}, {0.580, 0.010}},
+			{{0.580, 0.010}, {0.580, 0.010}},
+			{{0.580, 0.314}, {0.315, 0.560}},
+			{{0.315, 0.560}, {0.015, 0.560}},
+			{{0.015, 0.560}, {0.015, 0.980}},
+		};
+
+		// {'alpha': array([ 17.61884497,  49.11416896,  44.39342562,  42.73956526,  18.78914823]), 'kappaf': array([  1.71532289,  19.97715141,  22.47085689,   8.99530726,  29.42685055]), 'kappa0': array([  1.3003376 ,  16.22673487,  26.67371188,   9.84972902,  20.83194278]), 'gammaz': array([[ 0.88439782,  0.99330759,  0.07004122,  0.01663702,  0.08520822],       [ 0.10844928,  0.96854988,  0.07004122,  0.77765308,  0.08520822],       [ 0.14619926,  0.96854988,  0.32496295,  0.77765308,  0.99379137],       [ 0.9234174 ,  0.02888792,  0.32496295,  0.49465561,  0.99379137],       [ 0.99153215,  0.02888792,  0.115074  ,  0.49465561,  0.83885327]])}
+
         for(auto& a: m_sim->agents) {
-            a.first->length = fishModelSettings.length;
-            a.first->width = fishModelSettings.width;
-            a.first->height = fishModelSettings.height;
-            a.first->fov = fishModelSettings.fov;
-            a.first->meanSpeed = fishModelSettings.meanSpeed;
-            a.first->varSpeed = fishModelSettings.varSpeed;
-            a.first->maxTurningRate = M_PI_2;
-            Fishmodel::BM* bm = reinterpret_cast<Fishmodel::BM*>(a.second.get());
-            bm->kappaFishes = fishModelSettings.kappaFishes;
-            bm->alphasCenter = fishModelSettings.alphasCenter;
-            bm->kappaNeutCenter = fishModelSettings.kappaNeutCenter;
-            bm->repulsionFromAgentsAtDist = fishModelSettings.repulsionFromAgentsAtDist;
+			ZoneDependantBehavior* zdb = reinterpret_cast<ZoneDependantBehavior*>(a.second.get());
+
+			ZonedBM* bm1 = reinterpret_cast<ZonedBM*>(zdb->behavior(1));
+			ZonedBM* bm2 = reinterpret_cast<ZonedBM*>(zdb->behavior(2));
+			ZonedBM* bm3 = reinterpret_cast<ZonedBM*>(zdb->behavior(3));
+			ZonedBM* bm4 = reinterpret_cast<ZonedBM*>(zdb->behavior(4));
+			ZonedBM* bm5 = reinterpret_cast<ZonedBM*>(zdb->behavior(5));
+
+			bm1->kappaNeutCenter = 1.3003376;
+			bm2->kappaNeutCenter = 16.22673487;
+			bm3->kappaNeutCenter = 26.67371188;
+			bm4->kappaNeutCenter = 9.84972902;
+			bm5->kappaNeutCenter = 20.83194278;
+
+			bm1->kappaFishes = 1.71532289;
+			bm2->kappaFishes = 19.97715141;
+			bm3->kappaFishes = 22.47085689;
+			bm4->kappaFishes = 8.99530726;
+			bm5->kappaFishes = 29.42685055;
+
+			bm1->alphaCenter = 17.61884497;
+			bm2->alphaCenter = 49.11416896;
+			bm3->alphaCenter = 44.39342562;
+			bm4->alphaCenter = 42.73956526;
+			bm5->alphaCenter = 18.78914823;
+
+			bm1->affinity = {0.88439782,  0.99330759,  0.07004122,  0.01663702,  0.08520822}; 
+			bm2->affinity = {0.10844928,  0.96854988,  0.07004122,  0.77765308,  0.08520822};
+			bm3->affinity = {0.14619926,  0.96854988,  0.32496295,  0.77765308,  0.99379137};
+			bm4->affinity = {0.9234174 ,  0.02888792,  0.32496295,  0.49465561,  0.99379137};
+			bm5->affinity = {0.99153215,  0.02888792,  0.115074  ,  0.49465561,  0.83885327};
+
+			bm1->minSpeed = 0.0;
+			bm2->minSpeed = 0.0;
+			bm3->minSpeed = 0.0;
+			bm4->minSpeed = 0.0;
+			bm5->minSpeed = 0.0;
+
+			bm1->maxSpeed = 0.20;
+			bm2->maxSpeed = 0.20;
+			bm3->maxSpeed = 0.20;
+			bm4->maxSpeed = 0.20;
+			bm5->maxSpeed = 0.20;
+
+			// [array([ 0.0304615 ,  0.07993734,  0.10186769,  0.12054464,  0.14286059, 0.15312688,  0.14098084,  0.10748283,  0.07632245,  0.04641523]),
+			// array([ 0.02276516,  0.09278528,  0.16815177,  0.19097442,  0.18189135, 0.13670595,  0.10106352,  0.05881   ,  0.03190572,  0.01494682]),
+			// array([ 0.02834487,  0.10491745,  0.16764306,  0.18285106,  0.17604592, 0.14894372,  0.10225457,  0.05355346,  0.02585952,  0.00958637]),
+			// array([ 0.04810033,  0.13980081,  0.17786795,  0.17989672,  0.15912947, 0.12113611,  0.08011804,  0.04758392,  0.02788639,  0.01848027]),
+			// array([ 0.05988912,  0.14521016,  0.18034425,  0.1737687 ,  0.15442883, 0.11961707,  0.07813306,  0.04635121,  0.02688241,  0.01537519])]
+			bm1->speedHistogram = {0.0304615 ,  0.07993734,  0.10186769,  0.12054464,  0.14286059, 0.15312688,  0.14098084,  0.10748283,  0.07632245,  0.04641523};
+			bm2->speedHistogram = {0.02276516,  0.09278528,  0.16815177,  0.19097442,  0.18189135, 0.13670595,  0.10106352,  0.05881   ,  0.03190572,  0.01494682};
+			bm3->speedHistogram = {0.02834487,  0.10491745,  0.16764306,  0.18285106,  0.17604592, 0.14894372,  0.10225457,  0.05355346,  0.02585952,  0.00958637};
+			bm4->speedHistogram = {0.04810033,  0.13980081,  0.17786795,  0.17989672,  0.15912947, 0.12113611,  0.08011804,  0.04758392,  0.02788639,  0.01848027};
+			bm5->speedHistogram = {0.05988912,  0.14521016,  0.18034425,  0.1737687 ,  0.15442883, 0.11961707,  0.07813306,  0.04635121,  0.02688241,  0.01537519};
+
+			bm1->wallsCoord = wallsCoord_;
+			bm2->wallsCoord = wallsCoord_;
+			bm3->wallsCoord = wallsCoord_;
+			bm4->wallsCoord = wallsCoord_;
+			bm5->wallsCoord = wallsCoord_;
+
+			bm1->wallsDirectionCoord = wallsDirectionCoord_;
+			bm2->wallsDirectionCoord = wallsDirectionCoord_;
+			bm3->wallsDirectionCoord = wallsDirectionCoord_;
+			bm4->wallsDirectionCoord = wallsDirectionCoord_;
+			bm5->wallsDirectionCoord = wallsDirectionCoord_;
+
+			bm1->followWalls = True;
+			bm2->followWalls = False;
+			bm3->followWalls = False;
+			bm4->followWalls = True;
+			bm5->followWalls = True;
+
+			bm1->reinit();
+			bm2->reinit();
+			bm3->reinit();
+			bm4->reinit();
+			bm5->reinit();
         }
+
+        //// create the arena
+        //m_arena.reset(new Fishmodel::Arena(m_currentGrid, size));
+        //Fishmodel::SimulationFactory factory(*m_arena);
+        //factory.nbFishes = RobotControlSettings::get().numberOfAnimals();
+        //factory.nbRobots = 1; // we generate one simulator for every robot
+        //factory.nbVirtuals = 0;
+        //factory.behaviorFishes = "BM";
+        //factory.behaviorRobots = "BM";
+        //factory.behaviorVirtuals = "BM";
+        //// create the simulator
+        //m_sim = factory.create();
+        //const FishModelSettings& fishModelSettings = RobotControlSettings::get().fishModelSettings();
+        //m_sim->dt = fishModelSettings.dt;
+        //for(auto& a: m_sim->agents) {
+        //    a.first->length = fishModelSettings.length;
+        //    a.first->width = fishModelSettings.width;
+        //    a.first->height = fishModelSettings.height;
+        //    a.first->fov = fishModelSettings.fov;
+        //    a.first->meanSpeed = fishModelSettings.meanSpeed;
+        //    a.first->varSpeed = fishModelSettings.varSpeed;
+        //    a.first->maxTurningRate = M_PI_2;
+        //    Fishmodel::BM* bm = reinterpret_cast<Fishmodel::BM*>(a.second.get());
+        //    bm->kappaFishes = fishModelSettings.kappaFishes;
+        //    bm->alphasCenter = fishModelSettings.alphasCenter;
+        //    bm->kappaNeutCenter = fishModelSettings.kappaNeutCenter;
+        //    bm->repulsionFromAgentsAtDist = fishModelSettings.repulsionFromAgentsAtDist;
+        //}
 
 //        cv::imshow( "ModelGrid", m_currentGrid);
     }
