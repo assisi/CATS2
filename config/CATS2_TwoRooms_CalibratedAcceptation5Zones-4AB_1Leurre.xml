@@ -4,7 +4,7 @@
         <name>TwoRooms_Initiation</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>5</numberOfAnimals>
+            <numberOfAnimals>4</numberOfAnimals>
         </agents>
         <setupMapPath>setup/paris-two-rooms2.xml</setupMapPath>
     </experiment>
