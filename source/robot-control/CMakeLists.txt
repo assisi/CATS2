@@ -19,6 +19,8 @@ makeLink(dependencies/fish-model/factory.cpp model/factory.cpp)
 makeLink(dependencies/fish-model/factory.hpp model/factory.hpp)
 makeLink(dependencies/fish-model/model.cpp model/model.cpp)
 makeLink(dependencies/fish-model/model.hpp model/model.hpp)
+makeLink(dependencies/fish-model/zones.cpp model/zones.cpp)
+makeLink(dependencies/fish-model/zones.hpp model/zones.hpp)
 makeLink(dependencies/fish-model/random.cpp model/random.cpp)
 makeLink(dependencies/fish-model/random.h model/random.h)
 
@@ -47,6 +49,7 @@ set(srcs
     experiment-controllers/ExperimentManager.cpp
     experiment-controllers/InitiationController.cpp
     model/model.cpp
+    model/zones.cpp
     model/factory.cpp
     model/bm.cpp
     model/random.cpp
