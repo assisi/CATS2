@@ -31,6 +31,6 @@ install(FILES
         DESTINATION include/viewer)
 install(FILES settings/ViewerSettings.hpp
         DESTINATION include/viewer/settings)
-install(FILES gui/ViewerWidget.hpp
+install(FILES gui/ViewerWidget.hpp gui/ViewerWindow.hpp
         DESTINATION include/viewer/gui)
 
