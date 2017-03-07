@@ -122,6 +122,17 @@ void ViewerWidget::onNewFrame(QSharedPointer<QPixmap> pixmap, int fps)
         if (!pixmap.isNull()) {
             m_videoFrameItem->setPixmap(*pixmap.data());
             updateFrameRate(fps);
+
+            // if the frame rate was not set in the construction when we try to
+            // get it from the image
+            if (!m_frameSize.isValid()) {
+                m_frameSize = pixmap->size();
+                adjust();
+                qDebug() << Q_FUNC_INFO
+                         << QString("Frame size (%1, %2) is obtained from the image")
+                            .arg(m_frameSize.height())
+                            .arg(m_frameSize.width());
+            }
         }
     }
 }
