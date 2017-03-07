@@ -598,6 +598,14 @@ void ViewerWidget::setShowRunTime(bool value)
 }
 
 /*!
+ * Show the frame rate.
+ */
+void ViewerWidget::setShowFrameRate(bool value)
+{
+    m_frameRateItem->setVisible(value);
+}
+
+/*!
  * Resize event.
  */
 void ViewerWidget::resizeEvent(QResizeEvent *event)

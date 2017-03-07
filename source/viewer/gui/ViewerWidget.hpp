@@ -45,6 +45,8 @@ public:
     void setAutoAdjust(bool value);
     //! Show the time from the start of the the experiment on the screen.
     void setShowRunTime(bool value);
+    //! Show the frame rate.
+    void setShowFrameRate(bool value);
 
 signals:
     //! Notifies that the mouse position has changed and sends it out in both
