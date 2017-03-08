@@ -205,6 +205,11 @@ private:
     void releaseModelArea();
 
 private:
+    //! A service method that makes the code to wait for a certatin time by printing
+    //! the count down.
+    void countDown(double timeOut);
+
+private:
     //! The robot's id.
     QString m_id;
     //! The robot's name.

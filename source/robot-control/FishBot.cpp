@@ -5,6 +5,7 @@
 #include "interfaces/DashelInterface.hpp"
 
 #include <AgentData.hpp>
+#include <Timer.hpp>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
@@ -71,6 +72,9 @@ FishBot::FishBot(QString id) :
 FishBot::~FishBot()
 {
     qDebug() << Q_FUNC_INFO << "Destroying the object";
+    // if the connection is open then close it
+    if (m_uniqueRobotInterface.data())
+        m_uniqueRobotInterface->disconnectAseba();
     // TODO : to remove the callback, dbus interface must be modified for this.
 }
 
@@ -108,7 +112,7 @@ void FishBot::setupSharedConnection(int robotIndex)
             }
 //        }
     } else {
-        qDebug() << Q_FUNC_INFO << "The robot's interface is not set";
+        qDebug() << Q_FUNC_INFO << QString("The %1 interface is not set").arg(m_name);
     }
 }
 
@@ -126,19 +130,34 @@ void FishBot::setupUniqueConnection()
     m_uniqueRobotInterface = DashelInterfacePtr(new DashelInterface());
 
     // FIXME : how to get a feedback if the connection is established
+    qDebug() << Q_FUNC_INFO << QString("Connecting to %1").arg(m_name);
     m_uniqueRobotInterface->connectAseba(target);
 
-    // load the script
-    QString scriptDirPath = QCoreApplication::applicationDirPath() +
-            QDir::separator() + "aesl";
-    QString scriptPath = scriptDirPath + QDir::separator() +
-            m_name + ".aesl";
-    if (QFileInfo(scriptPath).exists()) {
-        m_uniqueRobotInterface->loadScript(scriptPath);
-        // set the obstacle avoidance on the robot
-        m_navigation.updateLocalObstacleAvoidance();
-    } else {
-        qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
+    // wait until connected
+    countDown(5.);
+
+    if (m_uniqueRobotInterface->isConnected()) {
+        qDebug() << Q_FUNC_INFO << QString("Requesting the node description for %1").arg(m_name);
+        // request the node's description
+        m_uniqueRobotInterface->pingNetwork();
+        // wait until the description received
+        countDown(1.);
+
+        qDebug() << Q_FUNC_INFO << QString("Loading the script on %1").arg(m_name);
+        // load the script
+        QString scriptDirPath = QCoreApplication::applicationDirPath() +
+                QDir::separator() + "aesl";
+        QString scriptPath = scriptDirPath + QDir::separator() +
+                m_name + ".aesl";
+        if (QFileInfo(scriptPath).exists()) {
+            m_uniqueRobotInterface->loadScript(scriptPath);
+            // set the obstacle avoidance on the robot
+            m_navigation.updateLocalObstacleAvoidance();
+        } else {
+            qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
+        }
+    } else  {
+        qDebug() << Q_FUNC_INFO << QString("Could not connect to %1").arg(m_name);
     }
 }
 
@@ -356,6 +375,27 @@ void FishBot::sendEvent(const QString& eventName, const Values& data)
     if (m_sharedRobotInterface.data()) {
         m_sharedRobotInterface->sendEventName(eventName, data);
     } else if (m_uniqueRobotInterface.data()) {
-//        m_uniqueRobotInterface->sendEventName(eventName, data);
+        m_uniqueRobotInterface->sendEventName(eventName, data);
     }
+}
+
+/*!
+ * A service method that makes the code to wait for a certatin time
+ * by printing the count down.
+ */
+void FishBot::countDown(double timeOut)
+{
+    Timer connectionTimer;
+    connectionTimer.reset();
+
+    int elapsed = 1;
+    std::cout << timeOut;
+    while (!connectionTimer.isTimedOutSec(timeOut)) {
+        if (connectionTimer.runTimeSec() >= elapsed) {
+            std::cout << "..." << qRound(timeOut - elapsed) << std::flush;
+            elapsed += 1;
+        }
+        continue;
+    }
+    std::cout << std::endl;
 }
