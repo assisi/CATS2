@@ -18,6 +18,7 @@
 
 #include <string>
 #include <map>
+#include <atomic>
 
 /*!
  * This class is a re-edited version of DashelInterface from aseba/examples/clients
@@ -69,6 +70,10 @@ public:
     //! Redefined from NodesManager.
     virtual void sendMessage(const Aseba::Message& message);
 
+public:
+    //! Returns the connection status flag.
+    bool isConnected() const { return m_isConnected; }
+
 protected:
     typedef std::vector<std::string> strings;
     typedef std::map<std::string, Aseba::VariablesMap> NodeNameToVariablesMap;
@@ -77,7 +82,7 @@ protected:
     Dashel::Stream* m_stream;
     QString m_dashelParams;
     bool m_isRunning;
-    bool m_isConnected;
+    std::atomic_bool m_isConnected;
 
     Aseba::CommonDefinitions commonDefinitions;
     NodeNameToVariablesMap allVariables;

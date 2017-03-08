@@ -243,7 +243,7 @@ void DashelInterface::incomingData(Dashel::Stream *stream)
  */
 void DashelInterface::sendEvent(unsigned id, const Values& values)
 {
-    if (this->m_isConnected)
+    if (m_isConnected)
     {
         Aseba::UserMessage::DataVector data(values.size());
         QListIterator<qint16> it(values);
@@ -284,8 +284,8 @@ void DashelInterface::run()
             m_stream = Dashel::Hub::connect(m_dashelParams.toStdString());
 
             emit dashelConnection();
-            qDebug()  << Q_FUNC_INFO
-                      << "Connected to target: " << m_dashelParams;
+//            qDebug()  << Q_FUNC_INFO
+//                      << "Connected to target: " << m_dashelParams;
             m_isConnected = true;
             break;
         } catch (Dashel::DashelException e) {
