@@ -41,7 +41,7 @@ public:
         if ((robotIndex < m_robotsDescriptions.size()) && (robotIndex >=0))
             return m_robotsDescriptions[robotIndex];
         else {
-            qDebug() << Q_FUNC_INFO << "Requesting the robot description out of bounds";
+            qDebug() << "Requesting the robot description out of bounds";
             return FishBotDescription();
         }
     }

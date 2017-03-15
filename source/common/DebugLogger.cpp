@@ -25,7 +25,7 @@ DebugLogger::~DebugLogger()
 {
     m_logStream << "Logging finished" << endl;
     m_logFile.close();
-    qDebug() << Q_FUNC_INFO << "Destroying the object" << endl;
+    qDebug() << "Destroying the object" << endl;
 }
 
 /*!

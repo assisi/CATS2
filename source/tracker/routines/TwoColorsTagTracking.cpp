@@ -29,7 +29,7 @@ TwoColorsTagTracking::TwoColorsTagTracking(TrackingRoutineSettingsPtr settings,
         // copy the parameters
         m_settings = twoColorsTagTrackingSettings->data();
     } else {
-        qDebug() << Q_FUNC_INFO << "Could not set the routune's settings";
+        qDebug() << "Could not set the routune's settings";
     }
 
     // set the agents' list consisting from one agent only
@@ -42,7 +42,7 @@ TwoColorsTagTracking::TwoColorsTagTracking(TrackingRoutineSettingsPtr settings,
  */
 TwoColorsTagTracking::~TwoColorsTagTracking()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -86,7 +86,7 @@ void TwoColorsTagTracking::doTracking(const TimestampedFrame& frame)
 
     }
     else
-        qDebug() << Q_FUNC_INFO << "Unsupported image format" << image.type();
+        qDebug() << "Unsupported image format" << image.type();
 }
 
 /*!
@@ -141,7 +141,7 @@ bool TwoColorsTagTracking::detectTags(TwoColorsTagTrackingSettingsData::TagType 
         // retrieve contours from the binary image
         cv::findContours(m_binaryImage, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
     } catch(cv::Exception& e) {
-        qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
+        qDebug() << "OpenCV exception: " << e.what();
     }
 
     // sort the contours to find biggest

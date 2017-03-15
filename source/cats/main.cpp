@@ -16,9 +16,6 @@ int main(int argc, char *argv[])
     QGst::init(nullptr, nullptr);
     QApplication app(argc, argv);
 
-    // set the debug message format
-     qSetMessagePattern("%{function} : %{message}");
-
     // initialize the settings
     // TODO : consider getting this parameters from the command line,
     // or based on the arguments of the command line?
@@ -32,7 +29,7 @@ int main(int argc, char *argv[])
         mainWindow.show();
         return app.exec();
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't setup the application, finished";
+        qDebug() << "Couldn't setup the application, finished";
     }
 }
 

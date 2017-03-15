@@ -29,7 +29,7 @@ TrackingHandler::TrackingHandler(SetupType::Enum setupType,
 */
 TrackingHandler::~TrackingHandler()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     // if the tracking widget's parent is not set then delete it, otherwise it will stay forever
     if (m_widget && m_widget->parent() == nullptr)
         delete m_widget;

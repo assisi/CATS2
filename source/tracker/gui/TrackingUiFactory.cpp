@@ -33,7 +33,7 @@ QWidget* TrackingUiFactory::createWidget(TrackingDataPtr trackingData)
         case TrackingRoutineType::FISHBOT_LEDS_TRACKING:
         default:
             // TODO : to implement
-            qDebug() << Q_FUNC_INFO << "Tracking routine settings widget could not be created.";
+            qDebug() << "Tracking routine settings widget could not be created.";
             break;
     }
     return widget;

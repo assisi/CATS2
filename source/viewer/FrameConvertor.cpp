@@ -23,7 +23,7 @@ FrameConvertor::FrameConvertor(TimestampedFrameQueuePtr inputQueue) :
 */
 FrameConvertor::~FrameConvertor()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -46,7 +46,7 @@ void FrameConvertor::process()
             }
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Input queue is not set, finishing.";
+        qDebug() << "Input queue is not set, finishing.";
     }
 
     emit finished();

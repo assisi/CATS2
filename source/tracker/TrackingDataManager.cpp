@@ -119,7 +119,7 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
         if (m_trackingData.contains(setupType)) {
             m_trackingData[setupType].enqueue(timestampedAgentsData);
         } else {
-            qDebug() << Q_FUNC_INFO << "Unknown data source: " << SetupType::toString(setupType);
+            qDebug() << "Unknown data source: " << SetupType::toString(setupType);
         }
     } else {
         // if the data comes from the primary source then it needs to be treated right away
@@ -177,7 +177,7 @@ bool TrackingDataManager::getDataByTimestamp(std::chrono::milliseconds timestamp
                                              TimestampedWorldAgentsData& bestMatchData)
 {
     if (dataQueue.size() == 0) {
-//        qDebug() << Q_FUNC_INFO << "The data queue is empty";
+//        qDebug() << "The data queue is empty";
         return false;
     }
 
@@ -189,7 +189,7 @@ bool TrackingDataManager::getDataByTimestamp(std::chrono::milliseconds timestamp
             bestMatchData = dataQueue.dequeue();
             return true;
         } else {
-            qDebug() << Q_FUNC_INFO << QString("Data with an old timestamp received (%1 vs present %2)")
+            qDebug() << QString("Data with an old timestamp received (%1 vs present %2)")
                         .arg(dataQueue.head().timestamp.count())
                         .arg(timestamp.count());
             return false;
@@ -240,7 +240,6 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     float maxCost = initializeCostMatrices(listOne, listTwo, costMatrix);
 
 //    // NOTE : uncomment to debug agent matching
-//    qDebug() << Q_FUNC_INFO;
 //    qDebug() << "Cost matrix" ;
 //    qDebug() << "Threshold" << WeightedThreshold;
 //    qDebug() << "Max cost" << maxCost;
@@ -310,7 +309,7 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
             }
             indecesToRemove.append(qMakePair(i1, bestCombination[i1]));
         } else {
-//            qDebug() <<  Q_FUNC_INFO << QString("Matched agents at %2 and %3 are too far : %1")
+//            qDebug() <<  QString("Matched agents at %2 and %3 are too far : %1")
 //                                            .arg(costMatrix[i1][bestCombination[i1]])
 //                    .arg(listOne.at(i1).state().position().toString())
 //                    .arg(listTwo.at(bestCombination[i1]).state().position().toString());

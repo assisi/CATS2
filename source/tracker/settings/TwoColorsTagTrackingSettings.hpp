@@ -50,7 +50,7 @@ public:
         if (m_tagGroupDescription.contains(tagType))
             return m_tagGroupDescription[tagType];
         else {
-            qDebug() << Q_FUNC_INFO << "Requesting the unsopported tag type";
+            qDebug() << "Requesting the unsopported tag type";
             return TagGroupDescription();
         }
     }

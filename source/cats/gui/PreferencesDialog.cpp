@@ -36,6 +36,6 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
  */
 PreferencesDialog::~PreferencesDialog()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";    
+    qDebug() << "Destroying the object";    
     delete m_ui;
 }

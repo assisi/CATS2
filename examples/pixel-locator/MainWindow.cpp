@@ -42,7 +42,7 @@ MainWindow::MainWindow(QWidget *parent) :
  */
 MainWindow::~MainWindow()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -101,7 +101,7 @@ void MainWindow::adjust()
  */
 void MainWindow::onMouseClicked(QPointF scenePosition)
 {
-    qDebug() << Q_FUNC_INFO << scenePosition;
+    qDebug() << scenePosition;
     m_ui->xEdit->setText(QString::number(scenePosition.x()));
     m_ui->yEdit->setText(QString::number(scenePosition.y()));
 }

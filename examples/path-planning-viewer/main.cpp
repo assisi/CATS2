@@ -52,14 +52,14 @@ int main(int argc, char *argv[])
                     }
                 }
             } else {
-                qDebug() << Q_FUNC_INFO << "Grabber settings are not defined";
+                qDebug() << "Grabber settings are not defined";
             }
         } else {
-            qDebug() << Q_FUNC_INFO << "Camera descriptor is ill-defined";
+            qDebug() << "Camera descriptor is ill-defined";
         }
 
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find necessary input arguments, finished";
+        qDebug() << "Couldn't find necessary input arguments, finished";
     }
 }
 

@@ -29,7 +29,7 @@ ViewerHandler::ViewerHandler(SetupType::Enum setupType,
 */
 ViewerHandler::~ViewerHandler()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     // if the viewer widget's parent is not set then delete it, otherwise it will stay forever
     if (m_widget && m_widget->parent() == nullptr)
         m_widget->deleteLater();

@@ -43,7 +43,7 @@ RobotsWidget::RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent) :
  */
 RobotsWidget::~RobotsWidget()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     delete m_ui;
 }
 

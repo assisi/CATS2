@@ -14,7 +14,7 @@ CommandLineParameters::CommandLineParameters()
  */
 CommandLineParameters::~CommandLineParameters()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -57,7 +57,7 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, boo
         addCameraDescriptor(SetupType::MAIN_CAMERA,
                             StreamDescriptor(streamType, streamParameters));
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find the valid main camera parameters";
+        qDebug() << "Couldn't find the valid main camera parameters";
     }
     settingsAccepted = (foundMainCameraParameters || (!needMainCamera));
 
@@ -70,7 +70,7 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, boo
         addCameraDescriptor(SetupType::CAMERA_BELOW,
                             StreamDescriptor(streamType, streamParameters));
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find the valid camera below parameters";
+        qDebug() << "Couldn't find the valid camera below parameters";
     }
     settingsAccepted = settingsAccepted && (foundBelowCameraParameters || (!needBelowCamera));
 
@@ -82,7 +82,7 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, boo
     if (foundConfigFilePath) {
         m_configurationFilePath = filePath;
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find the configuration file";
+        qDebug() << "Couldn't find the configuration file";
     }
     settingsAccepted = settingsAccepted && (foundConfigFilePath || (!needConfigFile));
 
@@ -122,7 +122,7 @@ bool CommandLineParameters::parseStreamArguments(int argc, char** argv,
             parameters = values;
             return true;
         } else {
-            qDebug() << Q_FUNC_INFO << "Invalid argument type" << argumentType;
+            qDebug() << "Invalid argument type" << argumentType;
         }
     }
     return false;

@@ -26,7 +26,7 @@ InitiationController::InitiationController(FishBot* robot,
         // copy the parameters
         m_settings = initiationControllerSettings->data();
     } else {
-        qDebug() << Q_FUNC_INFO << "Could not set the controller's settings";
+        qDebug() << "Could not set the controller's settings";
     }
 
     // load the control map
@@ -76,8 +76,7 @@ void InitiationController::start()
 void InitiationController::updateState(State state)
 {
     if (m_state != state) {
-        qDebug() << Q_FUNC_INFO
-                 << QString("%1 state changed from %2 to %3")
+        qDebug() << QString("%1 state changed from %2 to %3")
                     .arg(m_robot->name())
                     .arg(stateToString(m_state))
                     .arg(stateToString(state));
@@ -127,8 +126,7 @@ bool InitiationController::needToChangeRoom()
             // now if there is a preference for the room
             if (m_controlAreas.contains(m_preferedAreaId)) {
                 // then let's go to catch the fish
-                qDebug() << Q_FUNC_INFO
-                         << QString("%1 go to catch missing %2 fish, only %3 "
+                qDebug() << QString("%1 go to catch missing %2 fish, only %3 "
                                     "fish out of %4 are present")
                             .arg(m_robot->name())
                             .arg(fishNumberInOtherRooms(m_robotAreaId))
@@ -168,7 +166,7 @@ ExperimentController::ControlData InitiationController::changeRoom()
             // save the original room
             m_departureAreaId = m_robotAreaId;
             // change the state to CHANGING_ROOM
-            qDebug() << Q_FUNC_INFO << QString("%1 changes the room to %2 (%3)")
+            qDebug() << QString("%1 changes the room to %2 (%3)")
                         .arg(m_robot->name())
                         .arg(m_targetAreaId)
                         .arg(m_controlAreas[m_targetAreaId]->centroid().toString());
@@ -205,8 +203,7 @@ ExperimentController::ControlData InitiationController::changeRoom()
             if (fishFollow()) {
                 // fish follow, switch to the model-based control mode
                 m_fishFollowCheckTimer.clear();
-                qDebug() << Q_FUNC_INFO
-                         << QString("Fish seems to follow %1, stay in the room")
+                qDebug() << QString("Fish seems to follow %1, stay in the room")
                             .arg(m_robot->name());
                 // switch to SWIMMING_WITH_FISH
                 updateState(SWIMMING_WITH_FISH);
@@ -222,13 +219,11 @@ ExperimentController::ControlData InitiationController::changeRoom()
                     if (fishFollow()) {
                         // fish follow, continue transition
                         m_fishFollowCheckTimer.clear();
-                        qDebug() << Q_FUNC_INFO
-                                 << QString("Fish seems to follow %1, continue moving")
+                        qDebug() << QString("Fish seems to follow %1, continue moving")
                                         .arg(m_robot->name());
                     } else {
                         //  fish don't follow, switch to GOING_BACK mode
-                        qDebug() << Q_FUNC_INFO
-                                 << QString("Fish don't follow %1, returning back to %2")
+                        qDebug() << QString("Fish don't follow %1, returning back to %2")
                                         .arg(m_robot->name())
                                         .arg(m_departureAreaId);
                         updateState(GOING_BACK);
@@ -241,7 +236,7 @@ ExperimentController::ControlData InitiationController::changeRoom()
                 // if arrived to to target
                 if (m_robot->state().position().closeTo(m_controlAreas[m_targetAreaId]->centroid()))
                 {
-                    qDebug() << Q_FUNC_INFO << QString("%1 arrived to the room %2")
+                    qDebug() << QString("%1 arrived to the room %2")
                                 .arg(m_robot->name())
                                 .arg(m_targetAreaId);
                     // switch to SWIMMING_WITH_FISH
@@ -254,7 +249,7 @@ ExperimentController::ControlData InitiationController::changeRoom()
         // if returned to the original room
         if (m_robot->state().position().closeTo(m_controlAreas[m_departureAreaId]->centroid()))
         {
-            qDebug() << Q_FUNC_INFO << QString("%1 returned to the departure room %2")
+            qDebug() << QString("%1 returned to the departure room %2")
                         .arg(m_robot->name())
                         .arg(m_departureAreaId);
             // switch to SWIMMING_WITH_FISH
@@ -278,7 +273,7 @@ bool InitiationController::timeToDepart()
         if (m_departureTimer.isSet()) {
             // if time out?
             if (m_departureTimer.isTimedOutSec(m_settings.departureTimeOutSec())) {
-                qDebug() << Q_FUNC_INFO << "Changing the room on timeout";
+                qDebug() << "Changing the room on timeout";
                 // change the room
                 m_departureTimer.clear();
                 return true;
@@ -304,12 +299,11 @@ bool InitiationController::timeToDepart()
             }
             // if enough fish are close to the robot
             if (fishAroundRobot >= m_settings.fishNumberAroundOnDeparture()) {
-                qDebug() << Q_FUNC_INFO
-                         << QString("Detected %1 fish, changing the room")
+                qDebug() << QString("Detected %1 fish, changing the room")
                             .arg(fishAroundRobot);
                 return true;
             } else {
-//                qDebug() << Q_FUNC_INFO << QString("Detected %1 fish").arg(fishAroundRobot);
+//                qDebug() << QString("Detected %1 fish").arg(fishAroundRobot);
                 return false;
             }
         } else

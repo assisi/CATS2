@@ -69,7 +69,7 @@ FishBot::FishBot(QString id) :
  */
 FishBot::~FishBot()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     // TODO : to remove the callback, dbus interface must be modified for this.
 }
 
@@ -101,11 +101,11 @@ void FishBot::setupConnection(int robotIndex)
                 // set the obstacle avoidance on the robot
                 m_navigation.updateLocalObstacleAvoidance();
             } else {
-                qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
+                qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
             }
 //        }
     } else {
-        qDebug() << Q_FUNC_INFO << "The robot's interface is not set";
+        qDebug() << "The robot's interface is not set";
     }
 }
 

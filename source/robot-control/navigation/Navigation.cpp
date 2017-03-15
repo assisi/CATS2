@@ -36,7 +36,7 @@ Navigation::Navigation(FishBot* robot):
  */
 Navigation::~Navigation()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     // stop the robot before quiting
     stop();
 }
@@ -77,7 +77,7 @@ void Navigation::setTargetPosition(TargetPosition* targetPosition)
     if (m_robot->state().position().isValid() && targetPosition->position().isValid()) {
         // first check if we are already in the target position
         if (m_robot->state().position().closeTo(targetPosition->position()) && m_stopOnceOnTarget) {
-//            qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
+//            qDebug() << "Arrived to target, stoped";
             // stop the robot
             stop();
             // reset the path planner
@@ -111,7 +111,7 @@ void Navigation::setTargetPosition(TargetPosition* targetPosition)
             }
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Invalid robot or target position";
+        qDebug() << "Invalid robot or target position";
     }
 }
 
@@ -141,7 +141,7 @@ void Navigation::sendMotorSpeed(int leftSpeed, int rightSpeed)
 
 //        // debug info
 //        if ((leftSpeed == 0) && (rightSpeed == 0)) {
-//            qDebug() << Q_FUNC_INFO << "Got instructions to stop the robot, executing";
+//            qDebug() << "Got instructions to stop the robot, executing";
 //        }
 
         // event to send
@@ -299,8 +299,7 @@ void Navigation::pidControlToPosition(PositionMeters targetPosition)
 void Navigation::setMotionPattern(MotionPatternType::Enum type)
 {
     if (type != m_motionPattern) {
-        qDebug() << Q_FUNC_INFO
-                 << QString("Changing the motion pattern from from %1 to %2 for %3")
+        qDebug() << QString("Changing the motion pattern from from %1 to %2 for %3")
                     .arg(MotionPatternType::toString(m_motionPattern))
                     .arg(MotionPatternType::toString(type))
                     .arg(m_robot->name());
