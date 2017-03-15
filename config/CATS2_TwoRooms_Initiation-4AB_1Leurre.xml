@@ -9,8 +9,8 @@
         <setupMapPath>setup/paris-two-rooms2.xml</setupMapPath>
     </experiment>
     <robots>
-        <numberOfRobots>1</numberOfRobots>
-        <controlFrequencyHz>10</controlFrequencyHz>
+        <numberOfRobots>3</numberOfRobots>
+        <controlFrequencyHz>5</controlFrequencyHz>
         <fishModel>
             <agent>
                 <length>0.02</length>
@@ -88,19 +88,19 @@
             </ledColor>
         </fishBot_1>
         <fishBot_2>
+            <id>D</id>
+            <ledColor>
+                <r>191</r>
+                <g>109</g>
+                <b>122</b>
+            </ledColor>
+        </fishBot_2>
+        <fishBot_3>
             <id>E</id>
             <ledColor>
                 <r>240</r>
                 <g>225</g>
                 <b>130</b>
-            </ledColor>
-        </fishBot_2>
-        <fishBot_3>
-            <id>C</id>
-            <ledColor>
-                <r>207</r>
-                <g>91</g>
-                <b>93</b>
             </ledColor>
         </fishBot_3>
     </robots>
@@ -141,12 +141,12 @@
                     <fishBot_F>
                         <threshold>20</threshold>
                     </fishBot_F>
+                    <fishBot_D>
+                        <threshold>35</threshold>
+                    </fishBot_D>
                     <fishBot_E>
                         <threshold>30</threshold>
                     </fishBot_E>
-                    <fishBot_C>
-                        <threshold>30</threshold>
-                    </fishBot_C>
                 </fishBotLedsTracking>
             </tracking>
         </cameraBelow>
