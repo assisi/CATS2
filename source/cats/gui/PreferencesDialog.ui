@@ -38,7 +38,10 @@
       <item>
        <widget class="QLabel" name="infoLabel">
         <property name="text">
-         <string>To apply changes you need to restart CATS2</string>
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;&lt;span style=&quot; color:#ff0000;&quot;&gt;To apply changes you will need to restart CATS2&lt;/span&gt;&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+        <property name="textFormat">
+         <enum>Qt::AutoText</enum>
         </property>
        </widget>
       </item>

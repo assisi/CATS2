@@ -20,10 +20,10 @@ PreferencesDialog::PreferencesDialog(QWidget *parent) :
     connect(m_ui->loggingPathButton, &QPushButton::clicked,
             [=]() {
                 QString path = QFileDialog::
-                        getExistingDirectory(this, tr("Logging path"),
-                                             m_ui->loggingPathEdit->text(),
-                                             QFileDialog::ShowDirsOnly |
-                                             QFileDialog::DontResolveSymlinks);
+                                getExistingDirectory(this, tr("Logging path"),
+                                                     m_ui->loggingPathEdit->text(),
+                                                     QFileDialog::ShowDirsOnly |
+                                                     QFileDialog::DontResolveSymlinks);
                 if (!path.isEmpty()) {
                     m_ui->loggingPathEdit->setText(path);
                     Registry::get().setDataLoggingPath(path);
