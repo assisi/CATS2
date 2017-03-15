@@ -7,6 +7,7 @@
 #include <TrackingDataManager.hpp>
 #include <ViewerHandler.hpp>
 #include <ViewerData.hpp>
+#include <DebugLogger.hpp>
 #include <gui/ViewerWidget.hpp>
 
 #include <RobotsHandler.hpp>
@@ -18,6 +19,11 @@
 #include <QtCore/QTimer>
 #include <QtWidgets/QStatusBar>
 
+static DebugLogger logger;
+void messageOutput(QtMsgType type,
+                   const QMessageLogContext &context,
+                   const QString &msg);
+
 /*!
  * Constructor.
  */
@@ -28,6 +34,10 @@ MainWindow::MainWindow(QWidget *parent) :
     m_secondarySetupType(SetupType::UNDEFINED)
 {
     m_ui->setupUi(this);
+
+    // install the logger
+    logger.init();
+    qInstallMessageHandler(messageOutput);
 
     // create the tracking data manager
     m_trackingDataManager = TrackingDataManagerPtr(new TrackingDataManager());
@@ -319,4 +329,11 @@ void MainWindow::addTrackingSettingsWidget(SetupType::Enum setupType)
 {
     m_ui->trackingSettingsWidget->addTab(m_trackingSetups[setupType]->trackingWidget(),
                                          SetupType::toString(setupType));
+}
+
+void messageOutput(QtMsgType type,
+                   const QMessageLogContext &context,
+                   const QString &msg)
+{
+    logger.messageOutput(type, context, msg);
 }

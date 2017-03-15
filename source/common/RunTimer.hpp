@@ -6,6 +6,7 @@
 /*!
  * Provides the time from the program start.
  */
+// TODO : integrate Timer class here as a member managing the timing
 class RunTimer
 {
 public:

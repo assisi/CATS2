@@ -6,8 +6,8 @@
 #include <QtGui/QColor>
 
 /*!
- * The actual data stored in the settings. It's separated in a class to be easily trasferable
- * to the corresponding tracking routine.
+ * The actual data stored in the settings. It's separated in a class to be
+ * easily trasferable to the corresponding tracking routine.
  */
 class ColorDetectorSettingsData
 {

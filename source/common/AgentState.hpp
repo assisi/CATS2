@@ -117,7 +117,10 @@ public:
      */
     bool closeTo(const PositionMeters& other, double threshold = ProximityThreshold)
     {
-        return (distance2DTo(other) < threshold);
+        if (m_valid && other.isValid())
+            return (distance2DTo(other) < threshold);
+        else
+            return false;
     }
 
     /*!

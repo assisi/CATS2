@@ -4,6 +4,7 @@ set(srcs
     CameraCalibration.cpp
     CoordinatesConversion.cpp
     RunTimer.cpp
+    DebugLogger.cpp
     settings/CommandLineParameters.cpp
     settings/CalibrationSettings.cpp
     settings/CommandLineParser.cpp

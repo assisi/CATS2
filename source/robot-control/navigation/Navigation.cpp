@@ -299,7 +299,8 @@ void Navigation::pidControlToPosition(PositionMeters targetPosition)
 void Navigation::setMotionPattern(MotionPatternType::Enum type)
 {
     if (type != m_motionPattern) {
-        qDebug() << QString("Changing the motion pattern from from %1 to %2 for %3")
+        qDebug() << Q_FUNC_INFO
+                 << QString("Changing the motion pattern from from %1 to %2 for %3")
                     .arg(MotionPatternType::toString(m_motionPattern))
                     .arg(MotionPatternType::toString(type))
                     .arg(m_robot->name());
