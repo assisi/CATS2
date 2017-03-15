@@ -75,5 +75,6 @@ target_link_libraries(robot-control common Qt5::Core Qt5::Widgets Qt5::DBus
                       Qt5::Xml ${Boost_LIBRARIES}
                       ${dashel_LIBRARIES} ${Aseba_LIBRARIES})
 
-
-
+#install(TARGETS robot-control DESTINATION .)
+#install(FILES
+#         DESTINATION include/robot-control)

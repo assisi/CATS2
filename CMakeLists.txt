@@ -7,7 +7,13 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
-set(ENV{CATS2_DIR} ${CMAKE_SOURCE_DIR}) 
+set(ENV{CATS2_DIR} ${CMAKE_SOURCE_DIR})
+# set the install prefix
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    set (CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/bind)
+else()
+    set (CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/bin)
+endif()
 
 find_package(Qt5 REQUIRED Core Widgets DBus Xml)
 # SYSTEM is used to suppress GCC warnings in libraries headers

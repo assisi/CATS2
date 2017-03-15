@@ -19,11 +19,11 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setOrganizationName("MOBOTS");
+    QCoreApplication::setOrganizationName("EPFL-LSRO-Mobots");
     QCoreApplication::setOrganizationDomain("mobots.epfl.ch");
     QCoreApplication::setApplicationName("PathPlanningViewer");
 
-    QGst::init(&argc, &argv);
+    QGst::init(nullptr, nullptr);
     QApplication app(argc, argv);
 
     // specify the setup type

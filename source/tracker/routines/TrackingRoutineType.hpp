@@ -13,6 +13,7 @@ public:
         COLOR_DETECTOR,
         BLOB_DETECTOR,
         FISHBOT_LEDS_TRACKING,
+        TWO_COLORS_TAG_TRACKING,
         // to extend
         UNDEFINED
     };
@@ -26,6 +27,8 @@ public:
             return TrackingRoutineType::FISHBOT_LEDS_TRACKING;
         else if (routineName.toLower() == "colordetector")
             return TrackingRoutineType::COLOR_DETECTOR;
+        else if (routineName.toLower() == "twocolorstagtracking")
+            return TrackingRoutineType::TWO_COLORS_TAG_TRACKING;
         else
             return TrackingRoutineType::UNDEFINED;
     }
@@ -43,6 +46,9 @@ public:
             break;
         case FISHBOT_LEDS_TRACKING:
             string = "FishBot LEDs tracker";
+            break;
+        case TWO_COLORS_TAG_TRACKING:
+            string = "Two colors tag tracker";
             break;
         default:
             break;

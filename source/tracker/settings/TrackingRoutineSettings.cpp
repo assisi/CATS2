@@ -1,6 +1,8 @@
 #include "TrackingRoutineSettings.hpp"
 #include "TrackingSetup.hpp"
 
+#include <QtCore/QDebug>
+
 /*!
  * Constructor.
  */

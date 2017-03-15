@@ -3,6 +3,9 @@
 #include "TrackingData.hpp"
 #include "gui/TrackingRoutineWidget.hpp"
 
+#include <CoordinatesConversion.hpp>
+#include <TimestampedFrame.hpp>
+
 /*!
  * Constructor.
  */

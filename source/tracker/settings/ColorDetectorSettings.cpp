@@ -48,7 +48,7 @@ bool ColorDetectorSettings::init(QString configurationFileName)
     m_data.setThreshold(threshold);
 
 
-    return (m_data.numberOfAgents() > 0);
+    return true;
 }
 
 

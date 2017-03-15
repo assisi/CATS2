@@ -57,7 +57,7 @@ void InterSpeciesDataManager::publishAgentData(QList<AgentDataImage> agentDataLi
 std::string InterSpeciesDataManager::agentTypeToString(AgentType agentType)
 {
     switch (agentType) {
-    case AgentType::FISH_CASU:
+    case AgentType::CASU:
         return "fish_casu";
         break;
     case AgentType::FISH:
