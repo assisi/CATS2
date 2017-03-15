@@ -15,8 +15,8 @@
       <g>130</g>
       <b>220</b>
     </color>
-    <controlMode>goStraight</controlMode>
-    <motionPattern>pidController</motionPattern>
+    <controlMode>modelBased</controlMode>
+    <motionPattern>fishMotion</motionPattern>
   </area_1>
   <area_2>
     <id>corridor</id>
@@ -49,10 +49,10 @@
       <g>0</g>
       <b>0</b>
     </color>
-    <controlMode>manual</controlMode>
-    <motionPattern>pidController</motionPattern>
+    <controlMode>modelBased</controlMode>
+    <motionPattern>fishMotion</motionPattern>
   </area_3>
-<!--
-  <preferedAreaId>top</preferedAreaId>
--->
+
+  <preferedAreaId>bottom</preferedAreaId>
+
 </opencv_storage>

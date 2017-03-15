@@ -1,0 +1,43 @@
+<?xml version="1.0"?>
+<opencv_storage>
+    <experiment>
+        <name>ThymioLocalization</name>
+        <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
+    </experiment>
+    <setups>
+        <mainCamera>
+            <imageSize>
+                <width>512</width>
+                <height>512</height>
+            </imageSize>
+            <cameraCalibrationFile>camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
+            <tracking>
+                <trackingMethod>twoColorsTagTracking</trackingMethod>
+                <frontTag>
+                    <tagsNumber>2</tagsNumber>
+                    <tagColor>
+                        <r>190</r>
+                        <g>255</g>
+                        <b>190</b>
+                    </tagColor>
+                    <threshold>30</threshold>
+                </frontTag>
+                <backTag>
+                    <tagsNumber>2</tagsNumber>
+                    <ledColor>
+                        <r>190</r>
+                        <g>255</g>
+                        <b>190</b>
+                    </ledColor>
+                    <threshold>30</threshold>
+                </backTag>
+                <!-- (front-tag-center - center)/(back-tag-center - center) -->
+                <centerProportionalPosition>0.66</centerProportionalPosition>
+            </tracking>
+        </mainCamera>
+    </setups>
+    <interSpecies>
+        <publisherAddress>tcp://127.0.0.1:50001</publisherAddress>
+    </interSpecies>
+</opencv_storage>
+

@@ -63,7 +63,7 @@ var DesiredSpeedRight=0
 var IDControl=0
 
 # Variables used for obstacle avoidance
-var ObstacleAvoidance=0 #0=no obstacle avoidance 1=braitenberg  2=turn to avoid
+var ObstacleAvoidance=1 #0=no obstacle avoidance 1=braitenberg  2=turn to avoid
 var ThreshSensor=100
 
 # Variables used for turn to avoid

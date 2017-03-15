@@ -17,7 +17,8 @@ ExperimentController::ExperimentController(FishBot* robot,
     m_preferedAreaId(""),
     m_fishAreaId(""),
     m_robotAreaId(""),
-    m_type(type)
+    m_type(type),
+    m_robotAreaChanged(false)
 {
 
 }
@@ -115,14 +116,7 @@ void ExperimentController::updateAreasOccupation()
 {
     QString areaId;
     if (findRobotArea(areaId)) {
-        if (m_robotAreaId != areaId) {
-//            qDebug() << Q_FUNC_INFO
-//                     << QString("%1 changed the room from %2 to %3")
-//                        .arg(m_robot->name())
-//                        .arg(m_robotAreaId)
-//                        .arg(areaId);
-            m_robotAreaId = areaId;
-        }
+        updateRobotArea(areaId);
     } else {
         // reset the variable
         m_robotAreaId = "";
@@ -212,15 +206,35 @@ bool ExperimentController::findAreaByPosition(QString& areaId,
 }
 
 /*!
- * Counts the fish number in all rooms different from the current one.
+ * Counts the fish number in all rooms different from the current one. We don't
+ * take into account corridors.
  */
 int ExperimentController::fishNumberInOtherRooms(QString currentAreaId)
 {
     // count the fish
     int fishNumber = 0;
     for (const auto& areaId : m_controlAreas.keys()) {
-        if (areaId != currentAreaId)
+        if ((areaId != currentAreaId) &&
+                (m_controlAreas[areaId]->type() == ControlAreaType::ROOM))
             fishNumber += m_fishNumberByArea[areaId];
     }
     return fishNumber;
+}
+
+/*!
+ * Sets the robot's area.
+ */
+void ExperimentController::updateRobotArea(QString areaId)
+{
+    if (areaId != m_robotAreaId) {
+        m_robotAreaId = areaId;
+        m_robotAreaChanged = true;
+//            qDebug() << Q_FUNC_INFO
+//                     << QString("%1 changed the room from %2 to %3")
+//                        .arg(m_robot->name())
+//                        .arg(m_robotAreaId)
+//                        .arg(areaId);
+    } else {
+        m_robotAreaChanged = false;
+    }
 }

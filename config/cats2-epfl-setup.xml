@@ -1,6 +1,7 @@
 <?xml version="1.0"?>
 <opencv_storage>
     <experiment>
+        <type>Initiation</type>
         <name>TestExperiment</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>

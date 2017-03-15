@@ -45,7 +45,7 @@ bool BlobDetectorSettings::init(QString configurationFileName)
     settings.readVariable(QString("%1/tracking/blobDetector/useHarrisDetector").arg(m_settingPathPrefix), value, m_data.useHarrisDetector());
     m_data.setUseHarrisDetector(value);
 
-    return (m_data.numberOfAgents() > 0);
+    return true;
 }
 
 

@@ -18,7 +18,7 @@ QString AgentDataWorld::label() const
 {
     QString typeString;
     switch (m_type) {
-        case AgentType::FISH_CASU:
+        case AgentType::CASU:
             typeString = "FishBot";
             break;
         case AgentType::FISH:

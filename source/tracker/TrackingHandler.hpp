@@ -5,8 +5,6 @@
 
 #include <CommonPointerTypes.hpp>
 #include <SetupType.hpp>
-#include <CoordinatesConversion.hpp>
-#include <TimestampedFrame.hpp>
 
 #include <QtCore/QObject>
 

@@ -76,5 +76,6 @@ include_directories(${CMAKE_SOURCE_DIR}/source/common)
 add_library(robot-control SHARED ${srcs} ${hdrs} ${uis_hdrs}) #${resources})
 target_link_libraries(robot-control common Qt5::Core Qt5::Widgets Qt5::DBus ${Boost_LIBRARIES})
 
-
-
+#install(TARGETS robot-control DESTINATION .)
+#install(FILES
+#         DESTINATION include/robot-control)
