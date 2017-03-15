@@ -16,9 +16,9 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication::setOrganizationName("MOBOTS");
+    QApplication::setOrganizationName("EPFL-LSRO-Mobots");
     QApplication::setOrganizationDomain("mobots.epfl.ch");
-    QApplication::setApplicationName("CAT2-camera-viewer");
+    QApplication::setApplicationName("CATS2-camera-viewer");
 
     QGst::init(&argc, &argv);
     QApplication app(argc, argv);

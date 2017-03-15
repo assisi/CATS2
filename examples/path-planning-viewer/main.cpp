@@ -19,7 +19,7 @@
 
 int main(int argc, char *argv[])
 {
-    QCoreApplication::setOrganizationName("MOBOTS");
+    QCoreApplication::setOrganizationName("EPFL-LSRO-Mobots");
     QCoreApplication::setOrganizationDomain("mobots.epfl.ch");
     QCoreApplication::setApplicationName("PathPlanningViewer");
 

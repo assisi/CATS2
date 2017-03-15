@@ -12,9 +12,9 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication::setOrganizationName("MOBOTS");
+    QApplication::setOrganizationName("EPFL-LSRO-Mobots");
     QApplication::setOrganizationDomain("mobots.epfl.ch");
-    QApplication::setApplicationName("CAT2-simple-video-grabber");
+    QApplication::setApplicationName("CATS2-simple-video-grabber");
 
     QGst::init(&argc, &argv);
     QApplication app(argc, argv);
