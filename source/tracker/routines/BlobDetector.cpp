@@ -205,31 +205,23 @@ void BlobDetector::detectContours(cv::Mat& image,
         }
     }
 
-    // Enclosing ellipses for detected objects
-    std::vector<cv::RotatedRect> ellipses;
     std::vector<std::vector<cv::Point>> contoursPoly;
     contoursPoly.resize(contours.size());
 
-    // contour's moment;
-    cv::Moments moments;
     // all corners that are inside the contour
     std::vector<cv::Point2f> cornersInContour;
 
     for (size_t i = 0; i < contours.size(); ++i) {
         cv::approxPolyDP(cv::Mat(contours[i]), contoursPoly[i], 3, true);
-
         cornersInContour.clear();
         for (auto& corner: corners) {
             if(cv::pointPolygonTest(contours[i], corner, false) >= 0) {
                 cornersInContour.push_back(corner);
             }
         }
-
         // take only the contours that contain corners
         if (cornersInContour.size() > 0) {
-            moments = cv::moments(contours[i]);
-            centers.push_back(cv::Point2f(static_cast<float>(moments.m10/moments.m00 + 0.5),
-                                          static_cast<float>(moments.m01/moments.m00 + 0.5)));
+            centers.push_back(contourCenter(contours[i]));
             cornersInContours.push_back(cornersInContour);
         }
     }
