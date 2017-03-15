@@ -3,12 +3,14 @@ set(srcs
     routines/BlobDetector.cpp
     routines/ColorDetector.cpp
     routines/FishBotLedsTracking.cpp
+    routines/TwoColorsTagTracking.cpp
     settings/TrackingSettings.cpp
     settings/TrackingRoutineSettings.cpp
     settings/BlobDetectorSettings.cpp
     settings/FishBotLedsTrackingSettings.cpp
     settings/TrackingSetupSettings.cpp
     settings/ColorDetectorSettings.cpp
+    settings/TwoColorsTagTrackingSettings.cpp
     TrackingData.cpp
     TrackingDataManager.cpp
     TrackingSetup.cpp
@@ -19,6 +21,7 @@ set(srcs
     gui/FishBotLedsTrackingWidget.cpp
     gui/ColorDetectorWidget.cpp
     gui/TrackingUiFactory.cpp
+    gui/TwoColorsTagsTrackingWidget.cpp
 )
 
 set(hdrs
@@ -32,7 +35,8 @@ qt5_wrap_ui(uis_hdrs
             gui/TrackingRoutineWidget.ui
             gui/BlobDetectorWidget.ui
             gui/FishBotLedsTrackingWidget.ui
-            gui/ColorDetectorWidget.ui)
+            gui/ColorDetectorWidget.ui
+            gui/TwoColorsTagsTrackingWidget.ui)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 include_directories(${CMAKE_SOURCE_DIR}/source/grabber)
@@ -42,4 +46,13 @@ add_library(tracker SHARED ${srcs} ${hdrs} ${uis_hdrs} ${resources})
 target_link_libraries(tracker grabber common viewer hub
                       Qt5::Core Qt5::Widgets ${OpenCV_LIBS}) # ${LIBTSAI_LIBRARY})
 
+install(TARGETS tracker DESTINATION .)
+install(FILES
+        TrackerPointerTypes.hpp TrackingSetup.hpp TrackingDataManager.hpp
+        #TrackingHandler.hpp
+        DESTINATION include/tracker)
+install(FILES settings/TrackingSettings.hpp settings/TrackingSetupSettings.hpp
+        DESTINATION include/tracker/settings)
+#install(FILES gui/TrackingRoutineWidget.hpp
+#        DESTINATION include/tracker/gui)
 

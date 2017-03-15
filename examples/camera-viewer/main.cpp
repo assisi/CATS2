@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
     QApplication::setOrganizationDomain("mobots.epfl.ch");
     QApplication::setApplicationName("CATS2-camera-viewer");
 
-    QGst::init(&argc, &argv);
+    QGst::init(nullptr, nullptr);
     QApplication app(argc, argv);
 
     // specify the setup type

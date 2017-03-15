@@ -2,6 +2,7 @@
 #define CATS2_TRACKER_POINTER_TYPES_HPP
 
 #include <QtCore/QSharedPointer>
+#include <QtCore/QScopedPointer>
 
 /*!
  * The alias for the shared pointer to tracking handler.
@@ -38,6 +39,12 @@ using TrackingSetupPtr = QSharedPointer<TrackingSetup>;
  */
 class TrackingDataManager;
 using TrackingDataManagerPtr = QSharedPointer<TrackingDataManager>;
+
+/*!
+ * The alias for the shared pointer to the trajectory writer.
+ */
+class TrajectoryWriter;
+using TrajectoryWriterPtr = QScopedPointer<TrajectoryWriter>;
 
 #endif // CATS2_TRACKER_POINTER_TYPES_HPP
 

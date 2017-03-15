@@ -45,3 +45,20 @@ ViewerWindow::~ViewerWindow()
 {
     qDebug() << Q_FUNC_INFO << "Destroying the object";
 }
+
+/*!
+ * Sets the flag in the viewer widget to show the framerate.
+ */
+void ViewerWindow::setShowFrameRate(bool value)
+{
+    m_viewerHandler->widget()->setShowFrameRate(value);
+}
+
+/*!
+ * Sets the flag in the viewer widget to automatically resize to the
+ * window size.
+ */
+void ViewerWindow::setAutoAdjust(bool value)
+{
+    m_viewerHandler->widget()->setAutoAdjust(value);
+}

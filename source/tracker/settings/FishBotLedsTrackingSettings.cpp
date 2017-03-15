@@ -54,5 +54,5 @@ bool FishBotLedsTrackingSettings::init(QString configurationFileName)
         m_data.addRobotDescription(robotDescription);
     }
 
-    return (numberOfRobots > 0);
+    return true;
 }

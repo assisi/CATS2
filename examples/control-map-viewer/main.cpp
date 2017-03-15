@@ -23,7 +23,7 @@ int main(int argc, char *argv[])
     QCoreApplication::setOrganizationDomain("mobots.epfl.ch");
     QCoreApplication::setApplicationName("ControlMapsViewer");
 
-    QGst::init(&argc, &argv);
+    QGst::init(nullptr, nullptr);
     QApplication app(argc, argv);
 
     // specify the setup type

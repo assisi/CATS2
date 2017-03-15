@@ -4,7 +4,6 @@
 #include "ViewerPointerTypes.hpp"
 
 #include <AgentData.hpp>
-#include <Timer.hpp>
 
 #include <QtCore/QObject>
 #include <QtWidgets/QWidget>
@@ -14,6 +13,7 @@
 #include <memory>
 
 class FrameScene;
+class Timer;
 class QGraphicsPixmapItem;
 class QGraphicsTextItem;
 class AgentTextItem;
@@ -45,6 +45,8 @@ public:
     void setAutoAdjust(bool value);
     //! Show the time from the start of the the experiment on the screen.
     void setShowRunTime(bool value);
+    //! Show the frame rate.
+    void setShowFrameRate(bool value);
 
 signals:
     //! Notifies that the mouse position has changed and sends it out in both

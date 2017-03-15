@@ -163,3 +163,19 @@ void TrackingRoutine::naiveClosestNeighbour(std::vector<cv::Point2f>& centers, s
         }
     }
 }
+
+/*!
+ * Computes a contour's center.
+ */
+cv::Point2f TrackingRoutine::contourCenter(const std::vector<cv::Point>& contour)
+{
+    cv::Point2f center(0,0);
+
+    if (contour.size() > 0) {
+        for (auto& point : contour)
+            center += static_cast<cv::Point2f>(point);
+        center *= 1. / contour.size();
+    }
+
+    return center;
+}

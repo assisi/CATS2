@@ -32,8 +32,12 @@ ControlLoop::ControlLoop() :
         connect(m_robots.last().data(), &FishBot::notifyControlAreasPolygons,
                 [=](QString agentId, QList<AnnotatedPolygons> polygons)
                 {
-                    if (m_sendControlAreas && (m_selectedRobot->id() == agentId))
+                    if (m_sendControlAreas &&
+                            m_selectedRobot &&
+                            (m_selectedRobot->id() == agentId))
+                    {
                         emit notifyRobotControlAreasPolygons(agentId, polygons);
+                    }
                 });
 
         // send the robot trajectory for all robots if the corresponding flag is set
@@ -128,7 +132,7 @@ void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
     QList<StateWorld> fishStates;
 
     foreach (AgentDataWorld agentData, agentsData) {
-        if (agentData.type() == AgentType::FISH_CASU) {
+        if (agentData.type() == AgentType::CASU) {
             robotsData.append(agentData);
         } else if (agentData.type() == AgentType::FISH) {
             fishStates.append(agentData.state());
@@ -176,7 +180,7 @@ void ControlLoop::selectRobot(QString name)
  */
  void ControlLoop::goToPosition(PositionMeters position)
  {
-     if (m_selectedRobot.data()) {
+     if (m_selectedRobot) {
          m_selectedRobot->goToPosition(position);
      }
  }
@@ -201,7 +205,7 @@ void ControlLoop::selectRobot(QString name)
  void ControlLoop::sendControlAreas(bool sendAreas)
  {
      m_sendControlAreas = sendAreas;
-     if (m_sendControlAreas && m_selectedRobot.data()) {
+     if (m_sendControlAreas && m_selectedRobot) {
          m_selectedRobot->requestControlAreasPolygons();
      }
  }
@@ -211,7 +215,8 @@ void ControlLoop::selectRobot(QString name)
   */
  void ControlLoop::requestSelectedRobot()
  {
-     emit notifySelectedRobotChanged(m_selectedRobot->id());
+     if (m_selectedRobot)
+        emit notifySelectedRobotChanged(m_selectedRobot->id());
  }
 
  /*!

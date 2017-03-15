@@ -32,14 +32,23 @@ BlobDetectorWidget::BlobDetectorWidget(TrackingRoutinePtr routine, QWidget *pare
         qDebug() << Q_FUNC_INFO << "The tracking routine is ill-defined";
     }
 
-    connect(m_ui->minBlobSizeSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &BlobDetectorWidget::updateSettings);
-    connect(m_ui->minDistanceSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &BlobDetectorWidget::updateSettings);
-    connect(m_ui->blockSizeSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->minBlobSizeSpinBox,
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->minDistanceSpinBox,
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->blockSizeSpinBox,
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, &BlobDetectorWidget::updateSettings);
 
-    connect(m_ui->qualityLevelEdit, &QLineEdit::textChanged, this, &BlobDetectorWidget::updateSettings);
-    connect(m_ui->kEdit, &QLineEdit::textChanged, this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->qualityLevelEdit, &QLineEdit::textChanged,
+            this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->kEdit, &QLineEdit::textChanged, this,
+            &BlobDetectorWidget::updateSettings);
 
-    connect(m_ui->useHarrisDetectorCheckBox, &QCheckBox::toggled, this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->useHarrisDetectorCheckBox, &QCheckBox::toggled,
+            this, &BlobDetectorWidget::updateSettings);
 }
 
 /*!

@@ -77,6 +77,11 @@ protected:
     //! NOTE FIXME : this method is potentially erroneous in many cases, as the order of assigment is defined by the indeces of agents in the list.
     void naiveClosestNeighbour(std::vector<cv::Point2f>& centers, std::vector<float> directions = std::vector<float>());
 
+    // FIXME : use this method everywhere to compute the center instead of the
+    // moments based computation of center
+    //! Computes a contour's center.
+    cv::Point2f contourCenter(const std::vector<cv::Point>& contour);
+
 protected:
     //! The queue containing frames to do the tracking.
     TimestampedFrameQueuePtr m_inputQueue;

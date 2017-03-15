@@ -1,7 +1,8 @@
 #ifndef CATS2_TRACKING_DATA_MANAGER_HPP
 #define CATS2_TRACKING_DATA_MANAGER_HPP
 
-#include "TrajectoryWriter.hpp"
+#include "TrackerPointerTypes.hpp"
+
 #include <CommonPointerTypes.hpp>
 
 #include <SetupType.hpp>
@@ -23,8 +24,8 @@ class TrackingDataManager : public QObject
 {
     Q_OBJECT
 public:
-    //! Constructor.
-    explicit TrackingDataManager(QString dataLoggingPath = "");
+    //! Constructor. Gets a flag specifying if the results are to be logged.
+    explicit TrackingDataManager(QString dataLoggingPath, bool logResults = true);
     //! Destructor.
     virtual ~TrackingDataManager() final;
 
@@ -34,9 +35,16 @@ public:
     //! Adds new coordinates conversion.
     void addCoordinatesConversion(SetupType::Enum setupType, CoordinatesConversionPtr coordinatesConversion);
 
+    //! Specify if we need to log resulted data.
+    void setLogResults(bool value);
+
+    //! Sets the type of the agent to use in the output data for a generic agent.
+    void setGenericAgentReplacementType(AgentType type);
+
 signals:
     //! The results of merging the data from various sources.
-    void notifyAgentDataWorldMerged(QList<AgentDataWorld> agentsDataList);
+    void notifyAgentDataWorldMerged(QList<AgentDataWorld> agentsDataList,
+                                    std::chrono::milliseconds timestamp);
     //! The results of merging the data from various sources,
     //! converted to main setup's frame coordinates.
     void notifyAgentDataImageMerged(QList<AgentDataImage> agentsDataList);
@@ -97,7 +105,11 @@ private:
     static constexpr float InvalidOrientationPenaltyRad = M_PI / 16; // i.e. 11.25 degrees
 
     //! Writes down the tracking results to the file.
-    TrajectoryWriter m_trajectoryWriter;
+    TrajectoryWriterPtr m_trajectoryWriter;
+    //! The flag that specify if to write trajectories.
+    bool m_logResults;
+    //! The path to store logs.
+    QString m_dataLoggingPath;
 
     //! Keeps the coordinates conversion map in case if we need to export results in
     //! the image coordinates.

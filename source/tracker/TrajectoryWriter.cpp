@@ -6,10 +6,9 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QPair>
-//#include <QtWidgets/QApplication>
 #include <QtCore/QDir>
 
-//#include <QtCore/QStandardPaths>
+#include <QtCore/QDateTime>
 
 /*!
  * Constructor.
@@ -89,7 +88,7 @@ void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp,
     // a index in the output table
     for (int i = 0; i < TrackingSettings::get().numberOfRobots(); ++i) {
         const AgentDataWorld* robotData = getAgentData(i,
-                                                       AgentType::FISH_CASU,
+                                                       AgentType::CASU,
                                                        m_robotsIndexToId,
                                                        agentsData);
         if (robotData) {

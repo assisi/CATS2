@@ -145,7 +145,7 @@ void ColorDetector::doTracking(const TimestampedFrame& frame)
  */
 QList<AgentType> ColorDetector::capabilities() const
 {
-    return QList<AgentType>({AgentType::FISH_CASU}); // FIXME : must be generic
+    return QList<AgentType>({AgentType::CASU}); // FIXME : must be generic
 }
 
 /*!
