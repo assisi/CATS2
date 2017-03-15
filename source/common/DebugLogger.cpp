@@ -66,5 +66,8 @@ void DebugLogger::messageOutput(QtMsgType type,
     m_logStream << QDateTime::fromTime_t(seconds).toUTC().toString("[hh:mm:ss]")
                 << localMsg.constData() << endl;
     // duplicate in the console
-    std::cout << localMsg.constData() << std::endl;
+    std::string functionName;
+    if (context.function)
+        functionName = std::string(context.function);
+    std::cout << localMsg.constData() << " ("<< functionName << ")" << std::endl;
 }
