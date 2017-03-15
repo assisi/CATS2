@@ -6,30 +6,20 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QPair>
-#include <QtWidgets/QApplication>
+//#include <QtWidgets/QApplication>
 #include <QtCore/QDir>
 
-#include <QtCore/QStandardPaths>
+//#include <QtCore/QStandardPaths>
 
 /*!
  * Constructor.
  */
 TrajectoryWriter::TrajectoryWriter(QString dataLoggingPath)
 {
+    QString filePath = dataLoggingPath;
     QDir dir;
-    QString filePath;
-    if (dataLoggingPath.isEmpty()) {
-        // create the output folder if necessary
-        QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation))
-                .mkdir(QApplication::applicationName());
-
-        filePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) +
-                           QDir::separator() + QApplication::applicationName();
-    } else {
-        filePath = dataLoggingPath;
-        if (!dir.exists(filePath))
-            dir.mkpath(filePath);
-    }
+    if (!dir.exists(filePath))
+        dir.mkpath(filePath);
 
     // make a directory with the type name
     QString experimentType = TrackingSettings::get().experimentType();
