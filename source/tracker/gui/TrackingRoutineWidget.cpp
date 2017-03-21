@@ -46,7 +46,7 @@ TrackingRoutineWidget::TrackingRoutineWidget(TrackingDataPtr trackingData, QWidg
  */
 TrackingRoutineWidget::~TrackingRoutineWidget()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     // we don't care anymore if the window is closed
     // (also sometimes the lambda-slot from below makes the app crash
     if (m_viewerWindow)

@@ -23,7 +23,7 @@ ColorDetector::ColorDetector(TrackingRoutineSettingsPtr settings, TimestampedFra
         // copy the parameters
         m_settings = colorDetectorSettings->data();
     } else {
-        qDebug() << Q_FUNC_INFO << "Could not set the routune's settings";
+        qDebug() << "Could not set the routune's settings";
     }
 
     // set the mask file
@@ -41,7 +41,7 @@ ColorDetector::ColorDetector(TrackingRoutineSettingsPtr settings, TimestampedFra
  */
 ColorDetector::~ColorDetector()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -62,7 +62,7 @@ void ColorDetector::doTracking(const TimestampedFrame& frame)
         if ((m_maskImage.data != nullptr) && (m_blurredImage.type() == m_maskImage.type()))
             m_blurredImage = m_blurredImage & m_maskImage;
         else {
-//            qDebug() << Q_FUNC_INFO << "The mask's type is not compatible with the image";
+//            qDebug() << "The mask's type is not compatible with the image";
         }
 
         int h,s,v;
@@ -103,7 +103,7 @@ void ColorDetector::doTracking(const TimestampedFrame& frame)
             // retrieve contours from the binary image
             cv::findContours(m_binaryImage, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
         } catch(cv::Exception& e) {
-            qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
+            qDebug() << "OpenCV exception: " << e.what();
         }
 
         // sort the contours by size (inspired by http://stackoverflow.com/questions/33401745/find-largest-contours-opencv)
@@ -137,7 +137,7 @@ void ColorDetector::doTracking(const TimestampedFrame& frame)
         }
     }
     else
-        qDebug() << Q_FUNC_INFO << "Unsupported image format" << image.type();
+        qDebug() << "Unsupported image format" << image.type();
 }
 
 /*!
@@ -145,7 +145,7 @@ void ColorDetector::doTracking(const TimestampedFrame& frame)
  */
 QList<AgentType> ColorDetector::capabilities() const
 {
-    return QList<AgentType>({AgentType::FISH_CASU}); // FIXME : must be generic
+    return QList<AgentType>({AgentType::CASU}); // FIXME : must be generic
 }
 
 /*!

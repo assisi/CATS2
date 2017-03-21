@@ -18,7 +18,7 @@ CameraCalibration::CameraCalibration(QString calibrationFileName, QSize targetFr
  */
 CameraCalibration::~CameraCalibration()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -28,16 +28,20 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
 {
     // check that the requested frame size is valid
     if (!targetFrameSize.isValid()) {
-        qDebug() << Q_FUNC_INFO << "The requested target frame size is invalid.";
+        qDebug() << "The requested target frame size is invalid.";
         return;
     }
 
     // check that the target size is compatible with the calibration size
     // meaning that the target size must be a scale of the calibration size
-    m_imageScaleCoefficientX = static_cast<double>(targetFrameSize.width()) / static_cast<double>(m_calibrationFrameSize.width());
-    m_imageScaleCoefficientY = static_cast<double>(targetFrameSize.height()) / static_cast<double>(m_calibrationFrameSize.height());
+    m_imageScaleCoefficientX = static_cast<double>(targetFrameSize.width()) /
+            static_cast<double>(m_calibrationFrameSize.width());
+    m_imageScaleCoefficientY = static_cast<double>(targetFrameSize.height()) /
+            static_cast<double>(m_calibrationFrameSize.height());
     if (! qFuzzyCompare(m_imageScaleCoefficientX, m_imageScaleCoefficientY)) {
-        qDebug() << Q_FUNC_INFO << "The requested target frame size is not compatible with the size used to generate the calibration data.";
+        qDebug() << "The requested target frame size is not "
+                                   "compatible with the size used to generate "
+                                   "the calibration data.";
         return;
     }
 
@@ -48,7 +52,7 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
     int numberOfPoints;
     settings.readVariable("calibrationPoints/numberOfPoints", numberOfPoints, 0);
     if (numberOfPoints == 0) {
-        qDebug() << Q_FUNC_INFO << "Couldn't read the number of points.";
+        qDebug() << "Couldn't read the number of points.";
         return;
     }
 
@@ -84,7 +88,7 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
 
     // run the calibration on the undistorted points
     double rms = cv::solvePnP(worldPoints, undistortedImagePoints, m_optimalCameraMatrix, cv::Mat(), m_rvec, m_tvec, true,  cv::SOLVEPNP_EPNP);
-//    qDebug() << Q_FUNC_INFO << "Calibrarion error" << rms;
+//    qDebug() << "Calibrarion error" << rms;
 
     std::cout << m_rvec << std::endl;
     std::cout << m_tvec << std::endl;
@@ -99,8 +103,7 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
     double error = 0;
     for(unsigned int i = 0; i < projectedPoints.size(); ++i)
     {
-        qDebug() << Q_FUNC_INFO
-                 << QString("World point (%1, %2, %3)mm (corresponds (%4, %5)px) is projected to (%6, %7)px; error is %8 px")
+        qDebug() << QString("World point (%1, %2, %3)mm (corresponds (%4, %5)px) is projected to (%6, %7)px; error is %8 px")
                     .arg(worldPoints[i].x)
                     .arg(worldPoints[i].y)
                     .arg(worldPoints[i].z)
@@ -112,7 +115,7 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
         error += cv::norm(undistortedImagePoints[i] - projectedPoints[i]);
     }
     error /= projectedPoints.size();
-    qDebug() << Q_FUNC_INFO  << QString("Average projection error (world->image) is %1 pixels").arg(error);
+    qDebug() << QString("Average projection error (world->image) is %1 pixels").arg(error);
 
 
     // TODO : to add an analysis on the error to decide if the calibration succeeded
@@ -135,7 +138,7 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
         error += originalPositionMeters.distance2DTo(projectedPositionMeters);
     }
     error /= imagePoints.size();
-    qDebug() << Q_FUNC_INFO  << QString("Average reprojection error (image->world) is %1 mm").arg(1000 * error);
+    qDebug() << QString("Average reprojection error (image->world) is %1 mm").arg(1000 * error);
 
     //return true;
     m_calibrationInitialized = true;
@@ -170,9 +173,10 @@ PositionMeters CameraCalibration::imageToWorld(PositionPixels imageCoordinates)
     double wx = s * vectorA.at<double>(0, 0) - m_rotationMatrixInvTranslationVector.at<double>(0, 0);
     double wy = s * vectorA.at<double>(1, 0) - m_rotationMatrixInvTranslationVector.at<double>(1, 0);
 
-    // NOTE : the Z-coordinate is not set is we work in 2D world
-    PositionMeters worldCoordinates(m_xInversionCoefficient * wx / 1000., m_yInversionCoefficient * wy / 1000.); // the calibration data is set in mm, hence the division
-
+    // NOTE : (1) the Z-coordinate is not set is we work in 2D world
+    // (2) the calibration data is set in mm, hence the division
+    PositionMeters worldCoordinates(m_xInversionCoefficient * wx / 1000.,
+                                    m_yInversionCoefficient * wy / 1000.);
     return worldCoordinates;
 }
 
@@ -186,7 +190,7 @@ PositionPixels CameraCalibration::worldToImage(PositionMeters worldCoordinates)
     // HACK : since only "x" and "y" are sinchronized between the top and bottom setus,
     // the "z" value is to be set  to the "agent height" specific for this setup
     // TODO : to check if it works better when the height of the agent is taken into account
-    worldCoordinates.setZ(m_cameraHeight /*- m_agentHeight*/);
+    worldCoordinates.setZ(m_cameraHeight/* - m_agentHeight*/);
     // the calibration data is set in mm, hence the multiplication to change from meters
     worldPoint.push_back(cv::Point3f(m_xInversionCoefficient * worldCoordinates.x() * 1000,
                                      m_yInversionCoefficient * worldCoordinates.y() * 1000,
@@ -244,7 +248,7 @@ int CameraCalibration::getWorldScaleCoefficient(std::string units)
     } else if (units.compare("m") == 0) {
         coefficient = 100;
     } else {
-        qDebug() << Q_FUNC_INFO << "Unknown world units " << units.data();
+        qDebug() << "Unknown world units " << units.data();
     }
     return coefficient;
 }
@@ -257,7 +261,7 @@ bool CameraCalibration::readParameters(QString calibrationFileName)
 {
     // check first that the file exists
     if (!QFileInfo(calibrationFileName).exists()) {
-        qDebug() << Q_FUNC_INFO << "The provided calibration file is not correct.";
+        qDebug() << "The provided calibration file is not correct.";
         return false;
     }
 
@@ -275,7 +279,7 @@ bool CameraCalibration::readParameters(QString calibrationFileName)
 
     m_calibrationFrameSize = QSize(width, height);
     if (!m_calibrationFrameSize.isValid()) {
-        qDebug() << Q_FUNC_INFO << "The calibration frame size is invalid.";
+        qDebug() << "The calibration frame size is invalid.";
         return false;
     }
 
@@ -283,7 +287,7 @@ bool CameraCalibration::readParameters(QString calibrationFileName)
     std::string units;
     settings.readVariable(QString("worldUnits"), units);
     if (units.empty()) {
-        qDebug() << Q_FUNC_INFO << "Undefined the world units";
+        qDebug() << "Undefined the world units";
         return false;
     } else {
         m_worldScaleCoefficient = getWorldScaleCoefficient(units);

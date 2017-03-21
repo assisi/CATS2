@@ -7,7 +7,13 @@ set(CMAKE_AUTOMOC ON)
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_VERBOSE_MAKEFILE ON)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/modules")
-set(ENV{CATS2_DIR} ${CMAKE_SOURCE_DIR}) 
+set(ENV{CATS2_DIR} ${CMAKE_SOURCE_DIR})
+# set the install prefix
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    set (CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/bind)
+else()
+    set (CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/bin)
+endif()
 
 find_package(Qt5 REQUIRED Core Widgets DBus)
 find_package(ReaderWriterQueue REQUIRED)
@@ -36,6 +42,7 @@ include_directories(SYSTEM ${Boost_INCLUDE_DIR} )
 
 #add_definitions(${QTGSTREAMER_DEFINITIONS}) # defines QT_NO_KEYWORDS that demands replacing all "signals" by "Q_SIGNALS"
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${QTGSTREAMER_FLAGS}")
+add_definitions(-DQT_MESSAGELOGCONTEXT)
 
 if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
     # require at least gcc 4.4

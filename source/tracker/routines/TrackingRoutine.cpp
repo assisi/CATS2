@@ -26,7 +26,7 @@ TrackingRoutine::TrackingRoutine(TimestampedFrameQueuePtr inputQueue, Timestampe
 */
 TrackingRoutine::~TrackingRoutine()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -44,7 +44,7 @@ void TrackingRoutine::process()
             try {
                 doTracking(frame);
             } catch(cv::Exception& e) {
-                qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
+                qDebug() << "OpenCV exception: " << e.what();
             }
             // send the results
             TimestampedImageAgentsData timestampedAgentsData;
@@ -162,4 +162,20 @@ void TrackingRoutine::naiveClosestNeighbour(std::vector<cv::Point2f>& centers, s
             remainingAgents.erase(std::remove(remainingAgents.begin(), remainingAgents.end(), agentIndex), remainingAgents.end()); // https://en.wikipedia.org/wiki/Erase–remove_idiom
         }
     }
+}
+
+/*!
+ * Computes a contour's center.
+ */
+cv::Point2f TrackingRoutine::contourCenter(const std::vector<cv::Point>& contour)
+{
+    cv::Point2f center(0,0);
+
+    if (contour.size() > 0) {
+        for (auto& point : contour)
+            center += static_cast<cv::Point2f>(point);
+        center *= 1. / contour.size();
+    }
+
+    return center;
 }

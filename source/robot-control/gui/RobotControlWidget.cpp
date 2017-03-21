@@ -173,7 +173,10 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
     }
     m_ui->obstacleAvoidanceSettingsWidget->layout()->addWidget(new PotentialFieldWidget(m_robot->potentialField()));
     m_ui->obstacleAvoidanceSettingsWidget->hide();
-    connect(m_ui->showDetailsButton, &QPushButton::toggled, [=](bool checked){ m_ui->obstacleAvoidanceSettingsWidget->setVisible(checked); });
+    connect(m_ui->showDetailsButton, &QPushButton::toggled,
+            [=](bool checked){
+                m_ui->obstacleAvoidanceSettingsWidget->setVisible(checked);
+            });
 }
 
 /*!
@@ -181,7 +184,7 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
  */
 RobotControlWidget::~RobotControlWidget()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     delete m_ui;
 }
 

@@ -20,7 +20,8 @@ class BlobDetectorWidget : public QWidget
 
 public:
     //! Constructor.
-    explicit BlobDetectorWidget(TrackingRoutinePtr routine, QWidget *parent = nullptr);
+    explicit BlobDetectorWidget(TrackingRoutinePtr routine,
+                                QWidget *parent = nullptr);
     //! Destructor.
     virtual ~BlobDetectorWidget() final;
 

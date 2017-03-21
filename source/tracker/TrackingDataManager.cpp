@@ -1,7 +1,10 @@
 #include "TrackingDataManager.hpp"
+#include "TrajectoryWriter.hpp"
 #include "settings/TrackingSettings.hpp"
 
 #include <CoordinatesConversion.hpp>
+
+#include <QtCore/QDebug>
 
 constexpr std::chrono::duration<double> TrackingDataManager::MaxTimeDifferenceMs;
 constexpr float TrackingDataManager::IdentityDistanceThresholdMeters;
@@ -13,13 +16,17 @@ constexpr float TrackingDataManager::InvalidOrientationPenaltyRad;
 /*!
  * Constructor.
  */
-TrackingDataManager::TrackingDataManager() :
+TrackingDataManager::TrackingDataManager(QString dataLoggingPath, bool logResults) :
     QObject(nullptr),
     m_primaryDataSource(SetupType::UNDEFINED),
     m_primaryDataSourceCapability(AgentType::UNDEFINED),
     m_typeForGenericAgents(AgentType::FISH), // TODO : find a better way to do this(?)
-    m_trajectoryWriter()
+    m_logResults(logResults),
+    m_dataLoggingPath(dataLoggingPath)
 {
+    if (m_logResults) {
+        m_trajectoryWriter.reset(new TrajectoryWriter(dataLoggingPath));
+    }
 #if 0
     // this code is used purely for a debug when in a no-setup mode
     // it starts the timer that sends a data with the fake robots and fish
@@ -84,6 +91,21 @@ void TrackingDataManager::addCoordinatesConversion(SetupType::Enum setupType, Co
 }
 
 /*!
+ * Specify if we need to log resulted data.
+ */
+void TrackingDataManager::setLogResults(bool value)
+{
+    if (m_logResults != value) {
+        m_logResults = value;
+        if (m_logResults) {
+            m_trajectoryWriter.reset(new TrajectoryWriter(m_dataLoggingPath));
+        } else {
+            m_trajectoryWriter.reset();
+        }
+    }
+}
+
+/*!
  * New tracking results arrive. The data from the "secondary" data source (in our
  * case - the top camera) are placed in a queue, in the same time the data from
  * the "primary" data source (bottom camera) are treated right away. If in the queue
@@ -97,7 +119,7 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
         if (m_trackingData.contains(setupType)) {
             m_trackingData[setupType].enqueue(timestampedAgentsData);
         } else {
-            qDebug() << Q_FUNC_INFO << "Unknown data source: " << SetupType::toString(setupType);
+            qDebug() << "Unknown data source: " << SetupType::toString(setupType);
         }
     } else {
         // if the data comes from the primary source then it needs to be treated right away
@@ -131,7 +153,7 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
         }
 
         // send the results
-        emit notifyAgentDataWorldMerged(agentDataList);
+        emit notifyAgentDataWorldMerged(agentDataList, timestamp);
 
         // sends results in main setup image coordinates
         // NOTE : this is a temporary code to share results with CATS
@@ -139,8 +161,11 @@ void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldA
         emit notifyAgentDataImageMerged(agentDataListImage);
 
         // save the results to a file only if all the data could be merged
-        if (allDataMerged)
-            m_trajectoryWriter.writeData(timestamp, agentDataList);
+        if (allDataMerged ) {
+            if (m_logResults && m_trajectoryWriter) {
+                m_trajectoryWriter->writeData(timestamp, agentDataList);
+            }
+        }
     }
 }
 
@@ -152,7 +177,7 @@ bool TrackingDataManager::getDataByTimestamp(std::chrono::milliseconds timestamp
                                              TimestampedWorldAgentsData& bestMatchData)
 {
     if (dataQueue.size() == 0) {
-//        qDebug() << Q_FUNC_INFO << "The data queue is empty";
+//        qDebug() << "The data queue is empty";
         return false;
     }
 
@@ -164,7 +189,7 @@ bool TrackingDataManager::getDataByTimestamp(std::chrono::milliseconds timestamp
             bestMatchData = dataQueue.dequeue();
             return true;
         } else {
-            qDebug() << Q_FUNC_INFO << QString("Data with an old timestamp received (%1 vs present %2)")
+            qDebug() << QString("Data with an old timestamp received (%1 vs present %2)")
                         .arg(dataQueue.head().timestamp.count())
                         .arg(timestamp.count());
             return false;
@@ -215,7 +240,6 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
     float maxCost = initializeCostMatrices(listOne, listTwo, costMatrix);
 
 //    // NOTE : uncomment to debug agent matching
-//    qDebug() << Q_FUNC_INFO;
 //    qDebug() << "Cost matrix" ;
 //    qDebug() << "Threshold" << WeightedThreshold;
 //    qDebug() << "Max cost" << maxCost;
@@ -285,7 +309,7 @@ void TrackingDataManager::matchAgents(QList<AgentDataWorld>& currentAgents, QLis
             }
             indecesToRemove.append(qMakePair(i1, bestCombination[i1]));
         } else {
-//            qDebug() <<  Q_FUNC_INFO << QString("Matched agents at %2 and %3 are too far : %1")
+//            qDebug() <<  QString("Matched agents at %2 and %3 are too far : %1")
 //                                            .arg(costMatrix[i1][bestCombination[i1]])
 //                    .arg(listOne.at(i1).state().position().toString())
 //                    .arg(listTwo.at(bestCombination[i1]).state().position().toString());
@@ -422,3 +446,12 @@ QList<AgentDataImage> TrackingDataManager::convertToFrameCoordinates(SetupType::
     }
     return agentsDataImageList;
 }
+
+/*!
+ * Sets the type of the agent to use in the output data for a generic agent.
+ */
+void TrackingDataManager::setGenericAgentReplacementType(AgentType type)
+{
+    m_typeForGenericAgents = type;
+}
+

@@ -3,13 +3,6 @@
 #include <QtCore/QDebug>
 
 /*!
- * The map to translate the string stream type to the corresponding enum.
- */
-const QMap<QString, StreamType> StreamDescriptor::m_streamTypeByName = {{"v4l", StreamType::VIDEO_4_LINUX},
-                                                                        {"vf", StreamType::LOCAL_VIDEO_FILE},
-                                                                        {"if", StreamType::LOCAL_IMAGE_FILE}};
-
-/*!
  * Constructor.
  */
 CommandLineParameters::CommandLineParameters()
@@ -21,7 +14,7 @@ CommandLineParameters::CommandLineParameters()
  */
 CommandLineParameters::~CommandLineParameters()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -54,35 +47,42 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, boo
     // read the main camera parameters
     QString streamType;
     QString streamParameters;
-    bool foundMainCameraParameters = (parseStreamArguments(argc, argv, "-mc", streamType, streamParameters)
-                                      || parseStreamArguments(argc, argv, "--maincam", streamType, streamParameters));
+    bool foundMainCameraParameters =
+            (CommandLineParser::parseTypedArgument(argc, argv,
+                                                   "-mc", streamType, streamParameters) ||
+             CommandLineParser::parseTypedArgument(argc, argv,
+                                                   "--maincam", streamType, streamParameters));
     if (foundMainCameraParameters) {
         // the main camera
-        m_cameraDescriptors[SetupType::MAIN_CAMERA] = StreamDescriptor(streamType, streamParameters);
+        addCameraDescriptor(SetupType::MAIN_CAMERA,
+                            StreamDescriptor(streamType, streamParameters));
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find the valid main camera parameters";
+        qDebug() << "Couldn't find the valid main camera parameters";
     }
     settingsAccepted = (foundMainCameraParameters || (!needMainCamera));
 
     // read the below camera parameters
-    bool foundBelowCameraParameters = (parseStreamArguments(argc, argv, "-bc", streamType, streamParameters)
-                                      || parseStreamArguments(argc, argv, "--belowcam", streamType, streamParameters));
+    bool foundBelowCameraParameters =
+            (CommandLineParser::parseTypedArgument(argc, argv, "-bc", streamType, streamParameters) ||
+             CommandLineParser::parseTypedArgument(argc, argv, "--belowcam", streamType, streamParameters));
     if (foundBelowCameraParameters) {
         // the below camera
-        m_cameraDescriptors[SetupType::CAMERA_BELOW] = StreamDescriptor(streamType, streamParameters);
+        addCameraDescriptor(SetupType::CAMERA_BELOW,
+                            StreamDescriptor(streamType, streamParameters));
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find the valid camera below parameters";
+        qDebug() << "Couldn't find the valid camera below parameters";
     }
     settingsAccepted = settingsAccepted && (foundBelowCameraParameters || (!needBelowCamera));
 
     // get the configuration file path
     QString filePath;
-    bool foundConfigFilePath = (parseConfigFilePath(argc, argv, "-c", filePath)
-                                      || parseConfigFilePath(argc, argv, "--config", filePath));
+    bool foundConfigFilePath =
+            (CommandLineParser::parseArgument(argc, argv, "-c", filePath) ||
+             CommandLineParser::parseArgument(argc, argv, "--config", filePath));
     if (foundConfigFilePath) {
         m_configurationFilePath = filePath;
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find the configuration file";
+        qDebug() << "Couldn't find the configuration file";
     }
     settingsAccepted = settingsAccepted && (foundConfigFilePath || (!needConfigFile));
 
@@ -96,41 +96,34 @@ void CommandLineParameters::printSupportedArguments()
 {
     qDebug() << "Video grabber usage";
     qDebug() << "\t -h --help\t\tShow this help message";
-    qDebug() << "\t -mc --maincam\tDefines the video stream used to track agents. Format : -mc <StreamType> <parameters>";
-    qDebug() << "\t -bc --belowcam\tDefines the video stream used to track the robot under the aquarium. Format : -mc <StreamType> <parameters>";
+    qDebug() << "\t -mc --maincam\tDefines the video stream used to track agents."
+             << "Format : -mc <StreamType> <parameters>";
+    qDebug() << "\t -bc --belowcam\tDefines the video stream used to track the"
+             << "robot under the aquarium. Format : -mc <StreamType> <parameters>";
     qDebug() << "\t -c --config\tThe configuration file. Format : -c <PathToFile>";
 }
 
-/*!
- * Looks for the given argument in the command line, if found it return second and third argument as
- * stream type and parameters.
- */
-bool CommandLineParameters::parseStreamArguments(int argc, char** argv, QString argument, QString& streamType, QString& parameters)
-{
-    char** itr = std::find(argv, argv + argc, argument);
-    if ((itr != (argv + argc)) && ((itr + 1) != (argv + argc)) && ((itr + 2) != (argv + argc))) {
-        QString value = QString(*(itr + 1)).toLower();
-        if (StreamDescriptor::isValidStreamType(value)){
-            streamType = value;
-            parameters = *(itr + 2);
-            return true;
-        } else {
-            qDebug() << Q_FUNC_INFO << "Invalid stream type" << value;
-        }
-    }
-    return false;
-}
+
 
 /*!
- * Looks for the given argument in the command line, if found it return the argument as configuration file name.
+ * Looks for the given stream's argument in the command line.
  */
-bool CommandLineParameters::parseConfigFilePath(int argc, char** argv, QString argument, QString& filePath)
+bool CommandLineParameters::parseStreamArguments(int argc, char** argv,
+                                                 QString argument,
+                                                 QString& streamType,
+                                                 QString& parameters)
 {
-    char** end = argv + argc;
-    char** itr = std::find(argv, end, argument);
-    if ((itr != end) && (++itr != end)) {
-        filePath = QString(*itr);
-        return true;
+    QString argumentType;
+    QString values;
+    bool status = CommandLineParser::parseTypedArgument(argc, argv, argument, argumentType, values);
+    if (status) {
+        if (StreamDescriptor::isValidStreamType(argumentType)){
+            streamType = argumentType;
+            parameters = values;
+            return true;
+        } else {
+            qDebug() << "Invalid argument type" << argumentType;
+        }
     }
     return false;
 }

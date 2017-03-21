@@ -29,17 +29,26 @@ BlobDetectorWidget::BlobDetectorWidget(TrackingRoutinePtr routine, QWidget *pare
         m_ui->kEdit->setText(QString::number(settings.k(), 'f', 4));
         m_ui->useHarrisDetectorCheckBox->setChecked(settings.useHarrisDetector());
     } else {
-        qDebug() << Q_FUNC_INFO << "The tracking routine is ill-defined";
+        qDebug() << "The tracking routine is ill-defined";
     }
 
-    connect(m_ui->minBlobSizeSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &BlobDetectorWidget::updateSettings);
-    connect(m_ui->minDistanceSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &BlobDetectorWidget::updateSettings);
-    connect(m_ui->blockSizeSpinBox, static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged), this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->minBlobSizeSpinBox,
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->minDistanceSpinBox,
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->blockSizeSpinBox,
+            static_cast<void (QSpinBox::*)(int)>(&QSpinBox::valueChanged),
+            this, &BlobDetectorWidget::updateSettings);
 
-    connect(m_ui->qualityLevelEdit, &QLineEdit::textChanged, this, &BlobDetectorWidget::updateSettings);
-    connect(m_ui->kEdit, &QLineEdit::textChanged, this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->qualityLevelEdit, &QLineEdit::textChanged,
+            this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->kEdit, &QLineEdit::textChanged, this,
+            &BlobDetectorWidget::updateSettings);
 
-    connect(m_ui->useHarrisDetectorCheckBox, &QCheckBox::toggled, this, &BlobDetectorWidget::updateSettings);
+    connect(m_ui->useHarrisDetectorCheckBox, &QCheckBox::toggled,
+            this, &BlobDetectorWidget::updateSettings);
 }
 
 /*!
@@ -47,7 +56,7 @@ BlobDetectorWidget::BlobDetectorWidget(TrackingRoutinePtr routine, QWidget *pare
  */
 BlobDetectorWidget::~BlobDetectorWidget()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     delete m_ui;
 }
 
@@ -68,6 +77,6 @@ void BlobDetectorWidget::updateSettings()
     if (blobDetector) {
         blobDetector->setSettings(updatedSettings);
     } else {
-        qDebug() << Q_FUNC_INFO << "The tracking routine is ill-defined";
+        qDebug() << "The tracking routine is ill-defined";
     }
 }

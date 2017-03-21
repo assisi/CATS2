@@ -16,11 +16,11 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication::setOrganizationName("MOBOTS");
+    QApplication::setOrganizationName("EPFL-LSRO-Mobots");
     QApplication::setOrganizationDomain("mobots.epfl.ch");
-    QApplication::setApplicationName("CAT2-camera-viewer");
+    QApplication::setApplicationName("CATS2-camera-viewer");
 
-    QGst::init(&argc, &argv);
+    QGst::init(nullptr, nullptr);
     QApplication app(argc, argv);
 
     // specify the setup type
@@ -47,14 +47,13 @@ int main(int argc, char *argv[])
                     return app.exec();
                 }
             } else {
-                qDebug() << Q_FUNC_INFO << "Grabber settings are not defined";
+                qDebug() << "Grabber settings are not defined";
             }
         } else {
-            qDebug() << Q_FUNC_INFO << "Camera descriptor is ill-defined";
+            qDebug() << "Camera descriptor is ill-defined";
         }
-
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find necessary input arguments, finished";
+        qDebug() << "Couldn't find necessary input arguments, finished";
     }
 }
 

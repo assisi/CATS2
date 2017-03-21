@@ -36,7 +36,7 @@ void GoToPosition::setTargetPosition(PositionMeters position)
 {
     if (m_targetPosition != position) {
         m_targetPosition = position;
-        qDebug() << Q_FUNC_INFO << m_robot->name() << "got new target position" << position.toString();
+        qDebug() << m_robot->name() << "got new target position" << position.toString();
     }
 }
 

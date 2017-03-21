@@ -26,7 +26,7 @@ bool InterSpeciesSettings::init(QString configurationFileName, bool needPublishe
     settings.readVariable(QString("interSpecies/publisherAddress"), address, address);
     m_publisherAddress = QString::fromStdString(address);
     if (m_publisherAddress.isNull())
-        qDebug() << Q_FUNC_INFO << "The publisher address is not set in the configuration file";
+        qDebug() << "The publisher address is not set in the configuration file";
 
     settingsAccepted = ((!m_publisherAddress.isNull()) || (!needPublisherAddress));
 

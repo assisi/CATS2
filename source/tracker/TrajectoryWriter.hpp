@@ -13,17 +13,19 @@ class TrajectoryWriter
 {
 public:
     //! Constructor.
-    explicit TrajectoryWriter();
+    explicit TrajectoryWriter(QString dataLoggingPath);
     //! Destructor.
     virtual ~TrajectoryWriter() final;
 
     //! Saves the tracking results to the ouptup file.
-    //! timestamp is the number of milliseconds since 1970-01-01T00:00:00 Universal Coordinated Time.
-    void writeData(std::chrono::milliseconds timestamp, const QList<AgentDataWorld>& agentsData);
+    //! timestamp is the number of milliseconds since 1970-01-01T00:00:00
+    //! Universal Coordinated Time.
+    void writeData(std::chrono::milliseconds timestamp,
+                   const QList<AgentDataWorld>& agentsData);
 
 private:
-    //! Searches for the robot of the given type and corresponding to the given index
-    //! in the indexToId correspondence map.
+    //! Searches for the robot of the given type and corresponding to the given
+    //! index in the indexToId correspondence map.
     const AgentDataWorld* getAgentData(int index,
                                        AgentType agentType,
                                        QMap<int, QString>& indexToId,

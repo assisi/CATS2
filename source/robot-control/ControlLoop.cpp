@@ -32,8 +32,12 @@ ControlLoop::ControlLoop() :
         connect(m_robots.last().data(), &FishBot::notifyControlAreasPolygons,
                 [=](QString agentId, QList<AnnotatedPolygons> polygons)
                 {
-                    if (m_sendControlAreas && (m_selectedRobot->id() == agentId))
+                    if (m_sendControlAreas &&
+                            m_selectedRobot &&
+                            (m_selectedRobot->id() == agentId))
+                    {
                         emit notifyRobotControlAreasPolygons(agentId, polygons);
+                    }
                 });
 
         // send the robot trajectory for all robots if the corresponding flag is set
@@ -77,7 +81,7 @@ ControlLoop::ControlLoop() :
  */
 ControlLoop::~ControlLoop()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 
     // stop the timer
     m_controlLoopTimer.stop();
@@ -112,7 +116,7 @@ void ControlLoop::initializeRobotsInterfaces()
             m_robots[index]->setupConnection(index);
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "The connection with the dbus could not be established.";
+        qDebug() << "The connection with the dbus could not be established.";
     }
 }
 
@@ -128,14 +132,14 @@ void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
     QList<StateWorld> fishStates;
 
     foreach (AgentDataWorld agentData, agentsData) {
-        if (agentData.type() == AgentType::FISH_CASU) {
+        if (agentData.type() == AgentType::CASU) {
             robotsData.append(agentData);
         } else if (agentData.type() == AgentType::FISH) {
             fishStates.append(agentData.state());
         }
     }
 
-//    qDebug() << Q_FUNC_INFO << robotsData.size() << fishStates.size();
+//    qDebug() << robotsData.size() << fishStates.size();
 
     // transfers the data to all robots
     for (auto& robot : m_robots) {
@@ -158,7 +162,7 @@ void ControlLoop::selectRobot(QString name)
     for (auto& robot : m_robots) {
         if (robot->name() == name) {
             if (m_selectedRobot != robot) {
-                qDebug() << Q_FUNC_INFO << name << "is selected";
+                qDebug() << name << "is selected";
                 m_selectedRobot = robot;
                 // inform about the change
                 emit notifySelectedRobotChanged(m_selectedRobot->id());
@@ -176,7 +180,7 @@ void ControlLoop::selectRobot(QString name)
  */
  void ControlLoop::goToPosition(PositionMeters position)
  {
-     if (m_selectedRobot.data()) {
+     if (m_selectedRobot) {
          m_selectedRobot->goToPosition(position);
      }
  }
@@ -201,7 +205,7 @@ void ControlLoop::selectRobot(QString name)
  void ControlLoop::sendControlAreas(bool sendAreas)
  {
      m_sendControlAreas = sendAreas;
-     if (m_sendControlAreas && m_selectedRobot.data()) {
+     if (m_sendControlAreas && m_selectedRobot) {
          m_selectedRobot->requestControlAreasPolygons();
      }
  }
@@ -211,7 +215,8 @@ void ControlLoop::selectRobot(QString name)
   */
  void ControlLoop::requestSelectedRobot()
  {
-     emit notifySelectedRobotChanged(m_selectedRobot->id());
+     if (m_selectedRobot)
+        emit notifySelectedRobotChanged(m_selectedRobot->id());
  }
 
  /*!

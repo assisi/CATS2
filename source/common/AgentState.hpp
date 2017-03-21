@@ -306,6 +306,13 @@ public:
     void setOrientation(OrientationRad orientationRad) { m_orientationRad = orientationRad; }
     //! Return the orientation.
     OrientationRad orientation() const { return m_orientationRad; }
+    //! Returns the state as text.
+    QString toString() const
+    {
+        return QString("Position: %1, orientation : %2 deg")
+                .arg(position().toString())
+                .arg(orientation().angleDeg());
+    }
 
 private:
     //! Position in meters.

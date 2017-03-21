@@ -34,6 +34,13 @@ public:
     //! Destructor.
     virtual ~ViewerWindow() override;
 
+public:
+    //! Sets the flag in the viewer widget to show the framerate.
+    void setShowFrameRate(bool value);
+    //! Sets the flag in the viewer widget to automatically resize to the
+    //! window size.
+    void setAutoAdjust(bool value);
+
 private:
     //! The form.
     Ui::ViewerWindow* m_ui;

@@ -12,32 +12,33 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication::setOrganizationName("MOBOTS");
+    QApplication::setOrganizationName("EPFL-LSRO-Mobots");
     QApplication::setOrganizationDomain("mobots.epfl.ch");
-    QApplication::setApplicationName("CAT2-simple-tracker");
+    QApplication::setApplicationName("CATS2-simple-tracker");
 
     QGst::init(nullptr, nullptr);
     QApplication app(argc, argv);
 
     // specify the setup type
-    SetupType::Enum setupType = SetupType::CAMERA_BELOW;
+    SetupType::Enum setupType = SetupType::MAIN_CAMERA;
 
     // parse input arguments to initialize the settings
     if (CommandLineParameters::get().init(argc, argv, true, false, false)) {
         if (CommandLineParameters::get().cameraDescriptor(setupType).isValid()) {
             bool needCalibration = false;
-            if (TrackingSetupSettings::init(setupType, needCalibration)) {
+            if (TrackingSetupSettings::init(CommandLineParameters::get().configurationFilePath(),
+                                            setupType, needCalibration)) {
                 MainWindow mainWindow(setupType);
                 mainWindow.show();
                 return app.exec();
             } else {
-                qDebug() << Q_FUNC_INFO << "Couldn't setup the camera, finished";
+                qDebug() << "Couldn't setup the camera, finished";
             }
         } else {
-            qDebug() << Q_FUNC_INFO << "Invalid camera descriptor" << CommandLineParameters::get().cameraDescriptor(setupType).parameters();
+            qDebug() << "Invalid camera descriptor" << CommandLineParameters::get().cameraDescriptor(setupType).parameters();
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find necessary input arguments, finished";
+        qDebug() << "Couldn't find necessary input arguments, finished";
     }
 }
 

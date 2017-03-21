@@ -36,7 +36,7 @@ public:
         if (isSet()) {
             return (runTimeSec() >  timeOutSec);
         } else {
-            qDebug() << Q_FUNC_INFO << "Timer is not set";
+            qDebug() << "Timer is not set";
             return true;
         }
     }
@@ -52,7 +52,7 @@ public:
                     <std::chrono::duration<double,std::ratio<1,1>>>
                     (timeNow - m_startTime).count();
        } else {
-            qDebug() << Q_FUNC_INFO << "Timer is not set";
+            qDebug() << "Timer is not set";
             return 0.;
         }
     }

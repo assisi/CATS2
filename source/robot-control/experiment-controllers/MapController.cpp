@@ -20,7 +20,7 @@ MapController::MapController(FishBot* robot,
         // copy the parameters
         m_settings = mapControllerSettings->data();
     } else {
-        qDebug() << Q_FUNC_INFO << "Could not set the controller's settings";
+        qDebug() << "Could not set the controller's settings";
     }
 
     // load the control map

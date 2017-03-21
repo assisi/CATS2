@@ -31,7 +31,7 @@ QueueHub::QueueHub(TimestampedFrameQueuePtr inputQueue)
  */
 QueueHub::~QueueHub()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     m_multiplicator->stop();
 }
 
