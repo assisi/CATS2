@@ -309,7 +309,8 @@ void DashelInterface::run()
 
 void DashelInterface::sendMessage(const Aseba::Message& message)
 {
-    // this is called from the GUI thread through processMessage() or pingNetwork(), so we must lock the Hub before sending
+    // this is called from the GUI thread through processMessage() or
+    // pingNetwork(), so we must lock the Hub before sending
     lock();
     if (m_isConnected) {
         try {
