@@ -23,6 +23,8 @@
 /*!
  * This class is a re-edited version of DashelInterface from aseba/examples/clients
  * (https://github.com/aseba-community/aseba)
+ * FIXME : using threads like this is a bad design and all slots will be called in the
+ * original thread, need to redo this properly (http://doc.qt.io/qt-4.8/qthread.html)
  */
 class DashelInterface : public QThread, public Dashel::Hub, public Aseba::NodesManager
 {
@@ -43,28 +45,8 @@ public:
     //! Cleanly disconnect.
     void disconnectAseba();
 
-    //! Send a UserMessage with ID 'id', and optionnally some data values.
-    void sendEvent(unsigned id, const Values& data = Values());
-    void sendEventName(const QString& name, const Values& data);
-
     //! From Dashel::Hub
     virtual void stop();
-
-signals:
-    void messageAvailable(Aseba::UserMessage *message);
-    void dashelDisconnection();
-    void dashelConnection();
-
-protected:
-    Dashel::Stream* targetStream;
-    // from QThread
-    virtual void run() override;
-
-    //! From Dashel::Hub. Message coming from a node. Consider _only_
-    //! UserMessage. Discard other types of messages (debug, etc.)
-    virtual void incomingData(Dashel::Stream *m_stream) override;
-    //! Dashel connection was closed.
-    virtual void connectionClosed(Dashel::Stream *m_stream, bool abnormal) override;
 
 public:
     //! Redefined from NodesManager.
@@ -73,6 +55,29 @@ public:
 public:
     //! Returns the connection status flag.
     bool isConnected() const { return m_isConnected; }
+
+public:
+    //! Sends an named event to the robot.
+    void sendEventName(const QString& name, const Values& data);
+
+signals:
+    void messageAvailable(Aseba::UserMessage *message);
+    void dashelDisconnection();
+    void dashelConnection();
+
+protected:
+    //! Send a UserMessage with ID 'id', and optionnally some data values.
+    void sendEvent(unsigned id, const Values& data = Values());
+
+protected:
+    Dashel::Stream* targetStream;
+    virtual void run() override;
+
+    //! From Dashel::Hub. Message coming from a node. Consider _only_
+    //! UserMessage. Discard other types of messages (debug, etc.)
+    virtual void incomingData(Dashel::Stream *m_stream) override;
+    //! Dashel connection was closed.
+    virtual void connectionClosed(Dashel::Stream *m_stream, bool abnormal) override;
 
 protected:
     typedef std::vector<std::string> strings;
@@ -86,16 +91,6 @@ protected:
 
     Aseba::CommonDefinitions commonDefinitions;
     NodeNameToVariablesMap allVariables;
-//    typedef std::map<std::wstring, std::pair<unsigned, unsigned> > VariablesMap;
-//    typedef QMap<QString, VariablesMap> UserDefinedVariablesMap;
-//    UserDefinedVariablesMap userDefinedVariablesMap;
-
-private:
-    // string operations
-    static std::wstring widen(const char *src);
-    static std::wstring widen(const std::string& src);
-    static std::string narrow(const wchar_t* src);
-    static std::string narrow(const std::wstring& src);
 };
 
 #endif // CATS2_DASHEL_INTERFACE_HPP

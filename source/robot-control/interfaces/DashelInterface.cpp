@@ -25,15 +25,17 @@
 
 #include <QtCore/QDebug>
 #include <dashel/dashel.h>
-#include <string>
-#include <iterator>
-#include <cstdlib>
-#include <iostream>
 
 #include <QtCore/QFile>
 #include <QtXml/QDomDocument>
 
-using namespace std;
+#include <string>
+#include <iterator>
+#include <cstdlib>
+#include <iostream>
+#include <chrono>
+#include <thread>
+
 using namespace Dashel;
 using namespace Aseba;
 
@@ -219,16 +221,21 @@ bool DashelInterface::loadScript(const QString& fileName)
  */
 void DashelInterface::incomingData(Dashel::Stream *stream)
 {
-    Aseba::Message *message = Aseba::Message::receive(stream);
-    Aseba::UserMessage *userMessage = dynamic_cast<Aseba::UserMessage *>(message);
+    try {
+        Aseba::Message *message = Aseba::Message::receive(stream);
+        Aseba::UserMessage *userMessage = dynamic_cast<Aseba::UserMessage *>(message);
 
-    //A description manager for loading the Aseba Scripts
-    Aseba::NodesManager::processMessage(message);
+        //A description manager for loading the Aseba Scripts
+        Aseba::NodesManager::processMessage(message);
 
-    if (userMessage)
-        emit messageAvailable(userMessage);
-    else
-        delete message;
+        if (userMessage)
+            emit messageAvailable(userMessage);
+        else
+            delete message;
+    } catch (DashelException e) {
+        // if this stream has a problem, ignore it for now, and let Hub call connectionClosed later.
+        qDebug() << "error while reading message";
+    }
 }
 
 /*!
@@ -243,8 +250,14 @@ void DashelInterface::sendEvent(unsigned id, const Values& values)
         unsigned i = 0;
         while (it.hasNext())
             data[i++] = it.next();
-        Aseba::UserMessage(id, data).serialize(m_stream);
-        m_stream->flush();
+        try {
+            Aseba::UserMessage(id, data).serialize(m_stream);
+            m_stream->flush();
+        } catch (DashelException e) {
+            // if this stream has a problem, ignore it for now, and let Hub call connectionClosed later.
+            qDebug() << "error while writing message";
+        }
+
     }
 }
 
@@ -262,10 +275,17 @@ void DashelInterface::sendEventName(const QString& name, const Values& data)
  */
 void DashelInterface::connectionClosed(Dashel::Stream* stream, bool abnormal)
 {
-    Q_UNUSED(stream);
-    Q_UNUSED(abnormal);
+    if (abnormal)
+        qDebug() << QString("Abnormal connection closed to %1 : %2")
+                    .arg(stream->getTargetName().c_str())
+                    .arg(stream->getFailReason().c_str());
+    else
+        qDebug() << QString("Normal connection closed to %1")
+                    .arg(stream->getTargetName().c_str());
+
     emit dashelDisconnection();
-    m_stream = 0;
+    m_isConnected = false;
+    m_stream = nullptr;
 }
 
 // internals
@@ -274,52 +294,24 @@ void DashelInterface::run()
     while (1) {
         try {
             m_stream = Dashel::Hub::connect(m_dashelParams.toStdString());
-
             emit dashelConnection();
             m_isConnected = true;
             break;
         } catch (Dashel::DashelException e) {
-            qDebug()  << "Cannot connect to target: " << m_dashelParams;
-            sleep(1000000L); // 1s
+            qDebug()  << "Cannot connect to target: "
+                      << m_dashelParams;
+            std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
-
     while (m_isRunning)
         Dashel::Hub::run();
-}
-
-// UTF8 to wstring
-std::wstring DashelInterface::widen(const char *src)
-{
-    const size_t destSize(mbstowcs(0, src, 0)+1);
-    std::vector<wchar_t> buffer(destSize, 0);
-    mbstowcs(&buffer[0], src, destSize);
-    return std::wstring(buffer.begin(), buffer.end() - 1);
-}
-
-std::wstring DashelInterface::widen(const std::string& src)
-{
-    return widen(src.c_str());
-}
-
-std::string DashelInterface::narrow(const wchar_t* src)
-{
-    const size_t destSize(wcstombs(0, src, 0)+1);
-    std::vector<char> buffer(destSize, 0);
-    wcstombs(&buffer[0], src, destSize);
-    return std::string(buffer.begin(), buffer.end() - 1);
-}
-
-std::string DashelInterface::narrow(const std::wstring& src)
-{
-    return narrow(src.c_str());
 }
 
 void DashelInterface::sendMessage(const Aseba::Message& message)
 {
     // this is called from the GUI thread through processMessage() or pingNetwork(), so we must lock the Hub before sending
     lock();
-    if (m_stream) {
+    if (m_isConnected) {
         try {
             message.serialize(m_stream);
             m_stream->flush();
