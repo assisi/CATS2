@@ -141,7 +141,7 @@ void FishBot::setupUniqueConnection()
         // request the node's description
         m_uniqueRobotInterface->pingNetwork();
         // wait until the description received
-        countDown(1.);
+        countDown(2.);
 
         qDebug() << QString("Loading the script on %1").arg(m_name);
         // load the script
