@@ -17,7 +17,7 @@ CoordinatesConversion::CoordinatesConversion(QString calibrationFileName, QSize 
  */
 CoordinatesConversion::~CoordinatesConversion()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -30,7 +30,7 @@ PositionMeters CoordinatesConversion::imageToWorldPosition(PositionPixels imageC
         position = m_cameraCalibration->imageToWorld(imageCoordinates);
         position.setValid(imageCoordinates.isValid());
     } else {
-        qDebug() << Q_FUNC_INFO << "Conversion is not possible as the calibration is not initialized.";
+        qDebug() << "Conversion is not possible as the calibration is not initialized.";
         position.setValid(false);
     }
     return position;
@@ -46,7 +46,7 @@ PositionPixels CoordinatesConversion::worldToImagePosition(PositionMeters worldC
         imagePosition = m_cameraCalibration->worldToImage(worldCoordinates);
         imagePosition.setValid(worldCoordinates.isValid());
     } else {
-        qDebug() << Q_FUNC_INFO << "Conversion is not possible as the calibration is not initialized.";
+        qDebug() << "Conversion is not possible as the calibration is not initialized.";
         imagePosition.setValid(false);
     }
     return imagePosition;
@@ -62,7 +62,7 @@ OrientationRad CoordinatesConversion::imageToWorldOrientation(PositionPixels ima
         orientation = m_cameraCalibration->imageToWorldOrientation(imageCoordinates, imageOrientation);
         orientation.setValid(imageOrientation.isValid());
     } else {
-        qDebug() << Q_FUNC_INFO << "Conversion is not possible as the calibration is not initialized.";
+        qDebug() << "Conversion is not possible as the calibration is not initialized.";
         orientation.setValid(false);
     }
     return orientation;
@@ -78,7 +78,7 @@ OrientationRad CoordinatesConversion::worldToImageOrientation(PositionMeters wor
         orientation = m_cameraCalibration->worldToImageOrientation(worldCoordinates, worldOrientation);
         orientation.setValid(worldOrientation.isValid());
     } else {
-        qDebug() << Q_FUNC_INFO << "Conversion is not possible as the calibration is not initialized.";
+        qDebug() << "Conversion is not possible as the calibration is not initialized.";
         orientation.setValid(false);
     }
     return orientation;

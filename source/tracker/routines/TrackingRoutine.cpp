@@ -26,7 +26,7 @@ TrackingRoutine::TrackingRoutine(TimestampedFrameQueuePtr inputQueue, Timestampe
 */
 TrackingRoutine::~TrackingRoutine()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -44,7 +44,7 @@ void TrackingRoutine::process()
             try {
                 doTracking(frame);
             } catch(cv::Exception& e) {
-                qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
+                qDebug() << "OpenCV exception: " << e.what();
             }
             // send the results
             TimestampedImageAgentsData timestampedAgentsData;

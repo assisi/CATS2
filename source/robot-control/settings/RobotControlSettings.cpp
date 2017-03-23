@@ -38,7 +38,7 @@ bool RobotControlSettings::init(QString configurationFileName)
             (m_controlFrequencyHz <= 30);
     settingsAccepted = settingsAccepted && validControlFrequency;
     if (!validControlFrequency) {
-        qDebug() << Q_FUNC_INFO << "The control frequency is invalid"
+        qDebug() << "The control frequency is invalid"
                  << m_controlFrequencyHz;
     }
 

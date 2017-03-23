@@ -23,10 +23,10 @@ int main(int argc, char *argv[])
                 mainWindow.show();
                 return app.exec();
         } else {
-            qDebug() << Q_FUNC_INFO << "Couldn't setup the robot control, finished";
+            qDebug() << "Couldn't setup the robot control, finished";
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find necessary input arguments, finished";
+        qDebug() << "Couldn't find necessary input arguments, finished";
     }
 }
 

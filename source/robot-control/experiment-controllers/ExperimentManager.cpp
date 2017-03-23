@@ -41,7 +41,7 @@ ExperimentManager::ExperimentManager(FishBot* robot) :
 void ExperimentManager::setController(ExperimentControllerType::Enum type)
 {
     if (!m_controllers.contains(type)) {
-        qDebug() << Q_FUNC_INFO << "Requested controller is not available";
+        qDebug() << "Requested controller is not available";
         return;
     }
 

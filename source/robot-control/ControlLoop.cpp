@@ -93,7 +93,7 @@ ControlLoop::ControlLoop() :
  */
 ControlLoop::~ControlLoop()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 
     // stop the timer
     m_controlLoopTimer.stop();
@@ -138,7 +138,7 @@ void ControlLoop::reinitializeSharedRobotInterface()
             m_robots[index]->setupSharedConnection(index);
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "The connection with the dbus could not be established.";
+        qDebug() << "The connection with the dbus could not be established.";
     }
 }
 
@@ -170,7 +170,7 @@ void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
         }
     }
 
-//    qDebug() << Q_FUNC_INFO << robotsData.size() << fishStates.size();
+//    qDebug() << robotsData.size() << fishStates.size();
 
     // transfers the data to all robots
     for (auto& robot : m_robots) {
@@ -193,7 +193,7 @@ void ControlLoop::selectRobot(QString name)
     for (auto& robot : m_robots) {
         if (robot->name() == name) {
             if (m_selectedRobot != robot) {
-                qDebug() << Q_FUNC_INFO << name << "is selected";
+                qDebug() << name << "is selected";
                 m_selectedRobot = robot;
                 // inform about the change
                 emit notifySelectedRobotChanged(m_selectedRobot->id());

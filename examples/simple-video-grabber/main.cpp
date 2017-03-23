@@ -31,10 +31,10 @@ int main(int argc, char *argv[])
                                             setupType, needTargetFrameSize)) {
                 grabberHandler = GrabberHandlerPtr(new GrabberHandler(setupType));
             } else {
-                qDebug() << Q_FUNC_INFO << "Grabber settings are not defined";
+                qDebug() << "Grabber settings are not defined";
             }
         } else {
-            qDebug() << Q_FUNC_INFO << "Main camera descriptor is ill-defined";
+            qDebug() << "Main camera descriptor is ill-defined";
         }
         return app.exec();
     }

@@ -19,7 +19,7 @@ InitiationControllerSettings::InitiationControllerSettings() :
  */
 InitiationControllerSettings::~InitiationControllerSettings()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!

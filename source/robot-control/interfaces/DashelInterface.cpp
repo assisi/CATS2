@@ -88,16 +88,14 @@ void DashelInterface::disconnectAseba()
 bool DashelInterface::loadScript(const QString& fileName)
 {
     if (!m_isConnected) {
-        qDebug() << Q_FUNC_INFO << "There is no active connectin, use "
-                                   "'connectAseba'";
+        qDebug() << "There is no active connectin, use 'connectAseba'";
         return false;
     }
 
     QFile file(fileName);
     if (!file.open(QFile::ReadOnly))
     {
-        qDebug() << Q_FUNC_INFO
-                 << QString("The script file %1 doesn't exist")
+        qDebug() << QString("The script file %1 doesn't exist")
                     .arg(fileName);
         return false;
     }
@@ -108,8 +106,7 @@ bool DashelInterface::loadScript(const QString& fileName)
     int errorColumn;
     if (!document.setContent(&file, false, &errorMsg, &errorLine, &errorColumn))
     {
-        qDebug() << Q_FUNC_INFO
-                 << QString("Error in XML source file: %0 at line %1, column %2")
+        qDebug() << QString("Error in XML source file: %0 at line %1, column %2")
                     .arg(errorMsg).arg(errorLine)
                     .arg(errorColumn);
         return false;
@@ -161,8 +158,7 @@ bool DashelInterface::loadScript(const QString& fileName)
                     }
                     else
                     {
-                        qDebug() << Q_FUNC_INFO
-                                 << QString::fromStdWString(error.toWString());
+                        qDebug() << QString::fromStdWString(error.toWString());
                         wasError = true;
                         break;
                     }
@@ -178,8 +174,7 @@ bool DashelInterface::loadScript(const QString& fileName)
                 const unsigned eventSize(element.attribute("size").toUInt());
                 if (eventSize > ASEBA_MAX_EVENT_ARG_SIZE)
                 {
-                    qDebug() << Q_FUNC_INFO
-                             << QString("Event %1 has a length %2 larger than maximum %3")
+                    qDebug() << QString("Event %1 has a length %2 larger than maximum %3")
                                 .arg(eventName)
                                 .arg(eventSize)
                                 .arg(ASEBA_MAX_EVENT_ARG_SIZE);
@@ -202,8 +197,7 @@ bool DashelInterface::loadScript(const QString& fileName)
     // check if there was an error
     if (wasError)
     {
-        qDebug() << Q_FUNC_INFO
-                 << QString("There was an error while loading script %1")
+        qDebug() << QString("There was an error while loading script %1")
                     .arg(fileName);
         commonDefinitions.events.clear();
         commonDefinitions.constants.clear();
@@ -213,8 +207,7 @@ bool DashelInterface::loadScript(const QString& fileName)
     // check if there was some matching problem
     if (noNodeCount)
     {
-        qDebug() << Q_FUNC_INFO
-                 << QString("%1 scripts have no corresponding nodes in the "
+        qDebug() << QString("%1 scripts have no corresponding nodes in the "
                             "current network and have not been loaded.")
                     .arg(noNodeCount);
     }
@@ -261,8 +254,7 @@ void DashelInterface::sendEventName(const QString& name, const Values& data)
     if (commonDefinitions.events.contains(name.toStdWString(), &event))
         sendEvent(event, data);
     else
-        qDebug() << Q_FUNC_INFO
-                 << QString("No event named %1").arg(name);
+        qDebug() << QString("No event named %1").arg(name);
 }
 
 /*!
@@ -284,13 +276,10 @@ void DashelInterface::run()
             m_stream = Dashel::Hub::connect(m_dashelParams.toStdString());
 
             emit dashelConnection();
-//            qDebug()  << Q_FUNC_INFO
-//                      << "Connected to target: " << m_dashelParams;
             m_isConnected = true;
             break;
         } catch (Dashel::DashelException e) {
-            qDebug()  << Q_FUNC_INFO
-                      << "Cannot connect to target: " << m_dashelParams;
+            qDebug()  << "Cannot connect to target: " << m_dashelParams;
             sleep(1000000L); // 1s
         }
     }
@@ -337,7 +326,7 @@ void DashelInterface::sendMessage(const Aseba::Message& message)
             unlock();
         } catch(Dashel::DashelException e) {
             unlock();
-            qDebug() << Q_FUNC_INFO << "Dashel exception: " << e.what();
+            qDebug() << "Dashel exception: " << e.what();
         }
     } else {
         unlock();

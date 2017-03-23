@@ -24,7 +24,7 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings, Ti
         // copy the parameters
         m_settings = fishBotLedsTrackingSettings->data();
     } else {
-        qDebug() << Q_FUNC_INFO << "Could not set the routune's settings";
+        qDebug() << "Could not set the routune's settings";
     }
 
     // set the mask file
@@ -48,7 +48,7 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings, Ti
  */
 FishBotLedsTracking::~FishBotLedsTracking()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -67,7 +67,7 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
         if ((m_maskImage.data != nullptr) && (m_blurredImage.type() == m_maskImage.type()))
             m_blurredImage = m_blurredImage & m_maskImage;
         else {
-//            qDebug() << Q_FUNC_INFO << "The mask's type is not compatible with the image";
+//            qDebug() << "The mask's type is not compatible with the image";
         }
 
         // detect robots
@@ -92,7 +92,7 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
         }
     }
     else
-        qDebug() << Q_FUNC_INFO << "Unsupported image format" << image.type();
+        qDebug() << "Unsupported image format" << image.type();
 }
 
 /*!
@@ -133,7 +133,7 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
         // retrieve contours from the binary image
         cv::findContours(m_binaryImage, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
     } catch(cv::Exception& e) {
-        qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
+        qDebug() << "OpenCV exception: " << e.what();
     }
 
     // sort the contours to find two biggest (inspired by http://stackoverflow.com/questions/33401745/find-largest-contours-opencv)

@@ -32,13 +32,13 @@ int main(int argc, char *argv[])
                 mainWindow.show();
                 return app.exec();
             } else {
-                qDebug() << Q_FUNC_INFO << "Couldn't setup the camera, finished";
+                qDebug() << "Couldn't setup the camera, finished";
             }
         } else {
-            qDebug() << Q_FUNC_INFO << "Invalid camera descriptor" << CommandLineParameters::get().cameraDescriptor(setupType).parameters();
+            qDebug() << "Invalid camera descriptor" << CommandLineParameters::get().cameraDescriptor(setupType).parameters();
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find necessary input arguments, finished";
+        qDebug() << "Couldn't find necessary input arguments, finished";
     }
 }
 

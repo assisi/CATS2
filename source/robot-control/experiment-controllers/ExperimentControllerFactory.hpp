@@ -33,7 +33,7 @@ public:
             case ExperimentControllerType::INITIATION:
                 return ExperimentControllerPtr(new InitiationController(robot, settings), &QObject::deleteLater);
             default:
-                qDebug() << Q_FUNC_INFO << "Controller could not be created.";
+                qDebug() << "Controller could not be created.";
                 break;
             }
         }
@@ -51,8 +51,7 @@ public:
         case ExperimentControllerType::INITIATION:
             return ExperimentControllerSettingsPtr(new InitiationControllerSettings());
         default:
-            qDebug() << Q_FUNC_INFO
-                     << "Experiment controller settings could not be created.";
+            qDebug() << "Experiment controller settings could not be created.";
             break;
         }
         return ExperimentControllerSettingsPtr();

@@ -71,7 +71,7 @@ FishBot::FishBot(QString id) :
  */
 FishBot::~FishBot()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     // if the connection is open then close it
     if (m_uniqueRobotInterface.data())
         m_uniqueRobotInterface->disconnectAseba();
@@ -108,11 +108,11 @@ void FishBot::setupSharedConnection(int robotIndex)
                 // set the obstacle avoidance on the robot
                 m_navigation.updateLocalObstacleAvoidance();
             } else {
-                qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
+                qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
             }
 //        }
     } else {
-        qDebug() << Q_FUNC_INFO << QString("The %1 interface is not set").arg(m_name);
+        qDebug() << QString("The %1 interface is not set").arg(m_name);
     }
 }
 
@@ -130,20 +130,20 @@ void FishBot::setupUniqueConnection()
     m_uniqueRobotInterface = DashelInterfacePtr(new DashelInterface());
 
     // FIXME : how to get a feedback if the connection is established
-    qDebug() << Q_FUNC_INFO << QString("Connecting to %1").arg(m_name);
+    qDebug() << QString("Connecting to %1").arg(m_name);
     m_uniqueRobotInterface->connectAseba(target);
 
     // wait until connected
     countDown(5.);
 
     if (m_uniqueRobotInterface->isConnected()) {
-        qDebug() << Q_FUNC_INFO << QString("Requesting the node description for %1").arg(m_name);
+        qDebug() << QString("Requesting the node description for %1").arg(m_name);
         // request the node's description
         m_uniqueRobotInterface->pingNetwork();
         // wait until the description received
         countDown(1.);
 
-        qDebug() << Q_FUNC_INFO << QString("Loading the script on %1").arg(m_name);
+        qDebug() << QString("Loading the script on %1").arg(m_name);
         // load the script
         QString scriptDirPath = QCoreApplication::applicationDirPath() +
                 QDir::separator() + "aesl";
@@ -154,10 +154,10 @@ void FishBot::setupUniqueConnection()
             // set the obstacle avoidance on the robot
             m_navigation.updateLocalObstacleAvoidance();
         } else {
-            qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
+            qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
         }
     } else  {
-        qDebug() << Q_FUNC_INFO << QString("Could not connect to %1").arg(m_name);
+        qDebug() << QString("Could not connect to %1").arg(m_name);
     }
 }
 

@@ -39,7 +39,7 @@ public:
             case TrackingRoutineType::TWO_COLORS_TAG_TRACKING:
                 return TrackingRoutinePtr(new TwoColorsTagTracking(settings, inputQueue, debugQueue), &QObject::deleteLater);
             default:
-                qDebug() << Q_FUNC_INFO << "Tracking routine could not be created.";
+                qDebug() << "Tracking routine could not be created.";
                 break;
             }
         }
@@ -61,7 +61,7 @@ public:
         case TrackingRoutineType::TWO_COLORS_TAG_TRACKING:
             return TrackingRoutineSettingsPtr(new TwoColorsTagTrackingSettings(setupType));
         default:
-            qDebug() << Q_FUNC_INFO << "Tracking routine settings could not be created.";
+            qDebug() << "Tracking routine settings could not be created.";
             break;
         }
         return TrackingRoutineSettingsPtr();

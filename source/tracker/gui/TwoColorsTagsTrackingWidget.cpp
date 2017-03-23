@@ -51,7 +51,7 @@ TwoColorsTagsTrackingWidget::TwoColorsTagsTrackingWidget(TrackingRoutinePtr rout
         m_ui->frontThresholdSlider->setValue(description.colorThreshold);
         m_frontColor = description.tagColor;
     } else {
-        qDebug() << Q_FUNC_INFO << "The tracking routine is ill-defined";
+        qDebug() << "The tracking routine is ill-defined";
     }
 
     connect(m_ui->frontThresholdSlider,
@@ -104,7 +104,7 @@ TwoColorsTagsTrackingWidget::TwoColorsTagsTrackingWidget(TrackingRoutinePtr rout
  */
 TwoColorsTagsTrackingWidget::~TwoColorsTagsTrackingWidget()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     delete m_ui;
 }
 
@@ -135,6 +135,6 @@ void TwoColorsTagsTrackingWidget::updateSettings()
     if (twoColorsTracking) {
         twoColorsTracking->setSettings(updatedSettings);
     } else {
-        qDebug() << Q_FUNC_INFO << "The tracking routine is ill-defined";
+        qDebug() << "The tracking routine is ill-defined";
     }
 }

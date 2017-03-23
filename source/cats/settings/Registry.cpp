@@ -26,7 +26,7 @@ Registry::Registry() : QObject(nullptr)
      if (m_dataLoggingPath.isEmpty()) {
          m_dataLoggingPath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) +
                  QDir::separator() + QApplication::applicationName();
-         qDebug() << Q_FUNC_INFO << QString("The logging path is not defined, "
+         qDebug() << QString("The logging path is not defined, "
                                               "setting the default path %1")
                                              .arg(m_dataLoggingPath);
      }

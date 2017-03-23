@@ -45,7 +45,7 @@ TrackingSetup::TrackingSetup(SetupType::Enum setupType, bool needOutputQueue) :
  */
 TrackingSetup::~TrackingSetup()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 
