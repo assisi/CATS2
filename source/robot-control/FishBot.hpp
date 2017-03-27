@@ -208,10 +208,14 @@ private:
     //! A service method that makes the code to wait for a certatin time by printing
     //! the count down.
     void countDown(double timeOut);
+    //! Implements the reaction of the robot on the power-down event.
+    void processPowerDownEvent();
 
 private:
     //! The robot's id.
     QString m_id;
+    //! The robot's index used by the firmware, provided by the control loop.
+    int m_firmwareId;
     //! The robot's name.
     QString m_name;
     //! The color of the robot's LEDs.

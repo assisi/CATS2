@@ -16,6 +16,7 @@
 FishBot::FishBot(QString id) :
     QObject(nullptr),
     m_id(id),
+    m_firmwareId(0),
     m_name(QString("Fish_bot_%1").arg(m_id)), // NOTE : don't change this name as the .aesl files are searched by it
     m_ledColor(Qt::black),
     m_state(),
@@ -95,6 +96,7 @@ void FishBot::setupSharedConnection(int robotIndex)
     if (m_sharedRobotInterface.data()) {
         // FIXME : in the multi-robot/node mode aseba doesn't provide the node list correctly
 //        if (m_robotInterface->nodeList.contains(m_name)) {
+            m_firmwareId = robotIndex;
             QString scriptDirPath = QCoreApplication::applicationDirPath() +
                     QDir::separator() + "aesl";
             QString scriptPath = scriptDirPath + QDir::separator() +
@@ -103,10 +105,18 @@ void FishBot::setupSharedConnection(int robotIndex)
                 m_sharedRobotInterface->loadScript(scriptPath);
                 // set the robots id
                 Values data;
-                data.append(robotIndex);
+                data.append(m_firmwareId);
                 m_sharedRobotInterface->setVariable(m_name, "IDControl", data);
                 // set the obstacle avoidance on the robot
                 m_navigation.updateLocalObstacleAvoidance();
+
+                // add a callback to process the incoming messages from the robot
+                m_sharedRobotInterface->connectEvent("PowerDown",
+                                               [this](const Values& data) {
+                    // get the firmware's id
+                    if ((data.size() > 0) && (data[0] == m_firmwareId))
+                        processPowerDownEvent();
+                });
             } else {
                 qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
             }
@@ -153,6 +163,16 @@ void FishBot::setupUniqueConnection()
             m_uniqueRobotInterface->loadScript(scriptPath);
             // set the obstacle avoidance on the robot
             m_navigation.updateLocalObstacleAvoidance();
+
+            // add a callback to process the incoming messages from the robot
+            m_uniqueRobotInterface->connectEvent("PowerDown",
+                                           [this](const Values& data) {
+                // no need to check the id for the unique connection, process
+                // directly
+                processPowerDownEvent();
+            });
+
+
         } else {
             qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
         }
@@ -398,4 +418,12 @@ void FishBot::countDown(double timeOut)
         continue;
     }
     std::cout << std::endl;
+}
+
+/*!
+ * Implements the reaction of the robot on the power-down event.
+ */
+void FishBot::processPowerDownEvent()
+{
+    qDebug() << m_id << "power down";
 }
