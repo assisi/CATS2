@@ -23,10 +23,11 @@
 
 #include "DashelInterface.hpp"
 
-#include <QtCore/QDebug>
 #include <dashel/dashel.h>
 
+#include <QtCore/QDebug>
 #include <QtCore/QFile>
+#include <QtCore/QSharedPointer>
 #include <QtXml/QDomDocument>
 
 #include <string>
@@ -223,17 +224,15 @@ void DashelInterface::incomingData(Dashel::Stream *stream)
 {
     try {
         Aseba::Message *message = Aseba::Message::receive(stream);
-        Aseba::UserMessage *userMessage = dynamic_cast<Aseba::UserMessage *>(message);
-
-        //A description manager for loading the Aseba Scripts
+        // scan this message for nodes descriptions
         Aseba::NodesManager::processMessage(message);
 
+        QSharedPointer<Aseba::UserMessage> userMessage(dynamic_cast<Aseba::UserMessage *>(message));
         if (userMessage)
             emit messageAvailable(userMessage);
-        else
-            delete message;
     } catch (DashelException e) {
-        // if this stream has a problem, ignore it for now, and let Hub call connectionClosed later.
+        // if this stream has a problem, ignore it for now, and let Hub call
+        // connectionClosed later.
         qDebug() << "error while reading message";
     }
 }
@@ -257,10 +256,12 @@ void DashelInterface::sendEvent(unsigned id, const Values& values)
             // if this stream has a problem, ignore it for now, and let Hub call connectionClosed later.
             qDebug() << "error while writing message";
         }
-
     }
 }
 
+/*!
+ * Sends an named event to the robot.
+ */
 void DashelInterface::sendEventName(const QString& name, const Values& data)
 {
     size_t event;
@@ -303,6 +304,10 @@ void DashelInterface::run()
             std::this_thread::sleep_for(std::chrono::seconds(1));
         }
     }
+
+    QObject::connect(this, &DashelInterface::messageAvailable,
+                     this, &DashelInterface::dispatchEvent);
+
     while (m_isRunning)
         Dashel::Hub::run();
 }
@@ -332,4 +337,34 @@ void DashelInterface::stop()
     Dashel::Hub::stop();
 }
 
+/*!
+ * Flag an event to listen for, and associate callback function (passed by
+ * pointer).
+ */
+void DashelInterface::connectEvent(const QString& eventName, EventCallback callback)
+{
+    // associate callback with event name
+    m_callbacks.insert(std::make_pair(eventName, callback));
+}
 
+/*!
+ * Callback (slot) used to retrieve subscribed event information.
+ */
+void DashelInterface::dispatchEvent(QSharedPointer<Aseba::UserMessage> message)
+{
+    // get name
+    QString eventName = QString::fromWCharArray(commonDefinitions.events[message->type].name.c_str());
+
+    // convert values
+    Values eventData;
+    for (auto& value : message->data)
+        eventData.append(value);
+
+ // find and trigger matching callback
+    if( m_callbacks.count(eventName) > 0)
+    {
+        auto eventCallbacks = m_callbacks.equal_range(eventName);
+        for (auto iterator = eventCallbacks.first; iterator != eventCallbacks.second; ++iterator)
+            (iterator->second)(eventData);
+    }
+}
