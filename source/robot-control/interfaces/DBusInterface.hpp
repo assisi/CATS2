@@ -4,7 +4,6 @@
 #include "Values.hpp"
 
 #include <QtDBus/QtDBus>
-#include <functional>
 
 Q_DECLARE_METATYPE(QList<qint16>);
 
@@ -39,7 +38,6 @@ public:
     //! Set an Aseba variable from a Aseba node.
     void setVariable(const QString& node, const QString& variable, const Values& value);
 
-    typedef std::function<void(const Values&)> EventCallback;
     //! Flag an event to listen for, and associate callback function
     //! (passed by pointer).
     void connectEvent(const QString& eventName, EventCallback callback);

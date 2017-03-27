@@ -149,8 +149,9 @@ void DBusInterface::connectEvent(const QString& eventName, EventCallback callbac
     // associate callback with event name
     m_callbacks.insert(std::make_pair(eventName, callback));
 
-    // listen
-    m_eventfilterInterface->call("ListenEventName", eventName);
+    // listen if connected first time
+    if (m_callbacks.count(eventName) == 1)
+        m_eventfilterInterface->call("ListenEventName", eventName);
 }
 
 /*!
