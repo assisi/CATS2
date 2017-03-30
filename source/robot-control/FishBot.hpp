@@ -9,6 +9,8 @@
 #include "experiment-controllers/ExperimentControllerType.hpp"
 #include "experiment-controllers/ExperimentManager.hpp"
 
+#include "interfaces/DBusInterface.hpp"
+
 #include <AgentState.hpp>
 
 #include <QtCore/QObject>
@@ -38,28 +40,48 @@ public:
     //! Sets the robot's color
     void setLedColor(QColor color) { m_ledColor = color; }
 
+public:
     //! Sets the robot's interface.
-    void setRobotInterface(Aseba::DBusInterfacePtr robotInterface);
-    //! Returns the robot's interface.
-    Aseba::DBusInterfacePtr robotInterface() { return m_robotInterface; }
+    void setSharedRobotInterface(DBusInterfacePtr robotInterface);
     //! Inititialises the robot's firmware. The robot's index is used to
     //! initilize the robot's id in its firmware.
-    void setupConnection(int robotIndex);
+    void setupSharedConnection(int robotIndex);
+
+    //! Connects to the robot via its own interface.
+    void setupUniqueConnection();
+
+    //! Sends an aseba event to the robot.
+    void sendEvent(const QString& eventName, const Values& value);
 
 public:
     //! Returns the supported controllers.
-    QList<ExperimentControllerType::Enum> supportedControllers() const { return m_experimentManager.supportedControllers(); }
+    QList<ExperimentControllerType::Enum> supportedControllers() const
+    {
+        return m_experimentManager.supportedControllers();
+    }
     //! Sets the controller.
-    void setController(ExperimentControllerType::Enum type) { m_experimentManager.setController(type); }
+    void setController(ExperimentControllerType::Enum type)
+    {
+        m_experimentManager.setController(type);
+    }
     //! Return the type of the current controller.
-    ExperimentControllerType::Enum currentController() const { return m_experimentManager.currentController(); }
+    ExperimentControllerType::Enum currentController() const
+    {
+        return m_experimentManager.currentController();
+    }
 
     //! Returns the supported control modes.
-    QList<ControlModeType::Enum> supportedControlModes() const { return m_controlStateMachine.supportedControlModes(); }
+    QList<ControlModeType::Enum> supportedControlModes() const
+    {
+        return m_controlStateMachine.supportedControlModes();
+    }
     //! Sets the control mode.
     void setControlMode(ControlModeType::Enum type);
     //! Return the type of the current control mode.
-    ControlModeType::Enum currentControlMode() const { return m_controlStateMachine.currentControlMode(); }
+    ControlModeType::Enum currentControlMode() const
+    {
+        return m_controlStateMachine.currentControlMode();
+    }
 
     //! Checks that the current control modes can generate targets with
     //! different motion patterns.
@@ -67,7 +89,10 @@ public:
     //! Sets the motion pattern.
     void setMotionPattern(MotionPatternType::Enum type);
     //! Return the motion pattern.
-    MotionPatternType::Enum currentMotionPattern() const { return m_navigation.motionPattern(); }
+    MotionPatternType::Enum currentMotionPattern() const
+    {
+        return m_navigation.motionPattern();
+    }
     //! Sets the motion pattern frequency divider. The goal is to send commands
     //! less often to keep the network load low.
     void setMotionPatternFrequencyDivider(MotionPatternType::Enum type,
@@ -82,7 +107,10 @@ public:
     //! Sets the obstacle avoidance usage flag in the navigation.
     void setUseObstacleAvoidance(bool useObstacleAvoidance);
     //! Returns the obstacle avoidance usage from from the navigation.
-    bool useObstacleAvoidance() const { return m_navigation.useObstacleAvoidance(); }
+    bool useObstacleAvoidance() const
+    {
+        return m_navigation.useObstacleAvoidance();
+    }
 
     //! Steps the control for the robot.
     void stepControl();
@@ -177,6 +205,11 @@ private:
     void releaseModelArea();
 
 private:
+    //! A service method that makes the code to wait for a certatin time by printing
+    //! the count down.
+    void countDown(double timeOut);
+
+private:
     //! The robot's id.
     QString m_id;
     //! The robot's name.
@@ -186,7 +219,10 @@ private:
     //! The robot's state.
     StateWorld m_state;
     //! The interface to communicate with the robot. Shared by all robots.
-    Aseba::DBusInterfacePtr m_robotInterface;
+    DBusInterfacePtr m_sharedRobotInterface;
+    //! The interface to communicate with the robot. Unique for this robot. We
+    //! use either this one or the shared one.
+    DashelInterfacePtr m_uniqueRobotInterface;
 
     // TODO : to make this class members scopedpointers and use forward declaration
     // for efficiency

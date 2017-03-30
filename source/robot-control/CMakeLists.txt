@@ -5,10 +5,6 @@ function(makeLink sourceFilePath destinationFilePath)
     endif()
 endfunction()
 
-# Add the qt-aseba interface files to the project, before tried with add_custom_command but it never worked
-makeLink(dependencies/aseba/examples/clients/cpp-qt-dbus/dbusinterface.h dbusinterface.h)
-makeLink(dependencies/aseba/examples/clients/cpp-qt-dbus/dbusinterface.cpp dbusinterface.cpp)
-
 # Add fish-model files
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/model)
     execute_process(COMMAND mkdir model WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
@@ -38,7 +34,8 @@ set(srcs
     control-modes/Manual.cpp
     control-modes/ControlMode.cpp
     ControlModeStateMachine.cpp
-    dbusinterface.cpp
+    interfaces/DBusInterface.cpp
+    interfaces/DashelInterface.cpp
     gui/RobotControlWidget.cpp
     gui/RobotsWidget.cpp
     gui/PotentialFieldWidget.cpp
@@ -64,9 +61,9 @@ set(srcs
 
 set(hdrs
     control-modes/ControlTarget.hpp
-    dbusinterface.h
     RobotControlPointerTypes.hpp
     MotionPatternType.hpp
+    interfaces/Values.hpp
     control-modes/ControlModeType.hpp
     experiment-controllers/ExperimentControllerType.hpp
     experiment-controllers/ExperimentControllerFactory.hpp
@@ -77,7 +74,9 @@ qt5_wrap_ui(uis_hdrs gui/RobotControlWidget.ui gui/RobotsWidget.ui gui/Potential
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 add_library(robot-control SHARED ${srcs} ${hdrs} ${uis_hdrs}) #${resources})
-target_link_libraries(robot-control common Qt5::Core Qt5::Widgets Qt5::DBus ${Boost_LIBRARIES})
+target_link_libraries(robot-control common Qt5::Core Qt5::Widgets Qt5::DBus
+                      Qt5::Xml ${Boost_LIBRARIES}
+                      ${dashel_LIBRARIES} ${Aseba_LIBRARIES})
 
 #install(TARGETS robot-control DESTINATION .)
 #install(FILES

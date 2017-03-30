@@ -115,13 +115,9 @@ void ColorDetector::doTracking(const TimestampedFrame& frame)
 
         // centers of contour
         int agentIndex = 0;
-        std::vector<cv::Point2f> centers;
-        cv::Moments moments;
         for (auto& contour: contours) {
-            moments = cv::moments(contour);
             if (agentIndex < m_agents.size()) {
-                m_agents[agentIndex].mutableState()->setPosition(cv::Point2f(static_cast<float>(moments.m10/moments.m00+0.5),
-                                                                             static_cast<float>(moments.m01/moments.m00+0.5)));
+                m_agents[agentIndex].mutableState()->setPosition(contourCenter(contour));
                 agentIndex++;
             } else {
                 break;

@@ -87,6 +87,7 @@
                 <g>150</g>
                 <b>200</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
         </fishBot_1>
         <fishBot_2>
             <id>C</id>
@@ -95,6 +96,7 @@
                 <g>255</g>
                 <b>190</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
         </fishBot_2>
         <fishBot_3>
             <id>B</id>
@@ -103,6 +105,7 @@
                 <g>91</g>
                 <b>93</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm0</connectionTarget>
         </fishBot_3>
     </robots>
     <setups>
@@ -120,7 +123,7 @@
                 <trackingMethod>blobDetector</trackingMethod>
                 <numberOfAgents>5</numberOfAgents>
                 <blobDetector>
-                    <minBlobSizePx>0</minBlobSizePx>
+                    <minBlobSizePx>3</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
                     <minDistance>5.0</minDistance>
                     <blockSize>5</blockSize>
@@ -140,7 +143,7 @@
                 <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
                     <fishBot_H>
-                        <threshold>40</threshold>
+                        <threshold>30</threshold>
                     </fishBot_H>
                     <fishBot_B>
                         <threshold>70</threshold>

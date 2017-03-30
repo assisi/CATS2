@@ -15,30 +15,40 @@ else()
     set (CMAKE_INSTALL_PREFIX ${CMAKE_SOURCE_DIR}/bin)
 endif()
 
-find_package(Qt5 REQUIRED Core Widgets DBus)
-find_package(ReaderWriterQueue REQUIRED)
-find_package(OpenCV 3 REQUIRED)
-find_package(LibXml2 2.6.0 REQUIRED)
-find_package(GStreamer REQUIRED COMPONENTS base)
-find_package(Qt5GStreamer REQUIRED)
-find_package(GLIB2 REQUIRED)
-#find_package(Libtsai REQUIRED)
-find_package(Protobuf REQUIRED)
-#find_package(Boost 1.40 COMPONENTS program_options REQUIRED )
-find_package(Boost COMPONENTS program_options REQUIRED )
-
+find_package(Qt5 REQUIRED Core Widgets DBus Xml)
 # SYSTEM is used to suppress GCC warnings in libraries headers
 include_directories(SYSTEM ${QT_INCLUDE_DIR})
+
+find_package(ReaderWriterQueue REQUIRED)
+include_directories(SYSTEM ${READERWRITERQUEUE_INCLUDE_DIRS})
+
+find_package(OpenCV 3 REQUIRED)
+include_directories(SYSTEM ${OpenCV_INCLUDE_DIR})
+
+find_package(LibXml2 2.6.0 REQUIRED)
 include_directories(SYSTEM ${LIBXML2_INCLUDE_DIR})
+
+find_package(GStreamer REQUIRED COMPONENTS base)
 include_directories(SYSTEM ${GSTREAMER_INCLUDE_DIRS})
+
+find_package(Qt5GStreamer REQUIRED)
 include_directories(SYSTEM ${QTGSTREAMER_INCLUDES})
+
+find_package(GLIB2 REQUIRED)
 include_directories(SYSTEM ${GLIB2_INTERNAL_INCLUDE_DIR})
 include_directories(SYSTEM ${GLIB2_MAIN_INCLUDE_DIR})
-include_directories(SYSTEM ${OpenCV_INCLUDE_DIR})
-include_directories(SYSTEM ${READERWRITERQUEUE_INCLUDE_DIRS})
-#include_directories(SYSTEM ${LIBTSAI_INCLUDE_DIRS})
+
+find_package(Protobuf REQUIRED)
 include_directories(SYSTEM ${PROTOBUF_INCLUDE_DIRS})
+
+find_package(Boost COMPONENTS program_options REQUIRED )
 include_directories(SYSTEM ${Boost_INCLUDE_DIR} )
+
+find_package(dashel REQUIRED)
+include_directories(SYSTEM ${dashel_INCLUDE_DIRS})
+
+find_package(Aseba REQUIRED)
+include_directories(SYSTEM ${Aseba_INCLUDE_DIRS})
 
 #add_definitions(${QTGSTREAMER_DEFINITIONS}) # defines QT_NO_KEYWORDS that demands replacing all "signals" by "Q_SIGNALS"
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${QTGSTREAMER_FLAGS}")

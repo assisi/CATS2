@@ -65,6 +65,8 @@ public:
     {
         return m_cameraDescriptors.keys();
     }
+    //! Returns the flag defining wether one interface is shared by all robots.
+    bool useSharedRobotInterface() const { return m_sharedRobotInterface; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -87,6 +89,10 @@ private:
 
     //! The path to the configuration file.
     QString m_configurationFilePath;
+
+    //! Defines if one interface is shared by all robots or is created exclusively
+    //! for every robot.
+    bool m_sharedRobotInterface;
 };
 
 #endif // CATS2_COMMAND_LINE_PARAMETERS_HPP

@@ -5,7 +5,8 @@
 /*!
  * Constructor.
  */
-CommandLineParameters::CommandLineParameters()
+CommandLineParameters::CommandLineParameters() :
+    m_sharedRobotInterface(true)
 {
 }
 
@@ -31,7 +32,8 @@ CommandLineParameters& CommandLineParameters::get()
  * This part is inspired by this stackoverflow post
  * http://stackoverflow.com/questions/865668/how-to-parse-command-line-arguments-in-c
  */
-bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, bool needMainCamera, bool needBelowCamera)
+bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile,
+                                 bool needMainCamera, bool needBelowCamera)
 {
     bool settingsAccepted = false;
 
@@ -86,6 +88,19 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile, boo
     }
     settingsAccepted = settingsAccepted && (foundConfigFilePath || (!needConfigFile));
 
+    // get the flag for the robot interface
+    QString flag;
+    bool foundRobotInterfaceFlag =
+            (CommandLineParser::parseArgument(argc, argv, "-sri", flag) ||
+             CommandLineParser::parseArgument(argc, argv, "--shared-interface-flag", flag));
+    if (foundRobotInterfaceFlag) {
+        m_sharedRobotInterface = (flag.toInt() == 1);
+    } else {
+        qDebug() << "Couldn't find the robot interface flag, set  to default "
+                    "value 'true' (connecting to the shared interface)";
+        m_sharedRobotInterface = true;
+    }
+
     return settingsAccepted;
 }
 
@@ -96,14 +111,14 @@ void CommandLineParameters::printSupportedArguments()
 {
     qDebug() << "Video grabber usage";
     qDebug() << "\t -h --help\t\tShow this help message";
-    qDebug() << "\t -mc --maincam\tDefines the video stream used to track agents."
-             << "Format : -mc <StreamType> <parameters>";
-    qDebug() << "\t -bc --belowcam\tDefines the video stream used to track the"
-             << "robot under the aquarium. Format : -mc <StreamType> <parameters>";
+    qDebug() << "\t -mc --maincam\tDefines the video stream used to track agents. "
+                "Format : -mc <StreamType> <parameters>";
+    qDebug() << "\t -bc --belowcam\tDefines the video stream used to track the "
+                "robot under the aquarium. Format : -mc <StreamType> <parameters>";
     qDebug() << "\t -c --config\tThe configuration file. Format : -c <PathToFile>";
+    qDebug() << "\t -sri --shared-robot-interface\tThe flag to use a shared"
+                "interface to connect to robots. Format : -sri 1/0";
 }
-
-
 
 /*!
  * Looks for the given stream's argument in the command line.

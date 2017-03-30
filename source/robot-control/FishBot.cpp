@@ -2,9 +2,10 @@
 #include "control-modes/ControlMode.hpp"
 #include "control-modes/ControlTarget.hpp"
 
-#include "dbusinterface.h"
+#include "interfaces/DashelInterface.hpp"
 
 #include <AgentData.hpp>
+#include <Timer.hpp>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
@@ -18,7 +19,8 @@ FishBot::FishBot(QString id) :
     m_name(QString("Fish_bot_%1").arg(m_id)), // NOTE : don't change this name as the .aesl files are searched by it
     m_ledColor(Qt::black),
     m_state(),
-    m_robotInterface(nullptr),
+    m_sharedRobotInterface(nullptr),
+    m_uniqueRobotInterface(nullptr),
     m_experimentManager(this),
     m_controlStateMachine(this),
     m_navigation(this)
@@ -70,34 +72,39 @@ FishBot::FishBot(QString id) :
 FishBot::~FishBot()
 {
     qDebug() << "Destroying the object";
+    // if the connection is open then close it
+    if (m_uniqueRobotInterface.data())
+        m_uniqueRobotInterface->disconnectAseba();
     // TODO : to remove the callback, dbus interface must be modified for this.
 }
 
 /*!
  * Sets the robot's interface.
  */
-void FishBot::setRobotInterface(Aseba::DBusInterfacePtr robotInterface)
+void FishBot::setSharedRobotInterface(DBusInterfacePtr sharedRobotInterface)
 {
-    m_robotInterface = robotInterface;
+    m_sharedRobotInterface = sharedRobotInterface;
     // TODO : to add a callback that sets the robot's state from the event
 }
 
 /*!
  * Inititialises the robot's firmaware.
  */
-void FishBot::setupConnection(int robotIndex)
+void FishBot::setupSharedConnection(int robotIndex)
 {
-    if (m_robotInterface.data()) {
+    if (m_sharedRobotInterface.data()) {
         // FIXME : in the multi-robot/node mode aseba doesn't provide the node list correctly
 //        if (m_robotInterface->nodeList.contains(m_name)) {
-            QString scriptDirPath = QCoreApplication::applicationDirPath() + QDir::separator() + "aesl";
-            QString scriptPath = scriptDirPath + QDir::separator() + m_name + ".aesl";
+            QString scriptDirPath = QCoreApplication::applicationDirPath() +
+                    QDir::separator() + "aesl";
+            QString scriptPath = scriptDirPath + QDir::separator() +
+                    m_name + ".aesl";
             if (QFileInfo(scriptPath).exists()) {
-                m_robotInterface->loadScript(scriptPath);
+                m_sharedRobotInterface->loadScript(scriptPath);
                 // set the robots id
                 Values data;
                 data.append(robotIndex);
-                m_robotInterface->setVariable(m_name, "IDControl", data);
+                m_sharedRobotInterface->setVariable(m_name, "IDControl", data);
                 // set the obstacle avoidance on the robot
                 m_navigation.updateLocalObstacleAvoidance();
             } else {
@@ -105,7 +112,52 @@ void FishBot::setupConnection(int robotIndex)
             }
 //        }
     } else {
-        qDebug() << "The robot's interface is not set";
+        qDebug() << QString("The %1 interface is not set").arg(m_name);
+    }
+}
+
+/*!
+ * Connects to the robot via its own interface.
+ */
+void FishBot::setupUniqueConnection()
+{
+    // if the connection is open then close it
+    if (m_uniqueRobotInterface.data())
+        m_uniqueRobotInterface->disconnectAseba();
+
+    // make new connection
+    QString target = RobotControlSettings::get().robotSettings(m_id).connectionTarget();
+    m_uniqueRobotInterface = DashelInterfacePtr(new DashelInterface());
+
+    // FIXME : how to get a feedback if the connection is established
+    qDebug() << QString("Connecting to %1").arg(m_name);
+    m_uniqueRobotInterface->connectAseba(target);
+
+    // wait until connected
+    countDown(5.);
+
+    if (m_uniqueRobotInterface->isConnected()) {
+        qDebug() << QString("Requesting the node description for %1").arg(m_name);
+        // request the node's description
+        m_uniqueRobotInterface->pingNetwork();
+        // wait until the description received
+        countDown(2.);
+
+        qDebug() << QString("Loading the script on %1").arg(m_name);
+        // load the script
+        QString scriptDirPath = QCoreApplication::applicationDirPath() +
+                QDir::separator() + "aesl";
+        QString scriptPath = scriptDirPath + QDir::separator() +
+                m_name + ".aesl";
+        if (QFileInfo(scriptPath).exists()) {
+            m_uniqueRobotInterface->loadScript(scriptPath);
+            // set the obstacle avoidance on the robot
+            m_navigation.updateLocalObstacleAvoidance();
+        } else {
+            qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
+        }
+    } else  {
+        qDebug() << QString("Could not connect to %1").arg(m_name);
     }
 }
 
@@ -313,4 +365,37 @@ void FishBot::stepExperimentManager()
             }
         }
     }
+}
+
+/*!
+ * Sends an aseba event to the robot.
+ */
+void FishBot::sendEvent(const QString& eventName, const Values& data)
+{
+    if (m_sharedRobotInterface.data()) {
+        m_sharedRobotInterface->sendEventName(eventName, data);
+    } else if (m_uniqueRobotInterface.data()) {
+        m_uniqueRobotInterface->sendEventName(eventName, data);
+    }
+}
+
+/*!
+ * A service method that makes the code to wait for a certatin time
+ * by printing the count down.
+ */
+void FishBot::countDown(double timeOut)
+{
+    Timer connectionTimer;
+    connectionTimer.reset();
+
+    int elapsed = 1;
+    std::cout << timeOut;
+    while (!connectionTimer.isTimedOutSec(timeOut)) {
+        if (connectionTimer.runTimeSec() >= elapsed) {
+            std::cout << "..." << qRound(timeOut - elapsed) << std::flush;
+            elapsed += 1;
+        }
+        continue;
+    }
+    std::cout << std::endl;
 }
