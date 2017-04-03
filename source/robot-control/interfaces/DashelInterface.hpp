@@ -54,7 +54,7 @@ public:
 
 public:
     //! Returns the connection status flag.
-    bool isConnected() const { return m_isConnected; }
+    bool isConnected() const { return m_isConnected && m_isRunning; }
 
 public:
     //! Sends an named event to the robot.

@@ -43,11 +43,14 @@ using namespace Aseba;
 /*!
  * Constructor.
  */
-DashelInterface::DashelInterface() : m_isRunning(false), m_isConnected(false),
-                                     NodesManager(),
-                                     m_dashelParams("")
+DashelInterface::DashelInterface() :
+    m_stream(nullptr),
+    m_isRunning(false),
+    m_isConnected(false),
+    NodesManager(),
+    m_dashelParams("")
 {
-
+    qRegisterMetaType<QSharedPointer<Aseba::UserMessage>>("QSharedPointer<Aseba::UserMessage>");
 }
 
 /*!
@@ -90,7 +93,7 @@ void DashelInterface::disconnectAseba()
  */
 bool DashelInterface::loadScript(const QString& fileName)
 {
-    if (!m_isConnected) {
+    if (!isConnected()) {
         qDebug() << "There is no active connectin, use 'connectAseba'";
         return false;
     }
@@ -242,7 +245,7 @@ void DashelInterface::incomingData(Dashel::Stream *stream)
  */
 void DashelInterface::sendEvent(unsigned id, const Values& values)
 {
-    if (m_isConnected)
+    if (isConnected())
     {
         Aseba::UserMessage::DataVector data(values.size());
         QListIterator<qint16> it(values);
@@ -254,7 +257,7 @@ void DashelInterface::sendEvent(unsigned id, const Values& values)
             m_stream->flush();
         } catch (DashelException e) {
             // if this stream has a problem, ignore it for now, and let Hub call connectionClosed later.
-            qDebug() << "error while writing message";
+            qDebug() << "Error while writing message";
         }
     }
 }
@@ -310,6 +313,11 @@ void DashelInterface::run()
 
     while (m_isRunning)
         Dashel::Hub::run();
+
+    if (m_stream) {
+        connectionClosed(m_stream, false);
+        Dashel::Hub::closeStream(m_stream);
+    }
 }
 
 void DashelInterface::sendMessage(const Aseba::Message& message)
@@ -317,7 +325,7 @@ void DashelInterface::sendMessage(const Aseba::Message& message)
     // this is called from the GUI thread through processMessage() or
     // pingNetwork(), so we must lock the Hub before sending
     lock();
-    if (m_isConnected) {
+    if (isConnected()) {
         try {
             message.serialize(m_stream);
             m_stream->flush();
