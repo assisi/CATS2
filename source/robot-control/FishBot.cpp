@@ -73,9 +73,8 @@ FishBot::FishBot(QString id) :
 FishBot::~FishBot()
 {
     qDebug() << "Destroying the object";
-    // if the connection is open then close it
-    if (m_uniqueRobotInterface.data())
-        m_uniqueRobotInterface->disconnectAseba();
+    // close the connection if necessary
+    closeUniqueConnection();
     // TODO : to remove the callback, dbus interface must be modified for this.
 }
 
@@ -85,7 +84,15 @@ FishBot::~FishBot()
 void FishBot::setSharedRobotInterface(DBusInterfacePtr sharedRobotInterface)
 {
     m_sharedRobotInterface = sharedRobotInterface;
-    // TODO : to add a callback that sets the robot's state from the event
+    // add a callback to process the incoming messages from the robot
+    if (m_sharedRobotInterface) {
+        m_sharedRobotInterface->connectEvent("PowerDown",
+                                       [this](const Values& data) {
+            // get the firmware's id
+            if ((data.size() > 0) && (data[0] == m_firmwareId))
+                processPowerDownEvent();
+        });
+    }
 }
 
 /*!
@@ -109,14 +116,6 @@ void FishBot::setupSharedConnection(int robotIndex)
                 m_sharedRobotInterface->setVariable(m_name, "IDControl", data);
                 // set the obstacle avoidance on the robot
                 m_navigation.updateLocalObstacleAvoidance();
-
-                // add a callback to process the incoming messages from the robot
-                m_sharedRobotInterface->connectEvent("PowerDown",
-                                               [this](const Values& data) {
-                    // get the firmware's id
-                    if ((data.size() > 0) && (data[0] == m_firmwareId))
-                        processPowerDownEvent();
-                });
             } else {
                 qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
             }
@@ -137,7 +136,7 @@ void FishBot::setupUniqueConnection()
 
     // make new connection
     QString target = RobotControlSettings::get().robotSettings(m_id).connectionTarget();
-    m_uniqueRobotInterface = DashelInterfacePtr(new DashelInterface());
+    m_uniqueRobotInterface.reset(new DashelInterface());
 
     // FIXME : how to get a feedback if the connection is established
     qDebug() << QString("Connecting to %1").arg(m_name);
@@ -171,8 +170,6 @@ void FishBot::setupUniqueConnection()
                 // directly
                 processPowerDownEvent();
             });
-
-
         } else {
             qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
         }
@@ -182,19 +179,33 @@ void FishBot::setupUniqueConnection()
 }
 
 /*!
+ * Closes the unique connection if it's open.
+ */
+void FishBot::closeUniqueConnection()
+{
+    // if the connection is open then close it
+    if (m_uniqueRobotInterface.data() && m_uniqueRobotInterface->isConnected())
+        m_uniqueRobotInterface->disconnectAseba();
+}
+
+/*!
  * Steps the control for the robot.
  */
 void FishBot::stepControl()
 {
-    // check the experiment controller to see if the control mode is to be changed
-    if (m_experimentManager.isActive()) {
-        stepExperimentManager();
-    }
-
     // check the incoming events to see if the control mode is to be changed
     // due to the low-power or the obstacle-avoidance routine - THIS CAN BE DONE
     // IN THE CALLBACK AND MANAGED BY THE PRIORITY LOGICS OR BY A FLAG ON THE
     // CONTROL MODE "ACCEPTS CONTROL MODE CHANGE"
+
+    if (safetyIssuesDetected()) {
+        stepSafetyLogics();
+    }
+
+    // check the experiment controller to see if the control mode is to be changed
+    if (m_experimentManager.isActive()) {
+        stepExperimentManager();
+    }
 
     // step the control mode state machine with the robot's position and
     // other agents positions.
@@ -302,7 +313,9 @@ void FishBot::setMotionPattern(MotionPatternType::Enum type)
     m_navigation.setMotionPattern(type);
 }
 
-/*!
+/*!    // if the connection is open then close it
+    if (m_uniqueRobotInterface.data())
+        m_uniqueRobotInterface->disconnectAseba();
  * Sets the motion pattern frequency divider. The goal is to send commands
  * less often to keep the network load low.
  */
@@ -425,5 +438,43 @@ void FishBot::countDown(double timeOut)
  */
 void FishBot::processPowerDownEvent()
 {
-    qDebug() << m_id << "power down";
+    // if the power down arrives first time then the set the corresponding timer
+    if (!m_powerDownStartTimer.isSet()) {
+        qDebug() << QString("Power-down detected on %1, the connection will be "
+                            "closed in %2 seconds")
+                    .arg(m_name)
+                    .arg(ToleratedPowerDownDurationSec);
+        m_powerDownStartTimer.reset();
+    }
+    // in any case reset the last-power-down timer
+    m_powerDownUpdateTimer.reset();
+}
+
+/*!
+ * Checks if there were safety issues (power down, obstacles, etc.).
+ */
+bool FishBot::safetyIssuesDetected()
+{
+    return m_powerDownStartTimer.isSet();
+}
+
+/*!
+ * Runs the emergency logics for the safety issues.
+ */
+void FishBot::stepSafetyLogics()
+{
+    // if the power down message was not received recently, then stop tracking it
+    if (m_powerDownUpdateTimer.isTimedOutSec(PowerDownUpdateTimeoutSec)) {
+        qDebug() << QString("Power is restored on %1").arg(m_name);
+        m_powerDownStartTimer.clear();
+        m_powerDownUpdateTimer.clear();
+    } else {
+        // if we have a power down for too long then we disconnect the robot
+        if (m_powerDownStartTimer.isTimedOutSec(ToleratedPowerDownDurationSec)) {
+            qDebug() << QString("Disconnecting %1 due to power-down").arg(m_name);
+            // if the connection is open then close it
+            closeUniqueConnection();
+            m_powerDownStartTimer.clear();
+        }
+    }
 }

@@ -12,6 +12,7 @@
 #include "interfaces/DBusInterface.hpp"
 
 #include <AgentState.hpp>
+#include <Timer.hpp>
 
 #include <QtCore/QObject>
 
@@ -205,9 +206,19 @@ private:
     void releaseModelArea();
 
 private:
+    //! Closes the unique connection.
+    void closeUniqueConnection();
+
     //! A service method that makes the code to wait for a certatin time by printing
     //! the count down.
     void countDown(double timeOut);
+
+private: // safety logics
+    //! Checks if there were safety issues (power down, obstacles, etc.).
+    bool safetyIssuesDetected();
+    //! Runs the emergency logics for the safety issues.
+    void stepSafetyLogics();
+
     //! Implements the reaction of the robot on the power-down event.
     void processPowerDownEvent();
 
@@ -222,6 +233,7 @@ private:
     QColor m_ledColor;
     //! The robot's state.
     StateWorld m_state;
+    // TODO : this interfaces should be placed to a separated Connection class
     //! The interface to communicate with the robot. Shared by all robots.
     DBusInterfacePtr m_sharedRobotInterface;
     //! The interface to communicate with the robot. Unique for this robot. We
@@ -244,6 +256,18 @@ private:
     Navigation m_navigation;
 
     // TODO : to add the interface with the RiBot lure
+
+private: // to manage the power down events
+    //! Counts the time from the first power-donw message in a sequence.
+    Timer m_powerDownStartTimer;
+    //! Counts the time from the last power-down message in a sequence.
+    Timer m_powerDownUpdateTimer;
+    //! If the power-down message is not received for at least this value
+    //! then we consider that it is not valid anymore.
+    static constexpr double PowerDownUpdateTimeoutSec = 1.;
+    //! If the power-down message is received for longer than this period
+    //! then we consider this as emergency.
+    static constexpr double ToleratedPowerDownDurationSec = 3.;
 };
 
 #endif // CATS2_FISH_BOT_HPP
