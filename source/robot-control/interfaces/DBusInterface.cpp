@@ -68,11 +68,19 @@ std::string DBusInterface::toString(const Values& v)
 }
 
 /*!
+ * Returns the connection status flag.
+ */
+bool DBusInterface::isConnected() const
+{
+    return QDBusConnection::sessionBus().isConnected();
+}
+
+/*!
  * Check if the connection was estalished.
  */
 bool DBusInterface::checkConnection()
 {
-    if (!QDBusConnection::sessionBus().isConnected())
+    if (!isConnected())
     {
         fprintf(stderr, "Cannot connect to the D-Bus session bus.\n"
                         "To start it, run:\n"

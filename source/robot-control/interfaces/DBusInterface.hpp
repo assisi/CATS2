@@ -27,6 +27,8 @@ public:
     //! Display a list of qint's nicely as a string.
     static std::string toString(const Values& v);
 
+    //! Returns the connection status flag.
+    bool isConnected() const;
     //! Check if the connection was estalished.
     bool checkConnection();
     //! Display the list of Aseba Nodes connected on the Aseba Network.

@@ -86,12 +86,13 @@ void FishBot::setSharedRobotInterface(DBusInterfacePtr sharedRobotInterface)
     m_sharedRobotInterface = sharedRobotInterface;
     // add a callback to process the incoming messages from the robot
     if (m_sharedRobotInterface) {
-        m_sharedRobotInterface->connectEvent("PowerDown",
-                                       [this](const Values& data) {
-            // get the firmware's id
-            if ((data.size() > 0) && (data[0] == m_firmwareId))
-                processPowerDownEvent();
-        });
+        m_sharedRobotInterface->
+                connectEvent("PowerDown",
+                             [this](const Values& data) {
+                                // get the firmware's id
+                                if ((data.size() > 0) && (data[0] == m_firmwareId))
+                                    processPowerDownEvent();
+                            });
     }
 }
 
@@ -100,9 +101,11 @@ void FishBot::setSharedRobotInterface(DBusInterfacePtr sharedRobotInterface)
  */
 void FishBot::setupSharedConnection(int robotIndex)
 {
-    if (m_sharedRobotInterface.data()) {
-        // FIXME : in the multi-robot/node mode aseba doesn't provide the node list correctly
-//        if (m_robotInterface->nodeList.contains(m_name)) {
+    if (m_sharedRobotInterface) {
+        if (m_sharedRobotInterface->isConnected()) {
+            emit notifyConnectionStatusChanged(name(), ConnectionStatus::CONNECTED);
+            // FIXME : in the multi-robot/node mode aseba doesn't provide the node list correctly
+            // if (m_robotInterface->nodeList.contains(m_name)) {
             m_firmwareId = robotIndex;
             QString scriptDirPath = QCoreApplication::applicationDirPath() +
                     QDir::separator() + "aesl";
@@ -119,9 +122,13 @@ void FishBot::setupSharedConnection(int robotIndex)
             } else {
                 qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
             }
-//        }
+            // }
+        } else {
+            emit notifyConnectionStatusChanged(name(), ConnectionStatus::DISCONNECTED);
+        }
     } else {
         qDebug() << QString("The %1 interface is not set").arg(m_name);
+        emit notifyConnectionStatusChanged(name(), ConnectionStatus::DISCONNECTED);
     }
 }
 
@@ -131,8 +138,7 @@ void FishBot::setupSharedConnection(int robotIndex)
 void FishBot::setupUniqueConnection()
 {
     // if the connection is open then close it
-    if (m_uniqueRobotInterface.data())
-        m_uniqueRobotInterface->disconnectAseba();
+    closeUniqueConnection();
 
     // make new connection
     QString target = RobotControlSettings::get().robotSettings(m_id).connectionTarget();
@@ -146,6 +152,7 @@ void FishBot::setupUniqueConnection()
     countDown(5.);
 
     if (m_uniqueRobotInterface->isConnected()) {
+        emit notifyConnectionStatusChanged(name(), ConnectionStatus::CONNECTED);
         qDebug() << QString("Requesting the node description for %1").arg(m_name);
         // request the node's description
         m_uniqueRobotInterface->pingNetwork();
@@ -172,6 +179,7 @@ void FishBot::setupUniqueConnection()
             });
         } else {
             qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
+            // FIXME : should we disconnect here
         }
     } else  {
         qDebug() << QString("Could not connect to %1").arg(m_name);
@@ -184,8 +192,11 @@ void FishBot::setupUniqueConnection()
 void FishBot::closeUniqueConnection()
 {
     // if the connection is open then close it
-    if (m_uniqueRobotInterface.data() && m_uniqueRobotInterface->isConnected())
+    if (m_uniqueRobotInterface.data() && m_uniqueRobotInterface->isConnected()) {
         m_uniqueRobotInterface->disconnectAseba();
+        emit notifyConnectionStatusChanged(name(), ConnectionStatus::DISCONNECTED);
+        m_uniqueRobotInterface.reset(nullptr);
+    }
 }
 
 /*!
@@ -313,9 +324,7 @@ void FishBot::setMotionPattern(MotionPatternType::Enum type)
     m_navigation.setMotionPattern(type);
 }
 
-/*!    // if the connection is open then close it
-    if (m_uniqueRobotInterface.data())
-        m_uniqueRobotInterface->disconnectAseba();
+/*!
  * Sets the motion pattern frequency divider. The goal is to send commands
  * less often to keep the network load low.
  */
@@ -405,11 +414,24 @@ void FishBot::stepExperimentManager()
  */
 void FishBot::sendEvent(const QString& eventName, const Values& data)
 {
-    if (m_sharedRobotInterface.data()) {
+    if (m_sharedRobotInterface.data() && m_sharedRobotInterface->isConnected()) {
         m_sharedRobotInterface->sendEventName(eventName, data);
-    } else if (m_uniqueRobotInterface.data()) {
+    } else if (m_uniqueRobotInterface.data() && m_uniqueRobotInterface->isConnected()) {
         m_uniqueRobotInterface->sendEventName(eventName, data);
     }
+}
+
+/*!
+ * Returns the connection status of the robot.
+ */
+bool FishBot::isConnected() const
+{
+    if (m_sharedRobotInterface.data())
+        return m_sharedRobotInterface->isConnected();
+    else if (m_uniqueRobotInterface.data())
+        return m_uniqueRobotInterface->isConnected();
+    else
+        return false;
 }
 
 /*!
@@ -445,6 +467,8 @@ void FishBot::processPowerDownEvent()
                     .arg(m_name)
                     .arg(ToleratedPowerDownDurationSec);
         m_powerDownStartTimer.reset();
+        // power down arriving, meaning that we risk to disconnect soon
+        emit notifyConnectionStatusChanged(name(), ConnectionStatus::PENDING);
     }
     // in any case reset the last-power-down timer
     m_powerDownUpdateTimer.reset();
@@ -468,6 +492,7 @@ void FishBot::stepSafetyLogics()
         qDebug() << QString("Power is restored on %1").arg(m_name);
         m_powerDownStartTimer.clear();
         m_powerDownUpdateTimer.clear();
+        emit notifyConnectionStatusChanged(name(), ConnectionStatus::CONNECTED);
     } else {
         // if we have a power down for too long then we disconnect the robot
         if (m_powerDownStartTimer.isTimedOutSec(ToleratedPowerDownDurationSec)) {

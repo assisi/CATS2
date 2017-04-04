@@ -8,6 +8,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QEvent>
 #include <QtGui/QKeyEvent>
+#include <QtGui/QPixmap>
 
 /*!
  * Constructor.
@@ -18,8 +19,14 @@ RobotsWidget::RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent) :
 {
     m_ui->setupUi(this);
 
+    // fill the icons map
+    m_connectionIcons.insert(ConnectionStatus::CONNECTED, QIcon(":/connected.png"));
+    m_connectionIcons.insert(ConnectionStatus::PENDING, QIcon(":/pending-connection.png"));
+    m_connectionIcons.insert(ConnectionStatus::DISCONNECTED, QIcon(":/not-connected.png"));
+
     // connect tab change with the robot selection
-    connect(this, &RobotsWidget::notifySelectedRobotChanged, contolLoop.data(), &ControlLoop::selectRobot);
+    connect(this, &RobotsWidget::notifySelectedRobotChanged,
+            contolLoop.data(), &ControlLoop::selectRobot);
 
     // select a robot when a tab is changed
     connect(m_ui->robotsTabWidget, &QTabWidget::currentChanged,
@@ -28,7 +35,22 @@ RobotsWidget::RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent) :
             });
     // populate the tabs with the robots' information
     for (auto& robot : contolLoop->robots()) {
-        m_ui->robotsTabWidget->addTab(new RobotControlWidget(robot), robot->name());
+        int index = m_ui->robotsTabWidget->addTab(new RobotControlWidget(robot), robot->name());
+
+        // set the current connection status
+        ConnectionStatus status = ConnectionStatus::DISCONNECTED;
+        if (robot->isConnected())
+            status = ConnectionStatus::CONNECTED;
+        m_ui->robotsTabWidget->setTabIcon(index, m_connectionIcons[status]);
+        // update the connection status
+        connect(robot.data(), &FishBot::notifyConnectionStatusChanged,
+                [=](QString name, ConnectionStatus status) {
+                    for (int index; index = 0; index < m_ui->robotsTabWidget->count())
+                        if (m_ui->robotsTabWidget->tabText(index) == name) {
+                            m_ui->robotsTabWidget->setTabIcon(index,
+                                                              m_connectionIcons[status]);
+                        }
+                });
     }
     // select the first tab
     if (m_ui->robotsTabWidget->count() > 0) {

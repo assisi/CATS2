@@ -23,6 +23,8 @@
 
 #include "DashelInterface.hpp"
 
+#include <Timer.hpp>
+
 #include <dashel/dashel.h>
 
 #include <QtCore/QDebug>
@@ -295,6 +297,10 @@ void DashelInterface::connectionClosed(Dashel::Stream* stream, bool abnormal)
 // internals
 void DashelInterface::run()
 {
+    // a timer to stop trying to connect on a timeout
+    Timer connectionTimer;
+    connectionTimer.reset();
+    // try to connect
     while (1) {
         try {
             m_stream = Dashel::Hub::connect(m_dashelParams.toStdString());
@@ -304,12 +310,21 @@ void DashelInterface::run()
         } catch (Dashel::DashelException e) {
             qDebug()  << "Cannot connect to target: "
                       << m_dashelParams;
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            // if can't connect then stop
+            if (connectionTimer.isTimedOutSec(10)) {
+                qDebug() << "Stop trying to connect to target"
+                         << m_dashelParams;
+                break;
+            } else {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
         }
     }
 
-    QObject::connect(this, &DashelInterface::messageAvailable,
-                     this, &DashelInterface::dispatchEvent);
+    if (isConnected()) {
+        QObject::connect(this, &DashelInterface::messageAvailable,
+                         this, &DashelInterface::dispatchEvent);
+    }
 
     while (m_isRunning)
         Dashel::Hub::run();

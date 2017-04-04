@@ -2,6 +2,7 @@
 #define CATS2_FISH_BOT_HPP
 
 #include "RobotControlPointerTypes.hpp"
+#include "ConnectionStatusType.hpp"
 #include "ControlModeStateMachine.hpp"
 #include "control-modes/ControlTarget.hpp"
 #include "MotionPatternType.hpp"
@@ -51,6 +52,8 @@ public:
     //! Connects to the robot via its own interface.
     void setupUniqueConnection();
 
+    //! Returns the connection status.
+    bool isConnected() const;
     //! Sends an aseba event to the robot.
     void sendEvent(const QString& eventName, const Values& value);
 
@@ -175,6 +178,8 @@ signals: // control states
     void notifyUsePathPlanningChanged(bool value);
     //! Informs that the obstacle avoidance is on/off in the navigation.
     void notifyUseObstacleAvoidanceChanged(bool value);
+    //! Sends that the connection status has changed.
+    void notifyConnectionStatusChanged(QString name, ConnectionStatus status);
 
 signals: // navigation
     //! Sends the control map areas' polygons.
