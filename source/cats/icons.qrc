@@ -16,5 +16,6 @@
         <file>resources/icons/ic_autorenew_black_24dp.png</file>
         <file>resources/icons/ic_settings_black_24dp.png</file>
         <file>resources/icons/ic_folder_open_black_24dp.png</file>
+        <file>resources/icons/ic_cancel_black_24dp.png</file>
     </qresource>
 </RCC>

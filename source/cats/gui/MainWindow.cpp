@@ -69,6 +69,8 @@ MainWindow::MainWindow(QWidget *parent) :
             &ControlLoop::onTrackingResultsReceived);
     connect(m_ui->actionReconnectToRobots, &QAction::triggered,
             m_robotsHandler->contolLoop().data(), &ControlLoop::reconnectRobots);
+    connect(m_ui->actionStopAllRobots, &QAction::triggered,
+            m_robotsHandler->contolLoop().data(), &ControlLoop::stopAllRobots);
 
     // create setups
     if (Settings::get().isAvailable(SetupType::MAIN_CAMERA)) {

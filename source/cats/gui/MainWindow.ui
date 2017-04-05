@@ -135,6 +135,8 @@
      <string>Robots</string>
     </property>
     <addaction name="actionReconnectToRobots"/>
+    <addaction name="separator"/>
+    <addaction name="actionStopAllRobots"/>
    </widget>
    <widget class="QMenu" name="menuFiles">
     <property name="title">
@@ -278,6 +280,15 @@
    </property>
    <property name="text">
     <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionStopAllRobots">
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/resources/icons/ic_cancel_black_24dp.png</normaloff>:/resources/icons/ic_cancel_black_24dp.png</iconset>
+   </property>
+   <property name="text">
+    <string>Stop all robots</string>
    </property>
   </action>
  </widget>

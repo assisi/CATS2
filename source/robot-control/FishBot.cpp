@@ -399,3 +399,51 @@ void FishBot::countDown(double timeOut)
     }
     std::cout << std::endl;
 }
+
+/*!
+ * Returns the supported controllers.
+ */
+QList<ExperimentControllerType::Enum> FishBot::supportedControllers() const
+{
+    return m_experimentManager.supportedControllers();
+}
+
+/*!
+ * Sets the controller.
+ */
+void FishBot::setController(ExperimentControllerType::Enum type)
+{
+    m_experimentManager.setController(type);
+}
+
+/*!
+ * Return the type of the current controller.
+ */
+ExperimentControllerType::Enum FishBot::currentController() const
+{
+    return m_experimentManager.currentController();
+}
+
+/*!
+ * Returns the supported control modes.
+ */
+QList<ControlModeType::Enum> FishBot::supportedControlModes() const
+{
+    return m_controlStateMachine.supportedControlModes();
+}
+
+/*!
+ * Return the type of the current control mode.
+ */
+ControlModeType::Enum FishBot::currentControlMode() const
+{
+    return m_controlStateMachine.currentControlMode();
+}
+
+/*!
+ * Return the motion pattern.
+ */
+MotionPatternType::Enum FishBot::currentMotionPattern() const
+{
+    return m_navigation.motionPattern();
+}
