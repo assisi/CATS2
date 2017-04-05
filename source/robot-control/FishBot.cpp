@@ -490,6 +490,7 @@ void FishBot::stepSafetyLogics()
     // if the power down message was not received recently, then stop tracking it
     if (m_powerDownUpdateTimer.isTimedOutSec(PowerDownUpdateTimeoutSec)) {
         qDebug() << QString("Power is restored on %1").arg(m_name);
+        // clear timers
         m_powerDownStartTimer.clear();
         m_powerDownUpdateTimer.clear();
         emit notifyConnectionStatusChanged(name(), ConnectionStatus::CONNECTED);
@@ -499,7 +500,9 @@ void FishBot::stepSafetyLogics()
             qDebug() << QString("Disconnecting %1 due to power-down").arg(m_name);
             // if the connection is open then close it
             closeUniqueConnection();
+            // clear timers
             m_powerDownStartTimer.clear();
+            m_powerDownUpdateTimer.clear();
         }
     }
 }

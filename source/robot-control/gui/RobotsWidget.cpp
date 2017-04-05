@@ -45,7 +45,7 @@ RobotsWidget::RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent) :
         // update the connection status
         connect(robot.data(), &FishBot::notifyConnectionStatusChanged,
                 [=](QString name, ConnectionStatus status) {
-                    for (int index; index = 0; index < m_ui->robotsTabWidget->count())
+                    for (int index = 0; index < m_ui->robotsTabWidget->count(); ++index)
                         if (m_ui->robotsTabWidget->tabText(index) == name) {
                             m_ui->robotsTabWidget->setTabIcon(index,
                                                               m_connectionIcons[status]);
