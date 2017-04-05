@@ -170,6 +170,8 @@
    <addaction name="actionShowSetupOutline"/>
    <addaction name="separator"/>
    <addaction name="actionReconnectToRobots"/>
+   <addaction name="separator"/>
+   <addaction name="actionStopAllRobots"/>
   </widget>
   <action name="actionZoomIn">
    <property name="icon">
