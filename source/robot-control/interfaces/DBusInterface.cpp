@@ -68,11 +68,19 @@ std::string DBusInterface::toString(const Values& v)
 }
 
 /*!
+ * Returns the connection status flag.
+ */
+bool DBusInterface::isConnected() const
+{
+    return QDBusConnection::sessionBus().isConnected();
+}
+
+/*!
  * Check if the connection was estalished.
  */
 bool DBusInterface::checkConnection()
 {
-    if (!QDBusConnection::sessionBus().isConnected())
+    if (!isConnected())
     {
         fprintf(stderr, "Cannot connect to the D-Bus session bus.\n"
                         "To start it, run:\n"
@@ -149,8 +157,9 @@ void DBusInterface::connectEvent(const QString& eventName, EventCallback callbac
     // associate callback with event name
     m_callbacks.insert(std::make_pair(eventName, callback));
 
-    // listen
-    m_eventfilterInterface->call("ListenEventName", eventName);
+    // listen if connected first time
+    if (m_callbacks.count(eventName) == 1)
+        m_eventfilterInterface->call("ListenEventName", eventName);
 }
 
 /*!

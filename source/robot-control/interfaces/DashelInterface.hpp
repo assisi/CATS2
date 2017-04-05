@@ -54,16 +54,24 @@ public:
 
 public:
     //! Returns the connection status flag.
-    bool isConnected() const { return m_isConnected; }
+    bool isConnected() const { return m_isConnected && m_isRunning; }
 
 public:
     //! Sends an named event to the robot.
     void sendEventName(const QString& name, const Values& data);
 
+    //! Flag an event to listen for, and associate callback function
+    //! (passed by pointer).
+    void connectEvent(const QString& eventName, EventCallback callback);
+
 signals:
-    void messageAvailable(Aseba::UserMessage *message);
+    void messageAvailable(QSharedPointer<Aseba::UserMessage> message);
     void dashelDisconnection();
     void dashelConnection();
+
+protected slots:
+    //! Callback (slot) used to retrieve subscribed event information.
+    void dispatchEvent(QSharedPointer<Aseba::UserMessage> message);
 
 protected:
     //! Send a UserMessage with ID 'id', and optionnally some data values.
@@ -82,6 +90,9 @@ protected:
 protected:
     typedef std::vector<std::string> strings;
     typedef std::map<std::string, Aseba::VariablesMap> NodeNameToVariablesMap;
+
+    //! Callbacks to be triggered when an event arrives.
+    std::multimap<QString, EventCallback> m_callbacks;
 
     // members
     Dashel::Stream* m_stream;
