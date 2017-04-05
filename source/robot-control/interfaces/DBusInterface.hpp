@@ -4,7 +4,6 @@
 #include "Values.hpp"
 
 #include <QtDBus/QtDBus>
-#include <functional>
 
 Q_DECLARE_METATYPE(QList<qint16>);
 
@@ -28,6 +27,8 @@ public:
     //! Display a list of qint's nicely as a string.
     static std::string toString(const Values& v);
 
+    //! Returns the connection status flag.
+    bool isConnected() const;
     //! Check if the connection was estalished.
     bool checkConnection();
     //! Display the list of Aseba Nodes connected on the Aseba Network.
@@ -39,7 +40,6 @@ public:
     //! Set an Aseba variable from a Aseba node.
     void setVariable(const QString& node, const QString& variable, const Values& value);
 
-    typedef std::function<void(const Values&)> EventCallback;
     //! Flag an event to listen for, and associate callback function
     //! (passed by pointer).
     void connectEvent(const QString& eventName, EventCallback callback);

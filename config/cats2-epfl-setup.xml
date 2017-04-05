@@ -11,7 +11,7 @@
     </experiment>
     <robots>
         <numberOfRobots>1</numberOfRobots>
-        <controlFrequencyHz>10</controlFrequencyHz>
+        <controlFrequencyHz>20</controlFrequencyHz>
         <fishModel>
             <agent>
                 <length>0.02</length>
@@ -58,7 +58,7 @@
                 <ki>0.05</ki>
                 <kd>0.00</kd>
             </pid>
-            <defaultLinearSpeedCmSec>17</defaultLinearSpeedCmSec>
+            <defaultLinearSpeedCmSec>12</defaultLinearSpeedCmSec>
             <needOrientationToNavigate>0</needOrientationToNavigate>
         </navigation>
         <controllers>

@@ -23,10 +23,13 @@
 
 #include "DashelInterface.hpp"
 
-#include <QtCore/QDebug>
+#include <Timer.hpp>
+
 #include <dashel/dashel.h>
 
+#include <QtCore/QDebug>
 #include <QtCore/QFile>
+#include <QtCore/QSharedPointer>
 #include <QtXml/QDomDocument>
 
 #include <string>
@@ -42,11 +45,14 @@ using namespace Aseba;
 /*!
  * Constructor.
  */
-DashelInterface::DashelInterface() : m_isRunning(false), m_isConnected(false),
-                                     NodesManager(),
-                                     m_dashelParams("")
+DashelInterface::DashelInterface() :
+    m_stream(nullptr),
+    m_isRunning(false),
+    m_isConnected(false),
+    NodesManager(),
+    m_dashelParams("")
 {
-
+    qRegisterMetaType<QSharedPointer<Aseba::UserMessage>>("QSharedPointer<Aseba::UserMessage>");
 }
 
 /*!
@@ -89,7 +95,7 @@ void DashelInterface::disconnectAseba()
  */
 bool DashelInterface::loadScript(const QString& fileName)
 {
-    if (!m_isConnected) {
+    if (!isConnected()) {
         qDebug() << "There is no active connectin, use 'connectAseba'";
         return false;
     }
@@ -223,17 +229,15 @@ void DashelInterface::incomingData(Dashel::Stream *stream)
 {
     try {
         Aseba::Message *message = Aseba::Message::receive(stream);
-        Aseba::UserMessage *userMessage = dynamic_cast<Aseba::UserMessage *>(message);
-
-        //A description manager for loading the Aseba Scripts
+        // scan this message for nodes descriptions
         Aseba::NodesManager::processMessage(message);
 
+        QSharedPointer<Aseba::UserMessage> userMessage(dynamic_cast<Aseba::UserMessage *>(message));
         if (userMessage)
             emit messageAvailable(userMessage);
-        else
-            delete message;
     } catch (DashelException e) {
-        // if this stream has a problem, ignore it for now, and let Hub call connectionClosed later.
+        // if this stream has a problem, ignore it for now, and let Hub call
+        // connectionClosed later.
         qDebug() << "error while reading message";
     }
 }
@@ -243,7 +247,7 @@ void DashelInterface::incomingData(Dashel::Stream *stream)
  */
 void DashelInterface::sendEvent(unsigned id, const Values& values)
 {
-    if (m_isConnected)
+    if (isConnected())
     {
         Aseba::UserMessage::DataVector data(values.size());
         QListIterator<qint16> it(values);
@@ -255,12 +259,14 @@ void DashelInterface::sendEvent(unsigned id, const Values& values)
             m_stream->flush();
         } catch (DashelException e) {
             // if this stream has a problem, ignore it for now, and let Hub call connectionClosed later.
-            qDebug() << "error while writing message";
+            qDebug() << "Error while writing message";
         }
-
     }
 }
 
+/*!
+ * Sends an named event to the robot.
+ */
 void DashelInterface::sendEventName(const QString& name, const Values& data)
 {
     size_t event;
@@ -291,6 +297,10 @@ void DashelInterface::connectionClosed(Dashel::Stream* stream, bool abnormal)
 // internals
 void DashelInterface::run()
 {
+    // a timer to stop trying to connect on a timeout
+    Timer connectionTimer;
+    connectionTimer.reset();
+    // try to connect
     while (1) {
         try {
             m_stream = Dashel::Hub::connect(m_dashelParams.toStdString());
@@ -300,11 +310,29 @@ void DashelInterface::run()
         } catch (Dashel::DashelException e) {
             qDebug()  << "Cannot connect to target: "
                       << m_dashelParams;
-            std::this_thread::sleep_for(std::chrono::seconds(1));
+            // if can't connect then stop
+            if (connectionTimer.isTimedOutSec(10)) {
+                qDebug() << "Stop trying to connect to target"
+                         << m_dashelParams;
+                break;
+            } else {
+                std::this_thread::sleep_for(std::chrono::seconds(1));
+            }
         }
     }
+
+    if (isConnected()) {
+        QObject::connect(this, &DashelInterface::messageAvailable,
+                         this, &DashelInterface::dispatchEvent);
+    }
+
     while (m_isRunning)
         Dashel::Hub::run();
+
+    if (m_stream) {
+        connectionClosed(m_stream, false);
+        Dashel::Hub::closeStream(m_stream);
+    }
 }
 
 void DashelInterface::sendMessage(const Aseba::Message& message)
@@ -312,7 +340,7 @@ void DashelInterface::sendMessage(const Aseba::Message& message)
     // this is called from the GUI thread through processMessage() or
     // pingNetwork(), so we must lock the Hub before sending
     lock();
-    if (m_isConnected) {
+    if (isConnected()) {
         try {
             message.serialize(m_stream);
             m_stream->flush();
@@ -332,4 +360,34 @@ void DashelInterface::stop()
     Dashel::Hub::stop();
 }
 
+/*!
+ * Flag an event to listen for, and associate callback function (passed by
+ * pointer).
+ */
+void DashelInterface::connectEvent(const QString& eventName, EventCallback callback)
+{
+    // associate callback with event name
+    m_callbacks.insert(std::make_pair(eventName, callback));
+}
 
+/*!
+ * Callback (slot) used to retrieve subscribed event information.
+ */
+void DashelInterface::dispatchEvent(QSharedPointer<Aseba::UserMessage> message)
+{
+    // get name
+    QString eventName = QString::fromWCharArray(commonDefinitions.events[message->type].name.c_str());
+
+    // convert values
+    Values eventData;
+    for (auto& value : message->data)
+        eventData.append(value);
+
+ // find and trigger matching callback
+    if( m_callbacks.count(eventName) > 0)
+    {
+        auto eventCallbacks = m_callbacks.equal_range(eventName);
+        for (auto iterator = eventCallbacks.first; iterator != eventCallbacks.second; ++iterator)
+            (iterator->second)(eventData);
+    }
+}

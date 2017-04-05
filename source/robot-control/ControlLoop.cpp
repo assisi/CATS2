@@ -94,14 +94,10 @@ ControlLoop::ControlLoop() :
 ControlLoop::~ControlLoop()
 {
     qDebug() << "Destroying the object";
-
     // stop the timer
     m_controlLoopTimer.stop();
-
     // stop the robots before shutting down
-    for (auto& robot : m_robots) {
-        robot->setControlMode(ControlModeType::IDLE);
-    }
+    stopAllRobots();
     // step the control
     step();
 }
@@ -125,6 +121,16 @@ void ControlLoop::reconnectRobots()
         reinitializeSharedRobotInterface();
     else
         reinitializeUniqueRobotInterface();
+}
+
+/*!
+ * Stops all the robots.
+ */
+void ControlLoop::stopAllRobots()
+{
+    for (auto& robot : m_robots) {
+        robot->setControlMode(ControlModeType::IDLE);
+    }
 }
 
 /*!

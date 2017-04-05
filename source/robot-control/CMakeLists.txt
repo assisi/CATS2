@@ -63,6 +63,7 @@ set(hdrs
     control-modes/ControlTarget.hpp
     RobotControlPointerTypes.hpp
     MotionPatternType.hpp
+    ConnectionStatusType.hpp
     interfaces/Values.hpp
     control-modes/ControlModeType.hpp
     experiment-controllers/ExperimentControllerType.hpp
@@ -70,7 +71,7 @@ set(hdrs
 )
 
 qt5_wrap_ui(uis_hdrs gui/RobotControlWidget.ui gui/RobotsWidget.ui gui/PotentialFieldWidget.ui)
-#qt5_add_resources(resources icons.qrc)
+qt5_add_resources(resources icons.qrc)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 add_library(robot-control SHARED ${srcs} ${hdrs} ${uis_hdrs}) #${resources})

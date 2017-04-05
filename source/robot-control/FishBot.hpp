@@ -2,6 +2,7 @@
 #define CATS2_FISH_BOT_HPP
 
 #include "RobotControlPointerTypes.hpp"
+#include "ConnectionStatusType.hpp"
 #include "ControlModeStateMachine.hpp"
 #include "control-modes/ControlTarget.hpp"
 #include "MotionPatternType.hpp"
@@ -12,6 +13,7 @@
 #include "interfaces/DBusInterface.hpp"
 
 #include <AgentState.hpp>
+#include <Timer.hpp>
 
 #include <QtCore/QObject>
 
@@ -36,7 +38,6 @@ public:
     QString name() const { return m_name; }
     //! Return the robot's id.
     QString id() const { return m_id; }
-
     //! Sets the robot's color
     void setLedColor(QColor color) { m_ledColor = color; }
 
@@ -46,42 +47,26 @@ public:
     //! Inititialises the robot's firmware. The robot's index is used to
     //! initilize the robot's id in its firmware.
     void setupSharedConnection(int robotIndex);
-
     //! Connects to the robot via its own interface.
     void setupUniqueConnection();
-
+    //! Returns the connection status.
+    bool isConnected() const;
     //! Sends an aseba event to the robot.
     void sendEvent(const QString& eventName, const Values& value);
 
 public:
     //! Returns the supported controllers.
-    QList<ExperimentControllerType::Enum> supportedControllers() const
-    {
-        return m_experimentManager.supportedControllers();
-    }
+    QList<ExperimentControllerType::Enum> supportedControllers() const;
     //! Sets the controller.
-    void setController(ExperimentControllerType::Enum type)
-    {
-        m_experimentManager.setController(type);
-    }
+    void setController(ExperimentControllerType::Enum type);
     //! Return the type of the current controller.
-    ExperimentControllerType::Enum currentController() const
-    {
-        return m_experimentManager.currentController();
-    }
-
+    ExperimentControllerType::Enum currentController() const;
     //! Returns the supported control modes.
-    QList<ControlModeType::Enum> supportedControlModes() const
-    {
-        return m_controlStateMachine.supportedControlModes();
-    }
+    QList<ControlModeType::Enum> supportedControlModes() const;
     //! Sets the control mode.
     void setControlMode(ControlModeType::Enum type);
     //! Return the type of the current control mode.
-    ControlModeType::Enum currentControlMode() const
-    {
-        return m_controlStateMachine.currentControlMode();
-    }
+    ControlModeType::Enum currentControlMode() const;
 
     //! Checks that the current control modes can generate targets with
     //! different motion patterns.
@@ -89,10 +74,7 @@ public:
     //! Sets the motion pattern.
     void setMotionPattern(MotionPatternType::Enum type);
     //! Return the motion pattern.
-    MotionPatternType::Enum currentMotionPattern() const
-    {
-        return m_navigation.motionPattern();
-    }
+    MotionPatternType::Enum currentMotionPattern() const;
     //! Sets the motion pattern frequency divider. The goal is to send commands
     //! less often to keep the network load low.
     void setMotionPatternFrequencyDivider(MotionPatternType::Enum type,
@@ -107,10 +89,7 @@ public:
     //! Sets the obstacle avoidance usage flag in the navigation.
     void setUseObstacleAvoidance(bool useObstacleAvoidance);
     //! Returns the obstacle avoidance usage from from the navigation.
-    bool useObstacleAvoidance() const
-    {
-        return m_navigation.useObstacleAvoidance();
-    }
+    bool useObstacleAvoidance() const { return m_navigation.useObstacleAvoidance(); }
 
     //! Steps the control for the robot.
     void stepControl();
@@ -174,6 +153,8 @@ signals: // control states
     void notifyUsePathPlanningChanged(bool value);
     //! Informs that the obstacle avoidance is on/off in the navigation.
     void notifyUseObstacleAvoidanceChanged(bool value);
+    //! Sends that the connection status has changed.
+    void notifyConnectionStatusChanged(QString name, ConnectionStatus status);
 
 signals: // navigation
     //! Sends the control map areas' polygons.
@@ -205,19 +186,34 @@ private:
     void releaseModelArea();
 
 private:
+    //! Closes the unique connection.
+    void closeUniqueConnection();
+
     //! A service method that makes the code to wait for a certatin time by printing
     //! the count down.
     void countDown(double timeOut);
 
+private: // safety logics
+    //! Checks if there were safety issues (power down, obstacles, etc.).
+    bool safetyIssuesDetected();
+    //! Runs the emergency logics for the safety issues.
+    void stepSafetyLogics();
+
+    //! Implements the reaction of the robot on the power-down event.
+    void processPowerDownEvent();
+
 private:
     //! The robot's id.
     QString m_id;
+    //! The robot's index used by the firmware, provided by the control loop.
+    int m_firmwareId;
     //! The robot's name.
     QString m_name;
     //! The color of the robot's LEDs.
     QColor m_ledColor;
     //! The robot's state.
     StateWorld m_state;
+    // TODO : this interfaces should be placed to a separated Connection class
     //! The interface to communicate with the robot. Shared by all robots.
     DBusInterfacePtr m_sharedRobotInterface;
     //! The interface to communicate with the robot. Unique for this robot. We
@@ -240,6 +236,18 @@ private:
     Navigation m_navigation;
 
     // TODO : to add the interface with the RiBot lure
+
+private: // to manage the power down events
+    //! Counts the time from the first power-donw message in a sequence.
+    Timer m_powerDownStartTimer;
+    //! Counts the time from the last power-down message in a sequence.
+    Timer m_powerDownUpdateTimer;
+    //! If the power-down message is not received for at least this value
+    //! then we consider that it is not valid anymore.
+    static constexpr double PowerDownUpdateTimeoutSec = 1.;
+    //! If the power-down message is received for longer than this period
+    //! then we consider this as emergency.
+    static constexpr double ToleratedPowerDownDurationSec = 3.;
 };
 
 #endif // CATS2_FISH_BOT_HPP

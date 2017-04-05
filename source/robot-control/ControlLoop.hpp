@@ -46,6 +46,8 @@ public slots:
     void requestRobotsLedColors();
     //! Reconnect the robot's to the aseba interface.
     void reconnectRobots();
+    //! Stops all the robots.
+    void stopAllRobots();
 
 signals:
     //! Sends the control map areas' polygons of the robot.
