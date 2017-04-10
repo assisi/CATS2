@@ -207,6 +207,18 @@ bool RobotControlSettings::init(QString configurationFileName)
     } else {
         qDebug() << Q_FUNC_INFO << "Could not find the trajectory file";
     }
+    // read the corresponding flags
+    m_providePointsOnTimer = false;
+    settings.readVariable("robots/controlModes/trajectory/providePointsOnTimer",
+                          m_providePointsOnTimer,
+                          m_providePointsOnTimer);
+    if (m_providePointsOnTimer) {
+        m_trajectoryUpdateRateHz = 0;
+        settings.readVariable("robots/controlModes/trajectory/updateRateHz",
+                              m_trajectoryUpdateRateHz,
+                              m_trajectoryUpdateRateHz);
+    }
+
     settings.close();
 
     // read the settings for all available controllers

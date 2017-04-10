@@ -34,6 +34,19 @@ public:
         return "setups/" + string;
     }
 
+    //! Returns that setup type corresponding to settings values string
+    //! in the configuration file.
+    static Enum fromSettingsString(QString setupString) {
+        Enum setupType = UNDEFINED;
+
+        if (setupString == "mainCamera")
+            setupType = MAIN_CAMERA;
+        else if (setupString == "cameraBelow")
+            setupType = CAMERA_BELOW;
+
+        return setupType;
+    }
+
     //! Returns that setup type string in human friendly format.
     static QString toString(Enum setupType) {
         QString string;

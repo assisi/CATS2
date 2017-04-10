@@ -255,6 +255,12 @@ public:
 
     //! Returns the predefined trajectory for the Trajectory control mode.
     QList<PositionMeters> trajectory() const { return m_trajectory; }
+    //! Returns the flag specifing if the next point of the trajectory is to be
+    //! provided on timer or once the previous is reached.
+    bool providePointsOnTimer() const { m_providePointsOnTimer; }
+    //! Returns the update rate for the trajectory points when they are provided
+    //! on a timeout.
+    int trajectoryUpdateRateHz() const { return m_trajectoryUpdateRateHz; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -298,6 +304,12 @@ private:
     // TODO : to make a map of usefull settings for every control mode
     //! The predefined trajectory for the Trajectory control mode.
     QList<PositionMeters> m_trajectory;
+    //! Specifies if the next point of the trajectory is to be provided on
+    //! timer or once the previous is reached.
+    bool m_providePointsOnTimer;
+    //! The update rate for the trajectory points when they are provided on a
+    //! timeout.
+    int m_trajectoryUpdateRateHz;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP

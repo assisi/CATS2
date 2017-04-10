@@ -52,6 +52,8 @@
             <!-- TODO : to implement -->
             <trajectory>
                 <points>trajectories/epfl-square.xml</points>
+                <providePointsOnTimer>1</providePointsOnTimer>
+                <updateRateHz>15</updateRateHz>
             </trajectory>
         </controlModes>
         <!-- Navigation settings. -->
