@@ -9,7 +9,6 @@
 class MotionPatternType
 {
 public:
-public:
     enum Enum {
         PID,
         FISH_MOTION,

@@ -135,7 +135,16 @@
      <string>Robots</string>
     </property>
     <addaction name="actionReconnectToRobots"/>
+    <addaction name="separator"/>
+    <addaction name="actionStopAllRobots"/>
    </widget>
+   <widget class="QMenu" name="menuFiles">
+    <property name="title">
+     <string>Files</string>
+    </property>
+    <addaction name="actionPreferences"/>
+   </widget>
+   <addaction name="menuFiles"/>
    <addaction name="menuView"/>
    <addaction name="menuRobots"/>
   </widget>
@@ -161,6 +170,8 @@
    <addaction name="actionShowSetupOutline"/>
    <addaction name="separator"/>
    <addaction name="actionReconnectToRobots"/>
+   <addaction name="separator"/>
+   <addaction name="actionStopAllRobots"/>
   </widget>
   <action name="actionZoomIn">
    <property name="icon">
@@ -262,6 +273,24 @@
    </property>
    <property name="toolTip">
     <string>Re-establish the connection with robots</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/resources/icons/ic_settings_black_24dp.png</normaloff>:/resources/icons/ic_settings_black_24dp.png</iconset>
+   </property>
+   <property name="text">
+    <string>Preferences</string>
+   </property>
+  </action>
+  <action name="actionStopAllRobots">
+   <property name="icon">
+    <iconset resource="../icons.qrc">
+     <normaloff>:/resources/icons/ic_cancel_black_24dp.png</normaloff>:/resources/icons/ic_cancel_black_24dp.png</iconset>
+   </property>
+   <property name="text">
+    <string>Stop all robots</string>
    </property>
   </action>
  </widget>

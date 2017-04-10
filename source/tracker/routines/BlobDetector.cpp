@@ -24,7 +24,7 @@ BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrame
         // copy the parameters
         m_settings = blobDetectorSettings->data();
     } else {
-        qDebug() << Q_FUNC_INFO << "Could not set the routune's settings";
+        qDebug() << "Could not set the routune's settings";
     }
 
     // set the agents' list
@@ -39,7 +39,7 @@ BlobDetector::BlobDetector(TrackingRoutineSettingsPtr settings, TimestampedFrame
  */
 BlobDetector::~BlobDetector()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -97,7 +97,7 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
                                 m_settings.useHarrisDetector(),
                                 m_settings.k());
     } catch(cv::Exception& e) {
-        qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
+        qDebug() << "OpenCV exception: " << e.what();
     }
 
     // unlock the mutex
@@ -123,8 +123,7 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
     // tracking : assign the detected agents to id's
     assingIds(IdsAssignmentMethod::NAIVE_CLOSEST_NEIGHBOUR, centers, directions);
 
-//    qDebug() << Q_FUNC_INFO
-//             << QString("Found %1 agents out of %2")
+//    qDebug() << QString("Found %1 agents out of %2")
 //                .arg(directions.size())
 //                .arg(m_agents.size());
 //    // print
@@ -153,7 +152,7 @@ void BlobDetector::removeSmallBlobs(cv::Mat& image, int minSize)
     try {
         cv::findContours(contoursImage, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
     } catch(cv::Exception& e) {
-        qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
+        qDebug() << "OpenCV exception: " << e.what();
     }
 
     // check them one by one to find those that are smaller than minSize
@@ -190,7 +189,7 @@ void BlobDetector::detectContours(cv::Mat& image,
         // retrieve contours from the binary image
         cv::findContours(image, contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
     } catch(cv::Exception& e) {
-        qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
+        qDebug() << "OpenCV exception: " << e.what();
     }
 
     if (hierarchy.size() > 0)
@@ -205,30 +204,23 @@ void BlobDetector::detectContours(cv::Mat& image,
         }
     }
 
-    // Enclosing ellipses for detected objects
-    std::vector<cv::RotatedRect> ellipses;
     std::vector<std::vector<cv::Point>> contoursPoly;
     contoursPoly.resize(contours.size());
 
-    // contour's moment;
-    cv::Moments moments;
     // all corners that are inside the contour
     std::vector<cv::Point2f> cornersInContour;
 
     for (size_t i = 0; i < contours.size(); ++i) {
         cv::approxPolyDP(cv::Mat(contours[i]), contoursPoly[i], 3, true);
-
         cornersInContour.clear();
         for (auto& corner: corners) {
             if(cv::pointPolygonTest(contours[i], corner, false) >= 0) {
                 cornersInContour.push_back(corner);
             }
         }
-
         // take only the contours that contain corners
         if (cornersInContour.size() > 0) {
-            moments = cv::moments(contours[i]);
-            centers.push_back(cv::Point2f(static_cast<float>(moments.m10/moments.m00+0.5),static_cast<float>(moments.m01/moments.m00+0.5)));
+            centers.push_back(contourCenter(contours[i]));
             cornersInContours.push_back(cornersInContour);
         }
     }

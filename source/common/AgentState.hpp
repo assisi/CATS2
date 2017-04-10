@@ -116,7 +116,10 @@ public:
     //! Checks if two points are close in 2D.
     bool closeTo(const PositionMeters& other, double threshold = ProximityThreshold)
     {
-        return (distance2DTo(other) < threshold);
+        if (m_valid && other.isValid())
+            return (distance2DTo(other) < threshold);
+        else
+            return false;
     }
 
     //! Operator +=.
@@ -290,6 +293,13 @@ public:
     void setOrientation(OrientationRad orientationRad) { m_orientationRad = orientationRad; }
     //! Return the orientation.
     OrientationRad orientation() const { return m_orientationRad; }
+    //! Returns the state as text.
+    QString toString() const
+    {
+        return QString("Position: %1, orientation : %2 deg")
+                .arg(position().toString())
+                .arg(orientation().angleDeg());
+    }
 
 private:
     //! Position in meters.

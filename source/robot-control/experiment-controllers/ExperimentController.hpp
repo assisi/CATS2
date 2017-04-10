@@ -62,6 +62,8 @@ public slots:
 signals:
     //! Sends the map areas' polygons.
     void notifyPolygons(QList<AnnotatedPolygons>);
+    //! Sends out the current controller status.
+    void notifyControllerStatus(QString status);
 
 protected:
     //! Reads the control map from a file.
@@ -74,6 +76,8 @@ protected:
     bool findAreaByPosition(QString& areaId, const PositionMeters& position);
     //! Finds the room with the majority of fish. Returns the success status.
     bool findFishArea(QString& areaId);
+    //! Counts the fish number in all rooms different from the current one.
+    int fishNumberInOtherRooms(QString currentAreaId);
     //! Finds the room where the robot is. Returns the success status.
     bool findRobotArea(QString& areaId);
 
@@ -91,6 +95,12 @@ protected:
     QString m_robotAreaId;
     //! Where the fish are.
     QMap<QString, int> m_fishNumberByArea;
+    //! The flag that shows that the robot's area has changed.
+    bool m_robotAreaChanged;
+
+private:
+    //! Sets the robot's area.
+    void updateRobotArea(QString areaId);
 
 private:
     //! A type of the controller.

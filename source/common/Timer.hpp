@@ -34,17 +34,26 @@ public:
     bool isTimedOutSec(double timeOutSec)
     {
         if (isSet()) {
+            return (runTimeSec() >  timeOutSec);
+        } else {
+            qDebug() << "Timer is not set";
+            return true;
+        }
+    }
+
+    //! The timer runtime in seconds.
+    double runTimeSec() const
+    {
+        if (isSet()) {
             std::chrono::milliseconds timeNow = std::chrono::duration_cast
                     <std::chrono::milliseconds>(std::chrono::system_clock::now()
                                                 .time_since_epoch());
-//            qDebug() << Q_FUNC_INFO << QString("Count %1 seconds")
-//                        .arg(std::chrono::duration_cast<std::chrono::duration<double,std::ratio<1,1>>>(timeNow - m_startTime).count());
-            return (std::chrono::duration_cast
+            return std::chrono::duration_cast
                     <std::chrono::duration<double,std::ratio<1,1>>>
-                    (timeNow - m_startTime).count() >  timeOutSec);
-        } else {
-            qDebug() << Q_FUNC_INFO << "Timer is not set";
-            return true;
+                    (timeNow - m_startTime).count();
+       } else {
+            qDebug() << "Timer is not set";
+            return 0.;
         }
     }
 

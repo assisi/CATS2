@@ -70,7 +70,7 @@ public:
         int cnt = 0;
         while (m_queue.try_dequeue(frame))
             cnt++;
-        qDebug() << Q_FUNC_INFO << QObject::tr("Dropped %1 elements").arg(cnt);
+        qDebug() << QObject::tr("Dropped %1 elements").arg(cnt);
     }
 
     //! Adds an element to the queue.
@@ -83,7 +83,7 @@ public:
 
         // enqueue the new element
         if (!m_queue.try_enqueue(frame))
-            qDebug() << Q_FUNC_INFO << "Could not enqueue new element, skipping";
+            qDebug() << "Could not enqueue new element, skipping";
     }
 
     //! Gets an element from the queue, returns true if succeded.

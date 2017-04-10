@@ -7,8 +7,9 @@
 #include "AnnotatedPolygonItem.hpp"
 #include "TrajectoryItem.hpp"
 #include "TargetItem.hpp"
-#include "RunTimer.h"
+#include "RunTimer.hpp"
 
+#include <Timer.hpp>
 #include <CoordinatesConversion.hpp>
 
 #include <QtWidgets/QGraphicsPixmapItem>
@@ -91,7 +92,7 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
  */
 ViewerWidget::~ViewerWidget()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     m_runTimeUpdateTimer.stop();
     delete m_uiViewer;
 }
@@ -121,6 +122,16 @@ void ViewerWidget::onNewFrame(QSharedPointer<QPixmap> pixmap, int fps)
         if (!pixmap.isNull()) {
             m_videoFrameItem->setPixmap(*pixmap.data());
             updateFrameRate(fps);
+
+            // if the frame rate was not set in the construction when we try to
+            // get it from the image
+            if (!m_frameSize.isValid()) {
+                m_frameSize = pixmap->size();
+                adjust();
+                qDebug() << QString("Frame size (%1, %2) is obtained from the image")
+                            .arg(m_frameSize.height())
+                            .arg(m_frameSize.width());
+            }
         }
     }
 }
@@ -197,7 +208,7 @@ void ViewerWidget::adjust()
                                        availableArea.height() / height);
         m_uiViewer->view->scale(scaleCoefficient, scaleCoefficient);
     } else {
-        qDebug() << Q_FUNC_INFO << "The target frame size is invalid, can not resize";
+        qDebug() << "The target frame size is invalid, can not resize";
     }
 }
 
@@ -233,10 +244,10 @@ void ViewerWidget::updateAgentLabels(QList<AgentDataWorld> agentDataList)
                 m_agentLabels[id]->setVisible(true);
                 m_agentUpdateTimer[id]->reset();
             } else {
-                qDebug() << Q_FUNC_INFO << "Unable to convert agent's world position to the image position";
+                qDebug() << "Unable to convert agent's world position to the image position";
             }
         } else {
-            qDebug() << Q_FUNC_INFO << QString("The postion of %1 is invalid").arg(agentData.label());
+            qDebug() << QString("The postion of %1 is invalid").arg(agentData.label());
         }
     }
 
@@ -301,10 +312,10 @@ void ViewerWidget::updateAgents(QList<AgentDataWorld> agentDataList)
                     m_agents[id]->hide();
                 }*/
             } else {
-                qDebug() << Q_FUNC_INFO << "Unable to convert agent's world position to the image position";
+                qDebug() << "Unable to convert agent's world position to the image position";
             }
         } else {
-            qDebug() << Q_FUNC_INFO << QString("The postion of %1 is invalid").arg(agentData.label());
+            qDebug() << QString("The postion of %1 is invalid").arg(agentData.label());
         }
     }
 
@@ -413,7 +424,7 @@ void ViewerWidget::updateControlAreas(QString agentId, QList<AnnotatedPolygons> 
                 if (convertWorldPosition(worldPosition, imagePosition) && imagePosition.isValid()) {
                     imagePolygon.append(QPointF(imagePosition.x(), imagePosition.y()));
                 } else {
-                    qDebug() << Q_FUNC_INFO << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
+                    qDebug() << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
                     imagePolygon.clear();
                     break;
                 }
@@ -449,7 +460,7 @@ void ViewerWidget::updateTrajectory(QString agentId, QQueue<PositionMeters> worl
         if (convertWorldPosition(worldPosition, imagePosition) && imagePosition.isValid()) {
             imagePolygon.append(QPointF(imagePosition.x(), imagePosition.y()));
         } else {
-            qDebug() << Q_FUNC_INFO << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
+            qDebug() << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
             imagePolygon.clear();
             break;
         }
@@ -490,7 +501,7 @@ void ViewerWidget::updateTarget(QString agentId, PositionMeters worldPosition)
         }
         m_agentsTargets[agentId]->setPos(QPointF(imagePosition.x(), imagePosition.y()));
     } else {
-        qDebug() << Q_FUNC_INFO << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
+        qDebug() << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
         // clean up
         if (m_agentsTargets.contains(agentId)) {
             TargetItem* targetItem = m_agentsTargets[agentId];
@@ -586,6 +597,14 @@ void ViewerWidget::setShowRunTime(bool value)
 }
 
 /*!
+ * Show the frame rate.
+ */
+void ViewerWidget::setShowFrameRate(bool value)
+{
+    m_frameRateItem->setVisible(value);
+}
+
+/*!
  * Resize event.
  */
 void ViewerWidget::resizeEvent(QResizeEvent *event)
@@ -617,7 +636,7 @@ void ViewerWidget::updateSetup(AnnotatedPolygons annotatedPolygon)
             if (convertWorldPosition(worldPosition, imagePosition) && imagePosition.isValid()) {
                 imagePolygon.append(QPointF(imagePosition.x(), imagePosition.y()));
             } else {
-                qDebug() << Q_FUNC_INFO << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
+                qDebug() << QString("Not able to convert %1 to image coordinates").arg(worldPosition.toString());
                 imagePolygon.clear();
                 break;
             }

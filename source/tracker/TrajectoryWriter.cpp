@@ -2,29 +2,45 @@
 
 #include "settings/TrackingSettings.hpp"
 
-#include <RunTimer.h>
+#include <RunTimer.hpp>
 
 #include <QtCore/QDebug>
 #include <QtCore/QPair>
-#include <QtWidgets/QApplication>
 #include <QtCore/QDir>
 
-#include <QtCore/QStandardPaths>
+#include <QtCore/QDateTime>
 
 /*!
  * Constructor.
  */
-TrajectoryWriter::TrajectoryWriter()
+TrajectoryWriter::TrajectoryWriter(QString dataLoggingPath)
 {
-    // create the output folder
-    QDir(QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation))
-            .mkdir(QApplication::applicationName());
+    QString filePath = dataLoggingPath;
+    QDir dir;
+    if (!dir.exists(filePath))
+        dir.mkpath(filePath);
 
-    QString filePath = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation) +
-                       QDir::separator() + QApplication::applicationName();
-    QString fileName = QString("%1 %2.txt")
-            .arg(TrackingSettings::get().experimentName())
-            .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd hh:mm:ss"));
+    // make a directory with the type name
+    QString experimentType = TrackingSettings::get().experimentType();
+    if (experimentType.isEmpty())
+        experimentType = "undefined";
+
+    filePath += QDir::separator() + experimentType;
+    if (!dir.exists(filePath))
+        dir.mkdir(filePath);
+
+    // make a directory with the experiment name
+    QString experimentName = TrackingSettings::get().experimentName();
+    if (experimentName.isEmpty())
+        experimentName = "undefined";
+
+    filePath += QDir::separator() + TrackingSettings::get().experimentName();
+    if (!dir.exists(filePath))
+        dir.mkdir(filePath);
+
+    // form the file name
+    QString fileName = QString("positions-%1.txt")
+            .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd-hh:mm:ss"));
     // open the text where to write the tracking results
     m_resultsFile.setFileName(filePath + QDir::separator() + fileName);
     if (m_resultsFile.open(QIODevice::WriteOnly | QIODevice::Text)) {
@@ -72,7 +88,7 @@ void TrajectoryWriter::writeData(std::chrono::milliseconds timestamp,
     // a index in the output table
     for (int i = 0; i < TrackingSettings::get().numberOfRobots(); ++i) {
         const AgentDataWorld* robotData = getAgentData(i,
-                                                       AgentType::FISH_CASU,
+                                                       AgentType::CASU,
                                                        m_robotsIndexToId,
                                                        agentsData);
         if (robotData) {

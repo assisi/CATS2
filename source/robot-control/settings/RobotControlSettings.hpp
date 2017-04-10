@@ -55,11 +55,18 @@ public:
     //! Get color.
     QColor ledColor() const { return m_ledColor; }
 
+    //! Set the target.
+    void setConnectionTarget(QString target) { m_connectionTarget = target; }
+    //! Get the target.
+    QString connectionTarget() const { return m_connectionTarget; }
+
 private:
     //! Robot's id.
     QString m_id;
     //! Robot's color.
     QColor m_ledColor;
+    //! The target to connect directly to the robot.
+    QString m_connectionTarget;
 };
 
 /*!

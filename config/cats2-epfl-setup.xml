@@ -1,16 +1,17 @@
 <?xml version="1.0"?>
 <opencv_storage>
     <experiment>
+        <type>Initiation</type>
         <name>TestExperiment</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>3</numberOfAnimals>
+            <numberOfAnimals>4</numberOfAnimals>
         </agents>
         <setupMapPath>setup/epfl-two-rooms.xml</setupMapPath>
     </experiment>
     <robots>
         <numberOfRobots>1</numberOfRobots>
-        <controlFrequencyHz>10</controlFrequencyHz>
+        <controlFrequencyHz>20</controlFrequencyHz>
         <fishModel>
             <agent>
                 <length>0.02</length>
@@ -65,7 +66,7 @@
                 <ki>0.05</ki>
                 <kd>0.00</kd>
             </pid>
-            <defaultLinearSpeedCmSec>17</defaultLinearSpeedCmSec>
+            <defaultLinearSpeedCmSec>12</defaultLinearSpeedCmSec>
             <needOrientationToNavigate>0</needOrientationToNavigate>
         </navigation>
         <controllers>
@@ -94,6 +95,7 @@
                 <g>150</g>
                 <b>200</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
         </fishBot_1>
         <fishBot_2>
             <id>C</id>
@@ -102,6 +104,7 @@
                 <g>255</g>
                 <b>190</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
         </fishBot_2>
         <fishBot_3>
             <id>B</id>
@@ -110,6 +113,7 @@
                 <g>91</g>
                 <b>93</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm0</connectionTarget>
         </fishBot_3>
     </robots>
     <setups>
@@ -125,12 +129,12 @@
             <cameraCalibrationFile>camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
-                <numberOfAgents>4</numberOfAgents>
+                <numberOfAgents>5</numberOfAgents>
                 <blobDetector>
-                    <minBlobSizePx>0</minBlobSizePx>
+                    <minBlobSizePx>3</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
                     <minDistance>5.0</minDistance>
-                    <blockSize>2</blockSize>
+                    <blockSize>5</blockSize>
                     <useHarrisDetector>1</useHarrisDetector>
                     <k>0.04</k>
             </blobDetector>
@@ -147,7 +151,7 @@
                 <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
                     <fishBot_H>
-                        <threshold>40</threshold>
+                        <threshold>30</threshold>
                     </fishBot_H>
                     <fishBot_B>
                         <threshold>70</threshold>

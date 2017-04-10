@@ -46,7 +46,7 @@ TrackingData::TrackingData(SetupType::Enum setupType,
  */
 TrackingData::~TrackingData()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     if (!m_trackingRoutine.isNull())
         m_trackingRoutine->stop();
 }
@@ -78,10 +78,10 @@ void TrackingData::onTrackedAgents(TimestampedImageAgentsData timestampedImageAg
             timestampedWorldAgents.timestamp = timestampedImageAgents.timestamp;
             emit trackedAgents(m_setupType, timestampedWorldAgents);
 //        } else {
-//            qDebug() << Q_FUNC_INFO << "Among received agents there is no one with valid position";
+//            qDebug() << "Among received agents there is no one with valid position";
 //        }
     } else {
-        qDebug() << Q_FUNC_INFO << "Unable to convert the image coordinates to the world coordinates";
+        qDebug() << "Unable to convert the image coordinates to the world coordinates";
     }
 }
 

@@ -10,9 +10,9 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication::setOrganizationName("MOBOTS");
+    QApplication::setOrganizationName("EPFL-LSRO-Mobots");
     QApplication::setOrganizationDomain("mobots.epfl.ch");
-    QApplication::setApplicationName("CAT2-simple-tracker");
+    QApplication::setApplicationName("CATS2-simple-robot-controller");
 
     QApplication app(argc, argv);
 
@@ -23,10 +23,10 @@ int main(int argc, char *argv[])
                 mainWindow.show();
                 return app.exec();
         } else {
-            qDebug() << Q_FUNC_INFO << "Couldn't setup the robot control, finished";
+            qDebug() << "Couldn't setup the robot control, finished";
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find necessary input arguments, finished";
+        qDebug() << "Couldn't find necessary input arguments, finished";
     }
 }
 

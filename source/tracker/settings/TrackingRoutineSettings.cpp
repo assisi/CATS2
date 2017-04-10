@@ -1,6 +1,8 @@
 #include "TrackingRoutineSettings.hpp"
 #include "TrackingSetup.hpp"
 
+#include <QtCore/QDebug>
+
 /*!
  * Constructor.
  */
@@ -15,5 +17,5 @@ TrackingRoutineSettings::TrackingRoutineSettings(SetupType::Enum setupType) :
  */
 TrackingRoutineSettings::~TrackingRoutineSettings()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }

@@ -12,11 +12,11 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication::setOrganizationName("MOBOTS");
+    QApplication::setOrganizationName("EPFL-LSRO-Mobots");
     QApplication::setOrganizationDomain("mobots.epfl.ch");
-    QApplication::setApplicationName("CAT2-simple-video-grabber");
+    QApplication::setApplicationName("CATS2-simple-video-grabber");
 
-    QGst::init(&argc, &argv);
+    QGst::init(nullptr, nullptr);
     QApplication app(argc, argv);
 
     // specify the setup type
@@ -31,10 +31,10 @@ int main(int argc, char *argv[])
                                             setupType, needTargetFrameSize)) {
                 grabberHandler = GrabberHandlerPtr(new GrabberHandler(setupType));
             } else {
-                qDebug() << Q_FUNC_INFO << "Grabber settings are not defined";
+                qDebug() << "Grabber settings are not defined";
             }
         } else {
-            qDebug() << Q_FUNC_INFO << "Main camera descriptor is ill-defined";
+            qDebug() << "Main camera descriptor is ill-defined";
         }
         return app.exec();
     }

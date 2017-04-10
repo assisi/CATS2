@@ -18,7 +18,7 @@ GoToPosition::GoToPosition(FishBot* robot) :
  */
 GoToPosition::~GoToPosition()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -45,10 +45,7 @@ void GoToPosition::setTargetPosition(PositionMeters position)
 {
     if (m_targetPosition != position) {
         m_targetPosition = position;
-        qDebug() << Q_FUNC_INFO
-                 << m_robot->name()
-                 << "got new target position"
-                 << position.toString();
+        qDebug() << m_robot->name() << "got new target position" << position.toString();
     }
 }
 

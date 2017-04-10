@@ -9,7 +9,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    QCoreApplication::setOrganizationName("MOBOTS");
+    QCoreApplication::setOrganizationName("EPFL-LSRO-Mobots");
     QCoreApplication::setOrganizationDomain("mobots.epfl.ch");
     QCoreApplication::setApplicationName("CameraCalibrationHelper");
 

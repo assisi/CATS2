@@ -48,7 +48,7 @@
        <number>3</number>
       </property>
       <property name="spacing">
-       <number>0</number>
+       <number>3</number>
       </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
@@ -85,11 +85,8 @@
       <property name="bottomMargin">
        <number>3</number>
       </property>
-      <property name="horizontalSpacing">
+      <property name="spacing">
        <number>3</number>
-      </property>
-      <property name="verticalSpacing">
-       <number>0</number>
       </property>
       <item row="0" column="0">
        <widget class="QLabel" name="label_3">
@@ -100,6 +97,13 @@
       </item>
       <item row="0" column="1">
        <widget class="QComboBox" name="experimentControllerComboBox"/>
+      </item>
+      <item row="1" column="0" colspan="2">
+       <widget class="QLabel" name="experimentStatusLabel">
+        <property name="text">
+         <string>Status:</string>
+        </property>
+       </widget>
       </item>
      </layout>
     </widget>

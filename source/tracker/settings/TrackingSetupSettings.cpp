@@ -6,12 +6,15 @@
 #include <settings/CalibrationSettings.hpp>
 #include <settings/GrabberSettings.hpp>
 
+#include <QtCore/QDebug>
+
 /*!
  * Initializes the parameters for the tracking setup of given type.
  */
-bool TrackingSetupSettings::init(SetupType::Enum setupType, bool needCalibration)
+bool TrackingSetupSettings::init(QString configurationFilePath,
+                                 SetupType::Enum setupType,
+                                 bool needCalibration)
 {
-    QString configurationFilePath = CommandLineParameters::get().configurationFilePath();
     // first check that the calibration settings are initialized
     if (CalibrationSettings::get().init(configurationFilePath, setupType) || (!needCalibration)) {
         // then check that the input stream is set
@@ -22,19 +25,19 @@ bool TrackingSetupSettings::init(SetupType::Enum setupType, bool needCalibration
                 if (TrackingSettings::get().init(configurationFilePath, setupType)) {
                     return true;
                 } else {
-                    qDebug() << Q_FUNC_INFO << "Couldn't setup the tracking routine, finished";
+                    qDebug() << "Couldn't setup the tracking routine, finished";
                     return false;
                 }
             } else {
-                qDebug() << Q_FUNC_INFO << "Couldn't setup grabber settings, finished";
+                qDebug() << "Couldn't setup grabber settings, finished";
                 return false;
             }
         } else {
-            qDebug() << Q_FUNC_INFO << "Main camera descriptor is ill-defined";
+            qDebug() << "Main camera descriptor is ill-defined";
             return false;
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't setup calibration settings, finished";
+        qDebug() << "Couldn't setup calibration settings, finished";
         return false;
     }
 }

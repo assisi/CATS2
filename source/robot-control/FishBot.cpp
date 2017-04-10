@@ -2,9 +2,10 @@
 #include "control-modes/ControlMode.hpp"
 #include "control-modes/ControlTarget.hpp"
 
-#include "dbusinterface.h"
+#include "interfaces/DashelInterface.hpp"
 
 #include <AgentData.hpp>
+#include <Timer.hpp>
 
 #include <QtCore/QCoreApplication>
 #include <QtCore/QDir>
@@ -15,10 +16,12 @@
 FishBot::FishBot(QString id) :
     QObject(nullptr),
     m_id(id),
+    m_firmwareId(0),
     m_name(QString("Fish_bot_%1").arg(m_id)), // NOTE : don't change this name as the .aesl files are searched by it
     m_ledColor(Qt::black),
     m_state(),
-    m_robotInterface(nullptr),
+    m_sharedRobotInterface(nullptr),
+    m_uniqueRobotInterface(nullptr),
     m_experimentManager(this),
     m_controlStateMachine(this),
     m_navigation(this)
@@ -44,10 +47,9 @@ FishBot::FishBot(QString id) :
     connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
             this, &FishBot::notifyControllerChanged);
     connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
-            [=]()
-            {
-                releaseModelArea();
-            });
+            [=]() { releaseModelArea(); });
+    connect(&m_experimentManager, &ExperimentManager::notifyControllerStatus,
+            this, &FishBot::notifyControllerStatus);
     // control modes
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);
@@ -70,43 +72,130 @@ FishBot::FishBot(QString id) :
  */
 FishBot::~FishBot()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
+    // close the connection if necessary
+    closeUniqueConnection();
     // TODO : to remove the callback, dbus interface must be modified for this.
 }
 
 /*!
  * Sets the robot's interface.
  */
-void FishBot::setRobotInterface(Aseba::DBusInterfacePtr robotInterface)
+void FishBot::setSharedRobotInterface(DBusInterfacePtr sharedRobotInterface)
 {
-    m_robotInterface = robotInterface;
-    // TODO : to add a callback that sets the robot's state from the event
+    m_sharedRobotInterface = sharedRobotInterface;
+    // add a callback to process the incoming messages from the robot
+    if (m_sharedRobotInterface) {
+        m_sharedRobotInterface->
+                connectEvent("PowerDown",
+                             [this](const Values& data) {
+                                // get the firmware's id
+                                if ((data.size() > 0) && (data[0] == m_firmwareId))
+                                    processPowerDownEvent();
+                            });
+    }
 }
 
 /*!
  * Inititialises the robot's firmaware.
  */
-void FishBot::setupConnection(int robotIndex)
+void FishBot::setupSharedConnection(int robotIndex)
 {
-    if (m_robotInterface.data()) {
-        // FIXME : in the multi-robot/node mode aseba doesn't provide the node list correctly
-//        if (m_robotInterface->nodeList.contains(m_name)) {
-            QString scriptDirPath = QCoreApplication::applicationDirPath() + QDir::separator() + "aesl";
-            QString scriptPath = scriptDirPath + QDir::separator() + m_name + ".aesl";
+    if (m_sharedRobotInterface) {
+        if (m_sharedRobotInterface->isConnected()) {
+            emit notifyConnectionStatusChanged(name(), ConnectionStatus::CONNECTED);
+            // FIXME : in the multi-robot/node mode aseba doesn't provide the node list correctly
+            // if (m_robotInterface->nodeList.contains(m_name)) {
+            m_firmwareId = robotIndex;
+            QString scriptDirPath = QCoreApplication::applicationDirPath() +
+                    QDir::separator() + "aesl";
+            QString scriptPath = scriptDirPath + QDir::separator() +
+                    m_name + ".aesl";
             if (QFileInfo(scriptPath).exists()) {
-                m_robotInterface->loadScript(scriptPath);
+                m_sharedRobotInterface->loadScript(scriptPath);
                 // set the robots id
                 Values data;
-                data.append(robotIndex);
-                m_robotInterface->setVariable(m_name, "IDControl", data);
+                data.append(m_firmwareId);
+                m_sharedRobotInterface->setVariable(m_name, "IDControl", data);
                 // set the obstacle avoidance on the robot
                 m_navigation.updateLocalObstacleAvoidance();
             } else {
-                qDebug() << Q_FUNC_INFO << QString("Script %1 could not be found.").arg(scriptPath);
+                qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
             }
-//        }
+            // }
+        } else {
+            emit notifyConnectionStatusChanged(name(), ConnectionStatus::DISCONNECTED);
+        }
     } else {
-        qDebug() << Q_FUNC_INFO << "The robot's interface is not set";
+        qDebug() << QString("The %1 interface is not set").arg(m_name);
+        emit notifyConnectionStatusChanged(name(), ConnectionStatus::DISCONNECTED);
+    }
+}
+
+/*!
+ * Connects to the robot via its own interface.
+ */
+void FishBot::setupUniqueConnection()
+{
+    // if the connection is open then close it
+    closeUniqueConnection();
+
+    // make new connection
+    QString target = RobotControlSettings::get().robotSettings(m_id).connectionTarget();
+    m_uniqueRobotInterface.reset(new DashelInterface());
+
+    // FIXME : how to get a feedback if the connection is established
+    qDebug() << QString("Connecting to %1").arg(m_name);
+    m_uniqueRobotInterface->connectAseba(target);
+
+    // wait until connected
+    countDown(5.);
+
+    if (m_uniqueRobotInterface->isConnected()) {
+        emit notifyConnectionStatusChanged(name(), ConnectionStatus::CONNECTED);
+        qDebug() << QString("Requesting the node description for %1").arg(m_name);
+        // request the node's description
+        m_uniqueRobotInterface->pingNetwork();
+        // wait until the description received
+        countDown(2.);
+
+        qDebug() << QString("Loading the script on %1").arg(m_name);
+        // load the script
+        QString scriptDirPath = QCoreApplication::applicationDirPath() +
+                QDir::separator() + "aesl";
+        QString scriptPath = scriptDirPath + QDir::separator() +
+                m_name + ".aesl";
+        if (QFileInfo(scriptPath).exists()) {
+            m_uniqueRobotInterface->loadScript(scriptPath);
+            // set the obstacle avoidance on the robot
+            m_navigation.updateLocalObstacleAvoidance();
+
+            // add a callback to process the incoming messages from the robot
+            m_uniqueRobotInterface->connectEvent("PowerDown",
+                                           [this](const Values& data) {
+                // no need to check the id for the unique connection, process
+                // directly
+                processPowerDownEvent();
+            });
+        } else {
+            qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
+            // FIXME : should we disconnect here
+        }
+    } else  {
+        qDebug() << QString("Could not connect to %1").arg(m_name);
+    }
+}
+
+/*!
+ * Closes the unique connection if it's open.
+ */
+void FishBot::closeUniqueConnection()
+{
+    // if the connection is open then close it
+    if (m_uniqueRobotInterface.data() && m_uniqueRobotInterface->isConnected()) {
+        m_uniqueRobotInterface->disconnectAseba();
+        emit notifyConnectionStatusChanged(name(), ConnectionStatus::DISCONNECTED);
+        m_uniqueRobotInterface.reset(nullptr);
     }
 }
 
@@ -115,15 +204,19 @@ void FishBot::setupConnection(int robotIndex)
  */
 void FishBot::stepControl()
 {
-    // check the experiment controller to see if the control mode is to be changed
-    if (m_experimentManager.isActive()) {
-        stepExperimentManager();
-    }
-
     // check the incoming events to see if the control mode is to be changed
     // due to the low-power or the obstacle-avoidance routine - THIS CAN BE DONE
     // IN THE CALLBACK AND MANAGED BY THE PRIORITY LOGICS OR BY A FLAG ON THE
     // CONTROL MODE "ACCEPTS CONTROL MODE CHANGE"
+
+    if (safetyIssuesDetected()) {
+        stepSafetyLogics();
+    }
+
+    // check the experiment controller to see if the control mode is to be changed
+    if (m_experimentManager.isActive()) {
+        stepExperimentManager();
+    }
 
     // step the control mode state machine with the robot's position and
     // other agents positions.
@@ -314,4 +407,150 @@ void FishBot::stepExperimentManager()
             }
         }
     }
+}
+
+/*!
+ * Sends an aseba event to the robot.
+ */
+void FishBot::sendEvent(const QString& eventName, const Values& data)
+{
+    if (m_sharedRobotInterface.data() && m_sharedRobotInterface->isConnected()) {
+        m_sharedRobotInterface->sendEventName(eventName, data);
+    } else if (m_uniqueRobotInterface.data() && m_uniqueRobotInterface->isConnected()) {
+        m_uniqueRobotInterface->sendEventName(eventName, data);
+    }
+}
+
+/*!
+ * Returns the connection status of the robot.
+ */
+bool FishBot::isConnected() const
+{
+    if (m_sharedRobotInterface.data())
+        return m_sharedRobotInterface->isConnected();
+    else if (m_uniqueRobotInterface.data())
+        return m_uniqueRobotInterface->isConnected();
+    else
+        return false;
+}
+
+/*!
+ * A service method that makes the code to wait for a certatin time
+ * by printing the count down.
+ */
+void FishBot::countDown(double timeOut)
+{
+    Timer connectionTimer;
+    connectionTimer.reset();
+
+    int elapsed = 1;
+    std::cout << timeOut;
+    while (!connectionTimer.isTimedOutSec(timeOut)) {
+        if (connectionTimer.runTimeSec() >= elapsed) {
+            std::cout << "..." << qRound(timeOut - elapsed) << std::flush;
+            elapsed += 1;
+        }
+        continue;
+    }
+    std::cout << std::endl;
+}
+
+/*!
+ * Implements the reaction of the robot on the power-down event.
+ */
+void FishBot::processPowerDownEvent()
+{
+    // if the power down arrives first time then the set the corresponding timer
+    if (!m_powerDownStartTimer.isSet()) {
+        qDebug() << QString("Power-down detected on %1, the connection will be "
+                            "closed in %2 seconds")
+                    .arg(m_name)
+                    .arg(ToleratedPowerDownDurationSec);
+        m_powerDownStartTimer.reset();
+        // power down arriving, meaning that we risk to disconnect soon
+        emit notifyConnectionStatusChanged(name(), ConnectionStatus::PENDING);
+    }
+    // in any case reset the last-power-down timer
+    m_powerDownUpdateTimer.reset();
+}
+
+/*!
+ * Checks if there were safety issues (power down, obstacles, etc.).
+ */
+bool FishBot::safetyIssuesDetected()
+{
+    return m_powerDownStartTimer.isSet();
+}
+
+/*!
+ * Runs the emergency logics for the safety issues.
+ */
+void FishBot::stepSafetyLogics()
+{
+    // if the power down message was not received recently, then stop tracking it
+    if (m_powerDownUpdateTimer.isTimedOutSec(PowerDownUpdateTimeoutSec)) {
+        qDebug() << QString("Power is restored on %1").arg(m_name);
+        // clear timers
+        m_powerDownStartTimer.clear();
+        m_powerDownUpdateTimer.clear();
+        emit notifyConnectionStatusChanged(name(), ConnectionStatus::CONNECTED);
+    } else {
+        // if we have a power down for too long then we disconnect the robot
+        if (m_powerDownStartTimer.isTimedOutSec(ToleratedPowerDownDurationSec)) {
+            qDebug() << QString("Disconnecting %1 due to power-down").arg(m_name);
+            // if the connection is open then close it
+            closeUniqueConnection();
+            // clear timers
+            m_powerDownStartTimer.clear();
+            m_powerDownUpdateTimer.clear();
+        }
+    }
+}
+
+/*!
+ * Returns the supported controllers.
+ */
+QList<ExperimentControllerType::Enum> FishBot::supportedControllers() const
+{
+    return m_experimentManager.supportedControllers();
+}
+
+/*!
+ * Sets the controller.
+ */
+void FishBot::setController(ExperimentControllerType::Enum type)
+{
+    m_experimentManager.setController(type);
+}
+
+/*!
+ * Return the type of the current controller.
+ */
+ExperimentControllerType::Enum FishBot::currentController() const
+{
+    return m_experimentManager.currentController();
+}
+
+/*!
+ * Returns the supported control modes.
+ */
+QList<ControlModeType::Enum> FishBot::supportedControlModes() const
+{
+    return m_controlStateMachine.supportedControlModes();
+}
+
+/*!
+ * Return the type of the current control mode.
+ */
+ControlModeType::Enum FishBot::currentControlMode() const
+{
+    return m_controlStateMachine.currentControlMode();
+}
+
+/*!
+ * Return the motion pattern.
+ */
+MotionPatternType::Enum FishBot::currentMotionPattern() const
+{
+    return m_navigation.motionPattern();
 }

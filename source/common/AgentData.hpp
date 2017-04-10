@@ -12,7 +12,7 @@
  */
 enum class AgentType
 {
-    FISH_CASU,
+    CASU,
     FISH,
     GENERIC,    // any type of the agent, different from UNDEFINED
     UNDEFINED   // unknown, no data
@@ -69,7 +69,7 @@ class AgentDataWorld
 {
 public:
     //! Constructor.
-    explicit AgentDataWorld(QString id,
+    explicit AgentDataWorld(QString id = "Undef",
                             AgentType type = AgentType::UNDEFINED,
                             StateWorld stateWorld = StateWorld());
 

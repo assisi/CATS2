@@ -35,6 +35,7 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
             [=](ExperimentControllerType::Enum type)
             {
                 QString controllerTypeString = ExperimentControllerType::toString(type);
+                m_ui->experimentStatusLabel->setText("Status:");
                 if (m_ui->experimentControllerComboBox->currentText() != controllerTypeString)
                     m_ui->experimentControllerComboBox->setCurrentText(controllerTypeString);
             });
@@ -44,6 +45,13 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
         m_ui->experimentControllerComboBox->addItem(ExperimentControllerType::toString(type), type);
     }
     m_ui->experimentControllerComboBox->setCurrentText(ExperimentControllerType::toString(m_robot->currentController()));
+    // set the controller status
+    connect(m_robot.data(), &FishBot::notifyControllerStatus,
+            [=](QString status)
+            {
+                QString text = QString("Status: %1").arg(status);
+                m_ui->experimentStatusLabel->setText(text);
+            });
 
     // set the robot's control mode when it is changed in the combobox
     connect(m_ui->controlModeComboBox, static_cast<void (QComboBox::*)(int)>(&QComboBox::currentIndexChanged),
@@ -165,7 +173,10 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
     }
     m_ui->obstacleAvoidanceSettingsWidget->layout()->addWidget(new PotentialFieldWidget(m_robot->potentialField()));
     m_ui->obstacleAvoidanceSettingsWidget->hide();
-    connect(m_ui->showDetailsButton, &QPushButton::toggled, [=](bool checked){ m_ui->obstacleAvoidanceSettingsWidget->setVisible(checked); });
+    connect(m_ui->showDetailsButton, &QPushButton::toggled,
+            [=](bool checked){
+                m_ui->obstacleAvoidanceSettingsWidget->setVisible(checked);
+            });
 }
 
 /*!
@@ -173,7 +184,7 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
  */
 RobotControlWidget::~RobotControlWidget()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     delete m_ui;
 }
 

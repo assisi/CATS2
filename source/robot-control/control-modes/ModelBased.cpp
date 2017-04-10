@@ -28,7 +28,7 @@ ModelBased::ModelBased(FishBot* robot) :
 ModelBased::~ModelBased()
 {
 //    cv::destroyWindow("ModelGrid");
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -127,7 +127,7 @@ PositionMeters ModelBased::computeTargetPosition()
 
 //    // if no data is available, don't update the target
 //    if (m_robot->fishStates().size() == 0) {
-//        qDebug() << Q_FUNC_INFO << "No fish detected, impossible to run the model";
+//        qDebug() << "No fish detected, impossible to run the model";
 //        // returning the previous target
 //        return m_targetPosition;
 //    }
@@ -155,14 +155,13 @@ PositionMeters ModelBased::computeTargetPosition()
                 agentIndex++;
             }
         } else {
-            qDebug() << Q_FUNC_INFO
-                     << "Number of fish in the simulator is wrongly initialized.";
+            qDebug() << "Number of fish in the simulator is wrongly initialized.";
             break;
         }
     }
     size_t detectedAgentNum = agentIndex;
 //    if (detectedAgentNum == 0) {
-//        qDebug() << Q_FUNC_INFO << "No fish was taken into account, returning previous target";
+//        qDebug() << "No fish was taken into account, returning previous target";
 //        return m_targetPosition;
 //    }
     for (agentIndex = detectedAgentNum;
@@ -188,7 +187,7 @@ PositionMeters ModelBased::computeTargetPosition()
         }
         m_sim->robots[0].first->present = true;
     } else {
-        qDebug() << Q_FUNC_INFO << "The robot position is outside of the setup "
+        qDebug() << "The robot position is outside of the setup "
                                    "area or invalid";
         m_sim->robots[0].first->present = false;
     }
@@ -209,7 +208,7 @@ PositionMeters ModelBased::computeTargetPosition()
         targetPosition.setY((m_sim->robots[0].first->headPos.second +
                             m_sim->robots[0].first->tailPos.second) / 2. + minY());
         targetPosition.setValid(true);
-//        qDebug() << Q_FUNC_INFO  << QString("New target is %1")
+//        qDebug() << QString("New target is %1")
 //                    .arg(targetPosition.toString());
     }
 
