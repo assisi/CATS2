@@ -201,6 +201,8 @@ bool RobotControlSettings::init(QString configurationFileName)
         if (polygon.size() > 0) {
             for (auto& point : polygon)
                 m_trajectory << PositionMeters(point);
+            qDebug() << QString("Loaded trajectory of %1 points, shared by all "
+                                "robots").arg(m_trajectory.size());
         } else {
             qDebug() << Q_FUNC_INFO << "The trajectory is empty";
         }
@@ -208,6 +210,10 @@ bool RobotControlSettings::init(QString configurationFileName)
         qDebug() << Q_FUNC_INFO << "Could not find the trajectory file";
     }
     // read the corresponding flags
+    m_loopTrajectory = true;
+    settings.readVariable("robots/controlModes/trajectory/loopTrajectory",
+                          m_loopTrajectory,
+                          m_loopTrajectory);
     m_providePointsOnTimer = false;
     settings.readVariable("robots/controlModes/trajectory/providePointsOnTimer",
                           m_providePointsOnTimer,

@@ -1,7 +1,9 @@
-#ifndef CATS2_TRAJECTORY_HPP
+﻿#ifndef CATS2_TRAJECTORY_HPP
 #define CATS2_TRAJECTORY_HPP
 
 #include "ControlMode.hpp"
+
+#include <QtCore/QTimer>
 
 /*!
  * Makes the robots to follow the predefined trajectory. When it arrives to the
@@ -17,21 +19,34 @@ public:
     //! Destructor.
     ~Trajectory();
 
+
+    //! Called when the control mode is activated.
+    virtual void start() override;
     //! The step of the control mode.
     virtual ControlTargetPtr step() override;
-
     //! Called when the control mode is disactivated.
-    virtual void finish() override { m_currentIndex = 0; }
+    virtual void finish() override;
 
     //! Informs on what kind of control targets this control mode generates.
     virtual QList<ControlTargetType> supportedTargets() override;
+
+private slots:
+    //! Switches to the next waypoint.
+    void updateCurrentIndex();
 
 private:
     //! The trajectory to follow.
     QList<PositionMeters> m_trajectory;
     //! The current point index.
     int m_currentIndex;
-    // TODO : to add a flag to loop the trajectory
+    //! Defines if the trajectory should be restarted once the last point is
+    //! reached, read from settings.
+    bool m_loopTrajectory;
+    //! Specifies if the next point of the trajectory is to be provided on
+    //! timer or once the previous is reached, read from settings.
+    bool m_providePointsOnTimer;
+    //! Updates the waypoints at given frequency.
+    QTimer m_updateTimer;
 };
 
 #endif // CATS2_TRAJECTORY_HPP

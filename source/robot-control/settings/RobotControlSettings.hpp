@@ -255,9 +255,13 @@ public:
 
     //! Returns the predefined trajectory for the Trajectory control mode.
     QList<PositionMeters> trajectory() const { return m_trajectory; }
+    //! Returns the flag defining if the trajectory should be restarted once the
+    //! last point is reached.
+    bool loopTrajectory() { return m_loopTrajectory; }
+
     //! Returns the flag specifing if the next point of the trajectory is to be
     //! provided on timer or once the previous is reached.
-    bool providePointsOnTimer() const { m_providePointsOnTimer; }
+    bool providePointsOnTimer() const { return m_providePointsOnTimer; }
     //! Returns the update rate for the trajectory points when they are provided
     //! on a timeout.
     int trajectoryUpdateRateHz() const { return m_trajectoryUpdateRateHz; }
@@ -304,6 +308,9 @@ private:
     // TODO : to make a map of usefull settings for every control mode
     //! The predefined trajectory for the Trajectory control mode.
     QList<PositionMeters> m_trajectory;
+    //! Defines if the trajectory should be restarted once the last point is
+    //! reached.
+    bool m_loopTrajectory;
     //! Specifies if the next point of the trajectory is to be provided on
     //! timer or once the previous is reached.
     bool m_providePointsOnTimer;
