@@ -51,7 +51,7 @@
         <controlModes>
             <!-- TODO : to implement -->
             <trajectory>
-                <points>trajectories/epfl-square.xml</points>
+                <points>trajectories/fish-trajectory.xml</points>
                 <loopTrajectory>1</loopTrajectory>
                 <providePointsOnTimer>1</providePointsOnTimer>
                 <updateRateHz>15</updateRateHz>
