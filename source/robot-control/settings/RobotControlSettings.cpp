@@ -204,10 +204,10 @@ bool RobotControlSettings::init(QString configurationFileName)
             qDebug() << QString("Loaded trajectory of %1 points, shared by all "
                                 "robots").arg(m_trajectory.size());
         } else {
-            qDebug() << Q_FUNC_INFO << "The trajectory is empty";
+            qDebug() << "The trajectory is empty";
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Could not find the trajectory file";
+        qDebug() << "Could not find the trajectory file";
     }
     // read the corresponding flags
     m_loopTrajectory = true;

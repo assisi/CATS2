@@ -27,7 +27,7 @@ Manual::Manual(FishBot* robot) : ControlMode(robot, ControlModeType::MANUAL)
  */
 Manual::~Manual()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!

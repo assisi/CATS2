@@ -15,7 +15,7 @@ Idle::Idle(FishBot* robot) : ControlMode(robot, ControlModeType::IDLE)
  */
 Idle::~Idle()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!

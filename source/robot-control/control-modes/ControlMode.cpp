@@ -20,7 +20,7 @@ ControlMode::ControlMode(FishBot* robot, ControlModeType::Enum type):
  */
 ControlMode::~ControlMode()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
