@@ -8,6 +8,8 @@ CATS2 is built within the frame of ASSISIbf project (http://assisi-project.eu).
 
 ## Prerequisites
 
+CATS2 was tested with Ubuntu 14.04 and Ubuntu 16.04. 
+
 CATS2 depends on the following packages
 * CMake 3.2 or newer
 * Qt5.6 or newer
