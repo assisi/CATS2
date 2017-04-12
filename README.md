@@ -1,5 +1,7 @@
 # CATS2
 
+![CATS2 logo](cats-bleu.jpg?raw=true)
+
 Released under LGPL3, see [license.txt](license.txt) for details.
 
 CATS2 goes for **C**ontrol **A**nd **T**racking **S**oftware.
@@ -8,7 +10,7 @@ CATS2 is built within the frame of ASSISIbf project (http://assisi-project.eu).
 
 ## Prerequisites
 
-CATS2 was tested with Ubuntu 14.04 and Ubuntu 16.04. 
+CATS2 was tested with Ubuntu 14.04 and Ubuntu 16.04.
 
 CATS2 depends on the following packages
 * CMake 3.2 or newer
