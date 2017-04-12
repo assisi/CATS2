@@ -1,4 +1,4 @@
-![CATS2 logo](cats-bleu.jpg?raw=true | width=200)
+![CATS2 logo](cats-bleu.jpg?raw=true)
 
 # CATS2
 
