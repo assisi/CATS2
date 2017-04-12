@@ -90,7 +90,7 @@ public:
     bool isValid() const { return m_valid; }
 
     //! Returns the position as text. Only x and y coordinates are shown.
-    QString toString()
+    QString toString() const
     {
         if (m_valid)
             return QObject::tr("%1 m, %2 m").arg(m_x, 0, 'f', 3).arg(m_y, 0, 'f', 3);
@@ -99,7 +99,7 @@ public:
     }
 
     //! Computes the distance to another position.
-    double distanceTo(const PositionMeters& other)
+    double distanceTo(const PositionMeters& other) const
     {
         return qSqrt((m_x - other.x()) * (m_x - other.x()) +
                      (m_y - other.y()) * (m_y - other.y()) +
@@ -107,14 +107,14 @@ public:
     }
 
     //! Only x and y coordinates are taken into account.
-    double distance2DTo(const PositionMeters& other)
+    double distance2DTo(const PositionMeters& other) const
     {
         return qSqrt((m_x - other.x()) * (m_x - other.x()) +
                      (m_y - other.y()) * (m_y - other.y()));
     }
 
     //! Checks if two points are close in 2D.
-    bool closeTo(const PositionMeters& other, double threshold = ProximityThreshold)
+    bool closeTo(const PositionMeters& other, double threshold = ProximityThreshold) const
     {
         if (m_valid && other.isValid())
             return (distance2DTo(other) < threshold);
@@ -230,7 +230,7 @@ public:
     bool isValid() const { return m_valid; }
 
     //! Returns the position as text.
-    QString toString()
+    QString toString() const
     {
         if (m_valid)
             return QObject::tr("%1 px, %2 px").arg(m_x, 0, 'f', 1).arg(m_y, 0, 'f', 1);
