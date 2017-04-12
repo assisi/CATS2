@@ -22,7 +22,7 @@ CATS2 depends on the following packages
 
 This line will launch CATS2 with the video4linux drivers and input device "1":
 
-  ./cats -mc v4l 1 -c <path-to-configuration-file>
+    ./cats -mc v4l 1 -c <path-to-configuration-file>
 
 Other than **v4l** you can use **vf** (to use a video file) or **if** (to use a still image),
 in this case you need to provide the path to the corresponding file.
