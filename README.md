@@ -1,4 +1,4 @@
-![CATS2 logo](cats-bleu.jpg?raw=true)
+<!-- ![CATS2 logo](cats-bleu.jpg?raw=true) --> 
 
 # CATS2
 
