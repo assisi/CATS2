@@ -1,6 +1,6 @@
-# CATS2
+![CATS2 logo](cats-bleu.jpg?raw=true | width=200)
 
-![CATS2 logo](cats-bleu.jpg?raw=true)
+# CATS2
 
 Released under LGPL3, see [license.txt](license.txt) for details.
 
