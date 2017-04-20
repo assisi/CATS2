@@ -47,7 +47,7 @@ necessary (https://askubuntu.com/questions/26498/choose-gcc-and-g-version)
     tar -xvf cmake-3.8.0.tar.gz
     cd cmake-3.8.0/
     ./bootstrap --qt-gui
-    make -j36
+    make -j24
     make install
 
 ### Compile OpenCV
@@ -58,6 +58,8 @@ necessary (https://askubuntu.com/questions/26498/choose-gcc-and-g-version)
     mkdir build
     cd build
     cmake .. -DOPENCV_EXTRA_MODULES_PATH="path-to-opencv-contrib"
+    make -j24
+    make install
 
 ### Compile CATS2
 
@@ -68,6 +70,7 @@ necessary (https://askubuntu.com/questions/26498/choose-gcc-and-g-version)
     mkdir build
     cd build
     cmake ..
+    make -j24
 
 ## Run CATS2
 
