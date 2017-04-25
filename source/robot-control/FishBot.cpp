@@ -500,7 +500,7 @@ void FishBot::processObstacleEvent()
         emit notifyObstacleDetectedStatusChanged(id(), true);
     }
     // in any case reset the obstacle-detected timer
-    m_powerDownUpdateTimer.reset();
+    m_obstacleDetectedUpdateTimer.reset();
 }
 
 /*!
