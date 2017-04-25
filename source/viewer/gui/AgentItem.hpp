@@ -20,6 +20,9 @@ public:
 public:
     //! Set the orientation flag.
     void setHasOrientation(bool hasOrientation) { m_hasOrientation = hasOrientation; }
+    //! Highlights the agent visually.
+    void setHighlighted(bool highlighted) { m_highlighted = highlighted; }
+
     //! Returns the type of the item.
     virtual int type() const override { return Type;}
     //! Paints the contents of an item in local coordinates.
@@ -30,6 +33,8 @@ public:
 private:
     //! The flag that defines if the orientation of the agent is known.
     bool m_hasOrientation;
+    //! The flag that defines if the agent is highlighted.
+    bool m_highlighted;
     //! The basic value used to draw the item.
     static constexpr int Size = 6;
 };

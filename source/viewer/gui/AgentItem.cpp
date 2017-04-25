@@ -7,7 +7,8 @@
  */
 AgentItem::AgentItem() :
     QGraphicsItem(),
-    m_hasOrientation(true)
+    m_hasOrientation(true),
+    m_highlighted(false)
 {
 
 }
@@ -29,6 +30,15 @@ void AgentItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
             QPointF(2 * Size, 0)
         };
         painter->drawPolygon(points, 3);
+
+        if (m_highlighted) {
+            static const QPointF externalPoints[3] = {
+                QPointF(-Size - 3, Size + 3),
+                QPointF(-Size - 3, -Size - 3),
+                QPointF(2 * (Size + 3), 0)
+            };
+            painter->drawPolygon(externalPoints, 3);
+        }
     } else {
         painter->drawEllipse(QPointF(0, 0), Size, Size);
     }

@@ -155,10 +155,10 @@ signals: // control states
     void notifyUseObstacleAvoidanceChanged(bool value);
 
 signals: // robot on-board data
-    //! Sends that the connection status has changed.
+    //! Notifies that the connection status has changed.
     void notifyConnectionStatusChanged(QString name, ConnectionStatus status);
-    //! Sends that the obstacle avoidance status has changed.
-    void notifyObstacleDetectedStatusChanged(QString name, bool obstacleDetected);
+    //! Notifies that the obstacle avoidance status has changed.
+    void notifyObstacleDetectedStatusChanged(QString agentId, bool obstacleDetected);
 
 signals: // navigation
     //! Sends the control map areas' polygons.

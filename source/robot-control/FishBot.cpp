@@ -497,7 +497,7 @@ void FishBot::processObstacleEvent()
     if (!m_obstacleDetectedUpdateTimer.isSet()) {
         qDebug() << QString("Obstacle-event detected on %1").arg(m_name);
         // notify about the obstacle detection
-        emit notifyObstacleDetectedStatusChanged(name(), true);
+        emit notifyObstacleDetectedStatusChanged(id(), true);
     }
     // in any case reset the obstacle-detected timer
     m_powerDownUpdateTimer.reset();
@@ -538,7 +538,7 @@ void FishBot::stepSafetyLogics()
             qDebug() << QString("Obstacle is not detected anymore by %1").arg(m_name);
             // clear timers
             m_obstacleDetectedUpdateTimer.clear();
-            emit notifyObstacleDetectedStatusChanged(name(), false);
+            emit notifyObstacleDetectedStatusChanged(id(), false);
         }
     }
 }
