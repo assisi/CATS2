@@ -258,7 +258,7 @@ private: // to manage the obstacle events
     Timer m_obstacleDetectedUpdateTimer;
     //! If the obstacle-detected message is not received for at least this value
     //! then we consider that it is not valid anymore.
-    static constexpr double ObstacleDetectedUpdateTimeoutSec = 2.;
+    static constexpr double ObstacleDetectedUpdateTimeoutSec = 0.5;
 };
 
 #endif // CATS2_FISH_BOT_HPP
