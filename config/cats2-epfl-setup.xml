@@ -47,6 +47,17 @@
                 <obstacleAvoidanceAreaDiameterM>0.15</obstacleAvoidanceAreaDiameterM>
             </potentialField>
         </obstacleAvoidance>
+        <!-- Specific settings for every control mode (e.g to use path planning or obstacle avoidance). -->
+        <controlModes>
+            <!-- TODO : to implement -->
+            <trajectory>
+                <points>trajectories/fish-trajectory.xml</points>
+                <loopTrajectory>1</loopTrajectory>
+                <providePointsOnTimer>1</providePointsOnTimer>
+                <updateRateHz>15</updateRateHz>
+            </trajectory>
+        </controlModes>
+        <!-- Navigation settings. -->
         <navigation>
             <fishMotionPatternFrequencyDivider>10</fishMotionPatternFrequencyDivider>
             <fishMotionPattern>
@@ -58,7 +69,7 @@
                 <ki>0.05</ki>
                 <kd>0.00</kd>
             </pid>
-            <defaultLinearSpeedCmSec>12</defaultLinearSpeedCmSec>
+            <defaultLinearSpeedCmSec>25</defaultLinearSpeedCmSec>
             <needOrientationToNavigate>0</needOrientationToNavigate>
         </navigation>
         <controllers>

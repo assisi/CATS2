@@ -23,6 +23,14 @@ Manual::Manual(FishBot* robot) : ControlMode(robot, ControlModeType::MANUAL)
 }
 
 /*!
+ * Destructor.
+ */
+Manual::~Manual()
+{
+    qDebug() << "Destroying the object";
+}
+
+/*!
  * The step of the control mode, reads the joystic commands and sends further.
  */
 ControlTargetPtr Manual::step()

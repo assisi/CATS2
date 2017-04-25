@@ -185,7 +185,48 @@ bool RobotControlSettings::init(QString configurationFileName)
                           m_fishModelSettings.dt,
                           m_fishModelSettings.dt);
 
+    // read a trajectory for the Trajectory control mode
+    std::string relativeTrajectoryPath = "";
+    settings.readVariable("robots/controlModes/trajectory/points",
+                          relativeTrajectoryPath,
+                          relativeTrajectoryPath);
+    QString trajectoryPath = configurationFolder +
+                                QDir::separator() +
+                                QString::fromStdString(relativeTrajectoryPath);
+    QFileInfo trajectoryFile(trajectoryPath);
+    if (trajectoryFile.exists() && trajectoryFile.isFile()) {
+        ReadSettingsHelper trajectorySettings(trajectoryPath);
+        std::vector<cv::Point2f> polygon;
+        trajectorySettings.readVariable(QString("polygon"), polygon);
+        if (polygon.size() > 0) {
+            for (auto& point : polygon)
+                m_trajectory << PositionMeters(point);
+            qDebug() << QString("Loaded trajectory of %1 points, shared by all "
+                                "robots").arg(m_trajectory.size());
+        } else {
+            qDebug() << "The trajectory is empty";
+        }
+    } else {
+        qDebug() << "Could not find the trajectory file";
+    }
+    // read the corresponding flags
+    m_loopTrajectory = true;
+    settings.readVariable("robots/controlModes/trajectory/loopTrajectory",
+                          m_loopTrajectory,
+                          m_loopTrajectory);
+    m_providePointsOnTimer = false;
+    settings.readVariable("robots/controlModes/trajectory/providePointsOnTimer",
+                          m_providePointsOnTimer,
+                          m_providePointsOnTimer);
+    if (m_providePointsOnTimer) {
+        m_trajectoryUpdateRateHz = 0;
+        settings.readVariable("robots/controlModes/trajectory/updateRateHz",
+                              m_trajectoryUpdateRateHz,
+                              m_trajectoryUpdateRateHz);
+    }
+
     settings.close();
+
     // read the settings for all available controllers
     for (int type = ExperimentControllerType::CONTROL_MAP;
          type <= ExperimentControllerType::INITIATION; type++ )

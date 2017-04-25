@@ -36,7 +36,7 @@ void SetupMap::init(QString setupFilePath)
     if (successful) {
         qDebug() << "Successfully initialized the setup map";
         for (cv::Point2f& point : polygon) {
-            m_polygon.append(PositionMeters(point.x, point.y));
+            m_polygon.append(PositionMeters(point));
             m_minY = qMin(m_minY, static_cast<double>(point.y));
             m_minX = qMin(m_minX, static_cast<double>(point.x));
             m_maxY = qMax(m_maxY, static_cast<double>(point.y));

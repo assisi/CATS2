@@ -16,6 +16,8 @@ class Manual : public ControlMode
 public:
     //! Constructor.
     Manual(FishBot* robot);
+    //! Destructor.
+    ~Manual();
 
     //! The step of the control mode, generates the zero speed control target.
     virtual ControlTargetPtr step() override;

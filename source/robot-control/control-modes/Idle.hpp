@@ -12,6 +12,8 @@ class Idle : public ControlMode
 public:
     //! Constructor.
     Idle(FishBot* robot);
+    //! Destructor.
+    ~Idle();
 
     //! The step of the control mode, generates the zero speed control target.
     virtual ControlTargetPtr step() override;

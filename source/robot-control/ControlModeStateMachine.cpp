@@ -7,6 +7,7 @@
 #include "control-modes/Idle.hpp"
 #include "control-modes/Manual.hpp"
 #include "control-modes/ModelBased.hpp"
+#include "control-modes/Trajectory.hpp"
 #include "FishBot.hpp"
 
 #include <QtCore/QDebug>
@@ -25,6 +26,7 @@ ControlModeStateMachine::ControlModeStateMachine(FishBot* robot, QObject *parent
     m_controlModes.insert(ControlModeType::GO_STRAIGHT, ControlModePtr(new GoStraight(m_robot)));
     m_controlModes.insert(ControlModeType::GO_TO_POSITION, ControlModePtr(new GoToPosition(m_robot)));
     m_controlModes.insert(ControlModeType::MODEL_BASED, ControlModePtr(new ModelBased(m_robot)));
+    m_controlModes.insert(ControlModeType::TRAJECTORY, ControlModePtr(new Trajectory(m_robot)));
 
     // make necessary connections
     foreach (ControlModePtr controlMode, m_controlModes.values()) {

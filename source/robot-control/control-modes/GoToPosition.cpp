@@ -10,6 +10,15 @@ GoToPosition::GoToPosition(FishBot* robot) :
     ControlMode(robot, ControlModeType::GO_TO_POSITION),
     m_targetPosition(PositionMeters::invalidPosition()) // set the target invalid
 {
+
+}
+
+/*!
+ * Destructor.
+ */
+GoToPosition::~GoToPosition()
+{
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -45,5 +54,6 @@ void GoToPosition::setTargetPosition(PositionMeters position)
  */
 QList<ControlTargetType> GoToPosition::supportedTargets()
 {
-    return QList<ControlTargetType>({ControlTargetType::SPEED, ControlTargetType::POSITION});
+    return QList<ControlTargetType>({ControlTargetType::SPEED,
+                                     ControlTargetType::POSITION});
 }
