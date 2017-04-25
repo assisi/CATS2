@@ -496,9 +496,9 @@ void FishBot::processObstacleEvent()
     // corresponding timer
     if (!m_obstacleDetectedUpdateTimer.isSet()) {
         qDebug() << QString("Obstacle-event detected on %1").arg(m_name);
-        // notify about the obstacle detection
-        emit notifyObstacleDetectedStatusChanged(id(), true);
     }
+    // notify about the obstacle detection
+    emit notifyObstacleDetectedStatusChanged(id(), true);
     // in any case reset the obstacle-detected timer
     m_obstacleDetectedUpdateTimer.reset();
 }
