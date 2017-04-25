@@ -37,6 +37,8 @@ private:
     bool m_highlighted;
     //! The basic value used to draw the item.
     static constexpr int Size = 6;
+    //! The size coefficient to make a contour around the agent when highlighted.
+    static constexpr int HightlightPerimeter = 4;
 };
 
 #endif // CATS2_AGENT_ITEM_HPP

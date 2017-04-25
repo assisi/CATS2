@@ -33,9 +33,9 @@ void AgentItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
 
         if (m_highlighted) {
             static const QPointF externalPoints[3] = {
-                QPointF(-Size - 3, Size + 3),
-                QPointF(-Size - 3, -Size - 3),
-                QPointF(2 * (Size + 3), 0)
+                QPointF(-Size - HightlightPerimeter, Size + HightlightPerimeter),
+                QPointF(-Size - HightlightPerimeter, -Size - HightlightPerimeter),
+                QPointF(2 * (Size + HightlightPerimeter), 0)
             };
             painter->drawPolygon(externalPoints, 3);
         }
@@ -49,6 +49,10 @@ void AgentItem::paint(QPainter *painter, const QStyleOptionGraphicsItem *option,
  */
 QRectF AgentItem::boundingRect() const
 {
-    return QRectF(-2 * Size, -2 * Size, 4 * Size, 4 * Size);
+    if (!m_highlighted)
+        return QRectF(-2 * Size, -2 * Size, 4 * Size, 4 * Size);
+    else
+        return QRectF(-2 * (Size + HightlightPerimeter), -2 * (Size + HightlightPerimeter),
+                      4 * (Size + HightlightPerimeter), 4 * (Size + HightlightPerimeter));
 }
 
