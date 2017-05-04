@@ -13,6 +13,7 @@ include_directories(${ZeroMQ_INCLUDE_DIR})
 # make the list of files to compile
 set(srcs
     InterSpeciesDataManager.cpp
+    Subscriber.cpp
 )
 
 set(hdrs

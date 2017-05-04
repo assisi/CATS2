@@ -15,13 +15,15 @@ InterSpeciesSettings& InterSpeciesSettings::get()
 /*!
  * Initializes the parameters from the configuration file.
  */
-bool InterSpeciesSettings::init(QString configurationFileName, bool needPublisherAddress)
+bool InterSpeciesSettings::init(QString configurationFileName,
+                                bool needPublisherAddress,
+                                bool needSubscriberAddress)
 {
     bool settingsAccepted = true;
 
     ReadSettingsHelper settings(configurationFileName);
 
-    // read the target image size
+    // read the publisher address
     std::string address = "";
     settings.readVariable(QString("interSpecies/publisherAddress"), address, address);
     m_publisherAddress = QString::fromStdString(address);
@@ -29,6 +31,15 @@ bool InterSpeciesSettings::init(QString configurationFileName, bool needPublishe
         qDebug() << "The publisher address is not set in the configuration file";
 
     settingsAccepted = ((!m_publisherAddress.isNull()) || (!needPublisherAddress));
+
+    // read the subscriber address
+    address = "";
+    settings.readVariable(QString("interSpecies/subscriberAddress"), address, address);
+    m_subscriberAddress = QString::fromStdString(address);
+    if (m_subscriberAddress.isNull())
+        qDebug() << "The subscriber address is not set in the configuration file";
+
+    settingsAccepted = ((!m_subscriberAddress.isNull()) || (!needSubscriberAddress));
 
     return settingsAccepted;
 }

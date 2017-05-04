@@ -6,13 +6,24 @@
 #include <MessageTypes.hpp>
 
 #include <QtCore/QDebug>
+#include <QtCore/QThread>
 
-InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress) :
+InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
+                                                 QString subscriberAddress) :
     QObject(nullptr),
-    m_context (1),
-    m_publisher (m_context, ZMQ_PUB)
+    m_context(1),
+    m_publisher(m_context, ZMQ_PUB)
 {
     m_publisher.bind(publisherAddress.toStdString().data());
+
+    // launch the tracking routine in a separated thread
+    m_subscriber = SubscriberPtr(new Subscriber(m_context, subscriberAddress));
+    QThread* thread = new QThread;
+    m_subscriber->moveToThread(thread);
+    connect(thread, &QThread::started, m_subscriber.data(), &Subscriber::process);
+    connect(m_subscriber.data(), &Subscriber::finished, thread, &QThread::quit);
+    connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+    thread->start();
 }
 
 /*!
@@ -43,7 +54,7 @@ void InterSpeciesDataManager::publishAgentData(QList<AgentDataImage> agentDataLi
     }
 
     // send the data
-    std::string name = std::to_string(MessageTypes::AGENT_DATA);
+    std::string name = std::to_string(MessageTypes::AGENT_DATA); // FIXME : and if the order of messages changes?
     std::string device = "";
     std::string desc = "";
     std::string data;
