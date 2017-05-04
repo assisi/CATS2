@@ -181,6 +181,11 @@ end
 if ObstacleAvoidance==1 then
 	Mot1BefSensor=DesiredSpeedLeft
 	Mot2BefSensor=-DesiredSpeedRight
+
+        if IR_front_left > ThreshSensor or IR_front_right > ThreshSensor then
+                emit Obstacle[IDControl]
+        end
+
 	if IR_front_left > ThreshSensor and IR_front_right &lt; ThreshSensor then
 		mot1.pid.target_speed=Mot1BefSensor-(IR_front_left/coeffAvoid)
 		mot2.pid.target_speed=Mot2BefSensor

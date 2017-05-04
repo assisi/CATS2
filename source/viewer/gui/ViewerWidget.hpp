@@ -61,6 +61,8 @@ public slots:
     void updateAgentLabels(QList<AgentDataWorld> agentsData);
     //! Triggered on arrival of the new data.
     void updateAgents(QList<AgentDataWorld> agentsData);
+    //! Hightlights the agent on the scene.
+    void highlightAgent(QString agentId, bool highlight);
     //! Set the flag that defines if the agents must be shown.
     void setShowAgentsData(bool agentsShown);
 
