@@ -12,7 +12,8 @@ public:
     enum Enum {
         NONE,
         CONTROL_MAP,
-        INITIATION
+        INITIATION,
+        INTERSPECIES
     };
 
     //! Gets the type of the experiment controller type from the settings'
