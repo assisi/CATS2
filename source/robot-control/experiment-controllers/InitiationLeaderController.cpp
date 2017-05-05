@@ -1,4 +1,4 @@
-#include "InitiationController.hpp"
+#include "InitiationLeaderController.hpp"
 
 #include "FishBot.hpp"
 #include "ControlArea.hpp"
@@ -8,7 +8,7 @@
 /*!
  * Constructor.
  */
-InitiationController::InitiationController(FishBot* robot,
+InitiationLeaderController::InitiationLeaderController(FishBot* robot,
                              ExperimentControllerSettingsPtr settings) :
     ExperimentController(robot, ExperimentControllerType::INITIATION),
     m_settings(),
@@ -36,7 +36,7 @@ InitiationController::InitiationController(FishBot* robot,
 /*!
  * Returns the control values for given position.
  */
-ExperimentController::ControlData InitiationController::step()
+ExperimentController::ControlData InitiationLeaderController::step()
 {
     ControlData controlData;
 
@@ -60,7 +60,7 @@ ExperimentController::ControlData InitiationController::step()
 /*!
  * Called when the controller is activated. Used to reset parameters.
  */
-void InitiationController::start()
+void InitiationLeaderController::start()
 {
     updateState(SWIMMING_WITH_FISH);
     m_departureTimer.clear();
@@ -73,7 +73,7 @@ void InitiationController::start()
 /*!
  * Updates the current state.
  */
-void InitiationController::updateState(State state)
+void InitiationLeaderController::updateState(State state)
 {
     if (m_state != state) {
         qDebug() << QString("%1 state changed from %2 to %3")
@@ -92,7 +92,7 @@ void InitiationController::updateState(State state)
 /*!
  * Checks if the conditions are met to start the inititaion procedure.
  */
-bool InitiationController::needToChangeRoom()
+bool InitiationLeaderController::needToChangeRoom()
 {
     // if the robot is changing the room right now
     if (changingRoom())
@@ -148,7 +148,7 @@ bool InitiationController::needToChangeRoom()
 /*!
  * Runs the initiation state machine.
  */
-ExperimentController::ControlData InitiationController::changeRoom()
+ExperimentController::ControlData InitiationLeaderController::changeRoom()
 {
     switch (m_state) {
     case SWIMMING_WITH_FISH:
@@ -266,7 +266,7 @@ ExperimentController::ControlData InitiationController::changeRoom()
 /*!
  * Checks the departure time.
  */
-bool InitiationController::timeToDepart()
+bool InitiationLeaderController::timeToDepart()
 {
     if (m_settings.departureOnTimeOut()) {
         // timer started
@@ -315,7 +315,7 @@ bool InitiationController::timeToDepart()
 /*!
  * Checks that the fish follow.
  */
-bool InitiationController::fishFollow()
+bool InitiationLeaderController::fishFollow()
 {
     bool fishDoNotFollow = ((m_fishNumberByArea.contains(m_departureAreaId)) &&
                             (m_fishNumberByArea[m_departureAreaId] >
@@ -326,7 +326,7 @@ bool InitiationController::fishFollow()
 /*!
  * Gets the control data that corresponds to the current state.
  */
-ExperimentController::ControlData InitiationController::stateControlData()
+ExperimentController::ControlData InitiationLeaderController::stateControlData()
 {
     ControlData controlData;
 
@@ -370,7 +370,7 @@ ExperimentController::ControlData InitiationController::stateControlData()
 /*!
  * Converts the state to the string for the output.
  */
-QString InitiationController::stateToString(State state)
+QString InitiationLeaderController::stateToString(State state)
 {
     switch (state) {
     case SWIMMING_WITH_FISH:

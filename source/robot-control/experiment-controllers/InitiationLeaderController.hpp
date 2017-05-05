@@ -1,5 +1,5 @@
-﻿#ifndef CATS2_INITIATION_CONTROLLER_HPP
-#define CATS2_INITIATION_CONTROLLER_HPP
+﻿#ifndef CATS2_INITIATION_LEADER_CONTROLLER_HPP
+#define CATS2_INITIATION_LEADER_CONTROLLER_HPP
 
 #include "ExperimentController.hpp"
 #include "settings/InitiationControllerSettings.hpp"
@@ -13,13 +13,13 @@
  * robot is to either make the fish to change the room from time to time, or to
  * make the stay in one room defined in the settings.
  */
-class InitiationController : public ExperimentController
+class InitiationLeaderController : public ExperimentController
 {
     Q_OBJECT
 public:
     //! Constructor. Gets the robot and the settings.
-    InitiationController(FishBot* robot,
-                         ExperimentControllerSettingsPtr settings);
+    InitiationLeaderController(FishBot* robot,
+                               ExperimentControllerSettingsPtr settings);
 
 public:
     //! Called when the controller is activated. Used to reset parameters.
@@ -82,4 +82,4 @@ private:
     QString m_departureAreaId;
 };
 
-#endif // CATS2_INITIATION_CONTROLLER_HPP
+#endif // CATS2_INITIATION_LEADER_CONTROLLER_HPP

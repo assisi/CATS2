@@ -43,7 +43,7 @@ set(srcs
     experiment-controllers/MapController.cpp
     experiment-controllers/ExperimentController.cpp
     experiment-controllers/ExperimentManager.cpp
-    experiment-controllers/InitiationController.cpp
+    experiment-controllers/InitiationLeaderController.cpp
     model/model.cpp
     model/factory.cpp
     model/bm.cpp
