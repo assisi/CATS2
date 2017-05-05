@@ -97,6 +97,18 @@ bool RobotControlSettings::init(QString configurationFileName)
     m_pidControllerSettings.setKd(kd);
     settingsAccepted = settingsAccepted && (m_pidControllerSettings.kp() != 0);
 
+    // read the pid controller settings
+    double kpDist = 0;
+    settings.readVariable("robots/navigation/pid/kpDist", kpDist, kpDist);
+    m_pidControllerSettings.setKpDist(kpDist);
+    double kiDist = 0;
+    settings.readVariable("robots/navigation/pid/kiDist", kiDist, kiDist);
+    m_pidControllerSettings.setKiDist(kiDist);
+    double kdDist = 0;
+    settings.readVariable("robots/navigation/pid/kdDist", kdDist, kdDist);
+    m_pidControllerSettings.setKdDist(kdDist);
+    settingsAccepted = settingsAccepted && (m_pidControllerSettings.kpDist() != 0);
+
     // read the default linear speed
     m_defaultLinearSpeedCmSec = 0;
     settings.readVariable("robots/navigation/defaultLinearSpeedCmSec", m_defaultLinearSpeedCmSec);

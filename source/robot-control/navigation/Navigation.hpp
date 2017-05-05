@@ -109,6 +109,9 @@ private:
     //! Computes the turn angle based on the robot's orientation,
     //! position and the target position.
     double computeAngleToTurn(PositionMeters position);
+    //! Computes the distance between the target and the current robot's
+    //! position.
+    double computeDistanceToTarget(PositionMeters targetPosition);
     //! Excecute fish motion pattern while going to target.
     void fishMotionToPosition(PositionMeters position);
     //! Excecutes PID while going to target.
@@ -164,9 +167,14 @@ private:
     //! Local copy of PID controller settings.
     PidControllerSettings m_pidControllerSettings;
 
-    //! The last several errors, to be used by the intergral term of the PID
-    //! controller
-    QQueue<double> m_errorBuffer;
+    //! The last several errors on the angle, to be used by the intergral term
+    //! of the PID controller
+    QQueue<double> m_errorBufferAngle;
+
+    //! The last several errors on distance, to be used by the intergral term
+    //! of the PID controller
+    QQueue<double> m_errorBufferDistance;
+
     //! The number of errors to keep.
     const int ErrorBufferDepth = 20;
 
