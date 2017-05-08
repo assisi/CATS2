@@ -188,6 +188,7 @@ inline bool operator==(const PositionMeters& lhs, const PositionMeters& rhs)
             && (lhs.isValid() == rhs.isValid()));
 }
 
+//! Non-equality operator.
 inline bool operator!=(const PositionMeters& lhs, const PositionMeters& rhs)
 {
     return !operator==(lhs,rhs);
