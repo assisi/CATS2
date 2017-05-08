@@ -44,6 +44,7 @@ set(srcs
     experiment-controllers/ExperimentController.cpp
     experiment-controllers/ExperimentManager.cpp
     experiment-controllers/InitiationLeaderController.cpp
+    experiment-controllers/InitiationLureController.cpp
     model/model.cpp
     model/factory.cpp
     model/bm.cpp
