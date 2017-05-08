@@ -5,6 +5,7 @@
 #include "ConnectionStatusType.hpp"
 #include "ControlModeStateMachine.hpp"
 #include "control-modes/ControlTarget.hpp"
+#include "control-modes/ModelParameters.hpp"
 #include "MotionPatternType.hpp"
 #include "navigation/Navigation.hpp"
 #include "experiment-controllers/ExperimentControllerType.hpp"

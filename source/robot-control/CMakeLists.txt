@@ -64,6 +64,7 @@ set(hdrs
     ConnectionStatusType.hpp
     interfaces/Values.hpp
     control-modes/ControlModeType.hpp
+    control-modes/ModelParameters.hpp
     experiment-controllers/ExperimentControllerType.hpp
     experiment-controllers/ExperimentControllerFactory.hpp
 )

@@ -3,40 +3,12 @@
 
 #include "ControlMode.hpp"
 #include "SetupMap.hpp"
+#include "ModelParameters.hpp"
 #include "navigation/GridBasedMethod.hpp"
 #include "model/bm.hpp"
 
 #include <AgentState.hpp>
 #include <Timer.hpp>
-
-/*!
- * The parameters of the model that can be set from outside.
- */
-struct ModelParameters
-{
-    ModelParameters():
-        ignoreFish(false)
-    {}
-    //! Defines if the model is aware of the presense of fish and receives their
-    //! positions.
-    bool ignoreFish;
-};
-
-/*!
- * Comparison operator.
- */
-inline bool operator==(const ModelParameters& lhs, const ModelParameters& rhs)
-{
-    return (lhs.ignoreFish == rhs.ignoreFish);
-}
-
-/*!
- * Non-equality operator.
- */
-inline bool operator!=(const ModelParameters& lhs, const ModelParameters& rhs)
-{
-    return !(lhs.ignoreFish == rhs.ignoreFish);
-}
 
 /*!
  * Makes the robots to follow the fish mode.
