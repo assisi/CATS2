@@ -177,6 +177,9 @@ private:
     //! Sets the control parameters based on the control map.
     void stepExperimentManager();
 
+
+    //! Updates the parameters of the model.
+    void setModelParameters(ModelParameters parameters);
     //! Requests the state machine to limit the arena matrix of the model-based
     //! control mode by a mask. The reason is to prevent the model's target to
     //! leave the control area defined by the experiment. The mask is defined by

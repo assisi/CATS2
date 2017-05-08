@@ -286,6 +286,16 @@ void FishBot::goToPosition(PositionMeters position)
 }
 
 /*!
+ * Updates the parameters of the model.
+ */
+void FishBot::setModelParameters(ModelParameters parameters)
+{
+    if (m_controlStateMachine.currentControlMode() == ControlModeType::MODEL_BASED) {
+        m_controlStateMachine.setModelParameters(parameters);
+    }
+}
+
+/*!
  * Limits the arena matrix of the model-based control mode by a mask. The mask
  * is defined by a set of polygons and is labeled with an id.
  */
@@ -395,6 +405,10 @@ void FishBot::stepExperimentManager()
                                      m_experimentManager.currentController()))
                             .arg(areaId.left(1).toUpper() + areaId.mid(1));
                     limitModelArea(id, annotatedPolygons.polygons);
+                } else if (controlData.data.canConvert<ModelParameters>()) {
+                    // define if the model should follow or ignore the fish
+                    ModelParameters parameters(controlData.data.value<ModelParameters>());
+                    setModelParameters(parameters);
                 }
                 break;
             }
