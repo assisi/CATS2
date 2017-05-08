@@ -521,6 +521,12 @@ QList<ExperimentControllerType::Enum> FishBot::supportedControllers() const
 void FishBot::setController(ExperimentControllerType::Enum type)
 {
     m_experimentManager.setController(type);
+
+    // a check for the special case when the controller is disactivated, in this
+    // case the stop the robot until the control mode is set. Before we left the
+    // control mode that was set the last to run
+    if (type == ExperimentControllerType::NONE)
+        setControlMode(ControlModeType::IDLE);
 }
 
 /*!
