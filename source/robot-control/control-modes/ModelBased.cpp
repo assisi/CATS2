@@ -37,6 +37,8 @@ ModelBased::~ModelBased()
  */
 void ModelBased::start()
 {
+    // in the beginning the model always check the position of fish
+    m_parameters.ignoreFish = false; // TODO : better move this to GUI instead and do not reset it here
     m_targetUpdateTimer.reset();
     // compute the first target position
     m_targetPosition = computeTargetPosition();
@@ -92,10 +94,7 @@ void ModelBased::resetModel()
         // create the arena
         m_arena.reset(new Fishmodel::Arena(m_currentGrid, size));
         Fishmodel::SimulationFactory factory(*m_arena);
-        if (!m_parameters.ignoreFish)
-            factory.nbFishes = RobotControlSettings::get().numberOfAnimals();
-        else
-            factory.nbFishes = 0;
+        factory.nbFishes = RobotControlSettings::get().numberOfAnimals();
         factory.nbRobots = 1; // we generate one simulator for every robot
         factory.nbVirtuals = 0;
         factory.behaviorFishes = "BM";
@@ -145,9 +144,9 @@ PositionMeters ModelBased::computeTargetPosition()
     PositionMeters targetPosition;
     targetPosition.setValid(false);
 
+    size_t agentIndex = 0;
     if (!m_parameters.ignoreFish) {
         // update the fish positions in the model
-        size_t agentIndex = 0;
         for (StateWorld& state : m_robot->fishStates()){
             if (agentIndex < m_sim->fishes.size()) {
                 if (state.position().isValid() && containsPoint(state.position())) {
@@ -169,13 +168,13 @@ PositionMeters ModelBased::computeTargetPosition()
                 break;
             }
         }
-        size_t detectedAgentNum = agentIndex;
-        for (agentIndex = detectedAgentNum;
-             agentIndex < RobotControlSettings::get().numberOfAnimals();
-             ++agentIndex)
-        {
-            m_sim->fishes[agentIndex].first->present = false;
-        }
+    }
+    size_t detectedAgentNum = agentIndex;
+    for (agentIndex = detectedAgentNum;
+         agentIndex < RobotControlSettings::get().numberOfAnimals();
+         ++agentIndex)
+    {
+        m_sim->fishes[agentIndex].first->present = false;
     }
 
     // update position of the robot in model
