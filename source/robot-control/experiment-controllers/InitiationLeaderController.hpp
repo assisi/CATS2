@@ -2,7 +2,7 @@
 #define CATS2_INITIATION_LEADER_CONTROLLER_HPP
 
 #include "ExperimentController.hpp"
-#include "settings/InitiationControllerSettings.hpp"
+#include "settings/InitiationLeaderControllerSettings.hpp"
 
 #include <Timer.hpp>
 
@@ -57,7 +57,7 @@ private:
 
 private:
     //! The settings for this controller.
-    InitiationControllerSettingsData m_settings;
+    InitiationLeaderControllerSettingsData m_settings;
 
     //! The current state of the robot.
     State m_state;

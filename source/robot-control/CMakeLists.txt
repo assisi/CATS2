@@ -22,7 +22,8 @@ set(srcs
     settings/RobotControlSettings.cpp
     settings/ExperimentControllerSettings.cpp
     settings/MapControllerSettings.cpp
-    settings/InitiationControllerSettings.cpp
+    settings/InitiationLeaderControllerSettings.cpp
+    settings/InitiationLureControllerSettings.cpp
     FishBot.cpp
     ControlLoop.cpp
     control-modes/Idle.cpp

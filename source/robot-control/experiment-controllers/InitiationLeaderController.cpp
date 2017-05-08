@@ -10,7 +10,7 @@
  */
 InitiationLeaderController::InitiationLeaderController(FishBot* robot,
                              ExperimentControllerSettingsPtr settings) :
-    ExperimentController(robot, ExperimentControllerType::INITIATION),
+    ExperimentController(robot, ExperimentControllerType::INITIATION_LEADER),
     m_settings(),
     m_state(UNDEFINED),
     m_limitModelArea(false),
@@ -20,11 +20,11 @@ InitiationLeaderController::InitiationLeaderController(FishBot* robot,
 {
     // NOTE : to get parameters specific for this controller we need to convert
     // the settings to the corresponding format
-    InitiationControllerSettings* initiationControllerSettings =
-            dynamic_cast<InitiationControllerSettings*>(settings.data());
-    if (initiationControllerSettings != nullptr){
+    InitiationLeaderControllerSettings* controllerSettings =
+            dynamic_cast<InitiationLeaderControllerSettings*>(settings.data());
+    if (controllerSettings != nullptr){
         // copy the parameters
-        m_settings = initiationControllerSettings->data();
+        m_settings = controllerSettings->data();
     } else {
         qDebug() << "Could not set the controller's settings";
     }
