@@ -15,10 +15,11 @@ ModelBased::ModelBased(FishBot* robot) :
     GridBasedMethod(ModelResolutionM),
     m_arena(nullptr),
     m_sim(nullptr),
+    m_parameters(),
     m_targetPosition(PositionMeters::invalidPosition()),
     m_targetUpdateTimer()
 {
-    initModel();
+    resetModel();
 //    cv::namedWindow("ModelGrid", cv::WINDOW_NORMAL);
 }
 
@@ -54,10 +55,16 @@ ControlTargetPtr ModelBased::step()
 
     if (m_targetPosition.isValid()) {
         PositionMeters robotPosition = m_robot->state().position();
+        QString status;
+        if (m_parameters.ignoreFish)
+            status = "ignore fish";
+        else
+            status = "follow fish";
         if (robotPosition.isValid()) {
-            emit notifyControlModeStatus(QString("target distance %1 m")
-                    .arg(robotPosition.distance2DTo(m_targetPosition), 0, 'f', 3));
+            status += QString(", target distance %1 m")
+                    .arg(robotPosition.distance2DTo(m_targetPosition), 0, 'f', 3);
         }
+        emit notifyControlModeStatus(status);
         return ControlTargetPtr(new TargetPosition(m_targetPosition));
     }
     // otherwise the robot doesn't move
@@ -74,9 +81,9 @@ QList<ControlTargetType> ModelBased::supportedTargets()
 }
 
 /*!
- * Initializes the model based on the setup map.
+ * Initializes the model based on the setup map and parameters.
  */
-void ModelBased::initModel()
+void ModelBased::resetModel()
 {
     if (!m_currentGrid.empty()) {
         // size of the area covered by the matrix
@@ -85,7 +92,10 @@ void ModelBased::initModel()
         // create the arena
         m_arena.reset(new Fishmodel::Arena(m_currentGrid, size));
         Fishmodel::SimulationFactory factory(*m_arena);
-        factory.nbFishes = RobotControlSettings::get().numberOfAnimals();
+        if (!m_parameters.ignoreFish)
+            factory.nbFishes = RobotControlSettings::get().numberOfAnimals();
+        else
+            factory.nbFishes = 0;
         factory.nbRobots = 1; // we generate one simulator for every robot
         factory.nbVirtuals = 0;
         factory.behaviorFishes = "BM";
@@ -109,7 +119,6 @@ void ModelBased::initModel()
             bm->kappaNeutCenter = fishModelSettings.kappaNeutCenter;
             bm->repulsionFromAgentsAtDist = fishModelSettings.repulsionFromAgentsAtDist;
         }
-
 //        cv::imshow( "ModelGrid", m_currentGrid);
     }
 }
@@ -136,39 +145,37 @@ PositionMeters ModelBased::computeTargetPosition()
     PositionMeters targetPosition;
     targetPosition.setValid(false);
 
-    // update the fish positions in the model
-    size_t agentIndex = 0;
-    for (StateWorld& state : m_robot->fishStates()){
-        if (agentIndex < m_sim->fishes.size()) {
-            if (state.position().isValid() && containsPoint(state.position())) {
-                // the positions are normalized to fit the matrix
-                m_sim->fishes[agentIndex].first->headPos.first = state.position().x() - minX();
-                m_sim->fishes[agentIndex].first->headPos.second = state.position().y() - minY();
+    if (!m_parameters.ignoreFish) {
+        // update the fish positions in the model
+        size_t agentIndex = 0;
+        for (StateWorld& state : m_robot->fishStates()){
+            if (agentIndex < m_sim->fishes.size()) {
+                if (state.position().isValid() && containsPoint(state.position())) {
+                    // the positions are normalized to fit the matrix
+                    m_sim->fishes[agentIndex].first->headPos.first = state.position().x() - minX();
+                    m_sim->fishes[agentIndex].first->headPos.second = state.position().y() - minY();
 
-                if (state.orientation().isValid())
-                    m_sim->fishes[agentIndex].first->direction =
-                            state.orientation().angleRad();
-                else
-                    m_sim->fishes[agentIndex].first->direction = 0;
+                    if (state.orientation().isValid())
+                        m_sim->fishes[agentIndex].first->direction =
+                                state.orientation().angleRad();
+                    else
+                        m_sim->fishes[agentIndex].first->direction = 0;
 
-                m_sim->fishes[agentIndex].first->present = true;
-                agentIndex++;
+                    m_sim->fishes[agentIndex].first->present = true;
+                    agentIndex++;
+                }
+            } else {
+                qDebug() << "Number of fish in the simulator is wrongly initialized.";
+                break;
             }
-        } else {
-            qDebug() << "Number of fish in the simulator is wrongly initialized.";
-            break;
         }
-    }
-    size_t detectedAgentNum = agentIndex;
-//    if (detectedAgentNum == 0) {
-//        qDebug() << "No fish was taken into account, returning previous target";
-//        return m_targetPosition;
-//    }
-    for (agentIndex = detectedAgentNum;
-         agentIndex < RobotControlSettings::get().numberOfAnimals();
-         ++agentIndex)
-    {
-        m_sim->fishes[agentIndex].first->present = false;
+        size_t detectedAgentNum = agentIndex;
+        for (agentIndex = detectedAgentNum;
+             agentIndex < RobotControlSettings::get().numberOfAnimals();
+             ++agentIndex)
+        {
+            m_sim->fishes[agentIndex].first->present = false;
+        }
     }
 
     // update position of the robot in model
@@ -213,4 +220,16 @@ PositionMeters ModelBased::computeTargetPosition()
     }
 
     return targetPosition;
+}
+
+/*!
+ * Sets the model's parameters. Every time the parameters are changed, the
+ * model is reset.
+ */
+void ModelBased::setParameters(ModelParameters parameters)
+{
+    if (parameters != m_parameters) {
+        m_parameters = parameters;
+        resetModel();
+    }
 }
