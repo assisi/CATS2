@@ -68,9 +68,9 @@
                 <kp>3.5</kp>
                 <ki>0.05</ki>
                 <kd>0.00</kd>
-                <kpDist>120.0</kpDist>
+                <kpDist>150.0</kpDist>
                 <kiDist>1.00</kiDist>
-                <kdDist>1.00</kdDist>
+                <kdDist>2.00</kdDist>
             </pid>
             <defaultLinearSpeedCmSec>25</defaultLinearSpeedCmSec>
             <needOrientationToNavigate>0</needOrientationToNavigate>
@@ -163,7 +163,7 @@
                         <threshold>70</threshold>
                     </fishBot_B>
                     <fishBot_C>
-                        <threshold>30</threshold>
+                        <threshold>70</threshold>
                     </fishBot_C>
                 </fishBotLedsTracking>
             </tracking>
