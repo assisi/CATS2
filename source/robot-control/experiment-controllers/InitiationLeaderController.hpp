@@ -54,6 +54,8 @@ private:
     bool timeToDepart();
     //! Checks that the fish follow.
     bool fishFollow();
+    //! Counts the number of fish around the robot.
+    int fishAroundRobot();
 
 private:
     //! The settings for this controller.
@@ -62,10 +64,10 @@ private:
     //! The current state of the robot.
     State m_state;
 
-    //! The flag that defines that we need to limit the model area to the
-    //! current room occupied by the robot. The goal is to prevent the robot
-    //! from leaving the room when in the model-based control mode.
-    bool m_limitModelArea;
+//    //! The flag that defines that we need to limit the model area to the
+//    //! current room occupied by the robot. The goal is to prevent the robot
+//    //! from leaving the room when in the model-based control mode.
+//    bool m_limitModelArea;
 
     //! The departure timer.
     Timer m_departureTimer;
@@ -73,6 +75,9 @@ private:
     //! the robot will start this timer to know when it needs to check that the
     //! fish follow it.
     Timer m_fishFollowCheckTimer;
+    //! When the robot changes the room, it first goes in fish motion pattern
+    //! and then one second later switches to PID
+    Timer m_fishToPIDTimer;
     //! The flag to check that we have entered to the target room. 
     bool m_inTargetRoom;
 

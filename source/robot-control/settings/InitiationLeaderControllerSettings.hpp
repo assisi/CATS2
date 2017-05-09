@@ -105,7 +105,7 @@ public:
     bool departureWhenInGroup() const { return (m_depatureTrigger == WHEN_IN_GROUP);}
 
 protected:
-    //! The path to the file describine the control areas.
+    //! The path to the file describing the control areas.
     QString m_controlAreasFileName;
     //! The trigger event to leave the room.
     DepartureTrigger m_depatureTrigger;

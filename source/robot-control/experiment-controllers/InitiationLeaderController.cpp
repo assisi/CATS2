@@ -13,7 +13,7 @@ InitiationLeaderController::InitiationLeaderController(FishBot* robot,
     ExperimentController(robot, ExperimentControllerType::INITIATION_LEADER),
     m_settings(),
     m_state(UNDEFINED),
-    m_limitModelArea(false),
+//    m_limitModelArea(false),
     m_inTargetRoom(false),
     m_targetAreaId(""),
     m_departureAreaId("")
@@ -39,7 +39,6 @@ InitiationLeaderController::InitiationLeaderController(FishBot* robot,
 ExperimentController::ControlData InitiationLeaderController::step()
 {
     ControlData controlData;
-
     // a check for the valid robot pointer
     if (m_robot) {
         // check where the robot and fish are
@@ -53,7 +52,6 @@ ExperimentController::ControlData InitiationLeaderController::step()
             controlData = stateControlData();
         }
     }
-
     return controlData;
 }
 
@@ -82,10 +80,10 @@ void InitiationLeaderController::updateState(State state)
                     .arg(stateToString(state));
         m_state = state;
         emit notifyControllerStatus(stateToString(m_state).toLower().replace("-", " "));
-        // a specific check for the case when the robot is switching to the
-        // model-based control mode
-        if (m_state == SWIMMING_WITH_FISH)
-            m_limitModelArea = true;
+//        // a specific check for the case when the robot is switching to the
+//        // model-based control mode
+//        if (m_state == SWIMMING_WITH_FISH)
+//            m_limitModelArea = true;
     }
 }
 
@@ -125,14 +123,16 @@ bool InitiationLeaderController::needToChangeRoom()
             // so the robot is in the room where there is no or little fish
             // now if there is a preference for the room
             if (m_controlAreas.contains(m_preferedAreaId)) {
-                // then let's go to catch the fish
-                qDebug() << QString("%1 go to catch missing %2 fish, only %3 "
-                                    "fish out of %4 are present")
-                            .arg(m_robot->name())
-                            .arg(fishNumberInOtherRooms(m_robotAreaId))
-                            .arg(m_fishNumberByArea[m_robotAreaId])
-                            .arg(RobotControlSettings::get().numberOfAnimals());
-                return true;
+//                // then let's go to catch the fish
+//                qDebug() << QString("%1 go to catch missing %2 fish, only %3 "
+//                                    "fish out of %4 are present")
+//                            .arg(m_robot->name())
+//                            .arg(fishNumberInOtherRooms(m_robotAreaId))
+//                            .arg(m_fishNumberByArea[m_robotAreaId])
+//                            .arg(RobotControlSettings::get().numberOfAnimals());
+//                return true;
+                // do nothing, we hope that the model will bring the robot to the fish
+                return false;
             } else {
                 // when there is no preference for a room then do nothing,
                 // wait until the fish arrive
@@ -175,6 +175,8 @@ ExperimentController::ControlData InitiationLeaderController::changeRoom()
             m_inTargetRoom = false;
             // start the check-that-fish-follow timer
             m_fishFollowCheckTimer.reset();
+            // start the timer to switch from fish motion to PID
+            m_fishToPIDTimer.reset();
         } else {
             // couldn't decide where to go, continue doing fish
         }
@@ -192,56 +194,58 @@ ExperimentController::ControlData InitiationLeaderController::changeRoom()
             QString stateString = stateToString(m_state).toLower().replace("-", " ");
             emit notifyControllerStatus(QString("%1 (follow)").arg(stateString));
         }
-        // if we just arrived to the target room then we check right away that
-        // the fish follow, if it's the case we swith to the model-based mode
-        if (!m_inTargetRoom &&
-                m_robot->state().position().isValid() &&
-                m_robot->state().position()
-                .closeTo(m_controlAreas[m_targetAreaId]->centroid()))
+
+        // let's check if we the initiation failed and we have to return
+        // we check (1) if the timer to check that fish follow is ticking and
+        // (2) if it expired
+        if (m_fishFollowCheckTimer.isSet() &&
+            m_fishFollowCheckTimer.isTimedOutSec(m_settings.fishFollowCheckTimeOutSec()))
         {
-            m_inTargetRoom = true;
             if (fishFollow()) {
-                // fish follow, switch to the model-based control mode
+                // fish follow, continue transition
                 m_fishFollowCheckTimer.clear();
-                qDebug() << QString("Fish seems to follow %1, stay in the room")
-                            .arg(m_robot->name());
-                // switch to SWIMMING_WITH_FISH
-                updateState(SWIMMING_WITH_FISH);
-            }
-        } else { // i.e. either we are still going to the target room or we are
-            // there but the fish didn't follow right away, in any case we need
-            // to check the fish-follow timer
-            // first we check that the timer to check that fish follow is ticking
-            if (m_fishFollowCheckTimer.isSet()) {
-                // check the check-that-fish-follow timer
-                if (m_fishFollowCheckTimer.isTimedOutSec(m_settings.fishFollowCheckTimeOutSec())) {
-                    //if the fish follow the robot
-                    if (fishFollow()) {
-                        // fish follow, continue transition
-                        m_fishFollowCheckTimer.clear();
-                        qDebug() << QString("Fish seems to follow %1, continue moving")
-                                        .arg(m_robot->name());
-                    } else {
-                        //  fish don't follow, switch to GOING_BACK mode
-                        qDebug() << QString("Fish don't follow %1, returning back to %2")
-                                        .arg(m_robot->name())
-                                        .arg(m_departureAreaId);
-                        updateState(GOING_BACK);
-                    }
-                } else {
-                    // it's too early to check if fish follow, continue transition
-                }
+                qDebug() << QString("Fish seem to follow %1")
+                                .arg(m_robot->name());
             } else {
-                // the timer is off meaning that the fish follow the robot
-                // if arrived to to target
-                if (m_robot->state().position().closeTo(m_controlAreas[m_targetAreaId]->centroid()))
-                {
-                    qDebug() << QString("%1 arrived to the room %2")
+                // if fish not follow by some bad luck then the robot returns to
+                // retry the initiation later
+                qDebug() << QString("Fish don't follow %1, returning back to %2")
                                 .arg(m_robot->name())
-                                .arg(m_targetAreaId);
+                                .arg(m_departureAreaId);
+                updateState(GOING_BACK);
+                // nothing more to do
+                break;
+            }
+        }
+
+        // now check if the robot arrived to the target room
+        if (!m_inTargetRoom) {
+            PositionMeters target = m_controlAreas[m_targetAreaId]->centroid();
+            if (m_robot->state().position().isValid() &&
+                m_robot->state().position().closeTo(target))
+            {
+                qDebug() << QString("%1 arrived to the room %2, wait the fish")
+                            .arg(m_robot->name())
+                            .arg(m_targetAreaId);
+                // save the flag for now
+                m_inTargetRoom = true;
+            }
+            // continue in CHANGING_ROOM state
+        } else {
+            // once in the target room the robot continues circling around the center
+            // of the room until (1) it's sure that the fish follow it and (2) at
+            // least one fish approaches it afterwards it passes in model based mode
+            if (! m_fishFollowCheckTimer.isSet()) {
+                // i.e. the fish were detected to follow, no check that someone
+                // arrived close to the robot
+                if (fishAroundRobot() > 0) {
+                    // the robot switches to the swim-with-fish mode
+                    qDebug() << QString("Fish in the proximity of %1, swim with them")
+                                .arg(m_robot->name());
                     // switch to SWIMMING_WITH_FISH
                     updateState(SWIMMING_WITH_FISH);
                 }
+
             }
         }
         break;
@@ -287,20 +291,13 @@ bool InitiationLeaderController::timeToDepart()
             return false;
         }
     } else if (m_settings.departureWhenInGroup()) {
-        int fishAroundRobot = 0;
         PositionMeters robotPosition = m_robot->state().position();
         if (robotPosition.isValid()) {
-            for (auto const& fishState : m_robot->fishStates()) {
-                if (fishState.position().isValid() &&
-                        (fishState.position().distance2DTo(robotPosition)
-                         < m_settings.groupRadius())) {
-                    fishAroundRobot++;
-                }
-            }
+            int fishCount = fishAroundRobot();
             // if enough fish are close to the robot
-            if (fishAroundRobot >= m_settings.fishNumberAroundOnDeparture()) {
+            if (fishCount >= m_settings.fishNumberAroundOnDeparture()) {
                 qDebug() << QString("Detected %1 fish, changing the room")
-                            .arg(fishAroundRobot);
+                            .arg(fishCount);
                 return true;
             } else {
 //                qDebug() << QString("Detected %1 fish").arg(fishAroundRobot);
@@ -311,6 +308,26 @@ bool InitiationLeaderController::timeToDepart()
     }
     return false;
 }
+
+/*!
+ * Counts the number of fish around the robot.
+ */
+int InitiationLeaderController::fishAroundRobot()
+{
+    int fishCount = 0;
+    PositionMeters robotPosition = m_robot->state().position();
+    if (robotPosition.isValid()) {
+        for (auto const& fishState : m_robot->fishStates()) {
+            if (fishState.position().isValid() &&
+                (fishState.position().distance2DTo(robotPosition) < m_settings.groupRadius()))
+            {
+                fishCount++;
+            }
+        }
+    }
+    return fishCount;
+}
+
 
 /*!
  * Checks that the fish follow.
@@ -334,20 +351,33 @@ ExperimentController::ControlData InitiationLeaderController::stateControlData()
     case SWIMMING_WITH_FISH:
         controlData.controlMode = ControlModeType::MODEL_BASED;
         controlData.motionPattern = MotionPatternType::FISH_MOTION;
-        // if we need to limit the model
-        if (m_limitModelArea &&
-                m_controlAreas.contains(m_robotAreaId) &&
-                m_controlAreas[m_robotAreaId]->type() == ControlAreaType::ROOM)
-        {
-            m_limitModelArea = false;
-            controlData.data =
-                QVariant::fromValue(m_controlAreas[m_robotAreaId]->annotatedPolygons());
-        }
+//        // if we need to limit the model
+//        if (m_limitModelArea &&
+//                m_controlAreas.contains(m_robotAreaId) &&
+//                m_controlAreas[m_robotAreaId]->type() == ControlAreaType::ROOM)
+//        {
+//            m_limitModelArea = false;
+//            controlData.data =
+//                QVariant::fromValue(m_controlAreas[m_robotAreaId]->annotatedPolygons());
+//        }
         break;
     case CHANGING_ROOM:
         if (m_controlAreas.contains(m_targetAreaId)) {
             controlData.controlMode = ControlModeType::GO_TO_POSITION;
-            controlData.motionPattern = MotionPatternType::PID;
+
+            // if the robot hasn't arrived to the target room
+            if (!m_inTargetRoom) {
+                // first we start in fish-motion and then switch to PID
+                if (m_fishToPIDTimer.isSet()){
+                    controlData.motionPattern = MotionPatternType::FISH_MOTION;
+                    if (m_fishToPIDTimer.isTimedOutSec(1.)) // TODO : 1sec might be moved to settings
+                        m_fishToPIDTimer.clear();
+                } else
+                    controlData.motionPattern = MotionPatternType::PID;
+            } else {
+                // upon arriving to the target room it switches to the fish-motion
+                controlData.motionPattern = MotionPatternType::FISH_MOTION;
+            }
             controlData.data =
                 QVariant::fromValue(m_controlAreas[m_targetAreaId]->centroid());
         }
