@@ -294,7 +294,7 @@ void Navigation::pidControlToPosition(PositionMeters targetPosition)
         // derivative term
         double derivativeTermDistance = 0;
         if (m_errorBufferDistance.size() > 0)
-            derivativeTermAngle = (angleToTurn - m_errorBufferDistance.last()) * m_dt;
+            derivativeTermDistance = (distanceToTravel - m_errorBufferDistance.last()) * m_dt;
         // integral term
         double integralTermDistance = 0;
         m_errorBufferDistance.enqueue(distanceToTravel);
