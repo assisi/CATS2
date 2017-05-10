@@ -35,20 +35,20 @@ RobotsWidget::RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent) :
             });
     // populate the tabs with the robots' information
     for (auto& robot : contolLoop->robots()) {
-        int index = m_ui->robotsTabWidget->addTab(new RobotControlWidget(robot), robot->name());
+        int newTabIndex = m_ui->robotsTabWidget->addTab(new RobotControlWidget(robot), robot->name());
 
         // set the current connection status
         ConnectionStatus status = ConnectionStatus::DISCONNECTED;
         if (robot->isConnected())
             status = ConnectionStatus::CONNECTED;
-        m_ui->robotsTabWidget->setTabIcon(index, m_connectionIcons[status]);
+        m_ui->robotsTabWidget->setTabIcon(newTabIndex, m_connectionIcons[status]);
         // update the connection status
         connect(robot.data(), &FishBot::notifyConnectionStatusChanged,
-                [=](QString name, ConnectionStatus status) {
+                [=](QString name, ConnectionStatus newStatus) {
                     for (int index = 0; index < m_ui->robotsTabWidget->count(); ++index)
                         if (m_ui->robotsTabWidget->tabText(index) == name) {
                             m_ui->robotsTabWidget->setTabIcon(index,
-                                                              m_connectionIcons[status]);
+                                                              m_connectionIcons[newStatus]);
                         }
                 });
     }

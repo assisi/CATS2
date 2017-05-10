@@ -78,7 +78,6 @@ protected:
     void sendEvent(unsigned id, const Values& data = Values());
 
 protected:
-    Dashel::Stream* targetStream;
     virtual void run() override;
 
     //! From Dashel::Hub. Message coming from a node. Consider _only_

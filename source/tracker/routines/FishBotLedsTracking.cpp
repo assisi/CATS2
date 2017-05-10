@@ -150,7 +150,6 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
 
     // if the size is correct then get two biggest contours
     cv::Point2f agentPosition;
-    double agentOrientation;
     if (contours.size() > 1) {
         // center of the contour
         std::vector<cv::Point2f> contourCenters;
@@ -160,7 +159,7 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
         // compute the agent's position that is between two contours, and the orientation
         agentPosition = ((contourCenters[0] + contourCenters[1]) / 2);
         // this orientation is still precise up to +180 degrees
-        agentOrientation = qAtan2(contourCenters[1].y - contourCenters[0].y,
+        double agentOrientation = qAtan2(contourCenters[1].y - contourCenters[0].y,
                                   contourCenters[1].x - contourCenters[0].x);
         // define the direction
         cv::Point2f agentVector = contourCenters[1] - contourCenters[0]; // the agent body
