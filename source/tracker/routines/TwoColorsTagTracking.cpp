@@ -140,7 +140,7 @@ bool TwoColorsTagTracking::detectTags(TwoColorsTagTrackingSettingsData::TagType 
     try { // TODO : to check if this try-catch can be removed or if it should be used everywhere where opencv methods are used.
         // retrieve contours from the binary image
         cv::findContours(m_binaryImage, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-    } catch(cv::Exception& e) {
+    } catch (const cv::Exception& e) {
         qDebug() << "OpenCV exception: " << e.what();
     }
 

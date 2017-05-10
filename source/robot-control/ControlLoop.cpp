@@ -66,7 +66,11 @@ ControlLoop::ControlLoop() :
                 });
 
         // send the robot color
-        connect(m_robots.last().data(), &FishBot::notifyLedColor, this, &ControlLoop::notifyRobotLedColor);
+        connect(m_robots.last().data(), &FishBot::notifyLedColor,
+                this, &ControlLoop::notifyRobotLedColor);
+        // notify on the on-board obstacle avoidance on/off
+        connect(m_robots.last().data(), &FishBot::notifyObstacleDetectedStatusChanged,
+                this, &ControlLoop::notifyObstacleDetectedStatusChanged);
     }
 
     // conect the robots
@@ -129,6 +133,7 @@ void ControlLoop::reconnectRobots()
 void ControlLoop::stopAllRobots()
 {
     for (auto& robot : m_robots) {
+        robot->setController(ExperimentControllerType::NONE);
         robot->setControlMode(ControlModeType::IDLE);
     }
 }

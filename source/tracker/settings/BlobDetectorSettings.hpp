@@ -11,7 +11,7 @@ class BlobDetectorSettingsData
 {
 public:
     //! Constructor.
-    BlobDetectorSettingsData() :
+    explicit BlobDetectorSettingsData() :
         m_numberOfAgents(0),
         m_minBlobSizePx(15),
         m_qualityLevel(0.01),
@@ -70,7 +70,7 @@ class BlobDetectorSettings : public TrackingRoutineSettings
 {
 public:
     //! Constructor.
-    BlobDetectorSettings(SetupType::Enum setupType);
+    explicit BlobDetectorSettings(SetupType::Enum setupType);
 
 public:
     //! Initialization of the parameters for this specific method of tracking.

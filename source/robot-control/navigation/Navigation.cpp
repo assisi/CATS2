@@ -263,27 +263,60 @@ void Navigation::fishMotionToPosition(PositionMeters targetPosition)
 void Navigation::pidControlToPosition(PositionMeters targetPosition)
 {
     if (m_robot->state().orientation().isValid() || !m_needOrientationToNavigate) {
+
+        //PID on the angle error
+
         double angleToTurn = computeAngleToTurn(targetPosition);
         // proportional term
-        double proportionalTerm = angleToTurn;
+        double proportionalTermAngle = angleToTurn;
         // derivative term
-        double derivativeTerm = 0;
-        if (m_errorBuffer.size() > 0)
-            derivativeTerm = (angleToTurn - m_errorBuffer.last()) * m_dt;
+        double derivativeTermAngle = 0;
+        if (m_errorBufferAngle.size() > 0)
+            derivativeTermAngle = (angleToTurn - m_errorBufferAngle.last()) * m_dt;
         // integral term
-        double integralTerm = 0;
-        m_errorBuffer.enqueue(angleToTurn);
-        if (m_errorBuffer.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
+        double integralTermAngle = 0;
+        m_errorBufferAngle.enqueue(angleToTurn);
+        if (m_errorBufferAngle.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
             // forget the oldest element
-            m_errorBuffer.dequeue();
+            m_errorBufferAngle.dequeue();
             // and sum the rest of them
-            for (double error : m_errorBuffer)
-                integralTerm += error;
+            for (double error : m_errorBufferAngle)
+                integralTermAngle += error;
         }
-        double angularVelocity = m_pidControllerSettings.kp() * proportionalTerm +
-                m_pidControllerSettings.ki() * integralTerm +
-                m_pidControllerSettings.kd() * derivativeTerm;
-        sendMotorSpeed(angularVelocity);
+        double angularVelocity = m_pidControllerSettings.kp() * proportionalTermAngle +
+                m_pidControllerSettings.ki() * integralTermAngle +
+                m_pidControllerSettings.kd() * derivativeTermAngle;
+
+        //PID on the distance error
+        double distanceToTravel = m_robot->state().position().distance2DTo(targetPosition);
+        // proportional term
+        double proportionalTermDistance = distanceToTravel;
+        // derivative term
+        double derivativeTermDistance = 0;
+        if (m_errorBufferDistance.size() > 0)
+            derivativeTermDistance = (distanceToTravel - m_errorBufferDistance.last()) * m_dt;
+        // integral term
+        double integralTermDistance = 0;
+        m_errorBufferDistance.enqueue(distanceToTravel);
+        if (m_errorBufferDistance.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
+            // forget the oldest element
+            m_errorBufferDistance.dequeue();
+            for (double errorDistance : m_errorBufferDistance)
+                integralTermDistance += errorDistance;
+        }
+        double linearVelocity = m_pidControllerSettings.kpDist() * proportionalTermDistance +
+                m_pidControllerSettings.kiDist() * integralTermDistance +
+                m_pidControllerSettings.kdDist() * derivativeTermDistance;
+
+        int linearSpeedMax = RobotControlSettings::get().defaultLinearSpeedCmSec();
+
+        if(linearVelocity > linearSpeedMax)
+            linearVelocity = linearSpeedMax;
+
+        int leftSpeed =  linearVelocity + (angularVelocity * FishBot::InterWheelsDistanceCm) / 2.0;
+        int rightSpeed = linearVelocity - (angularVelocity * FishBot::InterWheelsDistanceCm) / 2.0;
+
+        sendMotorSpeed(leftSpeed, rightSpeed);
     }
 }
 

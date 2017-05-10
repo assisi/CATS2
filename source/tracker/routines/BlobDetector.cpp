@@ -96,7 +96,7 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
                                 m_settings.blockSize(),
                                 m_settings.useHarrisDetector(),
                                 m_settings.k());
-    } catch(cv::Exception& e) {
+    } catch (const cv::Exception& e) {
         qDebug() << "OpenCV exception: " << e.what();
     }
 
@@ -151,7 +151,7 @@ void BlobDetector::removeSmallBlobs(cv::Mat& image, int minSize)
     image.copyTo(contoursImage);
     try {
         cv::findContours(contoursImage, contours, hierarchy, cv::RETR_TREE, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
-    } catch(cv::Exception& e) {
+    } catch (const cv::Exception& e) {
         qDebug() << "OpenCV exception: " << e.what();
     }
 
@@ -188,7 +188,7 @@ void BlobDetector::detectContours(cv::Mat& image,
     try {
         // retrieve contours from the binary image
         cv::findContours(image, contours, hierarchy, cv::RETR_CCOMP, cv::CHAIN_APPROX_SIMPLE, cv::Point(0, 0));
-    } catch(cv::Exception& e) {
+    } catch (const cv::Exception& e) {
         qDebug() << "OpenCV exception: " << e.what();
     }
 

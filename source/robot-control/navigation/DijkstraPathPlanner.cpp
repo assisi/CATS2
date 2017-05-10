@@ -213,7 +213,6 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint,
  */
 void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
 {
-    double previousDx, currentDx, previousDy, currentDy;
     QQueue<PositionMeters> reducedPath;
 
     // if the computed dijkstra path is not empty
@@ -223,6 +222,7 @@ void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
         reducedPath.enqueue(previousPosition);
         // if there were more than 2 nodes in the path
         if (path.size() > 1) {
+            double previousDx, previousDy;
             PositionMeters currentPosition = path.dequeue();
             // compute the fisrt difference of position along x and y
             previousDx = currentPosition.x() - previousPosition.x();
@@ -237,8 +237,8 @@ void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
                 previousPosition = currentPosition;
                 currentPosition = path.dequeue();
                 // compute the curent difference of position along x and y
-                currentDx = currentPosition.x() - previousPosition.x();
-                currentDy = currentPosition.y() - previousPosition.y();
+                double currentDx = currentPosition.x() - previousPosition.x();
+                double currentDy = currentPosition.y() - previousPosition.y();
                 // update the accumulated distance
                 accumulatedDistance += qSqrt(currentDx * currentDx +
                                              currentDy * currentDy);

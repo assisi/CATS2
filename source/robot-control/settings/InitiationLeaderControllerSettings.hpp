@@ -1,5 +1,5 @@
-#ifndef CATS2_INITIATION_CONTROLLER_SETTINGS_HPP
-#define CATS2_INITIATION_CONTROLLER_SETTINGS_HPP
+#ifndef CATS2_INITIATION_LEADER_CONTROLLER_SETTINGS_HPP
+#define CATS2_INITIATION_LEADER_CONTROLLER_SETTINGS_HPP
 
 #include "ExperimentControllerSettings.hpp"
 
@@ -7,7 +7,7 @@
  * The actual data stored in the settings. It's separated in a class to be
  * easily trasferable to the corresponding controller.
  */
-class InitiationControllerSettingsData
+class InitiationLeaderControllerSettingsData
 {
 public:
     //! The trigger event to leave the room.
@@ -18,10 +18,12 @@ public:
     };
 
     //! Constructor.
-    InitiationControllerSettingsData() :
+    InitiationLeaderControllerSettingsData() :
         m_controlAreasFileName(),
         m_depatureTrigger(ON_TIME_OUT),
         m_departureTimeOutSec(5.),
+        m_fishNumberAroundOnDeparture(1),
+        m_groupRadius(0.1),
         m_fishFollowCheckTimeOutSec(5.),
         m_maximalFishNumberAllowedToStay(0)
     {}
@@ -105,7 +107,7 @@ public:
     bool departureWhenInGroup() const { return (m_depatureTrigger == WHEN_IN_GROUP);}
 
 protected:
-    //! The path to the file describine the control areas.
+    //! The path to the file describing the control areas.
     QString m_controlAreasFileName;
     //! The trigger event to leave the room.
     DepartureTrigger m_depatureTrigger;
@@ -121,13 +123,13 @@ protected:
     int m_maximalFishNumberAllowedToStay;
 };
 
-class InitiationControllerSettings : public ExperimentControllerSettings
+class InitiationLeaderControllerSettings : public ExperimentControllerSettings
 {
 public:
     //! Constructor.
-    InitiationControllerSettings();
+    InitiationLeaderControllerSettings();
     //! Destructor.
-    virtual ~InitiationControllerSettings();
+    virtual ~InitiationLeaderControllerSettings();
 
 public:
     //! Initialization of the parameters for this specific controller.
@@ -135,12 +137,12 @@ public:
     virtual bool init(QString configurationFileName) override;
 
     //! Provides a copy of the settings data.
-    InitiationControllerSettingsData data() { return m_data; }
+    InitiationLeaderControllerSettingsData data() { return m_data; }
 
 private:
     //! The settings data.
-    InitiationControllerSettingsData m_data;
+    InitiationLeaderControllerSettingsData m_data;
 };
 
 
-#endif // CATS2_INITIATION_CONTROLLER_SETTINGS_HPP
+#endif // CATS2_INITIATION_LEADER_CONTROLLER_SETTINGS_HPP

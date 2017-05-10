@@ -45,12 +45,12 @@ public:
     //! Cleanly disconnect.
     void disconnectAseba();
 
-    //! From Dashel::Hub
-    virtual void stop();
+    //! Stops the hub
+    void stop();
 
 public:
     //! Redefined from NodesManager.
-    virtual void sendMessage(const Aseba::Message& message);
+    virtual void sendMessage(const Aseba::Message& message) override;
 
 public:
     //! Returns the connection status flag.
@@ -78,7 +78,6 @@ protected:
     void sendEvent(unsigned id, const Values& data = Values());
 
 protected:
-    Dashel::Stream* targetStream;
     virtual void run() override;
 
     //! From Dashel::Hub. Message coming from a node. Consider _only_

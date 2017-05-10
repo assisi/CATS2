@@ -19,12 +19,15 @@ makeLink(dependencies/fish-model/zones.cpp model/zones.cpp)
 makeLink(dependencies/fish-model/zones.hpp model/zones.hpp)
 makeLink(dependencies/fish-model/random.cpp model/random.cpp)
 makeLink(dependencies/fish-model/random.h model/random.h)
+makeLink(dependencies/fish-model/zones.hpp model/zones.hpp)
+makeLink(dependencies/fish-model/zones.cpp model/zones.cpp)
 
 set(srcs
     settings/RobotControlSettings.cpp
     settings/ExperimentControllerSettings.cpp
     settings/MapControllerSettings.cpp
-    settings/InitiationControllerSettings.cpp
+    settings/InitiationLeaderControllerSettings.cpp
+    settings/InitiationLureControllerSettings.cpp
     FishBot.cpp
     ControlLoop.cpp
     control-modes/Idle.cpp
@@ -45,12 +48,14 @@ set(srcs
     experiment-controllers/MapController.cpp
     experiment-controllers/ExperimentController.cpp
     experiment-controllers/ExperimentManager.cpp
-    experiment-controllers/InitiationController.cpp
+    experiment-controllers/InitiationLeaderController.cpp
+    experiment-controllers/InitiationLureController.cpp
     model/model.cpp
     model/zones.cpp
     model/factory.cpp
     model/bm.cpp
     model/random.cpp
+    model/zones.cpp
     navigation/Navigation.cpp
     navigation/DijkstraPathPlanner.cpp
     navigation/PathPlanner.cpp
@@ -67,6 +72,7 @@ set(hdrs
     ConnectionStatusType.hpp
     interfaces/Values.hpp
     control-modes/ControlModeType.hpp
+    control-modes/ModelParameters.hpp
     experiment-controllers/ExperimentControllerType.hpp
     experiment-controllers/ExperimentControllerFactory.hpp
 )

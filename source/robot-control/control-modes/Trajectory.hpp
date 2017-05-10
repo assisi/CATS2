@@ -15,10 +15,9 @@ class Trajectory : public ControlMode
     Q_OBJECT
 public:
     //! Constructor.
-    Trajectory(FishBot* robot);
+    explicit Trajectory(FishBot* robot);
     //! Destructor.
-    ~Trajectory();
-
+    virtual ~Trajectory() override;
 
     //! Called when the control mode is activated.
     virtual void start() override;

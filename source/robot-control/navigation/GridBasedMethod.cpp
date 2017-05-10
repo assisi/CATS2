@@ -2,6 +2,8 @@
 
 #include "settings/RobotControlSettings.hpp"
 
+#include <QtCore/QDebug>
+
 /*!
  * Constructor.
  */
@@ -9,6 +11,7 @@ GridBasedMethod::GridBasedMethod(double gridSizeMeters) :
     m_setupMap(RobotControlSettings::get().setupMap()),
     m_gridSizeMeters(gridSizeMeters),
     m_setupGrid(),
+    m_currentMaskId(),
     m_currentGrid()
 {
     if (m_setupMap.isValid()) {
@@ -18,6 +21,14 @@ GridBasedMethod::GridBasedMethod(double gridSizeMeters) :
         // set the generated grid as the current
         m_setupGrid.copyTo(m_currentGrid);
     }
+}
+
+/*!
+ * Destructor.
+ */
+GridBasedMethod::~GridBasedMethod()
+{
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -77,6 +88,7 @@ cv::Mat GridBasedMethod::generateGrid(QList<WorldPolygon> includingPolygons,
         }
         return arenaMatrix;
     }
+    return cv::Mat();
 }
 
 /*!
@@ -118,12 +130,15 @@ bool GridBasedMethod::checkPointIncluded(PositionMeters position,
  */
 void GridBasedMethod::setAreaMask(QString maskId, QList<WorldPolygon> maskPolygons)
 {
-    // if the mask is not yet known then generate the matrix and put it to the map
-    if (! m_areaMasks.contains(maskId)) {
-        m_areaMasks[maskId] = generateGrid(maskPolygons);
+    if (maskId != m_currentMaskId) {
+        // if the mask is not yet known then generate the matrix and put it to the map
+        if (! m_areaMasks.contains(maskId)) {
+            m_areaMasks[maskId] = generateGrid(maskPolygons);
+        }
+        // apply the mask
+        m_currentGrid = m_setupGrid & m_areaMasks[maskId];
+        m_currentMaskId = maskId;
     }
-    // apply the mask
-    m_currentGrid = m_setupGrid & m_areaMasks[maskId];
 }
 
 /*!
@@ -132,6 +147,7 @@ void GridBasedMethod::setAreaMask(QString maskId, QList<WorldPolygon> maskPolygo
 void GridBasedMethod::clearAreaMask()
 {
     m_setupGrid.copyTo(m_currentGrid);
+    m_currentMaskId = "";
 }
 
 /*!

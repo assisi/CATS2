@@ -14,7 +14,7 @@ class FishBotLedsTrackingSettingsData
 {
 public:
     //! Constructor.
-    FishBotLedsTrackingSettingsData()
+    explicit FishBotLedsTrackingSettingsData()
     {
     }
 
@@ -69,7 +69,7 @@ class FishBotLedsTrackingSettings : public TrackingRoutineSettings
 {
 public:
     //! Constructor.
-    FishBotLedsTrackingSettings(SetupType::Enum setupType);
+    explicit FishBotLedsTrackingSettings(SetupType::Enum setupType);
 
 public:
     //! Initialization of the parameters for this specific method of tracking.

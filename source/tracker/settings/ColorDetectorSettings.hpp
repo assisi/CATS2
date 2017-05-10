@@ -15,7 +15,9 @@ public:
     //! Constructor.
     ColorDetectorSettingsData() :
         m_numberOfAgents(0),
-        m_color(0, 0, 0)
+        m_color(0, 0, 0),
+        m_colorThreshold(20),
+        m_maskFilePath()
     {}
 
 public:
@@ -55,7 +57,7 @@ class ColorDetectorSettings : public TrackingRoutineSettings
 {
 public:
     //! Constructor.
-    ColorDetectorSettings(SetupType::Enum setupType);
+    explicit ColorDetectorSettings(SetupType::Enum setupType);
 
 public:
     //! Initialization of the parameters for this specific method of tracking.

@@ -16,7 +16,7 @@ class TwoColorsTagTrackingSettingsData
 {
 public:
     //! Constructor.
-    TwoColorsTagTrackingSettingsData() :
+    explicit TwoColorsTagTrackingSettingsData() :
         m_centerProportionalPosition(0.5)
     { }
 
@@ -86,7 +86,7 @@ class TwoColorsTagTrackingSettings : public TrackingRoutineSettings
 {
 public:
     //! Constructor.
-    TwoColorsTagTrackingSettings(SetupType::Enum setupType);
+    explicit TwoColorsTagTrackingSettings(SetupType::Enum setupType);
 
 public:
     //! Initialization of the parameters for this specific method of tracking.
