@@ -2,6 +2,8 @@
 #include "FishBot.hpp"
 #include "ControlTarget.hpp"
 
+#include <QtCore/QDebug>
+
 /*!
  * Constructor.
  */
@@ -18,7 +20,7 @@ ControlMode::ControlMode(FishBot* robot, ControlModeType::Enum type):
  */
 ControlMode::~ControlMode()
 {
-
+    qDebug() << "Destroying the object";
 }
 
 /*!

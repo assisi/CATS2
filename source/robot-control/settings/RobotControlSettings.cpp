@@ -38,7 +38,7 @@ bool RobotControlSettings::init(QString configurationFileName)
             (m_controlFrequencyHz <= 30);
     settingsAccepted = settingsAccepted && validControlFrequency;
     if (!validControlFrequency) {
-        qDebug() << Q_FUNC_INFO << "The control frequency is invalid"
+        qDebug() << "The control frequency is invalid"
                  << m_controlFrequencyHz;
     }
 
@@ -64,6 +64,14 @@ bool RobotControlSettings::init(QString configurationFileName)
         settings.readVariable(QString("robots/fishBot_%1/ledColor/b").arg(index), blue);
         robotSettings.setLedColor(QColor(red, green, blue));
 
+        // read the connection target line
+        std::string target = "";
+        settings.readVariable(QString("robots/fishBot_%1/connectionTarget")
+                              .arg(index),
+                              target, target);
+        robotSettings.setConnectionTarget(QString::fromStdString(target));
+
+        // add settings
         m_robotsSettings.insert(robotSettings.id(), robotSettings);
         settingsAccepted = settingsAccepted && (id.size() > 0);
     }
@@ -87,7 +95,19 @@ bool RobotControlSettings::init(QString configurationFileName)
     double kd = 0;
     settings.readVariable("robots/navigation/pid/kd", kd, kd);
     m_pidControllerSettings.setKd(kd);
-    settingsAccepted = settingsAccepted && (m_pidControllerSettings.kp() != 0);
+    settingsAccepted = settingsAccepted && (!qFuzzyIsNull(m_pidControllerSettings.kp()));
+
+    // read the pid controller settings
+    double kpDist = 0;
+    settings.readVariable("robots/navigation/pid/kpDist", kpDist, kpDist);
+    m_pidControllerSettings.setKpDist(kpDist);
+    double kiDist = 0;
+    settings.readVariable("robots/navigation/pid/kiDist", kiDist, kiDist);
+    m_pidControllerSettings.setKiDist(kiDist);
+    double kdDist = 0;
+    settings.readVariable("robots/navigation/pid/kdDist", kdDist, kdDist);
+    m_pidControllerSettings.setKdDist(kdDist);
+    settingsAccepted = settingsAccepted && (!qFuzzyIsNull(m_pidControllerSettings.kpDist()));
 
     // read the default linear speed
     m_defaultLinearSpeedCmSec = 0;
@@ -177,10 +197,51 @@ bool RobotControlSettings::init(QString configurationFileName)
                           m_fishModelSettings.dt,
                           m_fishModelSettings.dt);
 
+    // read a trajectory for the Trajectory control mode
+    std::string relativeTrajectoryPath = "";
+    settings.readVariable("robots/controlModes/trajectory/points",
+                          relativeTrajectoryPath,
+                          relativeTrajectoryPath);
+    QString trajectoryPath = configurationFolder +
+                                QDir::separator() +
+                                QString::fromStdString(relativeTrajectoryPath);
+    QFileInfo trajectoryFile(trajectoryPath);
+    if (trajectoryFile.exists() && trajectoryFile.isFile()) {
+        ReadSettingsHelper trajectorySettings(trajectoryPath);
+        std::vector<cv::Point2f> polygon;
+        trajectorySettings.readVariable(QString("polygon"), polygon);
+        if (polygon.size() > 0) {
+            for (auto& point : polygon)
+                m_trajectory << PositionMeters(point);
+            qDebug() << QString("Loaded trajectory of %1 points, shared by all "
+                                "robots").arg(m_trajectory.size());
+        } else {
+            qDebug() << "The trajectory is empty";
+        }
+    } else {
+        qDebug() << "Could not find the trajectory file";
+    }
+    // read the corresponding flags
+    m_loopTrajectory = true;
+    settings.readVariable("robots/controlModes/trajectory/loopTrajectory",
+                          m_loopTrajectory,
+                          m_loopTrajectory);
+    m_providePointsOnTimer = false;
+    settings.readVariable("robots/controlModes/trajectory/providePointsOnTimer",
+                          m_providePointsOnTimer,
+                          m_providePointsOnTimer);
+    if (m_providePointsOnTimer) {
+        m_trajectoryUpdateRateHz = 0;
+        settings.readVariable("robots/controlModes/trajectory/updateRateHz",
+                              m_trajectoryUpdateRateHz,
+                              m_trajectoryUpdateRateHz);
+    }
+
     settings.close();
+
     // read the settings for all available controllers
     for (int type = ExperimentControllerType::CONTROL_MAP;
-         type <= ExperimentControllerType::INITIATION; type++ )
+         type <= ExperimentControllerType::INITIATION_LURE; type++ )
     {
         ExperimentControllerType::Enum controllerType =
                 static_cast<ExperimentControllerType::Enum>(type);

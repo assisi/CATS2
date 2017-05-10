@@ -55,7 +55,7 @@ StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, QSize expected
             break;
         }
         case StreamType::UNDEFINED:
-            qDebug() << Q_FUNC_INFO << "Stream type is undefined";
+            qDebug() << "Stream type is undefined";
         default:
             break;
     }
@@ -66,7 +66,7 @@ StreamReceiver::StreamReceiver(StreamDescriptor streamParameters, QSize expected
 */
 StreamReceiver::~StreamReceiver()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     stop();
 }
 
@@ -80,7 +80,7 @@ void StreamReceiver::process()
         return;
 
     try {
-        qDebug() << Q_FUNC_INFO << "Launching pipeline" << m_pipelineDescription;
+        qDebug() << "Launching pipeline" << m_pipelineDescription;
         m_pipeline = QGst::Parse::launch(m_pipelineDescription).dynamicCast<QGst::Pipeline>();
         m_sink.setElement(m_pipeline->getElementByName("queueingsink"));
         QGlib::connect(m_pipeline->bus(), "message", this, &StreamReceiver::onMessage);
@@ -94,7 +94,7 @@ void StreamReceiver::process()
         m_pipeline->setState(QGst::StatePlaying);
     }
     catch (...) {
-        qDebug() << Q_FUNC_INFO << "Exception while launching the pipeline, stopped";
+        qDebug() << "Exception while launching the pipeline, stopped";
         return;
     }
 }

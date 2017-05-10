@@ -12,9 +12,11 @@
  * Constructor.
  */
 PotentialField::PotentialField(FishBot* robot) :
-    m_robot(robot),
     GridBasedMethod(RobotControlSettings::get().pathPlanningSettings().gridSizeMeters()),
-    m_settings(RobotControlSettings::get().potentialFieldSettings())
+    m_robot(robot),
+    m_settings(RobotControlSettings::get().potentialFieldSettings()),
+    m_nu(20),
+    m_rho0(0.05)
 {
 //    cv::namedWindow("PotentialFieldGrid", cv::WINDOW_NORMAL);
 //    cv::imshow("PotentialFieldGrid", m_currentGrid);
@@ -26,7 +28,7 @@ PotentialField::PotentialField(FishBot* robot) :
 PotentialField::~PotentialField()
 {
 //    cv::destroyWindow("PotentialFieldGrid");
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*! 

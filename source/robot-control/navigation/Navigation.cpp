@@ -1,6 +1,6 @@
 ﻿#include "Navigation.hpp"
 
-#include "dbusinterface.h"
+#include "interfaces/DBusInterface.hpp"
 #include "control-modes/ControlTarget.hpp"
 #include "FishBot.hpp"
 
@@ -36,7 +36,7 @@ Navigation::Navigation(FishBot* robot):
  */
 Navigation::~Navigation()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
     // stop the robot before quiting
     stop();
 }
@@ -77,7 +77,7 @@ void Navigation::setTargetPosition(TargetPosition* targetPosition)
     if (m_robot->state().position().isValid() && targetPosition->position().isValid()) {
         // first check if we are already in the target position
         if (m_robot->state().position().closeTo(targetPosition->position()) && m_stopOnceOnTarget) {
-//            qDebug() << Q_FUNC_INFO << "Arrived to target, stoped";
+//            qDebug() << "Arrived to target, stoped";
             // stop the robot
             stop();
             // reset the path planner
@@ -111,7 +111,7 @@ void Navigation::setTargetPosition(TargetPosition* targetPosition)
             }
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Invalid robot or target position";
+        qDebug() << "Invalid robot or target position";
     }
 }
 
@@ -136,24 +136,22 @@ void Navigation::setLocalObstacleAvoidanceForMotionPattern(MotionPatternType::En
  */
 void Navigation::sendMotorSpeed(int leftSpeed, int rightSpeed)
 {
-    if (m_robot->robotInterface()) {
-        // TODO : to add some safety checks on the speed and eventually convertions
+    // TODO : to add some safety checks on the speed and eventually convertions
 
 //        // debug info
 //        if ((leftSpeed == 0) && (rightSpeed == 0)) {
-//            qDebug() << Q_FUNC_INFO << "Got instructions to stop the robot, executing";
+//            qDebug() << "Got instructions to stop the robot, executing";
 //        }
 
-        // event to send
-        QString eventName;
-        // data to send
-        Values data;
+    // event to send
+    QString eventName;
+    // data to send
+    Values data;
 
-        eventName = "MotorControl" + m_robot->name();
-        data.append(leftSpeed);
-        data.append(rightSpeed);
-        m_robot->robotInterface()->sendEventName(eventName, data);
-    }
+    eventName = "MotorControl" + m_robot->name();
+    data.append(leftSpeed);
+    data.append(rightSpeed);
+    m_robot->sendEvent(eventName, data);
 }
 
 /*!
@@ -175,26 +173,24 @@ void Navigation::sendMotorSpeed(double angularSpeed)
  */
 void Navigation::sendFishMotionParameters(int angle, int distance, int speed)
 {
-    if (m_robot->robotInterface()) {
-        // event to send
-        QString eventName;
-        // data to send
-        Values data;
+    // event to send
+    QString eventName;
+    // data to send
+    Values data;
 
-        // bound the angle
-        if(angle >100)
-            angle = 100;
-        else if (angle <-100)
-            angle = -100;
+    // bound the angle
+    if(angle >100)
+        angle = 100;
+    else if (angle <-100)
+        angle = -100;
 
-        // TODO : to check other parameters
+    // TODO : to check other parameters
 
-        eventName = "FishBehavior" + m_robot->name();
-        data.append(angle);
-        data.append(distance);
-        data.append(speed);
-        m_robot->robotInterface()->sendEventName(eventName, data);
-    }
+    eventName = "FishBehavior" + m_robot->name();
+    data.append(angle);
+    data.append(distance);
+    data.append(speed);
+    m_robot->sendEvent(eventName, data);
 }
 
 /*!
@@ -202,16 +198,14 @@ void Navigation::sendFishMotionParameters(int angle, int distance, int speed)
  */
 void Navigation::sendLocalObstacleAvoidance(LocalObstacleAvoidanceType type)
 {
-    if (m_robot->robotInterface()) {
-        // event to send
-        QString eventName;
-        // data to send
-        Values data;
+    // event to send
+    QString eventName;
+    // data to send
+    Values data;
 
-        data.append(type);
-        eventName = "SetObstacleAvoidance" + m_robot->name();
-        m_robot->robotInterface()->sendEventName(eventName, data);
-    }
+    data.append(type);
+    eventName = "SetObstacleAvoidance" + m_robot->name();
+    m_robot->sendEvent(eventName, data);
 }
 
 /*!
@@ -269,27 +263,60 @@ void Navigation::fishMotionToPosition(PositionMeters targetPosition)
 void Navigation::pidControlToPosition(PositionMeters targetPosition)
 {
     if (m_robot->state().orientation().isValid() || !m_needOrientationToNavigate) {
+
+        //PID on the angle error
+
         double angleToTurn = computeAngleToTurn(targetPosition);
         // proportional term
-        double proportionalTerm = angleToTurn;
+        double proportionalTermAngle = angleToTurn;
         // derivative term
-        double derivativeTerm = 0;
-        if (m_errorBuffer.size() > 0)
-            derivativeTerm = (angleToTurn - m_errorBuffer.last()) * m_dt;
+        double derivativeTermAngle = 0;
+        if (m_errorBufferAngle.size() > 0)
+            derivativeTermAngle = (angleToTurn - m_errorBufferAngle.last()) * m_dt;
         // integral term
-        double integralTerm = 0;
-        m_errorBuffer.enqueue(angleToTurn);
-        if (m_errorBuffer.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
+        double integralTermAngle = 0;
+        m_errorBufferAngle.enqueue(angleToTurn);
+        if (m_errorBufferAngle.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
             // forget the oldest element
-            m_errorBuffer.dequeue();
+            m_errorBufferAngle.dequeue();
             // and sum the rest of them
-            for (double error : m_errorBuffer)
-                integralTerm += error;
+            for (double error : m_errorBufferAngle)
+                integralTermAngle += error;
         }
-        double angularVelocity = m_pidControllerSettings.kp() * proportionalTerm +
-                m_pidControllerSettings.ki() * integralTerm +
-                m_pidControllerSettings.kd() * derivativeTerm;
-        sendMotorSpeed(angularVelocity);
+        double angularVelocity = m_pidControllerSettings.kp() * proportionalTermAngle +
+                m_pidControllerSettings.ki() * integralTermAngle +
+                m_pidControllerSettings.kd() * derivativeTermAngle;
+
+        //PID on the distance error
+        double distanceToTravel = m_robot->state().position().distance2DTo(targetPosition);
+        // proportional term
+        double proportionalTermDistance = distanceToTravel;
+        // derivative term
+        double derivativeTermDistance = 0;
+        if (m_errorBufferDistance.size() > 0)
+            derivativeTermDistance = (distanceToTravel - m_errorBufferDistance.last()) * m_dt;
+        // integral term
+        double integralTermDistance = 0;
+        m_errorBufferDistance.enqueue(distanceToTravel);
+        if (m_errorBufferDistance.size() > ErrorBufferDepth) { // the buffer if full, i.e. we can use it
+            // forget the oldest element
+            m_errorBufferDistance.dequeue();
+            for (double errorDistance : m_errorBufferDistance)
+                integralTermDistance += errorDistance;
+        }
+        double linearVelocity = m_pidControllerSettings.kpDist() * proportionalTermDistance +
+                m_pidControllerSettings.kiDist() * integralTermDistance +
+                m_pidControllerSettings.kdDist() * derivativeTermDistance;
+
+        int linearSpeedMax = RobotControlSettings::get().defaultLinearSpeedCmSec();
+
+        if(linearVelocity > linearSpeedMax)
+            linearVelocity = linearSpeedMax;
+
+        int leftSpeed =  linearVelocity + (angularVelocity * FishBot::InterWheelsDistanceCm) / 2.0;
+        int rightSpeed = linearVelocity - (angularVelocity * FishBot::InterWheelsDistanceCm) / 2.0;
+
+        sendMotorSpeed(leftSpeed, rightSpeed);
     }
 }
 
@@ -299,8 +326,7 @@ void Navigation::pidControlToPosition(PositionMeters targetPosition)
 void Navigation::setMotionPattern(MotionPatternType::Enum type)
 {
     if (type != m_motionPattern) {
-        qDebug() << Q_FUNC_INFO
-                 << QString("Changing the motion pattern from from %1 to %2 for %3")
+        qDebug() << QString("Changing the motion pattern from from %1 to %2 for %3")
                     .arg(MotionPatternType::toString(m_motionPattern))
                     .arg(MotionPatternType::toString(type))
                     .arg(m_robot->name());

@@ -17,8 +17,8 @@ ExperimentController::ExperimentController(FishBot* robot,
     m_preferedAreaId(""),
     m_fishAreaId(""),
     m_robotAreaId(""),
-    m_type(type),
-    m_robotAreaChanged(false)
+    m_robotAreaChanged(false),
+    m_type(type)
 {
 
 }
@@ -123,8 +123,7 @@ void ExperimentController::updateAreasOccupation()
     }
     if (findFishArea(areaId)) {
         if (m_fishAreaId != areaId) {
-//            qDebug() << Q_FUNC_INFO
-//                     << QString("Most of fish is now in room %1 (before %2) : %3")
+//            qDebug() << QString("Most of fish is now in room %1 (before %2) : %3")
 //                        .arg(areaId)
 //                        .arg(m_fishAreaId)
 //                        .arg(m_fishNumberByArea[areaId]);
@@ -229,8 +228,7 @@ void ExperimentController::updateRobotArea(QString areaId)
     if (areaId != m_robotAreaId) {
         m_robotAreaId = areaId;
         m_robotAreaChanged = true;
-//            qDebug() << Q_FUNC_INFO
-//                     << QString("%1 changed the room from %2 to %3")
+//            qDebug() << QString("%1 changed the room from %2 to %3")
 //                        .arg(m_robot->name())
 //                        .arg(m_robotAreaId)
 //                        .arg(areaId);

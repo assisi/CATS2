@@ -34,9 +34,9 @@ void SetupMap::init(QString setupFilePath)
 
     // build a graph
     if (successful) {
-        qDebug() << Q_FUNC_INFO << "Successfully initialized the setup map";
+        qDebug() << "Successfully initialized the setup map";
         for (cv::Point2f& point : polygon) {
-            m_polygon.append(PositionMeters(point.x, point.y));
+            m_polygon.append(PositionMeters(point));
             m_minY = qMin(m_minY, static_cast<double>(point.y));
             m_minX = qMin(m_minX, static_cast<double>(point.x));
             m_maxY = qMax(m_maxY, static_cast<double>(point.y));
@@ -44,7 +44,7 @@ void SetupMap::init(QString setupFilePath)
         }
     }
     else
-        qDebug() << Q_FUNC_INFO << "Could not initialize the setup map";
+        qDebug() << "Could not initialize the setup map";
 
     m_valid = successful;
 }

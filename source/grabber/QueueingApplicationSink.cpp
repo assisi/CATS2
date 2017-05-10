@@ -42,12 +42,12 @@ QGst::FlowReturn QueueingApplicationSink::newBuffer()
             width = structure->value("width").get<int>();
             height = structure->value("height").get<int>();
 
-//            qDebug() << Q_FUNC_INFO << "Sample caps:" << structure->toString();
+//            qDebug() << "Sample caps:" << structure->toString();
 
             // check the size of the incoming frames, if it's not as expected
             // then return an error to the pipeline
             if (width != m_expectedFrameSize.width || height != m_expectedFrameSize.height) {
-                qDebug() << Q_FUNC_INFO << QString("Video resolution %1x%2 is not as expected %3x%4")
+                qDebug() << QString("Video resolution %1x%2 is not as expected %3x%4")
                             .arg(width)
                             .arg(height)
                             .arg(m_expectedFrameSize.width)

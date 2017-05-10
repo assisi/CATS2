@@ -32,7 +32,7 @@ bool CalibrationSettings::init(QString configurationFileName, SetupType::Enum se
     settings.readVariable(QString("%1/cameraCalibrationFile").arg(prefix), calibrationFilePath);
 
     m_calibrationFilePaths[setupType] = configurationFolder + QDir::separator() + QString::fromStdString(calibrationFilePath);
-    settingsAccepted = QFileInfo(m_calibrationFilePaths[setupType]).exists();
+    settingsAccepted = settingsAccepted && QFileInfo(m_calibrationFilePaths[setupType]).exists();
 
     // read the target image size
     int width;

@@ -2,8 +2,11 @@
 #define CATS2_ROBOTS_WIDGET_HPP
 
 #include "RobotControlPointerTypes.hpp"
+#include "ConnectionStatusType.hpp"
 
+#include <QtCore/QMap>
 #include <QtWidgets/QWidget>
+#include <QtGui/QIcon>
 
 namespace Ui {
 class RobotsWidget;
@@ -34,6 +37,9 @@ protected:
 private:
     //! The gui form.
     Ui::RobotsWidget *m_ui;
+
+    //! Maps connection statuses to icons.
+    QMap<ConnectionStatus, QIcon> m_connectionIcons;
 };
 
 #endif // CATS2_ROBOTS_WIDGET_HPP

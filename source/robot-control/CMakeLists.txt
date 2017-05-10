@@ -5,10 +5,6 @@ function(makeLink sourceFilePath destinationFilePath)
     endif()
 endfunction()
 
-# Add the qt-aseba interface files to the project, before tried with add_custom_command but it never worked
-makeLink(dependencies/aseba/examples/clients/cpp-qt-dbus/dbusinterface.h dbusinterface.h)
-makeLink(dependencies/aseba/examples/clients/cpp-qt-dbus/dbusinterface.cpp dbusinterface.cpp)
-
 # Add fish-model files
 if(NOT EXISTS ${CMAKE_CURRENT_SOURCE_DIR}/model)
     execute_process(COMMAND mkdir model WORKING_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR})
@@ -23,12 +19,15 @@ makeLink(dependencies/fish-model/zones.cpp model/zones.cpp)
 makeLink(dependencies/fish-model/zones.hpp model/zones.hpp)
 makeLink(dependencies/fish-model/random.cpp model/random.cpp)
 makeLink(dependencies/fish-model/random.h model/random.h)
+makeLink(dependencies/fish-model/zones.hpp model/zones.hpp)
+makeLink(dependencies/fish-model/zones.cpp model/zones.cpp)
 
 set(srcs
     settings/RobotControlSettings.cpp
     settings/ExperimentControllerSettings.cpp
     settings/MapControllerSettings.cpp
-    settings/InitiationControllerSettings.cpp
+    settings/InitiationLeaderControllerSettings.cpp
+    settings/InitiationLureControllerSettings.cpp
     FishBot.cpp
     ControlLoop.cpp
     control-modes/Idle.cpp
@@ -37,8 +36,10 @@ set(srcs
     control-modes/ModelBased.cpp
     control-modes/Manual.cpp
     control-modes/ControlMode.cpp
+    control-modes/Trajectory.cpp
     ControlModeStateMachine.cpp
-    dbusinterface.cpp
+    interfaces/DBusInterface.cpp
+    interfaces/DashelInterface.cpp
     gui/RobotControlWidget.cpp
     gui/RobotsWidget.cpp
     gui/PotentialFieldWidget.cpp
@@ -47,12 +48,14 @@ set(srcs
     experiment-controllers/MapController.cpp
     experiment-controllers/ExperimentController.cpp
     experiment-controllers/ExperimentManager.cpp
-    experiment-controllers/InitiationController.cpp
+    experiment-controllers/InitiationLeaderController.cpp
+    experiment-controllers/InitiationLureController.cpp
     model/model.cpp
     model/zones.cpp
     model/factory.cpp
     model/bm.cpp
     model/random.cpp
+    model/zones.cpp
     navigation/Navigation.cpp
     navigation/DijkstraPathPlanner.cpp
     navigation/PathPlanner.cpp
@@ -64,20 +67,25 @@ set(srcs
 
 set(hdrs
     control-modes/ControlTarget.hpp
-    dbusinterface.h
     RobotControlPointerTypes.hpp
     MotionPatternType.hpp
+    ConnectionStatusType.hpp
+    interfaces/Values.hpp
     control-modes/ControlModeType.hpp
+    control-modes/ModelParameters.hpp
     experiment-controllers/ExperimentControllerType.hpp
     experiment-controllers/ExperimentControllerFactory.hpp
 )
 
 qt5_wrap_ui(uis_hdrs gui/RobotControlWidget.ui gui/RobotsWidget.ui gui/PotentialFieldWidget.ui)
-#qt5_add_resources(resources icons.qrc)
+qt5_add_resources(resources icons.qrc)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 add_library(robot-control SHARED ${srcs} ${hdrs} ${uis_hdrs}) #${resources})
-target_link_libraries(robot-control common Qt5::Core Qt5::Widgets Qt5::DBus ${Boost_LIBRARIES})
+target_link_libraries(robot-control common Qt5::Core Qt5::Widgets Qt5::DBus
+                      Qt5::Xml ${Boost_LIBRARIES}
+                      ${dashel_LIBRARIES} ${Aseba_LIBRARIES})
 
-
-
+#install(TARGETS robot-control DESTINATION .)
+#install(FILES
+#         DESTINATION include/robot-control)

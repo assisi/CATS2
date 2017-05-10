@@ -55,11 +55,18 @@ public:
     //! Get color.
     QColor ledColor() const { return m_ledColor; }
 
+    //! Set the target.
+    void setConnectionTarget(QString target) { m_connectionTarget = target; }
+    //! Get the target.
+    QString connectionTarget() const { return m_connectionTarget; }
+
 private:
     //! Robot's id.
     QString m_id;
     //! Robot's color.
     QColor m_ledColor;
+    //! The target to connect directly to the robot.
+    QString m_connectionTarget;
 };
 
 /*!
@@ -69,7 +76,10 @@ class FishMotionPatternSettings
 {
 public:
     //! Constructor.
-    explicit FishMotionPatternSettings() { }
+    explicit FishMotionPatternSettings():
+        m_distanceCm(10.),
+        m_speedCmSec(15.)
+    { }
 
     //! Sets distance to accelerate.
     void setDistanceCm(int distance) { m_distanceCm = distance; }
@@ -98,7 +108,14 @@ class PidControllerSettings
 {
 public:
     //! Constructor.
-    explicit PidControllerSettings() { }
+    explicit PidControllerSettings():
+        m_kp(1),
+        m_ki(0),
+        m_kd(0),
+        m_kpDist(100),
+        m_kiDist(0),
+        m_kdDist(0)
+    { }
 
     //! Sets proportional coefficient.
     void setKp(double kp) { m_kp = kp; }
@@ -115,6 +132,21 @@ public:
     //! Returns derivative coefficient.
     double kd() const { return m_kd; }
 
+    //! Sets proportional coefficient.
+    void setKpDist(double kpDist) { m_kpDist = kpDist; }
+    //! Returns proportional coefficient.
+    double kpDist() const { return m_kpDist; }
+
+    //! Sets integral coefficient.
+    void setKiDist(double kiDist) { m_kiDist = kiDist; }
+    //! Returns integral coefficient.
+    double kiDist() const { return m_kiDist; }
+
+    //! Sets derivative coefficient.
+    void setKdDist(double kdDist) { m_kdDist = kdDist; }
+    //! Returns derivative coefficient.
+    double kdDist() const { return m_kdDist; }
+
 private:
     //! Proportional coefficient.
     double m_kp;
@@ -122,6 +154,12 @@ private:
     double m_ki;
     //! Derivative coefficient.
     double m_kd;
+    //! Proportional coefficient.
+    double m_kpDist;
+    //! Integral coefficient.
+    double m_kiDist;
+    //! Derivative coefficient.
+    double m_kdDist;
 };
 
 /*!
@@ -151,16 +189,22 @@ struct PotentialFieldSettings
 {
     //! Constructor.
     PotentialFieldSettings() :
-        influenceStrengthTarget(2), influenceDistanceTargetMeters(0.03),
-        influenceStrengthArena(10), influenceDistanceArenaMeters(0.03),
-        influenceStrengthRobots(20),influenceDistanceRobotsMeters(0.09),
-        maxForce(1000),maxAngleDeg(60),
+        influenceDistanceArenaMeters(0.03),
+        influenceStrengthArena(10),
+        influenceDistanceRobotsMeters(0.09),
+        influenceStrengthRobots(20),
+        influenceDistanceTargetMeters(0.03),
+        influenceStrengthTarget(2),
+        maxForce(1000),
+        maxAngleDeg(60),
         obstacleAvoidanceAreaDiameterMeters(0.1)
     { }
 
     //! Repulsive parameters rho0 being the distance of influence and nu the "strength" of the repulsion.
-    float influenceDistanceArenaMeters, influenceStrengthArena;
-    float influenceDistanceRobotsMeters, influenceStrengthRobots;
+    float influenceDistanceArenaMeters;
+    float influenceStrengthArena;
+    float influenceDistanceRobotsMeters;
+    float influenceStrengthRobots;
     //! Attractive parameters.
     float influenceDistanceTargetMeters;
     float influenceStrengthTarget;
@@ -246,6 +290,19 @@ public:
     //! Gives the reference to the potential field obstacle avoidance settings.
     const PotentialFieldSettings& potentialFieldSettings() const { return m_potentialFieldSettings; }
 
+    //! Returns the predefined trajectory for the Trajectory control mode.
+    QList<PositionMeters> trajectory() const { return m_trajectory; }
+    //! Returns the flag defining if the trajectory should be restarted once the
+    //! last point is reached.
+    bool loopTrajectory() { return m_loopTrajectory; }
+
+    //! Returns the flag specifing if the next point of the trajectory is to be
+    //! provided on timer or once the previous is reached.
+    bool providePointsOnTimer() const { return m_providePointsOnTimer; }
+    //! Returns the update rate for the trajectory points when they are provided
+    //! on a timeout.
+    int trajectoryUpdateRateHz() const { return m_trajectoryUpdateRateHz; }
+
 private:
     //! Constructor. Defining it here prevents construction.
     RobotControlSettings() {}
@@ -284,6 +341,19 @@ private:
     //! The settings for specific experiment controllers.
     QMap<ExperimentControllerType::Enum,
          ExperimentControllerSettingsPtr> m_controllerSettings;
+
+    // TODO : to make a map of usefull settings for every control mode
+    //! The predefined trajectory for the Trajectory control mode.
+    QList<PositionMeters> m_trajectory;
+    //! Defines if the trajectory should be restarted once the last point is
+    //! reached.
+    bool m_loopTrajectory;
+    //! Specifies if the next point of the trajectory is to be provided on
+    //! timer or once the previous is reached.
+    bool m_providePointsOnTimer;
+    //! The update rate for the trajectory points when they are provided on a
+    //! timeout.
+    int m_trajectoryUpdateRateHz;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP

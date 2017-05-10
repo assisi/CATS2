@@ -1,14 +1,12 @@
 ﻿#ifndef CATS2_TRACKING_SETUP_HPP
 #define CATS2_TRACKING_SETUP_HPP
 
-#include "TrackingHandler.hpp"
 #include "TrackerPointerTypes.hpp"
 
+#include <SetupType.hpp>
 #include <CommonPointerTypes.hpp>
 #include <GrabberPointerTypes.hpp>
 #include <HubPointerTypes.hpp>
-
-#include <gui/TrackingRoutineWidget.hpp>
 
 #include <QtCore/QSharedPointer>
 #include <QtCore/QMap>
@@ -32,7 +30,7 @@ public:
 
 public:
     //! Returns the pointer to the tracking routine gui.
-    QWidget* trackingWidget() { return m_tracking->widget(); }
+    QWidget* trackingWidget();
 
     //! Returns the pointer to the hub's output queue.
     TimestampedFrameQueuePtr viewerQueue();

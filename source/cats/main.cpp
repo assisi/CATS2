@@ -9,11 +9,11 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication::setOrganizationName("MOBOTS");
+    QApplication::setOrganizationName("EPFL-LSRO-Mobots");
     QApplication::setOrganizationDomain("mobots.epfl.ch");
-    QApplication::setApplicationName("CAT2");
+    QApplication::setApplicationName("CATS2");
 
-    QGst::init(&argc, &argv);
+    QGst::init(nullptr, nullptr);
     QApplication app(argc, argv);
 
     // initialize the settings
@@ -29,7 +29,7 @@ int main(int argc, char *argv[])
         mainWindow.show();
         return app.exec();
     } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't setup the application, finished";
+        qDebug() << "Couldn't setup the application, finished";
     }
 }
 

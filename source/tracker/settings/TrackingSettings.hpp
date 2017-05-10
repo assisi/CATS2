@@ -42,6 +42,8 @@ public:
         return m_trackingRoutineSettings.value(type);
     }
 
+    //! The experiment type (used to write the tracking results to a file).
+    QString experimentType() const { return m_experimentType; }
     //! The experiment name (used to write the tracking results to a file).
     QString experimentName() const { return m_experimentName; }
     //! Return the number of robots used in the experiment.
@@ -64,6 +66,8 @@ private:
     //! The settings for the tracking routine used in various setups.
     QMap<SetupType::Enum, TrackingRoutineSettingsPtr> m_trackingRoutineSettings;
 
+    //! The experiment type (used to write the tracking results to a file).
+    QString m_experimentType;
     //! The experiment name (used to write the tracking results to a file).
     QString m_experimentName;
     //! The number of robots used in the experiment.

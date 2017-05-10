@@ -18,8 +18,16 @@ Manual::Manual(FishBot* robot) : ControlMode(robot, ControlModeType::MANUAL)
 {
     // open joystick port
     if ((m_descriptor = open("/dev/input/js0", O_RDONLY)) < 0) {
-        qDebug() << Q_FUNC_INFO << "Could not open the joystick";
+        qDebug() << "Could not open the joystick";
     }
+}
+
+/*!
+ * Destructor.
+ */
+Manual::~Manual()
+{
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -36,7 +44,7 @@ ControlTargetPtr Manual::step()
     // read joystick
     struct JS_DATA_TYPE joystickData;
     if (read(m_descriptor, &joystickData, JS_RETURN) != JS_RETURN) {
-        qDebug() << Q_FUNC_INFO << "error reading joystick";
+        qDebug() << "error reading joystick";
     } else {
         // TODO : clean this up
         joystickData.x = joystickData.x - 128;

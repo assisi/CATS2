@@ -1,6 +1,10 @@
 #include "ui_MainWindow.h"
 #include "MainWindow.hpp"
+
+#include "PreferencesDialog.hpp"
+
 #include "settings/Settings.hpp"
+#include "settings/Registry.hpp"
 #include <settings/InterSpeciesSettings.hpp>
 
 #include <TrackingSetup.hpp>
@@ -40,12 +44,16 @@ MainWindow::MainWindow(QWidget *parent) :
     qInstallMessageHandler(messageOutput);
 
     // create the tracking data manager
-    m_trackingDataManager = TrackingDataManagerPtr(new TrackingDataManager());
+    QString path = Registry::get().dataLoggingPath();
+    m_trackingDataManager = TrackingDataManagerPtr(new TrackingDataManager(path));
 
     // create the inter-species data manager
-    m_interSpeciesDataManager = InterSpeciesDataManagerPtr(new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress()));
-    connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataImageMerged,
-               m_interSpeciesDataManager.data(), &InterSpeciesDataManager::publishAgentData);
+    m_interSpeciesDataManager =
+            InterSpeciesDataManagerPtr(new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress()));
+    connect(m_trackingDataManager.data(),
+            &TrackingDataManager::notifyAgentDataImageMerged,
+            m_interSpeciesDataManager.data(),
+            &InterSpeciesDataManager::publishAgentData);
 
     // create the robot control handler
     m_robotsHandler = RobotsHandlerPtr(new RobotsHandler());
@@ -55,9 +63,14 @@ MainWindow::MainWindow(QWidget *parent) :
         // and place a robot controller widget on this layout
         m_ui->robotsControllerWidget->layout()->addWidget(m_robotsHandler->widget());
     }
-    connect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
-            m_robotsHandler->contolLoop().data(), &ControlLoop::onTrackingResultsReceived);
-    connect(m_ui->actionReconnectToRobots, &QAction::triggered, m_robotsHandler->contolLoop().data(), &ControlLoop::reconnectRobots);
+    connect(m_trackingDataManager.data(),
+            &TrackingDataManager::notifyAgentDataWorldMerged,
+            m_robotsHandler->contolLoop().data(),
+            &ControlLoop::onTrackingResultsReceived);
+    connect(m_ui->actionReconnectToRobots, &QAction::triggered,
+            m_robotsHandler->contolLoop().data(), &ControlLoop::reconnectRobots);
+    connect(m_ui->actionStopAllRobots, &QAction::triggered,
+            m_robotsHandler->contolLoop().data(), &ControlLoop::stopAllRobots);
 
     // create setups
     if (Settings::get().isAvailable(SetupType::MAIN_CAMERA)) {
@@ -83,6 +96,13 @@ MainWindow::MainWindow(QWidget *parent) :
      m_ui->actionShowAgentsData->toggle();
      m_ui->actionShowControlAreas->toggle();
      m_ui->actionShowSetupOutline->toggle();
+
+     // preferences dialog
+     connect(m_ui->actionPreferences, &QAction::triggered,
+             [=](){
+                QSharedPointer<PreferencesDialog> dialog(new PreferencesDialog());
+                dialog->exec();
+             });
 }
 
 /*!
@@ -90,7 +110,7 @@ MainWindow::MainWindow(QWidget *parent) :
  */
 MainWindow::~MainWindow()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -100,12 +120,14 @@ void MainWindow::createSetup(SetupType::Enum setupType)
 {
     // create the tracking setup.
     bool needOutputQueue = true;
-    m_trackingSetups[setupType] = TrackingSetupPtr(new TrackingSetup(setupType, needOutputQueue));
+    m_trackingSetups[setupType] =
+            TrackingSetupPtr(new TrackingSetup(setupType, needOutputQueue));
 
     // create the viewer
-    m_viewerHandlers[setupType] = ViewerHandlerPtr(new ViewerHandler(setupType,
-                                                                     m_trackingSetups[setupType]->viewerQueue(),
-                                                                     m_trackingSetups[setupType]->coordinatesConversion()));
+    m_viewerHandlers[setupType] =
+            ViewerHandlerPtr(new ViewerHandler(setupType,
+                                               m_trackingSetups[setupType]->viewerQueue(),
+                                               m_trackingSetups[setupType]->coordinatesConversion()));
 
     // connect the tracker to the tracking data manager
     m_trackingSetups[setupType]->connectToDataManager(m_trackingDataManager);
@@ -134,7 +156,8 @@ void MainWindow::setPrimaryView(SetupType::Enum setupType)
         m_viewerHandlers[setupType]->widget()->setShowRunTime(true);
         m_viewerHandlers[setupType]->data()->blockSignals(false);
     } else {
-        qDebug() << Q_FUNC_INFO << "Unable to set the primary view from setup:" << SetupType::toString(setupType);
+        qDebug() << "Unable to set the primary view from setup:"
+                 << SetupType::toString(setupType);
     }
 }
 
@@ -158,7 +181,8 @@ void MainWindow::setSecondaryView(SetupType::Enum setupType)
         m_viewerHandlers[setupType]->widget()->setShowRunTime(false);
         m_viewerHandlers[setupType]->data()->blockSignals(false);
     } else {
-        qDebug() << Q_FUNC_INFO << "Unable to set the secondary view from setup:" << SetupType::toString(setupType);
+        qDebug() << "Unable to set the secondary view from setup:"
+                 << SetupType::toString(setupType);
     }
 }
 
@@ -207,23 +231,37 @@ void MainWindow::connectPrimaryView()
 
         // connect to the robots controller
         connect(viewerWidget, &ViewerWidget::notifyButtonClick,
-                [=](Qt::MouseButton button,PositionMeters worldPosition)
+                [=](Qt::MouseButton button, PositionMeters worldPosition)
                 {
-                    if (button = Qt::RightButton)
+                    if (button == Qt::RightButton)
                         m_robotsHandler->contolLoop().data()->goToPosition(worldPosition);
                 });
-        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotControlAreasPolygons,
-                viewerWidget, &ViewerWidget::updateControlAreas);
-        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifySelectedRobotChanged,
-                viewerWidget, &ViewerWidget::updateCurrentAgent);
-        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTargetPositionChanged,
-                viewerWidget, &ViewerWidget::updateTarget);
-        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTrajectoryChanged,
-                viewerWidget, &ViewerWidget::updateTrajectory);
+        connect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifyRobotControlAreasPolygons,
+                viewerWidget,
+                &ViewerWidget::updateControlAreas);
+        connect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifySelectedRobotChanged,
+                viewerWidget,
+                &ViewerWidget::updateCurrentAgent);
+        connect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifyRobotTargetPositionChanged,
+                viewerWidget,
+                &ViewerWidget::updateTarget);
+        connect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifyRobotTrajectoryChanged,
+                viewerWidget,
+                &ViewerWidget::updateTrajectory);
         connect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
                 viewerWidget, &ViewerWidget::updateSetup);
-        connect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotLedColor,
-                viewerWidget, &ViewerWidget::updateColor);
+        connect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifyRobotLedColor,
+                viewerWidget,
+                &ViewerWidget::updateColor);
+        connect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifyObstacleDetectedStatusChanged,
+                viewerWidget,
+                &ViewerWidget::highlightAgent);
 
         // request to get robots leds' colors
         m_robotsHandler->contolLoop()->requestRobotsLedColors();
@@ -253,34 +291,54 @@ void MainWindow::disconnectPrimaryView()
                    viewerWidget, &ViewerWidget::adjust);
         disconnect(m_ui->actionShowAgentsData, &QAction::toggled,
                    viewerWidget, &ViewerWidget::setShowAgentsData);
-        disconnect(m_ui->actionShowAgentsData, &QAction::toggled,
-                   m_robotsHandler->contolLoop().data(), &ControlLoop::sendNavigationData);
+        disconnect(m_ui->actionShowAgentsData,
+                   &QAction::toggled,
+                   m_robotsHandler->contolLoop().data(),
+                   &ControlLoop::sendNavigationData);
         disconnect(m_ui->actionShowControlAreas, &QAction::toggled,
                    viewerWidget, &ViewerWidget::setShowControlAreas);
         disconnect(m_ui->actionShowControlAreas, &QAction::toggled,
-                   m_robotsHandler->contolLoop().data(), &ControlLoop::sendControlAreas);
-        disconnect(m_ui->actionShowSetupOutline, &QAction::toggled,
+                   m_robotsHandler->contolLoop().data(),
+                   &ControlLoop::sendControlAreas);
+        disconnect(m_ui->actionShowSetupOutline,
+                   &QAction::toggled,
                    viewerWidget, &ViewerWidget::setShowSetup);
         disconnect(m_ui->actionShowSetupOutline, &QAction::toggled,
                    m_robotsHandler.data(), &RobotsHandler::requestSetupMap);
 
         // disconnect from the tracking data manager
-        disconnect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
-                viewerWidget, &ViewerWidget::updateAgentLabels);
-        disconnect(m_trackingDataManager.data(), &TrackingDataManager::notifyAgentDataWorldMerged,
-                viewerWidget, &ViewerWidget::updateAgents);
+        disconnect(m_trackingDataManager.data(),
+                   &TrackingDataManager::notifyAgentDataWorldMerged,
+                   viewerWidget,
+                   &ViewerWidget::updateAgentLabels);
+        disconnect(m_trackingDataManager.data(),
+                   &TrackingDataManager::notifyAgentDataWorldMerged,
+                   viewerWidget,
+                   &ViewerWidget::updateAgents);
 
         // disconnect from the robot controller
-        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotControlAreasPolygons,
-                viewerWidget, &ViewerWidget::updateControlAreas);
-        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifySelectedRobotChanged,
-                viewerWidget, &ViewerWidget::updateCurrentAgent);
-        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTargetPositionChanged,
-                viewerWidget, &ViewerWidget::updateTarget);
-        disconnect(m_robotsHandler->contolLoop().data(), &ControlLoop::notifyRobotTrajectoryChanged,
-                viewerWidget, &ViewerWidget::updateTrajectory);
+        disconnect(m_robotsHandler->contolLoop().data(),
+                   &ControlLoop::notifyRobotControlAreasPolygons,
+                   viewerWidget,
+                   &ViewerWidget::updateControlAreas);
+        disconnect(m_robotsHandler->contolLoop().data(),
+                   &ControlLoop::notifySelectedRobotChanged,
+                   viewerWidget,
+                   &ViewerWidget::updateCurrentAgent);
+        disconnect(m_robotsHandler->contolLoop().data(),
+                   &ControlLoop::notifyRobotTargetPositionChanged,
+                   viewerWidget,
+                   &ViewerWidget::updateTarget);
+        disconnect(m_robotsHandler->contolLoop().data(),
+                   &ControlLoop::notifyRobotTrajectoryChanged,
+                   viewerWidget,
+                   &ViewerWidget::updateTrajectory);
         disconnect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
                 viewerWidget, &ViewerWidget::updateSetup);
+        disconnect(m_robotsHandler->contolLoop().data(),
+                   &ControlLoop::notifyObstacleDetectedStatusChanged,
+                   viewerWidget,
+                   &ViewerWidget::highlightAgent);
     }
 }
 
@@ -289,7 +347,8 @@ void MainWindow::disconnectPrimaryView()
  */
 void MainWindow::addTrackingSettingsWidget(SetupType::Enum setupType)
 {
-    m_ui->trackingSettingsWidget->addTab(m_trackingSetups[setupType]->trackingWidget(), SetupType::toString(setupType));
+    m_ui->trackingSettingsWidget->addTab(m_trackingSetups[setupType]->trackingWidget(),
+                                         SetupType::toString(setupType));
 }
 
 void messageOutput(QtMsgType type,

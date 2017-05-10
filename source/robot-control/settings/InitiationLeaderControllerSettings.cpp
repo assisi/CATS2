@@ -1,4 +1,4 @@
-#include "InitiationControllerSettings.hpp"
+#include "InitiationLeaderControllerSettings.hpp"
 
 #include <settings/ReadSettingsHelper.hpp>
 
@@ -8,8 +8,8 @@
 /*!
  * Constructor.
  */
-InitiationControllerSettings::InitiationControllerSettings() :
-    ExperimentControllerSettings(ExperimentControllerType::INITIATION)
+InitiationLeaderControllerSettings::InitiationLeaderControllerSettings() :
+    ExperimentControllerSettings(ExperimentControllerType::INITIATION_LEADER)
 {
 
 }
@@ -17,15 +17,15 @@ InitiationControllerSettings::InitiationControllerSettings() :
 /*!
  * Destructor.
  */
-InitiationControllerSettings::~InitiationControllerSettings()
+InitiationLeaderControllerSettings::~InitiationLeaderControllerSettings()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
  * Initialization of the parameters for this specific controller.
  */
-bool InitiationControllerSettings::init(QString configurationFileName)
+bool InitiationLeaderControllerSettings::init(QString configurationFileName)
 {
     // get the path of the configuration file
     QString configurationFolder = QFileInfo(configurationFileName).path();

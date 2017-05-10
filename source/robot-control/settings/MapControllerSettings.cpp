@@ -19,7 +19,7 @@ MapControllerSettings::MapControllerSettings() :
  */
 MapControllerSettings::~MapControllerSettings()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!

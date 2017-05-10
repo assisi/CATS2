@@ -1,14 +1,17 @@
 #include "ControlLoop.hpp"
 #include "settings/RobotControlSettings.hpp"
 #include "FishBot.hpp"
-#include "dbusinterface.h"
+
+#include "interfaces/DBusInterface.hpp"
+
+#include <settings/CommandLineParameters.hpp>
 
 /*!
  * Constructor.
  */
 ControlLoop::ControlLoop() :
     QObject(nullptr),
-    m_robotsInterface(new Aseba::DBusInterface()),
+    m_sharedRobotInterface(nullptr),
     m_selectedRobot(),
     m_sendNavigationData(false),
     m_sendControlAreas(false)
@@ -17,7 +20,6 @@ ControlLoop::ControlLoop() :
     for (QString id : RobotControlSettings::get().ids()) {
         m_robots.append(FishBotPtr(new FishBot(id)));
         m_robots.last()->setLedColor(RobotControlSettings::get().robotSettings(id).ledColor());
-        m_robots.last()->setRobotInterface(m_robotsInterface);
 
         // ensure that only one robot can be in manual mode
         connect(m_robots.last().data(), &FishBot::notifyInManualMode,
@@ -32,8 +34,12 @@ ControlLoop::ControlLoop() :
         connect(m_robots.last().data(), &FishBot::notifyControlAreasPolygons,
                 [=](QString agentId, QList<AnnotatedPolygons> polygons)
                 {
-                    if (m_sendControlAreas && (m_selectedRobot->id() == agentId))
+                    if (m_sendControlAreas &&
+                            m_selectedRobot &&
+                            (m_selectedRobot->id() == agentId))
+                    {
                         emit notifyRobotControlAreasPolygons(agentId, polygons);
+                    }
                 });
 
         // send the robot trajectory for all robots if the corresponding flag is set
@@ -60,11 +66,25 @@ ControlLoop::ControlLoop() :
                 });
 
         // send the robot color
-        connect(m_robots.last().data(), &FishBot::notifyLedColor, this, &ControlLoop::notifyRobotLedColor);
+        connect(m_robots.last().data(), &FishBot::notifyLedColor,
+                this, &ControlLoop::notifyRobotLedColor);
+        // notify on the on-board obstacle avoidance on/off
+        connect(m_robots.last().data(), &FishBot::notifyObstacleDetectedStatusChanged,
+                this, &ControlLoop::notifyObstacleDetectedStatusChanged);
     }
 
     // conect the robots
-    initializeRobotsInterfaces();
+    if (CommandLineParameters::get().useSharedRobotInterface()) {
+        // if all robots share the same connection
+        // create the control interface
+        m_sharedRobotInterface = DBusInterfacePtr(new DBusInterface());
+        for (auto& robot : m_robots) {
+            robot->setSharedRobotInterface(m_sharedRobotInterface);
+        }
+        reinitializeSharedRobotInterface();
+    } else {
+        reinitializeUniqueRobotInterface();
+    }
 
     // start the control timer
     int stepMsec = static_cast<int>(1000. / RobotControlSettings::get().controlFrequencyHz());
@@ -77,15 +97,11 @@ ControlLoop::ControlLoop() :
  */
 ControlLoop::~ControlLoop()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
-
+    qDebug() << "Destroying the object";
     // stop the timer
     m_controlLoopTimer.stop();
-
     // stop the robots before shutting down
-    for (auto& robot : m_robots) {
-        robot->setControlMode(ControlModeType::IDLE);
-    }
+    stopAllRobots();
     // step the control
     step();
 }
@@ -101,18 +117,48 @@ void ControlLoop::step()
 }
 
 /*!
+ * Reconnect the robot's to the aseba interface.
+ */
+void ControlLoop::reconnectRobots()
+{
+    if (CommandLineParameters::get().useSharedRobotInterface())
+        reinitializeSharedRobotInterface();
+    else
+        reinitializeUniqueRobotInterface();
+}
+
+/*!
+ * Stops all the robots.
+ */
+void ControlLoop::stopAllRobots()
+{
+    for (auto& robot : m_robots) {
+        robot->setController(ExperimentControllerType::NONE);
+        robot->setControlMode(ControlModeType::IDLE);
+    }
+}
+
+/*!
  * Loads and initialized the robots' firmware scripts.
  */
-void ControlLoop::initializeRobotsInterfaces()
+void ControlLoop::reinitializeSharedRobotInterface()
 {
-    if (m_robotsInterface->checkConnection()) {
-        // TODO : to make this initialization logics more robust, to allow the
-        // (re)connection when medula is (re)launched after CATS2.
+    if (m_sharedRobotInterface.data() &&
+            m_sharedRobotInterface->checkConnection()) {
         for (int index = 0; index < m_robots.size(); ++index) {
-            m_robots[index]->setupConnection(index);
+            m_robots[index]->setupSharedConnection(index);
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "The connection with the dbus could not be established.";
+        qDebug() << "The connection with the dbus could not be established.";
+    }
+}
+
+//! Asks robots to setup unique connections with the hardware, to load and
+//! initialize the firmware scripts.
+void ControlLoop::reinitializeUniqueRobotInterface()
+{
+    for (auto& robot : m_robots) {
+        robot->setupUniqueConnection();
     }
 }
 
@@ -128,14 +174,14 @@ void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
     QList<StateWorld> fishStates;
 
     foreach (AgentDataWorld agentData, agentsData) {
-        if (agentData.type() == AgentType::FISH_CASU) {
+        if (agentData.type() == AgentType::CASU) {
             robotsData.append(agentData);
         } else if (agentData.type() == AgentType::FISH) {
             fishStates.append(agentData.state());
         }
     }
 
-//    qDebug() << Q_FUNC_INFO << robotsData.size() << fishStates.size();
+//    qDebug() << robotsData.size() << fishStates.size();
 
     // transfers the data to all robots
     for (auto& robot : m_robots) {
@@ -158,7 +204,7 @@ void ControlLoop::selectRobot(QString name)
     for (auto& robot : m_robots) {
         if (robot->name() == name) {
             if (m_selectedRobot != robot) {
-                qDebug() << Q_FUNC_INFO << name << "is selected";
+                qDebug() << name << "is selected";
                 m_selectedRobot = robot;
                 // inform about the change
                 emit notifySelectedRobotChanged(m_selectedRobot->id());
@@ -176,7 +222,7 @@ void ControlLoop::selectRobot(QString name)
  */
  void ControlLoop::goToPosition(PositionMeters position)
  {
-     if (m_selectedRobot.data()) {
+     if (m_selectedRobot) {
          m_selectedRobot->goToPosition(position);
      }
  }
@@ -201,7 +247,7 @@ void ControlLoop::selectRobot(QString name)
  void ControlLoop::sendControlAreas(bool sendAreas)
  {
      m_sendControlAreas = sendAreas;
-     if (m_sendControlAreas && m_selectedRobot.data()) {
+     if (m_sendControlAreas && m_selectedRobot) {
          m_selectedRobot->requestControlAreasPolygons();
      }
  }
@@ -211,7 +257,8 @@ void ControlLoop::selectRobot(QString name)
   */
  void ControlLoop::requestSelectedRobot()
  {
-     emit notifySelectedRobotChanged(m_selectedRobot->id());
+     if (m_selectedRobot)
+        emit notifySelectedRobotChanged(m_selectedRobot->id());
  }
 
  /*!

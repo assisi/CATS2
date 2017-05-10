@@ -19,7 +19,7 @@ Multiplicator::Multiplicator(TimestampedFrameQueuePtr inputQueue) :
 */
 Multiplicator::~Multiplicator()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -52,7 +52,7 @@ void Multiplicator::process()
             }
         }
     } else {
-        qDebug() << Q_FUNC_INFO << "Input queue is not set, finishing.";
+        qDebug() << "Input queue is not set, finishing.";
     }
 
     emit finished();

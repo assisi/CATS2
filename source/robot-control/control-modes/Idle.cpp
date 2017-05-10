@@ -1,10 +1,21 @@
 #include "Idle.hpp"
 
+#include <QtCore/QDebug>
+
 /*!
  * Constructor.
  */
 Idle::Idle(FishBot* robot) : ControlMode(robot, ControlModeType::IDLE)
 {
+
+}
+
+/*!
+ * Destructor.
+ */
+Idle::~Idle()
+{
+    qDebug() << "Destroying the object";
 }
 
 /*!

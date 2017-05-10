@@ -24,7 +24,7 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings, Ti
         // copy the parameters
         m_settings = fishBotLedsTrackingSettings->data();
     } else {
-        qDebug() << Q_FUNC_INFO << "Could not set the routune's settings";
+        qDebug() << "Could not set the routune's settings";
     }
 
     // set the mask file
@@ -34,7 +34,7 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings, Ti
     FishBotLedsTrackingSettingsData::FishBotDescription robotDescription;
     for (size_t robotIndex = 0; robotIndex < m_settings.numberOfAgents(); robotIndex++) {
         robotDescription = m_settings.robotDescription(robotIndex);
-        AgentDataImage agent(robotDescription.id, AgentType::FISH_CASU);
+        AgentDataImage agent(robotDescription.id, AgentType::CASU);
         m_agents.append(agent);
     }
 
@@ -48,7 +48,7 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings, Ti
  */
 FishBotLedsTracking::~FishBotLedsTracking()
 {
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -67,7 +67,7 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
         if ((m_maskImage.data != nullptr) && (m_blurredImage.type() == m_maskImage.type()))
             m_blurredImage = m_blurredImage & m_maskImage;
         else {
-//            qDebug() << Q_FUNC_INFO << "The mask's type is not compatible with the image";
+//            qDebug() << "The mask's type is not compatible with the image";
         }
 
         // detect robots
@@ -92,7 +92,7 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
         }
     }
     else
-        qDebug() << Q_FUNC_INFO << "Unsupported image format" << image.type();
+        qDebug() << "Unsupported image format" << image.type();
 }
 
 /*!
@@ -132,8 +132,8 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
     try { // TODO : to check if this try-catch can be removed or if it should be used everywhere where opencv methods are used.
         // retrieve contours from the binary image
         cv::findContours(m_binaryImage, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-    } catch(cv::Exception& e) {
-        qDebug() << Q_FUNC_INFO << "OpenCV exception: " << e.what();
+    } catch (const cv::Exception& e) {
+        qDebug() << "OpenCV exception: " << e.what();
     }
 
     // sort the contours to find two biggest (inspired by http://stackoverflow.com/questions/33401745/find-largest-contours-opencv)
@@ -150,21 +150,16 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
 
     // if the size is correct then get two biggest contours
     cv::Point2f agentPosition;
-    double agentOrientation;
     if (contours.size() > 1) {
         // center of the contour
         std::vector<cv::Point2f> contourCenters;
-        // contour's moments
-        cv::Moments moments;
         for (size_t i = 0; i < 2; ++i) {
-            moments = cv::moments(contours[i]);
-            contourCenters.push_back(cv::Point2f(static_cast<float>(moments.m10/moments.m00+0.5),
-                                                 static_cast<float>(moments.m01/moments.m00+0.5)));
+            contourCenters.push_back(contourCenter(contours[i]));
         }
         // compute the agent's position that is between two contours, and the orientation
         agentPosition = ((contourCenters[0] + contourCenters[1]) / 2);
         // this orientation is still precise up to +180 degrees
-        agentOrientation = qAtan2(contourCenters[1].y - contourCenters[0].y,
+        double agentOrientation = qAtan2(contourCenters[1].y - contourCenters[0].y,
                                   contourCenters[1].x - contourCenters[0].x);
         // define the direction
         cv::Point2f agentVector = contourCenters[1] - contourCenters[0]; // the agent body
@@ -195,9 +190,7 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
         robot.mutableState()->setPosition(agentPosition);
     } else if (contours.size() == 1){
         // if only one blob is detected, then we take its position as the robot's position
-        cv::Moments moments = cv::moments(contours[0]);
-        agentPosition = cv::Point2f(static_cast<float>(moments.m10/moments.m00+0.5),
-                                    static_cast<float>(moments.m01/moments.m00+0.5));
+        agentPosition = cv::Point2f(contourCenter(contours[0]));
         robot.mutableState()->setPosition(agentPosition);
     } else {
         // TODO : add a Kalman here to avoid loosing the robot when sometimes
@@ -210,7 +203,7 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
  */
 QList<AgentType> FishBotLedsTracking::capabilities() const
 {
-    return QList<AgentType>({AgentType::FISH_CASU});
+    return QList<AgentType>({AgentType::CASU});
 }
 
 /*!

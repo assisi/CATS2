@@ -6,8 +6,8 @@
 #include <QtGui/QColor>
 
 /*!
- * The actual data stored in the settings. It's separated in a class to be easily trasferable
- * to the corresponding tracking routine.
+ * The actual data stored in the settings. It's separated in a class to be
+ * easily trasferable to the corresponding tracking routine.
  */
 class ColorDetectorSettingsData
 {
@@ -15,7 +15,9 @@ public:
     //! Constructor.
     ColorDetectorSettingsData() :
         m_numberOfAgents(0),
-        m_color(0, 0, 0)
+        m_color(0, 0, 0),
+        m_colorThreshold(20),
+        m_maskFilePath()
     {}
 
 public:
@@ -55,7 +57,7 @@ class ColorDetectorSettings : public TrackingRoutineSettings
 {
 public:
     //! Constructor.
-    ColorDetectorSettings(SetupType::Enum setupType);
+    explicit ColorDetectorSettings(SetupType::Enum setupType);
 
 public:
     //! Initialization of the parameters for this specific method of tracking.

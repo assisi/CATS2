@@ -1,5 +1,5 @@
-#ifndef CAT2_MAP_CONTROLLER_SETTINGS_HPP
-#define CAT2_MAP_CONTROLLER_SETTINGS_HPP
+#ifndef CATS2_MAP_CONTROLLER_SETTINGS_HPP
+#define CATS2_MAP_CONTROLLER_SETTINGS_HPP
 
 #include "ExperimentControllerSettings.hpp"
 
@@ -50,4 +50,4 @@ private:
     MapControllerSettingsData m_data;
 };
 
-#endif // CAT2_MAP_CONTROLLER_SETTINGS_HPP
+#endif // CATS2_MAP_CONTROLLER_SETTINGS_HPP

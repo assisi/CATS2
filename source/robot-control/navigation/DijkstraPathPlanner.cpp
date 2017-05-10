@@ -31,9 +31,9 @@ DijkstraPathPlanner::DijkstraPathPlanner() :
 {
     m_valid = init();
     if (m_valid)
-        qDebug() << Q_FUNC_INFO << "Successfully initialized the dijkstra path planner";
+        qDebug() << "Successfully initialized the dijkstra path planner";
     else
-        qDebug() << Q_FUNC_INFO << "Could not initialize the path planner";
+        qDebug() << "Could not initialize the path planner";
 
 //    cv::namedWindow("DijkstraGrid", cv::WINDOW_NORMAL);
 }
@@ -44,7 +44,7 @@ DijkstraPathPlanner::DijkstraPathPlanner() :
 DijkstraPathPlanner::~DijkstraPathPlanner()
 {
 //    cv::destroyWindow("DijkstraGrid");
-    qDebug() << Q_FUNC_INFO << "Destroying the object";
+    qDebug() << "Destroying the object";
 }
 
 /*!
@@ -80,8 +80,7 @@ bool DijkstraPathPlanner::init()
         // find connected components
         m_componentByVertex.resize(boost::num_vertices(m_graph));
         int num = boost::connected_components(m_graph, &m_componentByVertex[0]);
-        qDebug() << Q_FUNC_INFO
-                 << QString("The graph contains %1 connected components")
+        qDebug() << QString("The graph contains %1 connected components")
                     .arg(num);
 
 //        cv::imshow( "DijkstraGrid", m_currentGrid);
@@ -127,8 +126,7 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint,
     // the path consisting from a goal position
     if (! containsNode(startGridNode)) {
         if (! m_gotErrorOnPreviousStep) {
-            qDebug() << Q_FUNC_INFO
-                     << QString("Start grid node position is outside of the "
+            qDebug() << QString("Start grid node position is outside of the "
                                 "working space: %1, path planning stopped")
                         .arg(gridNodeToPosition(startGridNode).toString())
                      << startGridNode;
@@ -138,8 +136,7 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint,
     }
     if (! containsNode(goalGridNode)) {
         if (! m_gotErrorOnPreviousStep) {
-            qDebug() << Q_FUNC_INFO
-                     << QString("Goal grid node position is outside of the "
+            qDebug() << QString("Goal grid node position is outside of the "
                                 "working space: %1, path planning stopped")
                         .arg(gridNodeToPosition(goalGridNode).toString())
                      << goalGridNode;
@@ -156,8 +153,7 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint,
     // first we check that both vertices belong to the same component and thus
     // can be connected
     if (m_componentByVertex[startVertex] != m_componentByVertex[goalVertex]) {
-        qDebug() << Q_FUNC_INFO
-                 << "Start and goal vertices belong to different graph "
+        qDebug() << "Start and goal vertices belong to different graph "
                     "components and can not be connected";
         return backupPath;
     }
@@ -183,8 +179,7 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint,
         currentVertex = predecessors[currentVertex];
 
         if (timeOutBreakTimer.isTimedOutSec(1.)) {
-            qDebug() << Q_FUNC_INFO
-                     << "Path planner was interrupted by a time-out; normally "
+            qDebug() << "Path planner was interrupted by a time-out; normally "
                         "this should never happen";
             return backupPath;
         }
@@ -206,7 +201,7 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint,
             shortestDistance += path.last().distance2DTo(position);
         path.enqueue(position);
     }
-//    qDebug() << Q_FUNC_INFO << QString("Shortest distance to the target is %1").arg(shortestDistance);
+//    qDebug() << QString("Shortest distance to the target is %1").arg(shortestDistance);
 
     // simplify the path
     simplifyPath(path);
@@ -218,7 +213,6 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint,
  */
 void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
 {
-    double previousDx, currentDx, previousDy, currentDy;
     QQueue<PositionMeters> reducedPath;
 
     // if the computed dijkstra path is not empty
@@ -228,6 +222,7 @@ void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
         reducedPath.enqueue(previousPosition);
         // if there were more than 2 nodes in the path
         if (path.size() > 1) {
+            double previousDx, previousDy;
             PositionMeters currentPosition = path.dequeue();
             // compute the fisrt difference of position along x and y
             previousDx = currentPosition.x() - previousPosition.x();
@@ -242,8 +237,8 @@ void DijkstraPathPlanner::simplifyPath(QQueue<PositionMeters>& path)
                 previousPosition = currentPosition;
                 currentPosition = path.dequeue();
                 // compute the curent difference of position along x and y
-                currentDx = currentPosition.x() - previousPosition.x();
-                currentDy = currentPosition.y() - previousPosition.y();
+                double currentDx = currentPosition.x() - previousPosition.x();
+                double currentDy = currentPosition.y() - previousPosition.y();
                 // update the accumulated distance
                 accumulatedDistance += qSqrt(currentDx * currentDx +
                                              currentDy * currentDy);

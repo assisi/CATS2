@@ -1,9 +1,9 @@
 [submodule "dependencies/readerwriterqueue"]
 	path = dependencies/readerwriterqueue
-	url = git@github.com:cameron314/readerwriterqueue.git
+	url = https://github.com/cameron314/readerwriterqueue.git
 [submodule "dependencies/aseba"]
 	path = dependencies/aseba
-	url = git@github.com:aseba-community/aseba.git
+	url = https://github.com/leo-cazenille/aseba.git
 [submodule "dependencies/fish-model"]
 	path = dependencies/fish-model
-	url = git@github.com:leo-cazenille/FishModel.git
+	url = https://github.com/leo-cazenille/FishModel.git

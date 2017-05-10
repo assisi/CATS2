@@ -13,8 +13,11 @@ class ColorDetector : public TrackingRoutine
     Q_OBJECT
 
 public:
-    //! Constructor. Gets the settings, the input queue to process and a queue to place debug images on request.
-    explicit ColorDetector(TrackingRoutineSettingsPtr settings, TimestampedFrameQueuePtr inputQueue, TimestampedFrameQueuePtr debugQueue);
+    //! Constructor. Gets the settings, the input queue to process and a queue
+    //! to place debug images on request.
+    explicit ColorDetector(TrackingRoutineSettingsPtr settings,
+                           TimestampedFrameQueuePtr inputQueue,
+                           TimestampedFrameQueuePtr debugQueue);
     //! Destructor.
     virtual ~ColorDetector();
 

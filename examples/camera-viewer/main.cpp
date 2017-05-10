@@ -16,45 +16,55 @@
 
 int main(int argc, char *argv[])
 {
-    QApplication::setOrganizationName("MOBOTS");
+    QApplication::setOrganizationName("EPFL-LSRO-Mobots");
     QApplication::setOrganizationDomain("mobots.epfl.ch");
-    QApplication::setApplicationName("CAT2-camera-viewer");
+    QApplication::setApplicationName("CATS2-camera-viewer");
 
-    QGst::init(&argc, &argv);
+    QGst::init(nullptr, nullptr);
     QApplication app(argc, argv);
 
-    // specify the setup type
-    SetupType::Enum setupType = SetupType::MAIN_CAMERA;
+    // get the setup to use from the command line
+    QString setupTypeString;
+    bool foundSetupType =
+            (CommandLineParser::parseArgument(argc, argv, "-st", setupTypeString) ||
+             CommandLineParser::parseArgument(argc, argv, "--setup-type", setupTypeString));
 
-    // parse input arguments to initialize the settings
-    if (CommandLineParameters::get().init(argc, argv, true, false, false)) {
-        CoordinatesConversionPtr coordinatesConversion;
-        // check that the calibration settings are valid
-        if (CalibrationSettings::get().init(CommandLineParameters::get().configurationFilePath(), setupType)) {
-            // create the camera calibration
-            coordinatesConversion = CoordinatesConversionPtr(new CoordinatesConversion(CalibrationSettings::get().calibrationFilePath(setupType),
-                                                                                       CalibrationSettings::get().frameSize(setupType)));
-        }
-        GrabberHandlerPtr grabberHandler;
-        if (CommandLineParameters::get().cameraDescriptor(setupType).isValid()){
-            bool needTargetFrameSize = false;
-            if (GrabberSettings::get().init(CommandLineParameters::get().configurationFilePath(),
-                                            setupType, needTargetFrameSize)) {
-                grabberHandler = GrabberHandlerPtr(new GrabberHandler(setupType));
-                if (ViewerSettings::get().init(CommandLineParameters::get().configurationFilePath(), setupType)){
-                    ViewerWindow mainWindow(setupType, grabberHandler->inputQueue(), coordinatesConversion);
-                    mainWindow.show();
-                    return app.exec();
+    if (foundSetupType) {
+        SetupType::Enum setupType = SetupType::MAIN_CAMERA;
+        if (setupTypeString == "mc")
+            setupType = SetupType::MAIN_CAMERA;
+        else if (setupTypeString == "bc")
+            setupType = SetupType::CAMERA_BELOW;
+
+        // parse input arguments to initialize the settings
+        if (CommandLineParameters::get().init(argc, argv, true, false, false)) {
+            CoordinatesConversionPtr coordinatesConversion;
+            // check that the calibration settings are valid
+            if (CalibrationSettings::get().init(CommandLineParameters::get().configurationFilePath(), setupType)) {
+                // create the camera calibration
+                coordinatesConversion = CoordinatesConversionPtr(new CoordinatesConversion(CalibrationSettings::get().calibrationFilePath(setupType),
+                                                                                           CalibrationSettings::get().frameSize(setupType)));
+            }
+            GrabberHandlerPtr grabberHandler;
+            if (CommandLineParameters::get().cameraDescriptor(setupType).isValid()){
+                bool needTargetFrameSize = false;
+                if (GrabberSettings::get().init(CommandLineParameters::get().configurationFilePath(),
+                                                setupType, needTargetFrameSize)) {
+                    grabberHandler = GrabberHandlerPtr(new GrabberHandler(setupType));
+                    if (ViewerSettings::get().init(CommandLineParameters::get().configurationFilePath(), setupType)){
+                        ViewerWindow mainWindow(setupType, grabberHandler->inputQueue(), coordinatesConversion);
+                        mainWindow.show();
+                        return app.exec();
+                    }
+                } else {
+                    qDebug() << "Grabber settings are not defined";
                 }
             } else {
-                qDebug() << Q_FUNC_INFO << "Grabber settings are not defined";
+                qDebug() << "Camera descriptor is ill-defined";
             }
         } else {
-            qDebug() << Q_FUNC_INFO << "Camera descriptor is ill-defined";
+            qDebug() << "Couldn't find necessary input arguments, finished";
         }
-
-    } else {
-        qDebug() << Q_FUNC_INFO << "Couldn't find necessary input arguments, finished";
     }
 }
 

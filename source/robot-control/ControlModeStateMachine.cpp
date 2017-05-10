@@ -7,6 +7,7 @@
 #include "control-modes/Idle.hpp"
 #include "control-modes/Manual.hpp"
 #include "control-modes/ModelBased.hpp"
+#include "control-modes/Trajectory.hpp"
 #include "FishBot.hpp"
 
 #include <QtCore/QDebug>
@@ -25,6 +26,7 @@ ControlModeStateMachine::ControlModeStateMachine(FishBot* robot, QObject *parent
     m_controlModes.insert(ControlModeType::GO_STRAIGHT, ControlModePtr(new GoStraight(m_robot)));
     m_controlModes.insert(ControlModeType::GO_TO_POSITION, ControlModePtr(new GoToPosition(m_robot)));
     m_controlModes.insert(ControlModeType::MODEL_BASED, ControlModePtr(new ModelBased(m_robot)));
+    m_controlModes.insert(ControlModeType::TRAJECTORY, ControlModePtr(new Trajectory(m_robot)));
 
     // make necessary connections
     foreach (ControlModePtr controlMode, m_controlModes.values()) {
@@ -39,20 +41,19 @@ ControlModeStateMachine::ControlModeStateMachine(FishBot* robot, QObject *parent
 bool ControlModeStateMachine::setControlMode(ControlModeType::Enum type)
 {
     if (!m_controlModes.contains(type)) {
-        qDebug() << Q_FUNC_INFO << "Requested control mode is not available";
+        qDebug() << "Requested control mode is not available";
         return false;
     }
 
     if (!isTransitionAuthorized(type)) {
-        qDebug() << Q_FUNC_INFO << QString("Impossible to change the control mode from %1 to %2")
+        qDebug() << QString("Impossible to change the control mode from %1 to %2")
                     .arg(ControlModeType::toString(m_currentControlMode))
                     .arg(ControlModeType::toString(type));
         return false;
     }
 
     if (type != m_currentControlMode) {
-        qDebug() << Q_FUNC_INFO
-                 << QString("Changing the control mode from %1 to %2 for %3")
+        qDebug() << QString("Changing the control mode from %1 to %2 for %3")
                     .arg(ControlModeType::toString(m_currentControlMode))
                     .arg(ControlModeType::toString(type))
                     .arg(m_robot->name());
@@ -107,6 +108,17 @@ void ControlModeStateMachine::setTargetPosition(PositionMeters position)
 {
     if (m_controlModes.contains(ControlModeType::GO_TO_POSITION))
         dynamic_cast<GoToPosition*>(m_controlModes[ControlModeType::GO_TO_POSITION].data())->setTargetPosition(position);
+}
+
+/*!
+ * Sets the parameters of the fish model.
+ */
+void ControlModeStateMachine::setModelParameters(ModelParameters parameters)
+{
+    if (m_controlModes.contains(ControlModeType::MODEL_BASED)) {
+        ControlMode* mode = m_controlModes[ControlModeType::MODEL_BASED].data();
+        dynamic_cast<ModelBased*>(mode)->setParameters(parameters);
+    }
 }
 
 /*!

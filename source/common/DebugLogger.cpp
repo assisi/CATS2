@@ -25,7 +25,7 @@ DebugLogger::~DebugLogger()
 {
     m_logStream << "Logging finished" << endl;
     m_logFile.close();
-    qDebug() << Q_FUNC_INFO << "Destroying the object" << endl;
+    qDebug() << "Destroying the object" << endl;
 }
 
 /*!
@@ -60,11 +60,16 @@ void DebugLogger::messageOutput(QtMsgType type,
                                 const QMessageLogContext &context,
                                 const QString &msg)
 {
-    QMutexLocker locker(&m_mutex);
-    QByteArray localMsg = msg.toLocal8Bit();
-    double seconds = RunTimer::get().currentRuntimeSec();
-    m_logStream << QDateTime::fromTime_t(seconds).toUTC().toString("[hh:mm:ss]")
-                << localMsg.constData() << endl;
-    // duplicate in the console
-    std::cout << localMsg.constData() << std::endl;
+    if (m_logFile.isOpen()) {
+        QMutexLocker locker(&m_mutex);
+        QByteArray localMsg = msg.toLocal8Bit();
+        double seconds = RunTimer::get().currentRuntimeSec();
+        m_logStream << QDateTime::fromTime_t(seconds).toUTC().toString("[hh:mm:ss]")
+                    << localMsg.constData() << endl;
+        // duplicate in the console
+        std::string functionName;
+        if (context.function)
+            functionName = std::string(context.function);
+        std::cout << localMsg.constData() << " ("<< functionName << ")" << std::endl;
+    }
 }

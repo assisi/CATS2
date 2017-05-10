@@ -6,10 +6,12 @@
 #include "routines/BlobDetector.hpp"
 #include "routines/ColorDetector.hpp"
 #include "routines/FishBotLedsTracking.hpp"
+#include "routines/TwoColorsTagTracking.hpp"
 #include "settings/TrackingRoutineSettings.hpp"
 #include "settings/BlobDetectorSettings.hpp"
 #include "settings/FishBotLedsTrackingSettings.hpp"
 #include "settings/ColorDetectorSettings.hpp"
+#include "settings/TwoColorsTagTrackingSettings.hpp"
 #include "settings/TrackingSettings.hpp"
 #include <SetupType.hpp>
 
@@ -34,8 +36,10 @@ public:
                 return TrackingRoutinePtr(new ColorDetector(settings, inputQueue, debugQueue), &QObject::deleteLater);
             case TrackingRoutineType::FISHBOT_LEDS_TRACKING:
                 return TrackingRoutinePtr(new FishBotLedsTracking(settings, inputQueue, debugQueue), &QObject::deleteLater);
+            case TrackingRoutineType::TWO_COLORS_TAG_TRACKING:
+                return TrackingRoutinePtr(new TwoColorsTagTracking(settings, inputQueue, debugQueue), &QObject::deleteLater);
             default:
-                qDebug() << Q_FUNC_INFO << "Tracking routine could not be created.";
+                qDebug() << "Tracking routine could not be created.";
                 break;
             }
         }
@@ -54,8 +58,10 @@ public:
             return TrackingRoutineSettingsPtr(new ColorDetectorSettings(setupType));
         case TrackingRoutineType::FISHBOT_LEDS_TRACKING:
             return TrackingRoutineSettingsPtr(new FishBotLedsTrackingSettings(setupType));
+        case TrackingRoutineType::TWO_COLORS_TAG_TRACKING:
+            return TrackingRoutineSettingsPtr(new TwoColorsTagTrackingSettings(setupType));
         default:
-            qDebug() << Q_FUNC_INFO << "Tracking routine settings could not be created.";
+            qDebug() << "Tracking routine settings could not be created.";
             break;
         }
         return TrackingRoutineSettingsPtr();
