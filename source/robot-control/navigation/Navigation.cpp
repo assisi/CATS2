@@ -239,21 +239,6 @@ double Navigation::computeAngleToTurn(PositionMeters position)
 }
 
 /*!
- * Computes the distance between the target and the current robot's
- * position.
- */
-double Navigation::computeDistanceToTarget(PositionMeters targetPosition)
-{
-    double distance;
-
-    double dx = targetPosition.x() - m_robot->state().position().x();
-    double dy = targetPosition.y() - m_robot->state().position().y();
-    distance = sqrt(dx*dx + dy*dy);
-
-    return distance;
-}
-
-/*!
  * Executes fish motion pattern while going to target.
  */
 void Navigation::fishMotionToPosition(PositionMeters targetPosition)
@@ -303,8 +288,7 @@ void Navigation::pidControlToPosition(PositionMeters targetPosition)
                 m_pidControllerSettings.kd() * derivativeTermAngle;
 
         //PID on the distance error
-
-        double distanceToTravel = computeDistanceToTarget(targetPosition);
+        double distanceToTravel = m_robot->state().position().distance2DTo(targetPosition);
         // proportional term
         double proportionalTermDistance = distanceToTravel;
         // derivative term

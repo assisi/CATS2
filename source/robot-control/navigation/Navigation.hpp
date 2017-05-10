@@ -109,9 +109,6 @@ private:
     //! Computes the turn angle based on the robot's orientation,
     //! position and the target position.
     double computeAngleToTurn(PositionMeters position);
-    //! Computes the distance between the target and the current robot's
-    //! position.
-    double computeDistanceToTarget(PositionMeters targetPosition);
     //! Excecute fish motion pattern while going to target.
     void fishMotionToPosition(PositionMeters position);
     //! Excecutes PID while going to target.
