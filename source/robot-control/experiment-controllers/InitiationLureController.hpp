@@ -45,8 +45,8 @@ private:
     void updateState(State state);
     //! Checks if the conditions are met to start the inititaion procedure.
     bool needToChangeRoom();
-    //! Runs the initiation state machine.
-    ControlData changeRoom();
+    //! Brings the robot to the preferred room.
+    ControlData goToPreferredRoom();
     //! Gets the control data that corresponds to the current state.
     ControlData stateControlData();
     //! Checks if the robot is already changing the room.

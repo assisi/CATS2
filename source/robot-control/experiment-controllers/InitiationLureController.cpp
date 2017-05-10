@@ -47,7 +47,7 @@ ExperimentController::ControlData InitiationLureController::step()
         updateAreasOccupation();
 
         if (needToChangeRoom()) {
-            controlData = changeRoom();
+            controlData = goToPreferredRoom();
         } else {
             // swimming with fish
             updateState(SWIMMING_IN_ROOM);
@@ -98,8 +98,7 @@ bool InitiationLureController::needToChangeRoom()
         return true; // continue
 
     // if the robot's position is a known room
-    if (m_controlAreas.contains(m_robotAreaId) &&
-            (m_controlAreas[m_robotAreaId]->type() == ControlAreaType::ROOM))
+    if (m_controlAreas.contains(m_robotAreaId))
     {
         // if there is a preference for the room
         if (m_controlAreas.contains(m_preferedAreaId)) {
@@ -122,25 +121,17 @@ bool InitiationLureController::needToChangeRoom()
 }
 
 /*!
- * Runs the initiation state machine.
+ * Brings the robot to the preferred room.
  */
-ExperimentController::ControlData InitiationLureController::changeRoom()
+ExperimentController::ControlData InitiationLureController::goToPreferredRoom()
 {
     switch (m_state) {
     case SWIMMING_IN_ROOM:
         // find the room to go (target room) as another area of the type ROOM
-        m_targetAreaId = "";
-        m_departureAreaId = "";
-        for (const auto& area : m_controlAreas.values()) {
-            if ((area->id() != m_robotAreaId)
-                    && (area->type() == ControlAreaType::ROOM)) {
-                m_targetAreaId = area->id();
-            }
-        }
-        // if managed to find where to go
+        m_targetAreaId = m_preferedAreaId;
+        m_departureAreaId = m_robotAreaId;
+        // if knows where to go
         if (m_controlAreas.contains(m_targetAreaId)) {
-            // save the original room
-            m_departureAreaId = m_robotAreaId;
             // change the state to CHANGING_ROOM
             qDebug() << QString("%1 changes the room to %2 (%3)")
                         .arg(m_robot->name())
@@ -169,7 +160,6 @@ ExperimentController::ControlData InitiationLureController::changeRoom()
     default:
         break;
     }
-
     return stateControlData();
 }
 
