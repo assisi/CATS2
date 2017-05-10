@@ -1,7 +1,8 @@
 <?xml version="1.0"?>
 <opencv_storage>
     <experiment>
-        <name>TwoRooms_Initiation</name>
+        <type>TwoRooms_Initiation</type>
+        <name>Blanc_4AB_1Leurre</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
             <numberOfAnimals>4</numberOfAnimals>
@@ -9,7 +10,7 @@
         <setupMapPath>setup/paris-two-rooms2.xml</setupMapPath>
     </experiment>
     <robots>
-        <numberOfRobots>3</numberOfRobots>
+        <numberOfRobots>1</numberOfRobots>
         <controlFrequencyHz>5</controlFrequencyHz>
         <fishModel>
             <agent>
@@ -86,6 +87,7 @@
                 <g>150</g>
                 <b>200</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm5</connectionTarget>
         </fishBot_1>
         <fishBot_2>
             <id>D</id>
@@ -94,6 +96,7 @@
                 <g>109</g>
                 <b>122</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm3</connectionTarget>
         </fishBot_2>
         <fishBot_3>
             <id>E</id>
@@ -102,6 +105,7 @@
                 <g>225</g>
                 <b>130</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm4</connectionTarget>
         </fishBot_3>
     </robots>
     <setups>

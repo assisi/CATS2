@@ -53,6 +53,6 @@
     <motionPattern>fishMotion</motionPattern>
   </area_3>
 
-  <preferedAreaId>bottom</preferedAreaId>
+  <preferedAreaId>top</preferedAreaId>
 
 </opencv_storage>
