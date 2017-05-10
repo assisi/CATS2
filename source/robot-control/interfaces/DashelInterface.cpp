@@ -46,11 +46,11 @@ using namespace Aseba;
  * Constructor.
  */
 DashelInterface::DashelInterface() :
-    m_stream(nullptr),
-    m_isRunning(false),
-    m_isConnected(false),
     NodesManager(),
-    m_dashelParams("")
+    m_stream(nullptr),
+    m_dashelParams(""),
+    m_isRunning(false),
+    m_isConnected(false)
 {
     qRegisterMetaType<QSharedPointer<Aseba::UserMessage>>("QSharedPointer<Aseba::UserMessage>");
 }

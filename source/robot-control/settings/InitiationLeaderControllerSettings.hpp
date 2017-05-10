@@ -22,6 +22,8 @@ public:
         m_controlAreasFileName(),
         m_depatureTrigger(ON_TIME_OUT),
         m_departureTimeOutSec(5.),
+        m_fishNumberAroundOnDeparture(1),
+        m_groupRadius(0.1),
         m_fishFollowCheckTimeOutSec(5.),
         m_maximalFishNumberAllowedToStay(0)
     {}

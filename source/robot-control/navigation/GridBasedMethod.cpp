@@ -22,6 +22,14 @@ GridBasedMethod::GridBasedMethod(double gridSizeMeters) :
 }
 
 /*!
+ * Destructor.
+ */
+GridBasedMethod::~GridBasedMethod()
+{
+    qDebug() << "Destroying the object";
+}
+
+/*!
  * Computes the grid node point from the world position.
  */
 QPoint GridBasedMethod::positionToGridNode(PositionMeters position) const

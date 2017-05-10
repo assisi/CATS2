@@ -17,8 +17,8 @@ ExperimentController::ExperimentController(FishBot* robot,
     m_preferedAreaId(""),
     m_fishAreaId(""),
     m_robotAreaId(""),
-    m_type(type),
-    m_robotAreaChanged(false)
+    m_robotAreaChanged(false),
+    m_type(type)
 {
 
 }

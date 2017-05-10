@@ -48,8 +48,9 @@ private:
 
     //! Potential field settings.
     PotentialFieldSettings m_settings;
-    // potential field parameters
-    float m_nu,  m_rho0;
+    //! Potential field parameters.
+    float m_nu;
+    float m_rho0;
 };
 
 #endif // CATS2_POTENTIAL_FIELD_HPP
