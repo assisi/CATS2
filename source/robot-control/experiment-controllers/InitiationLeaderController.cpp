@@ -123,16 +123,16 @@ bool InitiationLeaderController::needToChangeRoom()
             // so the robot is in the room where there is no or little fish
             // now if there is a preference for the room
             if (m_controlAreas.contains(m_preferedAreaId)) {
-//                // then let's go to catch the fish
-//                qDebug() << QString("%1 go to catch missing %2 fish, only %3 "
-//                                    "fish out of %4 are present")
-//                            .arg(m_robot->name())
-//                            .arg(fishNumberInOtherRooms(m_robotAreaId))
-//                            .arg(m_fishNumberByArea[m_robotAreaId])
-//                            .arg(RobotControlSettings::get().numberOfAnimals());
-//                return true;
-                // do nothing, we hope that the model will bring the robot to the fish
-                return false;
+                // then let's go to catch up with the fish
+                qDebug() << QString("%1 go to catch missing %2 fish, only %3 "
+                                    "fish out of %4 are present")
+                            .arg(m_robot->name())
+                            .arg(fishNumberInOtherRooms(m_robotAreaId))
+                            .arg(m_fishNumberByArea[m_robotAreaId])
+                            .arg(RobotControlSettings::get().numberOfAnimals());
+                return true;
+//                // do nothing, we hope that the model will bring the robot to the fish
+//                return false;
             } else {
                 // when there is no preference for a room then do nothing,
                 // wait until the fish arrive
@@ -173,8 +173,14 @@ ExperimentController::ControlData InitiationLeaderController::changeRoom()
             updateState(CHANGING_ROOM);
             // we are not in the target room
             m_inTargetRoom = false;
-            // start the check-that-fish-follow timer
-            m_fishFollowCheckTimer.reset();
+            // if there is a preference for the room and we go to a non-prefered room
+            // to pick up the fish there then there is no need to check if the fish follow
+            if (m_controlAreas.contains(m_preferedAreaId) && (m_targetAreaId != m_preferedAreaId)) {
+                m_fishFollowCheckTimer.clear();
+            } else {
+                // otherwise start the check-that-fish-follow timer
+                m_fishFollowCheckTimer.reset();
+            }
             // start the timer to switch from fish motion to PID
             m_fishToPIDTimer.reset();
         } else {
