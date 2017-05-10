@@ -60,6 +60,8 @@ signals:
     void notifySelectedRobotChanged(QString agentId);
     //! Sends the leds' color of the robot.
     void notifyRobotLedColor(QString agentId, QColor ledColor);
+    //! Notifies that the obstacle avoidance status has changed.
+    void notifyObstacleDetectedStatusChanged(QString agentId, bool obstacleDetected);
 
 private:
     //! Loads and initializes the robots' firmware scripts for the shared

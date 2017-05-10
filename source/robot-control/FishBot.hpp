@@ -154,8 +154,12 @@ signals: // control states
     void notifyUsePathPlanningChanged(bool value);
     //! Informs that the obstacle avoidance is on/off in the navigation.
     void notifyUseObstacleAvoidanceChanged(bool value);
-    //! Sends that the connection status has changed.
+
+signals: // robot on-board data
+    //! Notifies that the connection status has changed.
     void notifyConnectionStatusChanged(QString name, ConnectionStatus status);
+    //! Notifies that the obstacle avoidance status has changed.
+    void notifyObstacleDetectedStatusChanged(QString agentId, bool obstacleDetected);
 
 signals: // navigation
     //! Sends the control map areas' polygons.
@@ -198,13 +202,13 @@ private:
     void countDown(double timeOut);
 
 private: // safety logics
-    //! Checks if there were safety issues (power down, obstacles, etc.).
-    bool safetyIssuesDetected();
     //! Runs the emergency logics for the safety issues.
     void stepSafetyLogics();
 
     //! Implements the reaction of the robot on the power-down event.
     void processPowerDownEvent();
+    //! Implements the reaction of the robot on obstacle-detected event.
+    void processObstacleEvent();
 
 private:
     //! The robot's id.
@@ -252,6 +256,13 @@ private: // to manage the power down events
     //! If the power-down message is received for longer than this period
     //! then we consider this as emergency.
     static constexpr double ToleratedPowerDownDurationSec = 3.;
+
+private: // to manage the obstacle events
+    //! Counts the time from the last obstacle-detected message in a sequence.
+    Timer m_obstacleDetectedUpdateTimer;
+    //! If the obstacle-detected message is not received for at least this value
+    //! then we consider that it is not valid anymore.
+    static constexpr double ObstacleDetectedUpdateTimeoutSec = 0.5;
 };
 
 #endif // CATS2_FISH_BOT_HPP

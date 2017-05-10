@@ -45,12 +45,12 @@ public:
     //! Cleanly disconnect.
     void disconnectAseba();
 
-    //! From Dashel::Hub
-    virtual void stop();
+    //! Stops the hub
+    void stop();
 
 public:
     //! Redefined from NodesManager.
-    virtual void sendMessage(const Aseba::Message& message);
+    virtual void sendMessage(const Aseba::Message& message) override;
 
 public:
     //! Returns the connection status flag.

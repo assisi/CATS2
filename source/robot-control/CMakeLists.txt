@@ -17,6 +17,8 @@ makeLink(dependencies/fish-model/model.cpp model/model.cpp)
 makeLink(dependencies/fish-model/model.hpp model/model.hpp)
 makeLink(dependencies/fish-model/random.cpp model/random.cpp)
 makeLink(dependencies/fish-model/random.h model/random.h)
+makeLink(dependencies/fish-model/zones.hpp model/zones.hpp)
+makeLink(dependencies/fish-model/zones.cpp model/zones.cpp)
 
 set(srcs
     settings/RobotControlSettings.cpp
@@ -50,6 +52,7 @@ set(srcs
     model/factory.cpp
     model/bm.cpp
     model/random.cpp
+    model/zones.cpp
     navigation/Navigation.cpp
     navigation/DijkstraPathPlanner.cpp
     navigation/PathPlanner.cpp

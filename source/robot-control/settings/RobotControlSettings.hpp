@@ -122,6 +122,21 @@ public:
     //! Returns derivative coefficient.
     double kd() const { return m_kd; }
 
+    //! Sets proportional coefficient.
+    void setKpDist(double kpDist) { m_kpDist = kpDist; }
+    //! Returns proportional coefficient.
+    double kpDist() const { return m_kpDist; }
+
+    //! Sets integral coefficient.
+    void setKiDist(double kiDist) { m_kiDist = kiDist; }
+    //! Returns integral coefficient.
+    double kiDist() const { return m_kiDist; }
+
+    //! Sets derivative coefficient.
+    void setKdDist(double kdDist) { m_kdDist = kdDist; }
+    //! Returns derivative coefficient.
+    double kdDist() const { return m_kdDist; }
+
 private:
     //! Proportional coefficient.
     double m_kp;
@@ -129,6 +144,12 @@ private:
     double m_ki;
     //! Derivative coefficient.
     double m_kd;
+    //! Proportional coefficient.
+    double m_kpDist;
+    //! Integral coefficient.
+    double m_kiDist;
+    //! Derivative coefficient.
+    double m_kdDist;
 };
 
 /*!

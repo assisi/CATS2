@@ -51,7 +51,7 @@
         <controlModes>
             <!-- TODO : to implement -->
             <trajectory>
-                <points>trajectories/fish-trajectory.xml</points>
+                <points>trajectories/fish-two-rooms.xml</points>
                 <loopTrajectory>1</loopTrajectory>
                 <providePointsOnTimer>1</providePointsOnTimer>
                 <updateRateHz>15</updateRateHz>
@@ -62,12 +62,15 @@
             <fishMotionPatternFrequencyDivider>10</fishMotionPatternFrequencyDivider>
             <fishMotionPattern>
                 <distanceCm>25</distanceCm>
-                <speedCmSec>19</speedCmSec> <!--Speed fish behaviour -->
+                <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
-                <kp>1.15</kp>
+                <kp>3.5</kp>
                 <ki>0.05</ki>
                 <kd>0.00</kd>
+                <kpDist>150.0</kpDist>
+                <kiDist>1.00</kiDist>
+                <kdDist>2.00</kdDist>
             </pid>
             <defaultLinearSpeedCmSec>25</defaultLinearSpeedCmSec>
             <needOrientationToNavigate>0</needOrientationToNavigate>
@@ -92,22 +95,22 @@
             </initiation>
         </controllers>
         <fishBot_1>
-            <id>H</id>
-            <ledColor>
-                <r>90</r>
-                <g>150</g>
-                <b>200</b>
-            </ledColor>
-            <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
+             <id>C</id>
+                <ledColor>
+                    <r>190</r>
+                    <g>255</g>
+                    <b>190</b>
+                </ledColor>
+                <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
         </fishBot_1>
         <fishBot_2>
-            <id>C</id>
-            <ledColor>
-                <r>190</r>
-                <g>255</g>
-                <b>190</b>
-            </ledColor>
-            <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
+            <id>H</id>
+                <ledColor>
+                    <r>90</r>
+                    <g>150</g>
+                    <b>200</b>
+                </ledColor>
+                <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
         </fishBot_2>
         <fishBot_3>
             <id>B</id>
@@ -160,7 +163,7 @@
                         <threshold>70</threshold>
                     </fishBot_B>
                     <fishBot_C>
-                        <threshold>30</threshold>
+                        <threshold>70</threshold>
                     </fishBot_C>
                 </fishBotLedsTracking>
             </tracking>

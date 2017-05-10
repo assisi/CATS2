@@ -336,6 +336,16 @@ void ViewerWidget::updateAgents(QList<AgentDataWorld> agentDataList)
 }
 
 /*!
+ * Hightlights the agent on the scene.
+ */
+void ViewerWidget::highlightAgent(QString agentId, bool highlight)
+{
+    if (m_agents.contains(agentId)) {
+        m_agents[agentId]->setHighlighted(highlight);
+    }
+}
+
+/*!
  * Triggered when a button click is received from the scene.
  */
 void ViewerWidget::onButtonClicked(Qt::MouseButton button, QPointF scenePosition)

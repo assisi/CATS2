@@ -93,6 +93,14 @@ void FishBot::setSharedRobotInterface(DBusInterfacePtr sharedRobotInterface)
                                 if ((data.size() > 0) && (data[0] == m_firmwareId))
                                     processPowerDownEvent();
                             });
+
+        m_sharedRobotInterface->
+                connectEvent("Obstacle",
+                             [this](const Values& data) {
+                                // get the firmware's id
+                                if ((data.size() > 0) && (data[0] == m_firmwareId))
+                                    processObstacleEvent();
+                            });
     }
 }
 
@@ -177,6 +185,14 @@ void FishBot::setupUniqueConnection()
                 // directly
                 processPowerDownEvent();
             });
+
+            // add a callback to process the incoming messages from the robot
+            m_uniqueRobotInterface->connectEvent("Obstacle",
+                                           [this](const Values& data) {
+                // no need to check the id for the unique connection, process
+                // directly
+                processObstacleEvent();
+            });
         } else {
             qDebug() << QString("Script %1 could not be found.").arg(scriptPath);
             // FIXME : should we disconnect here
@@ -208,10 +224,7 @@ void FishBot::stepControl()
     // due to the low-power or the obstacle-avoidance routine - THIS CAN BE DONE
     // IN THE CALLBACK AND MANAGED BY THE PRIORITY LOGICS OR BY A FLAG ON THE
     // CONTROL MODE "ACCEPTS CONTROL MODE CHANGE"
-
-    if (safetyIssuesDetected()) {
-        stepSafetyLogics();
-    }
+    stepSafetyLogics();
 
     // check the experiment controller to see if the control mode is to be changed
     if (m_experimentManager.isActive()) {
@@ -489,11 +502,19 @@ void FishBot::processPowerDownEvent()
 }
 
 /*!
- * Checks if there were safety issues (power down, obstacles, etc.).
+ * Implements the reaction of the robot on obstacle-detected event.
  */
-bool FishBot::safetyIssuesDetected()
+void FishBot::processObstacleEvent()
 {
-    return m_powerDownStartTimer.isSet();
+    // if the obstacle-detected arrives first time then the set the
+    // corresponding timer
+    if (!m_obstacleDetectedUpdateTimer.isSet()) {
+        qDebug() << QString("Obstacle-event detected on %1").arg(m_name);
+    }
+    // notify about the obstacle detection
+    emit notifyObstacleDetectedStatusChanged(id(), true);
+    // in any case reset the obstacle-detected timer
+    m_obstacleDetectedUpdateTimer.reset();
 }
 
 /*!
@@ -501,22 +522,37 @@ bool FishBot::safetyIssuesDetected()
  */
 void FishBot::stepSafetyLogics()
 {
-    // if the power down message was not received recently, then stop tracking it
-    if (m_powerDownUpdateTimer.isTimedOutSec(PowerDownUpdateTimeoutSec)) {
-        qDebug() << QString("Power is restored on %1").arg(m_name);
-        // clear timers
-        m_powerDownStartTimer.clear();
-        m_powerDownUpdateTimer.clear();
-        emit notifyConnectionStatusChanged(name(), ConnectionStatus::CONNECTED);
-    } else {
-        // if we have a power down for too long then we disconnect the robot
-        if (m_powerDownStartTimer.isTimedOutSec(ToleratedPowerDownDurationSec)) {
-            qDebug() << QString("Disconnecting %1 due to power-down").arg(m_name);
-            // if the connection is open then close it
-            closeUniqueConnection();
+    // if the power down issue detected
+    if (m_powerDownStartTimer.isSet()) {
+        // if the power down message was not received recently, then stop tracking it
+        if (m_powerDownUpdateTimer.isTimedOutSec(PowerDownUpdateTimeoutSec)) {
+            qDebug() << QString("Power is restored on %1").arg(m_name);
             // clear timers
             m_powerDownStartTimer.clear();
             m_powerDownUpdateTimer.clear();
+            emit notifyConnectionStatusChanged(name(), ConnectionStatus::CONNECTED);
+        } else {
+            // if we have a power down for too long then we disconnect the robot
+            if (m_powerDownStartTimer.isTimedOutSec(ToleratedPowerDownDurationSec)) {
+                qDebug() << QString("Disconnecting %1 due to power-down").arg(m_name);
+                // if the connection is open then close it
+                closeUniqueConnection();
+                // clear timers
+                m_powerDownStartTimer.clear();
+                m_powerDownUpdateTimer.clear();
+            }
+        }
+    }
+
+    // if the obstacle detected
+    if (m_obstacleDetectedUpdateTimer.isSet()) {
+        // if the obstacle-detected message was not received recently, then stop
+        // tracking it
+        if (m_obstacleDetectedUpdateTimer.isTimedOutSec(ObstacleDetectedUpdateTimeoutSec)) {
+            qDebug() << QString("Obstacle is not detected anymore by %1").arg(m_name);
+            // clear timers
+            m_obstacleDetectedUpdateTimer.clear();
+            emit notifyObstacleDetectedStatusChanged(id(), false);
         }
     }
 }
