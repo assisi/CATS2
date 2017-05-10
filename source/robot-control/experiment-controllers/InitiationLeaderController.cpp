@@ -251,7 +251,6 @@ ExperimentController::ControlData InitiationLeaderController::changeRoom()
                     // switch to SWIMMING_WITH_FISH
                     updateState(SWIMMING_WITH_FISH);
                 }
-
             }
         }
         break;
@@ -333,7 +332,6 @@ int InitiationLeaderController::fishAroundRobot()
     }
     return fishCount;
 }
-
 
 /*!
  * Checks that the fish follow.
