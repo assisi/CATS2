@@ -133,6 +133,7 @@ void ControlLoop::reconnectRobots()
 void ControlLoop::stopAllRobots()
 {
     for (auto& robot : m_robots) {
+        robot->setController(ExperimentControllerType::NONE);
         robot->setControlMode(ControlModeType::IDLE);
     }
 }

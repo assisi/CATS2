@@ -200,7 +200,6 @@ ExperimentController::ControlData InitiationLureController::stateControlData()
     default:
         break;
     }
-
     return controlData;
 }
 
