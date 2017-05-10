@@ -88,6 +88,7 @@ cv::Mat GridBasedMethod::generateGrid(QList<WorldPolygon> includingPolygons,
         }
         return arenaMatrix;
     }
+    return cv::Mat();
 }
 
 /*!

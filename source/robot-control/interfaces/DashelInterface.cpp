@@ -219,6 +219,8 @@ bool DashelInterface::loadScript(const QString& fileName)
                             "current network and have not been loaded.")
                     .arg(noNodeCount);
     }
+
+    return true;
 }
 
 /*!
