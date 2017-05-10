@@ -43,7 +43,7 @@ void TrackingRoutine::process()
             // NOTE : OpenCV throws exceptions, so we need to be ready
             try {
                 doTracking(frame);
-            } catch(cv::Exception& e) {
+            } catch (const cv::Exception& e) {
                 qDebug() << "OpenCV exception: " << e.what();
             }
             // send the results

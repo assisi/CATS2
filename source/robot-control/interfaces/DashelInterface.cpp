@@ -235,7 +235,7 @@ void DashelInterface::incomingData(Dashel::Stream *stream)
         QSharedPointer<Aseba::UserMessage> userMessage(dynamic_cast<Aseba::UserMessage *>(message));
         if (userMessage)
             emit messageAvailable(userMessage);
-    } catch (DashelException e) {
+    } catch (const DashelException& e) {
         // if this stream has a problem, ignore it for now, and let Hub call
         // connectionClosed later.
         qDebug() << "error while reading message";
@@ -257,7 +257,7 @@ void DashelInterface::sendEvent(unsigned id, const Values& values)
         try {
             Aseba::UserMessage(id, data).serialize(m_stream);
             m_stream->flush();
-        } catch (DashelException e) {
+        } catch (const DashelException& e) {
             // if this stream has a problem, ignore it for now, and let Hub call connectionClosed later.
             qDebug() << "Error while writing message";
         }
@@ -307,7 +307,7 @@ void DashelInterface::run()
             emit dashelConnection();
             m_isConnected = true;
             break;
-        } catch (Dashel::DashelException e) {
+        } catch (const Dashel::DashelException& e) {
             qDebug()  << "Cannot connect to target: "
                       << m_dashelParams;
             // if can't connect then stop
@@ -345,7 +345,7 @@ void DashelInterface::sendMessage(const Aseba::Message& message)
             message.serialize(m_stream);
             m_stream->flush();
             unlock();
-        } catch(Dashel::DashelException e) {
+        } catch (const Dashel::DashelException& e) {
             unlock();
             qDebug() << "Dashel exception: " << e.what();
         }
