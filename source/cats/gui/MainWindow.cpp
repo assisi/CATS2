@@ -231,9 +231,9 @@ void MainWindow::connectPrimaryView()
 
         // connect to the robots controller
         connect(viewerWidget, &ViewerWidget::notifyButtonClick,
-                [=](Qt::MouseButton button,PositionMeters worldPosition)
+                [=](Qt::MouseButton button, PositionMeters worldPosition)
                 {
-                    if (button = Qt::RightButton)
+                    if (button == Qt::RightButton)
                         m_robotsHandler->contolLoop().data()->goToPosition(worldPosition);
                 });
         connect(m_robotsHandler->contolLoop().data(),
