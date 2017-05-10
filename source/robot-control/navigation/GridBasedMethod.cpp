@@ -2,6 +2,8 @@
 
 #include "settings/RobotControlSettings.hpp"
 
+#include <QtCore/QDebug>
+
 /*!
  * Constructor.
  */
