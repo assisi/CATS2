@@ -18,9 +18,9 @@ class ModelBased : public ControlMode, public GridBasedMethod
     Q_OBJECT
 public:
     //! Constructor.
-    ModelBased(FishBot* robot);
+    explicit ModelBased(FishBot* robot);
     //! Destructor.
-    ~ModelBased();
+    virtual ~ModelBased() override;
 
     //! Called when the control mode is activated. Used to reset mode's parameters.
     virtual void start() override;

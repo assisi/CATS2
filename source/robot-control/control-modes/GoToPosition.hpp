@@ -12,9 +12,9 @@ class GoToPosition : public ControlMode
     Q_OBJECT
 public:
     //! Constructor.
-    GoToPosition(FishBot* robot);
+    explicit GoToPosition(FishBot* robot);
     //! Destructor.
-    ~GoToPosition();
+    virtual ~GoToPosition() override;
 
     //! The step of the control mode.
     virtual ControlTargetPtr step() override;

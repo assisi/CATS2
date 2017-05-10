@@ -16,7 +16,7 @@ public:
     enum { Type = UserType + 16 };
 
     //! Constructor.
-    AgentTextItem(QString text) { setLabel(text); }
+    explicit AgentTextItem(QString text) { setLabel(text); }
 
 public:
     //! Set label.

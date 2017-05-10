@@ -16,7 +16,7 @@ class ObstacleAvoidance
 {
 public:
     //! Constructor.
-    ObstacleAvoidance(FishBot* robot);
+    explicit ObstacleAvoidance(FishBot* robot);
 
     //! Returns a pointer to the potential field method.
     PotentialFieldPtr potentialField() { return m_potentialField; }

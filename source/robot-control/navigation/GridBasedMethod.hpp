@@ -15,7 +15,9 @@ class GridBasedMethod
 {
 public:
     //! Constructor.
-    GridBasedMethod(double gridSizeMeters);
+    explicit GridBasedMethod(double gridSizeMeters);
+    //! Destructor.
+    virtual ~GridBasedMethod();
 
 public:
     //! Returns the polygon representing the setup.

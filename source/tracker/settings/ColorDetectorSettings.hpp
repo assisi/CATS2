@@ -55,7 +55,7 @@ class ColorDetectorSettings : public TrackingRoutineSettings
 {
 public:
     //! Constructor.
-    ColorDetectorSettings(SetupType::Enum setupType);
+    explicit ColorDetectorSettings(SetupType::Enum setupType);
 
 public:
     //! Initialization of the parameters for this specific method of tracking.
