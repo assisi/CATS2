@@ -12,6 +12,13 @@
 /*
  * The position and orientation classes that define the agent's state.
  */
+enum class OrientationValidity
+{
+    VALID,      // certain value
+    AMBIGUOUS,  // +/- 180 degrees
+    INVALID     // unknown value
+};
+
 /*!
  * \brief The class that stores the orientation in the interval [-pi,+pi] radians.
  * NOTE : it would me ideologically more correct to have two classes : OrientationImageRad and
@@ -21,7 +28,10 @@ class OrientationRad
 {
 public:
     //! Constructor.
-    explicit OrientationRad(double angleRad = 0, bool valid = true): m_angleRad(angleRad), m_valid(valid) { }
+    explicit OrientationRad(double angleRad = 0, bool valid = true): m_angleRad(angleRad)
+    {
+        setValid(valid);
+    }
     //! Copy constructor.
     OrientationRad(const OrientationRad&) = default;
     //! Copy operator.
@@ -39,15 +49,31 @@ public:
     double angleDeg() const { return m_angleRad * 180 / M_PI; }
 
     //! Set the validity status.
-    void setValid(bool valid) { m_valid = valid; }
-    //! Return the position validity status.
-    bool isValid() const { return m_valid; }
+    void setValid(bool valid)
+    {
+        if (valid)
+            m_validity = OrientationValidity::VALID;
+        else
+            m_validity = OrientationValidity::INVALID;
+    }
+    //! Set the orientation ambiguous.
+    void setAmbiguous() { m_validity = OrientationValidity::AMBIGUOUS; }
+
+    //! Is the orientation valid.
+    bool isValid() const { return (m_validity == OrientationValidity::VALID); }
+    //! Is the orientation invalid.
+    bool isInvalid() const { return (m_validity == OrientationValidity::INVALID); }
+    //! Is the orientation ambiguous.
+    bool isAmbiguous() const { return (m_validity == OrientationValidity::AMBIGUOUS); }
+
+    //! Sets the validity of the orientation.
+    void setValidity(OrientationValidity validity) { m_validity = validity; }
 
 private:
     //! The angle value.
     double m_angleRad;  // [-pi,+pi] radians.
-    //! The angle validity, set to false when the angle could not be determined.
-    bool m_valid;
+    //! The angle validity.
+    OrientationValidity m_validity;
 };
 
 /*!
@@ -342,6 +368,11 @@ public:
     void invalidateOrientation()
     {
         m_orientationRad.setValid(false);
+    }
+    //! Sets the validity of the orientation.
+    void setOrientationValidity(OrientationValidity validity)
+    {
+        m_orientationRad.setValidity(validity);
     }
 
     //! Sets the position.
