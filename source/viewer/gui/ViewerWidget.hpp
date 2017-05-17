@@ -188,7 +188,7 @@ private: // agents items
     QString m_currentAgentId;
 
     //! The map of the setup.
-    AnnotatedPolygonItem* m_setupPolygon;
+    QList<AnnotatedPolygonItem*> m_setupPolygons;
     //! The flag that defines if we show agents on the map.
     bool m_showSetup;
 };
