@@ -8,7 +8,8 @@
 DominatingSetController::DominatingSetController(FishBot* robot,
                                                 ExperimentControllerSettingsPtr settings) :
     ExperimentController(robot, ExperimentControllerType::DOMINATING_SET),
-    m_settings()
+    m_settings(),
+    m_robotAreaDefined(false)
 {
     // NOTE : to get parameters specific for this controller we need to convert
     // the settings to the corresponding format
@@ -26,6 +27,14 @@ DominatingSetController::DominatingSetController(FishBot* robot,
 }
 
 /*!
+ * Called when the controller is activated. Used to reset parameters.
+ */
+void DominatingSetController::start()
+{
+    m_robotAreaDefined = false;
+}
+
+/*!
  * Returns the control values for given position.
  */
 ExperimentController::ControlData DominatingSetController::step()
@@ -33,10 +42,23 @@ ExperimentController::ControlData DominatingSetController::step()
     ControlData controlData;
     // a check for the valid robot pointer
     if (m_robot) {
-        // check where the robot and fish are
-        updateAreasOccupation();
-
-        // TODO : to implement
+        if (!m_robotAreaDefined) {
+            updateAreasOccupation();
+            // if the robot's zone is defined then set it in the model
+            if (m_controlAreas.contains(m_robotAreaId)) {
+                m_robotAreaDefined = true;
+                controlData.controlMode = ControlModeType::MODEL_BASED;
+                controlData.motionPattern = MotionPatternType::FISH_MOTION;
+                controlData.data = QVariant::fromValue(m_controlAreas[m_robotAreaId]->annotatedPolygons());
+            } else {
+                // stop until it's detected
+                controlData.controlMode = ControlModeType::IDLE;
+            }
+        } else {
+            // do model motion
+            controlData.controlMode = ControlModeType::MODEL_BASED;
+            controlData.motionPattern = MotionPatternType::FISH_MOTION;
+        }
     }
     return controlData;
 }
