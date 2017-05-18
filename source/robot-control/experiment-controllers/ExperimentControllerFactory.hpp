@@ -10,6 +10,7 @@
 #include "settings/RobotControlSettings.hpp"
 #include "settings/InitiationLureControllerSettings.hpp"
 #include "settings/InitiationLeaderControllerSettings.hpp"
+#include "settings/CircularSetupControllerSettings.hpp"
 
 #include <QtCore/QDebug>
 
@@ -56,6 +57,10 @@ public:
             return ExperimentControllerSettingsPtr(new InitiationLeaderControllerSettings());
         case ExperimentControllerType::INITIATION_LURE:
             return ExperimentControllerSettingsPtr(new InitiationLureControllerSettings());
+        case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER:
+        case ExperimentControllerType::CIRCULAR_SETUP_LEADER:
+            // NOTE: two controllers share the same settings
+            return ExperimentControllerSettingsPtr(new CircularSetupControllerSettings(type));
         default:
             qDebug() << "Experiment controller settings could not be created.";
             break;
