@@ -10,11 +10,11 @@ class ExperimentControllerType
 {
 public:
     enum Enum {
-        NONE,
         CONTROL_MAP,
         INITIATION_LEADER,
         INITIATION_LURE,
-        DOMINATING_SET
+        DOMINATING_SET,
+        NONE
     };
 
     //! Returns the controller type string that is used to look for the settings
