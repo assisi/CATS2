@@ -29,7 +29,7 @@ public:
                 RobotControlSettings::get().controllerSettings(type);
 
         if (!settings.isNull()) {
-            switch (settings->type()) {
+            switch (type) {
             case ExperimentControllerType::CONTROL_MAP:
                 return ExperimentControllerPtr(new MapController(robot, settings), &QObject::deleteLater);
             case ExperimentControllerType::INITIATION_LEADER:
