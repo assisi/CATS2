@@ -1,5 +1,5 @@
-#ifndef CATS2_INITIATION_CONTROLLER_SETTINGS_HPP
-#define CATS2_INITIATION_CONTROLLER_SETTINGS_HPP
+#ifndef CATS2_DOMINATING_SET_CONTROLLER_SETTINGS_HPP
+#define CATS2_DOMINATING_SET_CONTROLLER_SETTINGS_HPP
 
 #include "ExperimentControllerSettings.hpp"
 
@@ -7,11 +7,11 @@
  * The actual data stored in the settings. It's separated in a class to be
  * easily trasferable to the corresponding controller.
  */
-class InitiationLureControllerSettingsData
+class DominatingSetControllerSettingsData
 {
 public:
     //! Constructor.
-    InitiationLureControllerSettingsData():
+    DominatingSetControllerSettingsData():
         m_controlAreasFileName()
     {}
 
@@ -29,13 +29,13 @@ protected:
     QString m_controlAreasFileName;
 };
 
-class InitiationLureControllerSettings : public ExperimentControllerSettings
+class DominatingSetControllerSettings : public ExperimentControllerSettings
 {
 public:
     //! Constructor.
-    InitiationLureControllerSettings();
+    DominatingSetControllerSettings();
     //! Destructor.
-    virtual ~InitiationLureControllerSettings();
+    virtual ~DominatingSetControllerSettings();
 
 public:
     //! Initialization of the parameters for this specific controller.
@@ -43,12 +43,11 @@ public:
     virtual bool init(QString configurationFileName) override;
 
     //! Provides a copy of the settings data.
-    InitiationLureControllerSettingsData data() { return m_data; }
+    DominatingSetControllerSettingsData data() { return m_data; }
 
 private:
     //! The settings data.
-    InitiationLureControllerSettingsData m_data;
+    DominatingSetControllerSettingsData m_data;
 };
 
-
-#endif // CATS2_INITIATION_CONTROLLER_SETTINGS_HPP
+#endif // CATS2_DOMINATING_SET_CONTROLLER_SETTINGS_HPP

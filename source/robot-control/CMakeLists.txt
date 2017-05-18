@@ -28,6 +28,7 @@ set(srcs
     settings/MapControllerSettings.cpp
     settings/InitiationLeaderControllerSettings.cpp
     settings/InitiationLureControllerSettings.cpp
+    settings/DominatingSetControllerSettings.cpp
     FishBot.cpp
     ControlLoop.cpp
     control-modes/Idle.cpp

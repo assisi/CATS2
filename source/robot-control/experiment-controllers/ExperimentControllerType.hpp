@@ -13,7 +13,8 @@ public:
         NONE,
         CONTROL_MAP,
         INITIATION_LEADER,
-        INITIATION_LURE
+        INITIATION_LURE,
+        DOMINATING_SET
     };
 
     //! Returns the controller type string that is used to look for the settings
@@ -28,6 +29,9 @@ public:
         case INITIATION_LEADER:
         case INITIATION_LURE:
             string = "initiation";
+            break;
+        case DOMINATING_SET:
+            string = "domset";
             break;
         case NONE:
         default:
@@ -49,6 +53,9 @@ public:
             break;
         case INITIATION_LURE:
             string = "Initiation lure";
+            break;
+        case DOMINATING_SET:
+            string = "Dominating set";
             break;
         case NONE:
         default:
