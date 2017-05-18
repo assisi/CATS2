@@ -51,6 +51,7 @@ set(srcs
     experiment-controllers/ExperimentManager.cpp
     experiment-controllers/InitiationLeaderController.cpp
     experiment-controllers/InitiationLureController.cpp
+    experiment-controllers/DominatingSetController.cpp
     model/model.cpp
     model/zones.cpp
     model/factory.cpp
