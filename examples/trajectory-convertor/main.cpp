@@ -56,6 +56,7 @@ int main(int argc, char *argv[])
                 (CommandLineParser::parseArgument(argc, argv, "-fn", fishNumberString) ||
                  CommandLineParser::parseArgument(argc, argv, "--fish-number", fishNumberString));
         // get the chosen fish index
+        // NOTE : starts from 1
         QString fishIndexString;
         bool foundFishIndex =
                 (CommandLineParser::parseArgument(argc, argv, "-fi", fishIndexString) ||
