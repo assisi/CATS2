@@ -200,7 +200,7 @@ PositionPixels CameraCalibration::worldToImage(PositionMeters worldCoordinates)
                                      m_yInversionCoefficient * worldCoordinates.y() * 1000,
                                      worldCoordinates.z()/* * 1000*/));
     cv::projectPoints(worldPoint, m_rvec, m_tvec, m_cameraMatrix, m_distortionCoefficients, projectedPoint);
-    return PositionPixels(projectedPoint[0].x, projectedPoint[0].y);
+    return PositionPixels(m_imageScaleCoefficientX * projectedPoint[0].x, m_imageScaleCoefficientY * projectedPoint[0].y);
 }
 
 /*!

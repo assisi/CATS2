@@ -73,7 +73,7 @@ var TimeAvoid=6000
 var TimeAvoidBack=2000
 
 # Variables used for braitenberg
-var coeffAvoid=400
+var coeffAvoid=200
 var threshback=500 #hack pour reculer
 
 #Variables used for Fish Behavior

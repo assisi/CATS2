@@ -65,6 +65,8 @@ int main(int argc, char *argv[])
         } else {
             qDebug() << "Couldn't find necessary input arguments, finished";
         }
+    } else {
+        qDebug() << "Please define the setup to use";
     }
 }
 

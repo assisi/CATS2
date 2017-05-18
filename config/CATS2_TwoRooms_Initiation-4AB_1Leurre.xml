@@ -1,15 +1,16 @@
 <?xml version="1.0"?>
 <opencv_storage>
     <experiment>
-        <name>TwoRooms_Initiation</name>
+        <type>TwoRooms_Initiation</type>
+        <name>AA_4AB_2Leurre</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
             <numberOfAnimals>4</numberOfAnimals>
         </agents>
-        <setupMapPath>setup/paris-two-rooms2.xml</setupMapPath>
+        <setupMapPath>setup/paris-two-rooms3.xml</setupMapPath>
     </experiment>
     <robots>
-        <numberOfRobots>3</numberOfRobots>
+        <numberOfRobots>2</numberOfRobots>
         <controlFrequencyHz>5</controlFrequencyHz>
         <fishModel>
             <agent>
@@ -27,7 +28,7 @@
                 <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
             </BM>
             <simulation>
-                <dt>1</dt>
+                <dt>1.00</dt>
             </simulation>
         </fishModel>
         <pathPlanning>
@@ -53,9 +54,12 @@
                 <speedCmSec>19</speedCmSec> <!--Speed fish behqviour -->
             </fishMotionPattern>
             <pid>
-                <kp>1.10</kp>
-                <ki>0.03</ki>
-                <kd>0.00</kd>
+                <kp>2.00</kp>
+                <ki>0.05</ki>
+                <kd>0.00</kd>                
+                <kpDist>100.0</kpDist>
+                <kiDist>1.0</kiDist>
+                <kdDist>2.0</kdDist>
             </pid>
             <defaultLinearSpeedCmSec>17</defaultLinearSpeedCmSec>
             <needOrientationToNavigate>0</needOrientationToNavigate>
@@ -86,22 +90,25 @@
                 <g>150</g>
                 <b>200</b>
             </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm5</connectionTarget>
         </fishBot_1>
         <fishBot_2>
+            <id>G</id>
+            <ledColor>
+                <r>190</r>
+                <g>255</g>
+                <b>190</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm6</connectionTarget>
+        </fishBot_2>
+        <fishBot_3>
             <id>D</id>
             <ledColor>
                 <r>191</r>
                 <g>109</g>
                 <b>122</b>
             </ledColor>
-        </fishBot_2>
-        <fishBot_3>
-            <id>E</id>
-            <ledColor>
-                <r>240</r>
-                <g>225</g>
-                <b>130</b>
-            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm3</connectionTarget>
         </fishBot_3>
     </robots>
     <setups>
@@ -117,7 +124,7 @@
             <cameraCalibrationFile>camera-calibration/paris-setup-180/cats2-paris-main-camera-basler.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
-                <numberOfAgents>5</numberOfAgents>
+                <numberOfAgents>6</numberOfAgents>
                 <blobDetector>
                     <minBlobSizePx>0</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
@@ -141,9 +148,9 @@
                     <fishBot_F>
                         <threshold>20</threshold>
                     </fishBot_F>
-                    <fishBot_D>
-                        <threshold>35</threshold>
-                    </fishBot_D>
+                    <fishBot_G>
+                        <threshold>20</threshold>
+                    </fishBot_G>
                     <fishBot_E>
                         <threshold>30</threshold>
                     </fishBot_E>

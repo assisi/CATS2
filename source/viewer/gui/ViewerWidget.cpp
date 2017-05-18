@@ -39,7 +39,7 @@ ViewerWidget::ViewerWidget(ViewerDataPtr viewerData, QSize frameSize, QWidget *p
     m_showAgentsData(false),
     m_showControlAreas(false),
     m_currentAgentId(),
-    m_setupPolygon(nullptr)
+    m_setupPolygons()
 {
     m_uiViewer->setupUi(this);
     // always receive mouse events
@@ -634,7 +634,7 @@ void ViewerWidget::updateSetup(AnnotatedPolygons annotatedPolygon)
 
     // the setup map never changes during the program lifetime
     // thus if it was already drawn once no need to re-compute
-    if (m_setupPolygon)
+    if (m_setupPolygons.size() > 0)
         return;
 
     // otherwise create the item
@@ -654,14 +654,15 @@ void ViewerWidget::updateSetup(AnnotatedPolygons annotatedPolygon)
 
         // draw the polygon
         if (imagePolygon.size() > 0) {
-            if (! m_setupPolygon) {
-                m_setupPolygon = new AnnotatedPolygonItem(imagePolygon, annotatedPolygon.label);
-                m_scene->addItem(m_setupPolygon);
-                m_setupPolygon->setVisible(m_showSetup);
-                // need to position the item to (0,0) in order to the polygon was placed correctly
-                m_setupPolygon->setPos(0, 0);
-            }
-            m_setupPolygon->setColor(annotatedPolygon.color);
+            AnnotatedPolygonItem* polygonItem =
+                    new AnnotatedPolygonItem(imagePolygon,
+                                             annotatedPolygon.label);
+            m_scene->addItem(polygonItem);
+            polygonItem->setVisible(m_showSetup);
+            // need to position the item to (0,0) in order to the polygon was placed correctly
+            polygonItem->setPos(0, 0);
+            polygonItem->setColor(annotatedPolygon.color);
+            m_setupPolygons.append(polygonItem);
         }
     }
 }
@@ -672,7 +673,7 @@ void ViewerWidget::updateSetup(AnnotatedPolygons annotatedPolygon)
 void ViewerWidget::setShowSetup(bool showSetup)
 {
     m_showSetup = showSetup;
-    // hide setup if necessary if shown
-    if (m_setupPolygon)
-        m_setupPolygon->setVisible(m_showSetup);
+    // hide or show setup if necessary
+    for (AnnotatedPolygonItem* polygonItem : m_setupPolygons)
+        polygonItem->setVisible(m_showSetup);
 }

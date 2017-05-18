@@ -77,14 +77,55 @@ public:
         cv::FileNode node = m_fs.root();
         foreach (QString nodeName, pathInFileList){
             node = node[nodeName.toStdString()];
-            if (node.empty())
-            {
+            if (node.empty()) {
                 qDebug() << QString("Could not find requested parameters %1, taking default value instead").arg(pathInFile);
                 return;
             }
         }
         node >> value;
     }
+
+    //! Read values of all variables having the same type and name, used for the
+    //! lists. The path starts from the document's root node.
+    //! If the path is not found then an empty list is returned.
+    // TODO : refactor this to return true/false depending if the value is read
+    // this would simply a lot the handling of settings
+    template <typename T>
+    void readVariables(QString pathInFile, std::vector<T>& values)
+    {
+        values = std::vector<T>();
+
+        if (!m_fs.isOpened()){
+            qDebug() << QString("Could not read the configuration file");
+            return;
+        }
+
+        QStringList pathInFileList = pathInFile.split("/");
+        if (pathInFileList.isEmpty())
+            return;
+
+        // reach the level just above the variable
+        cv::FileNode node = m_fs.root();
+        while (pathInFileList.size() > 1) {
+            QString nodeName = pathInFileList.takeFirst();
+            node = node[nodeName.toStdString()];
+            if (node.empty()) {
+                qDebug() << QString("Could not find requested parameters %1, taking default value instead").arg(pathInFile);
+                return;
+            }
+        }
+        // loop for all the variables with the same name
+        std::string nodeName = pathInFileList.first().toStdString();
+        for(cv::FileNodeIterator it = node.begin() ; it!= node.end(); ++it)
+        {
+            if ((*it).name() == nodeName) {
+                T value;
+                (*it) >> value;
+                values.push_back(value);
+            }
+        }
+    }
+
 private:
     //! The file storage.
     cv::FileStorage m_fs;
