@@ -1,0 +1,60 @@
+<?xml version="1.0"?>
+<opencv_storage>
+  <numberOfAreas>2</numberOfAreas>
+  <area_1>
+    <id>r1</id>
+    <type>room</type>
+    <polygons>
+        <numberOfPolygons>1</numberOfPolygons>
+        <polygon_1>
+            0.283 0.261
+            0.282 0.308
+            0.332 0.308
+            0.332 0.261
+            0.483 0.266
+            0.481 0.414
+            0.329 0.410
+            0.328 0.360
+            0.279 0.358
+            0.278 0.406
+            0.124 0.401
+            0.131 0.256
+        </polygon_1>
+    </polygons>
+    <color>
+        <r>45</r>
+        <g>130</g>
+        <b>220</b>
+    </color>
+    <controlMode>goStraight</controlMode>
+    <motionPattern>pidController</motionPattern>
+  </area_1>
+  <area_2>
+    <id>r2</id>
+    <type>room</type>
+    <polygons>
+        <numberOfPolygons>1</numberOfPolygons>
+        <polygon_1>
+            0.124 0.401
+            -0.029 0.401
+            -0.029 0.355
+            -0.081 0.354
+            -0.082 0.402
+            -0.235 0.399
+            -0.231 0.252
+            -0.081 0.251
+            -0.080 0.302
+            -0.028 0.301
+            -0.026 0.255
+            0.131 0.256
+        </polygon_1>
+    </polygons>
+    <color>
+          <r>100</r>
+          <g>220</g>
+          <b>100</b>
+    </color>
+    <controlMode>goStraight</controlMode>
+    <motionPattern>pidController</motionPattern>
+  </area_2>
+</opencv_storage>
