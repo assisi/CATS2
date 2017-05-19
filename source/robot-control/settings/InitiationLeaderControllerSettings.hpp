@@ -10,35 +10,14 @@
 class InitiationLeaderControllerSettingsData
 {
 public:
-    //! The trigger event to leave the room.
-    enum DepartureTrigger
-    {
-        ON_TIME_OUT,
-        WHEN_IN_GROUP
-    };
-
     //! Constructor.
     InitiationLeaderControllerSettingsData() :
         m_controlAreasFileName(),
-        m_depatureTrigger(ON_TIME_OUT),
-        m_departureTimeOutSec(5.),
         m_fishNumberAroundOnDeparture(1),
         m_groupRadius(0.1),
         m_fishFollowCheckTimeOutSec(5.),
         m_maximalFishNumberAllowedToStay(0)
     {}
-
-public:
-    //! Gets the type of the departure trigger from the settings' string.
-    static DepartureTrigger depatureTriggerFromSettingsString(QString name)
-    {
-        if (name.toLower() == "timeout")
-            return ON_TIME_OUT;
-        else if (name.toLower() == "ingroup")
-            return WHEN_IN_GROUP;
-        else
-            return ON_TIME_OUT;
-    }
 
 public:
     //! Returns the path to the file describine the control areas.
@@ -47,12 +26,6 @@ public:
     void setControlAreasFileName(QString controlAreasFileName)
     {
         m_controlAreasFileName = controlAreasFileName;
-    }
-
-    //! Sets the departure trigger.
-    void setDepartureTrigger(QString name)
-    {
-        m_depatureTrigger = depatureTriggerFromSettingsString(name);
     }
 
     //! Returns the number of fish that should be around the robot when it leaves.
@@ -74,14 +47,6 @@ public:
         m_groupRadius = groupRadius;
     }
 
-    //! Returns the time to wait before trying the initiation procedure.
-    double departureTimeOutSec() const { return m_departureTimeOutSec; }
-    //! Set the time to wait before trying the initiation procedure.
-    void setDepartureTimeOutSec(double departureTimeOutSec)
-    {
-        m_departureTimeOutSec = departureTimeOutSec;
-    }
-
     //! Returns the time to wait before checking that the fish follow.
     double fishFollowCheckTimeOutSec() const { return m_fishFollowCheckTimeOutSec; }
     //! Set the time to wait before checking that the fihs follow.
@@ -101,18 +66,9 @@ public:
         m_maximalFishNumberAllowedToStay = maximalFishNumberAllowedToStay;
     }
 
-    //! Does the robot try initiation on the timeout?
-    bool departureOnTimeOut() const { return (m_depatureTrigger == ON_TIME_OUT);}
-    //! Does the robot try initiation when it's in a group?
-    bool departureWhenInGroup() const { return (m_depatureTrigger == WHEN_IN_GROUP);}
-
 protected:
     //! The path to the file describing the control areas.
     QString m_controlAreasFileName;
-    //! The trigger event to leave the room.
-    DepartureTrigger m_depatureTrigger;
-    //! The time the robot waits before trying the initiation procedure.
-    double m_departureTimeOutSec;
     //! The number of fish that should be around the robot when it leaves.
     int m_fishNumberAroundOnDeparture;
     //! The radius around the robot where we search for fish.

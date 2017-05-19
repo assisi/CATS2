@@ -83,11 +83,6 @@
                 <controlAreasPath>control-maps/epfl-two-rooms-control-map.xml</controlAreasPath>
                 <fishFollowCheckTimeOutSec>10</fishFollowCheckTimeOutSec>
                 <maximalFishNumberAllowedToStay>1</maximalFishNumberAllowedToStay>
-                <!-- timeOut / inGroup -->
-                <departureTrigger>inGroup</departureTrigger>
-                <departureOnTimeOut>
-                    <departureTimeOutSec>10</departureTimeOutSec>
-                </departureOnTimeOut>
                 <departureWhenInGroup>
                     <fishNumberAround>1</fishNumberAround>
                     <groupRadius>0.10</groupRadius>

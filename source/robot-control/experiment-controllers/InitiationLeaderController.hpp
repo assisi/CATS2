@@ -48,9 +48,9 @@ public:
 private:
     //! The controller's state machine
     enum State {
-        SWIMMING_WITH_FISH, // fish model based
-        CHANGING_ROOM,      // try to bring the fish to another room
-        GOING_BACK,          // return back to the original room if fail
+        SWIMMING_WITH_FISH,     // fish model based
+        INITIATING_TRANSITION,  // try to bring the fish to another room
+        JOINING_FISH,           // going where the fish are
         UNDEFINED
     };
 
@@ -60,20 +60,22 @@ private:
 private:
     //! Updates the current state.
     void updateState(State state);
-    //! Checks if the conditions are met to start the inititaion procedure.
-    bool needToChangeRoom();
-    //! Runs the initiation state machine.
-    ControlData changeRoom();
     //! Gets the control data that corresponds to the current state.
     ControlData stateControlData();
-    //! Checks if the robot is already changing the room.
-    bool changingRoom() const;
     //! Checks the departure timer.
     bool timeToDepart();
     //! Checks that the fish follow.
     bool fishFollow();
     //! Counts the number of fish around the robot.
     int fishAroundRobot();
+
+private:
+    //! Logics when in swimming-with-fish mode.
+    void stepSwimmingWithFish();
+    //! Logics when in initiating-transition mode.
+    void stepInitiatingTransition();
+    //! Logics when in joining-fish mode.
+    void stepJoiningFish();
 
 private:
     //! The settings for this controller.
