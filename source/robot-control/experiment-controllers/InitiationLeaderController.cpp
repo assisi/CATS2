@@ -111,12 +111,12 @@ bool InitiationLeaderController::needToChangeRoom()
                     return false;
                 } else {
                     // we are not in the prefered room => need to bring the fish
-                    // there; wait until the departure timer's signal
+                    // there; wait until the departure's trigger
                     return timeToDepart();
                 }
             } else {
                 // no preference for a room, so we can
-                // wait until the departure timer's signal
+                // wait until the departure's trigger
                 return timeToDepart();
             }
         } else {
@@ -124,7 +124,7 @@ bool InitiationLeaderController::needToChangeRoom()
             // now if there is a preference for the room
             if (m_controlAreas.contains(m_preferedAreaId)) {
                 // then let's go to catch up with the fish
-                qDebug() << QString("%1 go to catch missing %2 fish, only %3 "
+                qDebug() << QString("%1 go to join the %2 fish, only %3 "
                                     "fish out of %4 are present")
                             .arg(m_robot->name())
                             .arg(fishNumberInOtherRooms(m_robotAreaId))
@@ -354,7 +354,7 @@ ExperimentController::ControlData InitiationLeaderController::stateControlData()
     switch (m_state) {
     case SWIMMING_WITH_FISH:
         controlData.controlMode = ControlModeType::MODEL_BASED;
-        controlData.motionPattern = MotionPatternType::FISH_MOTION;
+        controlData.motionPattern = MotionPatternType::PID;
 //        // if we need to limit the model
 //        if (m_limitModelArea &&
 //                m_controlAreas.contains(m_robotAreaId) &&
@@ -416,9 +416,20 @@ QString InitiationLeaderController::stateToString(State state)
     case GOING_BACK:
         return "Going-back";
         break;
+    case WAIT_FOR_FISH:
+        return "Wait-for-fish";
+        break;
     case UNDEFINED:
     default:
         return "Undefined";
         break;
     }
+}
+
+/*!
+ * Checks if the robot is already changing the room.
+ */
+bool InitiationLeaderController::changingRoom() const
+{
+    return ((m_state == CHANGING_ROOM) || (m_state == GOING_BACK));
 }
