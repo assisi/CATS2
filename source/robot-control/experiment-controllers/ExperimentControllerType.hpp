@@ -10,11 +10,12 @@ class ExperimentControllerType
 {
 public:
     enum Enum {
+        NONE,
         CONTROL_MAP,
         INITIATION_LEADER,
         INITIATION_LURE,
         DOMINATING_SET,
-        NONE
+        UNDEFINED
     };
 
     //! Returns the controller type string that is used to look for the settings
@@ -34,6 +35,7 @@ public:
             string = "domset";
             break;
         case NONE:
+        case UNDEFINED:
         default:
             break;
         }
@@ -58,8 +60,11 @@ public:
             string = "Dominating set";
             break;
         case NONE:
+            string = "Disabled";
+            break;
+        case UNDEFINED:
         default:
-            string = "None";
+            string = "Undefined";
             break;
         }
         return string;
