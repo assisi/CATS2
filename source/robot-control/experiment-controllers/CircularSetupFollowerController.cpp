@@ -10,14 +10,6 @@ CircularSetupFollowerController::CircularSetupFollowerController(FishBot* robot,
 }
 
 /*!
- * Called when the controller is activated. Used to reset parameters.
- */
-void CircularSetupFollowerController::start()
-{
-
-}
-
-/*!
  * Returns the control values for given position.
  */
 ExperimentController::ControlData CircularSetupFollowerController::step()
@@ -28,7 +20,7 @@ ExperimentController::ControlData CircularSetupFollowerController::step()
         // find out where the fish go
         computeFishTurningDirection();
         // and do the same
-        m_targetTurningDirection = m_fishGroupTurningDirection;
+        updateTargetTurningDirection(m_fishGroupTurningDirection);
         // notify
         emit notifyControllerStatus(QString("fish: %1; robot follows")
                                     .arg(TurningDirection::toString(m_fishGroupTurningDirection)));

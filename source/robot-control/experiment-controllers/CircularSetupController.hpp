@@ -12,8 +12,9 @@ public:
         UNDEFINED
     };
 
-    //! Returns the tracking routine type string in human friendly format.
-    static QString toString(Enum direction) {
+    //! Returns the turning direction string in a human friendly format.
+    static QString toString(Enum direction)
+    {
         QString string = "Und";
 
         switch (direction) {
@@ -27,6 +28,18 @@ public:
             break;
         }
         return string;
+    }
+
+    //! Converts the turning direction string from the human friendly format,
+    //! expected values are "CW" or "CCW".
+    static Enum fromString(QString direction)
+    {
+        if (direction.toUpper() == "CW")
+            return Enum::CLOCK_WISE;
+        else if (direction.toUpper() == "CCW")
+            return Enum::COUNTER_CLOCK_WISE;
+        else
+            return Enum::UNDEFINED;
     }
 };
 
@@ -50,6 +63,8 @@ protected:
     void computeFishTurningDirection();
     //! Computes the target for the robot based on the target turning direction.
     PositionMeters computeTargetPosition();
+    //! Updates the current target turning direction for the robot.
+    void updateTargetTurningDirection(TurningDirection::Enum turningDirection);
 
 private:
     //! Compares two area ids, returns 1 if first is bigger, -1 if it is smaller

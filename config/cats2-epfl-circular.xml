@@ -80,6 +80,10 @@
             <controlMap>
                 <controlAreasPath>control-maps/epfl-four-sectors-control-map.xml</controlAreasPath>
             </controlMap>
+            <circularSetup>
+                <controlAreasPath>control-maps/epfl-four-sectors-control-map.xml</controlAreasPath>
+                <targetDeltaAngleDeg>10.</targetDeltaAngleDeg>
+            </circularSetup>
         </controllers>
         <fishBot_1>
              <id>C</id>

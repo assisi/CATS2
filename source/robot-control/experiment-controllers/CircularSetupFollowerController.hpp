@@ -12,8 +12,6 @@ public:
                                     ExperimentControllerSettingsPtr settings);
 
 public:
-    //! Called when the controller is activated. Used to reset parameters.
-    virtual void start() override;
     //! Returns the control values for given position.
     virtual ControlData step() override;
 };

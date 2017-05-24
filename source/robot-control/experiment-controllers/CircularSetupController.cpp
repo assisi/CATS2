@@ -105,3 +105,17 @@ PositionMeters CircularSetupController::computeTargetPosition()
         return PositionMeters::invalidPosition();
     }
 }
+
+/*!
+ * Updates the current target turning direction for the robot.
+ */
+void CircularSetupController::updateTargetTurningDirection(TurningDirection::Enum turningDirection)
+{
+    if (m_targetTurningDirection != turningDirection) {
+        qDebug() << QString("%1 turning direction changed from %2 to %3")
+                    .arg(m_robot->name())
+                    .arg(TurningDirection::toString(m_targetTurningDirection))
+                    .arg(TurningDirection::toString(turningDirection));
+        m_targetTurningDirection = turningDirection;
+    }
+}
