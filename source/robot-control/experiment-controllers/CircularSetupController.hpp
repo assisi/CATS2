@@ -4,10 +4,30 @@
 #include "ExperimentController.hpp"
 #include "settings/CircularSetupControllerSettings.hpp"
 
-enum class TurningDirection {
-    CLOCK_WISE,
-    COUNTER_CLOCK_WISE,
-    UNDEFINED
+class TurningDirection {
+public:
+    enum Enum {
+        CLOCK_WISE,
+        COUNTER_CLOCK_WISE,
+        UNDEFINED
+    };
+
+    //! Returns the tracking routine type string in human friendly format.
+    static QString toString(Enum direction) {
+        QString string = "Und";
+
+        switch (direction) {
+        case CLOCK_WISE:
+            string = " CW";
+            break;
+        case COUNTER_CLOCK_WISE:
+            string = "CCW";
+            break;
+        default:
+            break;
+        }
+        return string;
+    }
 };
 
 /*!
@@ -42,7 +62,7 @@ protected:
 
 protected:
     //! The current target turning direction of the robot.
-    TurningDirection m_fishGroupTurningDirection;
+    TurningDirection::Enum m_fishGroupTurningDirection;
     //! The fish area id in the previous step.
     QString m_previousFishAreaId;
     //! The min area id.
@@ -52,7 +72,7 @@ protected:
 
     //! The target turning direction for the robot. It's defined either by the
     //! fish turning direction or set from outside
-    TurningDirection m_targetTurningDirection;
+    TurningDirection::Enum m_targetTurningDirection;
     //! The center of the circular setup (must be specified in the settings).
     PositionMeters m_setupCenter;
 };

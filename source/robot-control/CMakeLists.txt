@@ -52,6 +52,7 @@ set(srcs
     experiment-controllers/InitiationLeaderController.cpp
     experiment-controllers/InitiationLureController.cpp
     experiment-controllers/CircularSetupController.cpp
+    experiment-controllers/CircularSetupFollowerController.cpp
     model/model.cpp
     model/zones.cpp
     model/factory.cpp

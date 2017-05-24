@@ -94,7 +94,9 @@ int CircularSetupController::compareAreaIds(QString areaId1, QString areaId2)
  */
 PositionMeters CircularSetupController::computeTargetPosition()
 {
-    if (m_robot->state().position().isValid()) {
+    if (m_robot->state().position().isValid() &&
+            (m_targetTurningDirection != TurningDirection::UNDEFINED))
+    {
         double deltaAngleRad = m_settings.targetDeltaAngleRad();
         if (m_targetTurningDirection == TurningDirection::CLOCK_WISE)
             deltaAngleRad *= -1;
