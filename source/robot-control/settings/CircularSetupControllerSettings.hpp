@@ -11,12 +11,33 @@ class CircularSetupControllerSettingsData
 {
 public:
     //! Constructor.
-    CircularSetupControllerSettingsData()
+    CircularSetupControllerSettingsData() :
+        m_controlAreasFileName(),
+        m_targetDeltaAngleRad(0)
     {}
 
 public:
+    //! Returns the path to the file describine the control areas.
+    QString controlAreasFileName() const { return m_controlAreasFileName; }
+    //! Set the path to the file describine the control areas.
+    void setControlAreasFileName(QString controlAreasFileName)
+    {
+        m_controlAreasFileName = controlAreasFileName;
+    }
+
+    //! Returns the delta angle to set the target.
+    double targetDeltaAngleRad() const { return m_targetDeltaAngleRad; }
+    //! Set the delta angle to set the target.
+    void setTargetDeltaAngleRad(double targetDeltaAngleRad)
+    {
+        m_targetDeltaAngleRad = targetDeltaAngleRad;
+    }
 
 protected:
+    //! The path to the file describine the control areas.
+    QString m_controlAreasFileName;
+    //! The delta angle to set the target position with respect to the robot
+    double m_targetDeltaAngleRad;
 };
 
 class CircularSetupControllerSettings : public ExperimentControllerSettings
