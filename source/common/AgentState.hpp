@@ -173,6 +173,14 @@ public:
         return PositionMeters(0, 0, 0, false);
     }
 
+    //! Returns the point rotates by theta radians.
+    PositionMeters rotated2d(double thetaRad, PositionMeters center) const
+    {
+        double rotated_x = (m_x - center.x()) * qCos(thetaRad) - (m_y - center.y() / 2) * qSin(thetaRad);
+        double rotated_y = (m_x - center.x()) * qSin(thetaRad) + (m_y - center.y() / 2) * qCos(thetaRad);
+        return PositionMeters(rotated_x + center.x(), rotated_y + center.y() / 2);
+    }
+
 private:
     //! Position x.
     double m_x;  // [m]
@@ -412,6 +420,20 @@ public:
         for (const PositionMeters& point : *this)
             polygon.append(QPointF(point.x(), point.y()));
         return polygon.containsPoint(QPointF(position.x(), position.y()), Qt::OddEvenFill);
+    }
+
+    /*!
+     * Computes the polygon's center.
+     */
+    PositionMeters center() const
+    {
+        PositionMeters polygonCenter(0, 0, 0);
+        if (size() > 0) {
+            for (const PositionMeters& position : *this)
+                polygonCenter += position;
+            polygonCenter /= size();
+        }
+        return polygonCenter;
     }
 };
 
