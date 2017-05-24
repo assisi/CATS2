@@ -64,7 +64,7 @@ ControlTargetPtr ModelBased::step()
             status = "follow fish";
         if (robotPosition.isValid()) {
             status += QString(", dist. %1 m")
-                    .arg(robotPosition.distance2DTo(m_targetPosition), 0, 'f', 3);
+                    .arg(robotPosition.distance2dTo(m_targetPosition), 0, 'f', 3);
         }
         emit notifyControlModeStatus(status);
         return ControlTargetPtr(new TargetPosition(m_targetPosition));

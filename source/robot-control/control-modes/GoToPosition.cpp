@@ -30,7 +30,7 @@ ControlTargetPtr GoToPosition::step()
         PositionMeters robotPosition = m_robot->state().position();
         if (robotPosition.isValid()) {
             emit notifyControlModeStatus(QString("target distance %1 m")
-                    .arg(robotPosition.distance2DTo(m_targetPosition), 0, 'f', 3));
+                    .arg(robotPosition.distance2dTo(m_targetPosition), 0, 'f', 3));
         }
         return ControlTargetPtr(new TargetPosition(m_targetPosition));
     }

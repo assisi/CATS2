@@ -138,8 +138,8 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
         qDebug() << QString("%1 becomes %2, error is %3 mm")
                     .arg(originalPositionMeters.toString())
                     .arg(projectedPositionMeters.toString())
-                    .arg(1000 * originalPositionMeters.distance2DTo(projectedPositionMeters));
-        error += originalPositionMeters.distance2DTo(projectedPositionMeters);
+                    .arg(1000 * originalPositionMeters.distance2dTo(projectedPositionMeters));
+        error += originalPositionMeters.distance2dTo(projectedPositionMeters);
     }
     error /= imagePoints.size();
     qDebug() << QString("Average reprojection error (image->world) is %1 mm").arg(1000 * error);

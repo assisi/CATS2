@@ -133,7 +133,7 @@ public:
     }
 
     //! Only x and y coordinates are taken into account.
-    double distance2DTo(const PositionMeters& other) const
+    double distance2dTo(const PositionMeters& other) const
     {
         return qSqrt((m_x - other.x()) * (m_x - other.x()) +
                      (m_y - other.y()) * (m_y - other.y()));
@@ -143,7 +143,7 @@ public:
     bool closeTo(const PositionMeters& other, double threshold = ProximityThreshold) const
     {
         if (m_valid && other.isValid())
-            return (distance2DTo(other) < threshold);
+            return (distance2dTo(other) < threshold);
         else
             return false;
     }
@@ -272,7 +272,7 @@ public:
     }
 
     //! Returns the point rotates by theta radians.
-    PositionPixels rotated(double thetaRad, PositionPixels center) const
+    PositionPixels rotated2d(double thetaRad, PositionPixels center) const
     {
         double rotated_x = (m_x - center.x()) * qCos(thetaRad) - (m_y - center.y() / 2) * qSin(thetaRad);
         double rotated_y = (m_x - center.x()) * qSin(thetaRad) + (m_y - center.y() / 2) * qCos(thetaRad);

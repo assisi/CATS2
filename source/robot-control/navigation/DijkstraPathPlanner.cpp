@@ -198,7 +198,7 @@ QQueue<PositionMeters> DijkstraPathPlanner::plan(PositionMeters startPoint,
         point.setY(m_graph[*it].row);
         PositionMeters position = gridNodeToPosition(point);
         if (path.size() > 0)
-            shortestDistance += path.last().distance2DTo(position);
+            shortestDistance += path.last().distance2dTo(position);
         path.enqueue(position);
     }
 //    qDebug() << QString("Shortest distance to the target is %1").arg(shortestDistance);
