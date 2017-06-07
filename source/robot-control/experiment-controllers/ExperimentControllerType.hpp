@@ -15,7 +15,6 @@ public:
         INITIATION_LEADER,
         INITIATION_LURE,
         CIRCULAR_SETUP_FOLLOWER,
-        CIRCULAR_SETUP_LEADER,
         CIRCULAR_SETUP_LEADER_CW,
         CIRCULAR_SETUP_LEADER_CCW
     };
@@ -33,7 +32,6 @@ public:
             string = "initiation";
             break;
         case CIRCULAR_SETUP_FOLLOWER:
-        case CIRCULAR_SETUP_LEADER:
         case CIRCULAR_SETUP_LEADER_CW:
         case CIRCULAR_SETUP_LEADER_CCW:
             string = "circularSetup";
@@ -60,9 +58,6 @@ public:
             break;
         case CIRCULAR_SETUP_FOLLOWER:
             string = "Circular setup follower";
-            break;
-        case CIRCULAR_SETUP_LEADER:
-            string = "Circular setup leader";
             break;
         case CIRCULAR_SETUP_LEADER_CW:
             string = "Circular setup leader (CW)";

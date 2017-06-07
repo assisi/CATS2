@@ -10,7 +10,7 @@
  */
 InitiationLeaderController::InitiationLeaderController(FishBot* robot,
                              ExperimentControllerSettingsPtr settings) :
-    ExperimentController(robot, ExperimentControllerType::INITIATION_LEADER),
+    ExperimentController(robot),
     m_settings(),
     m_state(UNDEFINED),
 //    m_limitModelArea(false),

@@ -41,12 +41,10 @@ public:
                 return ExperimentControllerPtr(new InitiationLureController(robot, settings), &QObject::deleteLater);
             case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER:
                 return ExperimentControllerPtr(new CircularSetupFollowerController(robot, settings), &QObject::deleteLater);
-//            case ExperimentControllerType::CIRCULAR_SETUP_LEADER:
-//                return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings), &QObject::deleteLater);
             case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW:
-                return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings, ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW), &QObject::deleteLater);
+                return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings, TurningDirection::CLOCK_WISE), &QObject::deleteLater);
             case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW:
-                return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings, ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW), &QObject::deleteLater);
+                return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings, TurningDirection::COUNTER_CLOCK_WISE), &QObject::deleteLater);
             default:
                 qDebug() << "Controller could not be created.";
                 break;
@@ -68,7 +66,6 @@ public:
         case ExperimentControllerType::INITIATION_LURE:
             return ExperimentControllerSettingsPtr(new InitiationLureControllerSettings());
         case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER:
-        case ExperimentControllerType::CIRCULAR_SETUP_LEADER:
         case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW:
         case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW:
             // NOTE: two controllers share the same settings

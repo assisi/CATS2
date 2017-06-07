@@ -55,7 +55,6 @@ class CircularSetupController : public ExperimentController
 public:
     //! Constructor. Gets the robot and the settings.
     CircularSetupController(FishBot* robot,
-                            ExperimentControllerType::Enum type,
                             ExperimentControllerSettingsPtr settings);
 
 protected:

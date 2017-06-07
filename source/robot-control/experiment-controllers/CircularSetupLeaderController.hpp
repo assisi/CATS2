@@ -15,7 +15,7 @@ public:
     //! Constructor. Gets the robot and the settings.
     CircularSetupLeaderController(FishBot* robot,
                                   ExperimentControllerSettingsPtr settings,
-                                  ExperimentControllerType::Enum type);
+                                  TurningDirection::Enum turningDirection);
 
 public:
     //! Returns the control values for given position.

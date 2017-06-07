@@ -4,16 +4,10 @@
 
 CircularSetupLeaderController::CircularSetupLeaderController(FishBot* robot,
                                                              ExperimentControllerSettingsPtr settings,
-                                                             ExperimentControllerType::Enum type):
-    CircularSetupController(robot, type, settings)
+                                                             TurningDirection::Enum turningDirection):
+    CircularSetupController(robot, settings)
 {
-    // set the turning direction from the controller type
-    TurningDirection::Enum direction = TurningDirection::UNDEFINED;
-    if (type == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW)
-        direction = TurningDirection::CLOCK_WISE;
-    else if (type == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW)
-        direction = TurningDirection::COUNTER_CLOCK_WISE;
-    updateTargetTurningDirection(direction);
+    updateTargetTurningDirection(turningDirection);
 }
 
 /*!

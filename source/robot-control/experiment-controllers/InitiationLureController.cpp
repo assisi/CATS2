@@ -11,7 +11,7 @@
  */
 InitiationLureController::InitiationLureController(FishBot* robot,
                              ExperimentControllerSettingsPtr settings) :
-    ExperimentController(robot, ExperimentControllerType::INITIATION_LURE),
+    ExperimentController(robot),
     m_settings(),
     m_state(UNDEFINED),
     m_limitModelArea(false),
