@@ -146,9 +146,9 @@ bool ExperimentController::findFishArea(QString& maxFishNumberAreaId)
             for (const auto& areaId : m_controlAreas.keys())
                 m_fishNumberByArea[areaId] = 0;
             // for every fish check where it is
-            for (const auto& state : fishStates) {
+            for (const auto& fishState : fishStates) {
                 QString areaId;
-                if (findAreaByPosition(areaId, state.position())) {
+                if (findAreaByPosition(areaId, fishState.position())) {
                     m_fishNumberByArea[areaId]++;
                 }
             }
