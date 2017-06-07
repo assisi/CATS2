@@ -21,9 +21,15 @@ ExperimentManager::ExperimentManager(FishBot* robot) :
                          ExperimentControllerPtr(new ExperimentController(m_robot)));
 
     // and then the rest of controllers available in the settings
-    for (auto controllerType : RobotControlSettings::get().availableControllers()) {
+    for (auto controllerType : RobotControlSettings::get().availableControllers())
+    {
         m_controllers.insert(controllerType,
-            ExperimentControllerFactory::createController(controllerType, m_robot));
+                             ExperimentControllerFactory::createController(controllerType,
+                                                                           m_robot));
+        // make connections
+        connect(m_controllers[controllerType].data(),
+                &ExperimentController::notifyFishNumberByAreas,
+                this, &ExperimentManager::notifyFishNumberByAreas);
     }
 
     // make connections
