@@ -15,7 +15,9 @@ public:
         INITIATION_LEADER,
         INITIATION_LURE,
         CIRCULAR_SETUP_FOLLOWER,
-        CIRCULAR_SETUP_LEADER
+        CIRCULAR_SETUP_LEADER,
+        CIRCULAR_SETUP_LEADER_CW,
+        CIRCULAR_SETUP_LEADER_CCW
     };
 
     //! Returns the controller type string that is used to look for the settings
@@ -32,6 +34,8 @@ public:
             break;
         case CIRCULAR_SETUP_FOLLOWER:
         case CIRCULAR_SETUP_LEADER:
+        case CIRCULAR_SETUP_LEADER_CW:
+        case CIRCULAR_SETUP_LEADER_CCW:
             string = "circularSetup";
             break;
         case NONE:
@@ -59,6 +63,12 @@ public:
             break;
         case CIRCULAR_SETUP_LEADER:
             string = "Circular setup leader";
+            break;
+        case CIRCULAR_SETUP_LEADER_CW:
+            string = "Circular setup leader (CW)";
+            break;
+        case CIRCULAR_SETUP_LEADER_CCW:
+            string = "Circular setup leader (CCW)";
             break;
         case NONE:
         default:

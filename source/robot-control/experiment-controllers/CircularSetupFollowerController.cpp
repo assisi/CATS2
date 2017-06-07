@@ -27,6 +27,7 @@ ExperimentController::ControlData CircularSetupFollowerController::step()
         // set the control data
         controlData.controlMode = ControlModeType::GO_TO_POSITION;
         controlData.motionPattern = MotionPatternType::PID;
+        // target position is based on the turning direction
         controlData.data =
             QVariant::fromValue(computeTargetPosition());
     }

@@ -6,6 +6,8 @@
 #include "experiment-controllers/MapController.hpp"
 #include "experiment-controllers/InitiationLeaderController.hpp"
 #include "experiment-controllers/InitiationLureController.hpp"
+#include "experiment-controllers/CircularSetupFollowerController.hpp"
+#include "experiment-controllers/CircularSetupLeaderController.hpp"
 #include "settings/MapControllerSettings.hpp"
 #include "settings/RobotControlSettings.hpp"
 #include "settings/InitiationLureControllerSettings.hpp"
@@ -37,6 +39,14 @@ public:
                 return ExperimentControllerPtr(new InitiationLeaderController(robot, settings), &QObject::deleteLater);
             case ExperimentControllerType::INITIATION_LURE:
                 return ExperimentControllerPtr(new InitiationLureController(robot, settings), &QObject::deleteLater);
+            case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER:
+                return ExperimentControllerPtr(new CircularSetupFollowerController(robot, settings), &QObject::deleteLater);
+//            case ExperimentControllerType::CIRCULAR_SETUP_LEADER:
+//                return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings), &QObject::deleteLater);
+            case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW:
+                return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings, ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW), &QObject::deleteLater);
+            case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW:
+                return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings, ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW), &QObject::deleteLater);
             default:
                 qDebug() << "Controller could not be created.";
                 break;
@@ -59,6 +69,8 @@ public:
             return ExperimentControllerSettingsPtr(new InitiationLureControllerSettings());
         case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER:
         case ExperimentControllerType::CIRCULAR_SETUP_LEADER:
+        case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW:
+        case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW:
             // NOTE: two controllers share the same settings
             return ExperimentControllerSettingsPtr(new CircularSetupControllerSettings(type));
         default:

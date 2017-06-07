@@ -15,7 +15,7 @@ public:
     //! Returns the turning direction string in a human friendly format.
     static QString toString(Enum direction)
     {
-        QString string = "Und";
+        QString string = "Undef";
 
         switch (direction) {
         case CLOCK_WISE:
