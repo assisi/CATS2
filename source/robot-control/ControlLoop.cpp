@@ -153,12 +153,24 @@ void ControlLoop::reinitializeSharedRobotInterface()
     }
 }
 
-//! Asks robots to setup unique connections with the hardware, to load and
-//! initialize the firmware scripts.
+/*!
+ * Asks robots to setup unique connections with the hardware, to load and
+ * initialize the firmware scripts.
+ */
 void ControlLoop::reinitializeUniqueRobotInterface()
 {
     for (auto& robot : m_robots) {
         robot->setupUniqueConnection();
+    }
+}
+
+/*!
+ * Sets the experimental controller for all robots.
+ */
+void ControlLoop::setController(ExperimentControllerType::Enum controllerType)
+{
+    for (auto& robot : m_robots) {
+        robot->setController(controllerType);
     }
 }
 

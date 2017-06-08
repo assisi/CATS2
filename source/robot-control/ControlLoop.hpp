@@ -2,6 +2,7 @@
 #define CATS2_CONTROL_LOOP_HPP
 
 #include "RobotControlPointerTypes.hpp"
+#include "experiment-controllers/ExperimentControllerType.hpp"
 
 #include <AgentData.hpp>
 
@@ -48,6 +49,8 @@ public slots:
     void reconnectRobots();
     //! Stops all the robots.
     void stopAllRobots();
+    //! Sets the experimental controller for all robots.
+    void setController(ExperimentControllerType::Enum controllerType);
 
 signals:
     //! Sends the control map areas' polygons of the robot.
