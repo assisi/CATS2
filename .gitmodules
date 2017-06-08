@@ -3,7 +3,7 @@
 	url = https://github.com/cameron314/readerwriterqueue.git
 [submodule "dependencies/aseba"]
 	path = dependencies/aseba
-	url = https://github.com/gribovskiy/aseba.git
+	url = https://github.com/leo-cazenille/aseba.git
 [submodule "dependencies/fish-model"]
 	path = dependencies/fish-model
-	url = https://github.com/gribovskiy/FishModel.git
+	url = https://github.com/leo-cazenille/FishModel.git

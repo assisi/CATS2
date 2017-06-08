@@ -12,7 +12,8 @@ public:
     enum Enum {
         NONE,
         CONTROL_MAP,
-        INITIATION,
+        INITIATION_LEADER,
+        INITIATION_LURE,
         INTERSPECIES
     };
 
@@ -39,7 +40,8 @@ public:
         case CONTROL_MAP:
             string = "controlMap";
             break;
-        case INITIATION:
+        case INITIATION_LEADER:
+        case INITIATION_LURE:
             string = "initiation";
             break;
         case NONE:
@@ -57,8 +59,11 @@ public:
         case CONTROL_MAP:
             string = "Control map";
             break;
-        case INITIATION:
-            string = "Initiation";
+        case INITIATION_LEADER:
+            string = "Initiation leader";
+            break;
+        case INITIATION_LURE:
+            string = "Initiation lure";
             break;
         case NONE:
         default:

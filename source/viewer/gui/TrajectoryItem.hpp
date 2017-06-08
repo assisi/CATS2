@@ -16,7 +16,7 @@ public:
     enum { Type = UserType + 26 };
 
     //! Constructor.
-    TrajectoryItem(QPolygonF polygon);
+    explicit TrajectoryItem(QPolygonF polygon);
     //! Sets the polygon.
     void setTrajectory(QPolygonF polygon);
 

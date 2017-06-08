@@ -39,6 +39,9 @@ bool TwoColorsTagTrackingSettings::init(QString configurationFileName)
     return true;
 }
 
+/*!
+ * Reads the data for one tag group.
+ */
 void TwoColorsTagTrackingSettings::readTagGroup(ReadSettingsHelper& settings,
                                                 TwoColorsTagTrackingSettingsData::TagType type,
                                                 QString section)

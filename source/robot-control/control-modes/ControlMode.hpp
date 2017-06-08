@@ -21,9 +21,9 @@ public:
     //! Constructor. It gets a pointer to the robot that is controlled by this
     //! control mode. The robot's state is used by those control modes that
     //! need to know it's current position and orientation.
-    ControlMode(FishBot* robot, ControlModeType::Enum type);
+    explicit ControlMode(FishBot* robot, ControlModeType::Enum type);
     //! Destructor.
-    ~ControlMode();
+    virtual ~ControlMode();
 
     //! Called when the control mode is activated. Used to reset mode's parameters.
     virtual void start() {}

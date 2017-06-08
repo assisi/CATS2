@@ -47,6 +47,24 @@ PositionMeters PathPlanner::currentWaypoint(PositionMeters currentPosition,
 //            qDebug() << "At destination";
             clearTrajectory();
         }
+    } else {
+        // just in case we check if we happen to be close to a waypoint further
+        // in the flight plan
+        PositionMeters positionAhead;
+        positionAhead.setValid(false);
+        for (PositionMeters& position : m_subTargetsQueue) {
+            if (currentPosition.closeTo(position)) {
+                positionAhead = position;
+                break;
+            }
+        }
+        if (positionAhead.isValid()) {
+            qDebug() << "Skipping intermediate points";
+            // remove all intermediate points
+            while (m_subTargetsQueue.dequeue() != positionAhead) {}
+            // update the target
+            m_currentSubTargetPosition = positionAhead;
+        }
     }
 
     return m_currentSubTargetPosition;

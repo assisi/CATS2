@@ -1,8 +1,8 @@
-﻿#ifndef CATS2_INITIATION_CONTROLLER_HPP
-#define CATS2_INITIATION_CONTROLLER_HPP
+﻿#ifndef CATS2_INITIATION_LEADER_CONTROLLER_HPP
+#define CATS2_INITIATION_LEADER_CONTROLLER_HPP
 
 #include "ExperimentController.hpp"
-#include "settings/InitiationControllerSettings.hpp"
+#include "settings/InitiationLeaderControllerSettings.hpp"
 
 #include <Timer.hpp>
 
@@ -13,13 +13,13 @@
  * robot is to either make the fish to change the room from time to time, or to
  * make the stay in one room defined in the settings.
  */
-class InitiationController : public ExperimentController
+class InitiationLeaderController : public ExperimentController
 {
     Q_OBJECT
 public:
     //! Constructor. Gets the robot and the settings.
-    InitiationController(FishBot* robot,
-                         ExperimentControllerSettingsPtr settings);
+    InitiationLeaderController(FishBot* robot,
+                               ExperimentControllerSettingsPtr settings);
 
 public:
     //! Called when the controller is activated. Used to reset parameters.
@@ -54,18 +54,20 @@ private:
     bool timeToDepart();
     //! Checks that the fish follow.
     bool fishFollow();
+    //! Counts the number of fish around the robot.
+    int fishAroundRobot();
 
 private:
     //! The settings for this controller.
-    InitiationControllerSettingsData m_settings;
+    InitiationLeaderControllerSettingsData m_settings;
 
     //! The current state of the robot.
     State m_state;
 
-    //! The flag that defines that we need to limit the model area to the
-    //! current room occupied by the robot. The goal is to prevent the robot
-    //! from leaving the room when in the model-based control mode.
-    bool m_limitModelArea;
+//    //! The flag that defines that we need to limit the model area to the
+//    //! current room occupied by the robot. The goal is to prevent the robot
+//    //! from leaving the room when in the model-based control mode.
+//    bool m_limitModelArea;
 
     //! The departure timer.
     Timer m_departureTimer;
@@ -73,6 +75,9 @@ private:
     //! the robot will start this timer to know when it needs to check that the
     //! fish follow it.
     Timer m_fishFollowCheckTimer;
+    //! When the robot changes the room, it first goes in fish motion pattern
+    //! and then one second later switches to PID
+    Timer m_fishToPIDTimer;
     //! The flag to check that we have entered to the target room. 
     bool m_inTargetRoom;
 
@@ -82,4 +87,4 @@ private:
     QString m_departureAreaId;
 };
 
-#endif // CATS2_INITIATION_CONTROLLER_HPP
+#endif // CATS2_INITIATION_LEADER_CONTROLLER_HPP

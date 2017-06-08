@@ -79,7 +79,8 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
 
     // undistort the calibration points
     std::vector<cv::Point2f> undistortedImagePoints;
-    cv::undistortPoints(imagePoints, undistortedImagePoints, m_cameraMatrix, m_distortionCoefficients, cv::Mat(), m_optimalCameraMatrix);
+    cv::undistortPoints(imagePoints, undistortedImagePoints, m_cameraMatrix,
+                        m_distortionCoefficients, cv::Mat(), m_optimalCameraMatrix);
 
     // set the initial values for translation and rotation
     // we suppose the camera to be in the origin and no rotation
@@ -87,7 +88,9 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
     m_tvec = cv::Mat::zeros(3, 1, cv::DataType<double>::type);
 
     // run the calibration on the undistorted points
-    double rms = cv::solvePnP(worldPoints, undistortedImagePoints, m_optimalCameraMatrix, cv::Mat(), m_rvec, m_tvec, true,  cv::SOLVEPNP_EPNP);
+    /*double rms = */cv::solvePnP(worldPoints, undistortedImagePoints,
+                                  m_optimalCameraMatrix, cv::Mat(), m_rvec,
+                                  m_tvec, true, cv::SOLVEPNP_EPNP);
 //    qDebug() << "Calibrarion error" << rms;
 
     std::cout << m_rvec << std::endl;
@@ -99,7 +102,8 @@ void CameraCalibration::calibrate(QString calibrationFileName, QSize targetFrame
 
     // uncomment to compute and print the reprojection error
     std::vector<cv::Point2f> projectedPoints;
-    cv::projectPoints(worldPoints, m_rvec, m_tvec, m_optimalCameraMatrix, cv::Mat(), projectedPoints);
+    cv::projectPoints(worldPoints, m_rvec, m_tvec, m_optimalCameraMatrix,
+                      cv::Mat(), projectedPoints);
     double error = 0;
     for(unsigned int i = 0; i < projectedPoints.size(); ++i)
     {
@@ -196,7 +200,7 @@ PositionPixels CameraCalibration::worldToImage(PositionMeters worldCoordinates)
                                      m_yInversionCoefficient * worldCoordinates.y() * 1000,
                                      worldCoordinates.z()/* * 1000*/));
     cv::projectPoints(worldPoint, m_rvec, m_tvec, m_cameraMatrix, m_distortionCoefficients, projectedPoint);
-    return PositionPixels(projectedPoint[0].x, projectedPoint[0].y);
+    return PositionPixels(m_imageScaleCoefficientX * projectedPoint[0].x, m_imageScaleCoefficientY * projectedPoint[0].y);
 }
 
 /*!

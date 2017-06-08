@@ -119,6 +119,9 @@ int main(int argc, char *argv[])
                         } else {
                             currentPositionImage.setX(xImageString.toDouble() / widthScale);
                             currentPositionImage.setY(yImageString.toDouble() / heightScale);
+                            //if one wants to shrink the image with a resolution (for instance 0.8), like frank
+                            //currentPositionImage.setX((((xImageString.toDouble()-(sourceWidthString.toDouble()/2)) *0.8)+(sourceWidthString.toDouble()/2)) / widthScale);
+                            //currentPositionImage.setY((((yImageString.toDouble()-(sourceHeightString.toDouble()/2)) *0.8)+(sourceHeightString.toDouble()/2)) / heightScale);
                             currentPositionImage.setValid(true);
                         }
                         // convert the position to world coordinates

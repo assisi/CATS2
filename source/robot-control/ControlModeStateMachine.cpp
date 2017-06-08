@@ -111,6 +111,17 @@ void ControlModeStateMachine::setTargetPosition(PositionMeters position)
 }
 
 /*!
+ * Sets the parameters of the fish model.
+ */
+void ControlModeStateMachine::setModelParameters(ModelParameters parameters)
+{
+    if (m_controlModes.contains(ControlModeType::MODEL_BASED)) {
+        ControlMode* mode = m_controlModes[ControlModeType::MODEL_BASED].data();
+        dynamic_cast<ModelBased*>(mode)->setParameters(parameters);
+    }
+}
+
+/*!
  * Limits the arena matrix of the model-based control mode by a mask. The mask
  * is defined by a set of polygons and is labeled with an id.
  */

@@ -11,9 +11,9 @@ class GoStraight : public ControlMode
     Q_OBJECT
 public:
     //! Constructor.
-    GoStraight(FishBot* robot);
+    explicit GoStraight(FishBot* robot);
     //! Destructor.
-    ~GoStraight();
+    virtual ~GoStraight() override;
 
     //! The step of the control mode, generates the constant speed target.
     virtual ControlTargetPtr step() override;

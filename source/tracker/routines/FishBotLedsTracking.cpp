@@ -132,7 +132,7 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
     try { // TODO : to check if this try-catch can be removed or if it should be used everywhere where opencv methods are used.
         // retrieve contours from the binary image
         cv::findContours(m_binaryImage, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
-    } catch(cv::Exception& e) {
+    } catch (const cv::Exception& e) {
         qDebug() << "OpenCV exception: " << e.what();
     }
 
@@ -150,7 +150,6 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
 
     // if the size is correct then get two biggest contours
     cv::Point2f agentPosition;
-    double agentOrientation;
     if (contours.size() > 1) {
         // center of the contour
         std::vector<cv::Point2f> contourCenters;
@@ -159,19 +158,22 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
         }
         // compute the agent's position that is between two contours, and the orientation
         agentPosition = ((contourCenters[0] + contourCenters[1]) / 2);
+
         // this orientation is still precise up to +180 degrees
-        agentOrientation = qAtan2(contourCenters[1].y - contourCenters[0].y,
-                                  contourCenters[1].x - contourCenters[0].x);
+        double agentOrientationRad = qAtan2(contourCenters[1].y - contourCenters[0].y,
+                contourCenters[1].x - contourCenters[0].x);
         // define the direction
         cv::Point2f agentVector = contourCenters[1] - contourCenters[0]; // the agent body
         cv::Point2f agentDisplacementVector = agentPosition - previousState.position().toCvPoint2f(); // new postion minus previous position
-        // first we define the orientation with the displacement, 0.3 px is an empirical parameter to
-        // decide that the robot moves
-         if (previousState.position().isValid() && (cv::norm(agentDisplacementVector) > 1.00)) {
+        // first we define the orientation with the displacement, 1.0 px is an
+        // empirical parameter to decide that the robot moves
+        if (previousState.position().isValid() &&
+                (!previousState.orientation().isInvalid()) && // i.e. both markers were detected successfully, thus the centre of the robot is correct
+                (cv::norm(agentDisplacementVector) > 1.0)) {
             // if vectors are oppositely directed then we correct the orientation
             if (agentVector.dot(agentDisplacementVector) < 0)
-                agentOrientation += M_PI;
-            robot.mutableState()->setOrientation(agentOrientation);
+                agentOrientationRad += M_PI;
+            robot.mutableState()->setOrientation(agentOrientationRad);
         } // FIXME : debug this part
          /*else if (previousState.orientation().isValid()) {
             // otherwise we try to define the correct orientation with the previous orientation
@@ -183,8 +185,8 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
             robot.mutableState()->setOrientation(agentOrientation);
         } */else {
             // the orientation can not be defined
-            robot.mutableState()->setOrientation(agentOrientation);
-            robot.mutableState()->invalidateOrientation();
+            robot.mutableState()->setOrientation(agentOrientationRad);
+            robot.mutableState()->setOrientationValidity(OrientationValidity::AMBIGUOUS);
         }
 
          // set the position
@@ -193,9 +195,12 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
         // if only one blob is detected, then we take its position as the robot's position
         agentPosition = cv::Point2f(contourCenter(contours[0]));
         robot.mutableState()->setPosition(agentPosition);
+        // but we cann't determine the orientation
+        robot.mutableState()->invalidateOrientation();
     } else {
         // TODO : add a Kalman here to avoid loosing the robot when sometimes
         // it's hidden by other objects on the arena.
+        robot.mutableState()->invalidateState();
     }
 }
 

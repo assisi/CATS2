@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <opencv_storage>
     <experiment>
-        <type>Initiation</type>
-        <name>TestExperiment</name>
+        <type>Test</type>
+        <name>Orientation</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>4</numberOfAnimals>
+            <numberOfAnimals>0</numberOfAnimals>
         </agents>
         <setupMapPath>setup/epfl-two-rooms.xml</setupMapPath>
     </experiment>
@@ -51,7 +51,7 @@
         <controlModes>
             <!-- TODO : to implement -->
             <trajectory>
-                <points>trajectories/fish-trajectory.xml</points>
+                <points>trajectories/fish-two-rooms-small.xml</points>
                 <loopTrajectory>1</loopTrajectory>
                 <providePointsOnTimer>1</providePointsOnTimer>
                 <updateRateHz>15</updateRateHz>
@@ -62,14 +62,17 @@
             <fishMotionPatternFrequencyDivider>10</fishMotionPatternFrequencyDivider>
             <fishMotionPattern>
                 <distanceCm>25</distanceCm>
-                <speedCmSec>19</speedCmSec> <!--Speed fish behaviour -->
+                <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
-                <kp>1.15</kp>
+                <kp>3.5</kp>
                 <ki>0.05</ki>
                 <kd>0.00</kd>
+                <kpDist>150.0</kpDist>
+                <kiDist>1.00</kiDist>
+                <kdDist>2.00</kdDist>
             </pid>
-            <defaultLinearSpeedCmSec>25</defaultLinearSpeedCmSec>
+            <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
             <needOrientationToNavigate>0</needOrientationToNavigate>
         </navigation>
         <controllers>
@@ -92,22 +95,22 @@
             </initiation>
         </controllers>
         <fishBot_1>
-            <id>H</id>
-            <ledColor>
-                <r>90</r>
-                <g>150</g>
-                <b>200</b>
-            </ledColor>
-            <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
+             <id>C</id>
+                <ledColor>
+                    <r>190</r>
+                    <g>255</g>
+                    <b>190</b>
+                </ledColor>
+                <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
         </fishBot_1>
         <fishBot_2>
-            <id>C</id>
-            <ledColor>
-                <r>190</r>
-                <g>255</g>
-                <b>190</b>
-            </ledColor>
-            <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
+            <id>H</id>
+                <ledColor>
+                    <r>90</r>
+                    <g>150</g>
+                    <b>200</b>
+                </ledColor>
+                <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
         </fishBot_2>
         <fishBot_3>
             <id>B</id>
@@ -132,7 +135,7 @@
             <cameraCalibrationFile>camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
-                <numberOfAgents>5</numberOfAgents>
+                <numberOfAgents>1</numberOfAgents>
                 <blobDetector>
                     <minBlobSizePx>3</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
@@ -153,15 +156,15 @@
                 <trackingMethod>fishBotLedsTracking</trackingMethod>
                 <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
+                    <fishBot_C>
+                        <threshold>70</threshold>
+                    </fishBot_C>
                     <fishBot_H>
                         <threshold>30</threshold>
                     </fishBot_H>
                     <fishBot_B>
                         <threshold>70</threshold>
                     </fishBot_B>
-                    <fishBot_C>
-                        <threshold>30</threshold>
-                    </fishBot_C>
                 </fishBotLedsTracking>
             </tracking>
         </cameraBelow>

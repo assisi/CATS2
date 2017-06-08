@@ -232,9 +232,9 @@ void MainWindow::connectPrimaryView()
 
         // connect to the robots controller
         connect(viewerWidget, &ViewerWidget::notifyButtonClick,
-                [=](Qt::MouseButton button,PositionMeters worldPosition)
+                [=](Qt::MouseButton button, PositionMeters worldPosition)
                 {
-                    if (button = Qt::RightButton)
+                    if (button == Qt::RightButton)
                         m_robotsHandler->contolLoop().data()->goToPosition(worldPosition);
                 });
         connect(m_robotsHandler->contolLoop().data(),
@@ -259,6 +259,10 @@ void MainWindow::connectPrimaryView()
                 &ControlLoop::notifyRobotLedColor,
                 viewerWidget,
                 &ViewerWidget::updateColor);
+        connect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifyObstacleDetectedStatusChanged,
+                viewerWidget,
+                &ViewerWidget::highlightAgent);
 
         // request to get robots leds' colors
         m_robotsHandler->contolLoop()->requestRobotsLedColors();
@@ -332,6 +336,10 @@ void MainWindow::disconnectPrimaryView()
                    &ViewerWidget::updateTrajectory);
         disconnect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
                 viewerWidget, &ViewerWidget::updateSetup);
+        disconnect(m_robotsHandler->contolLoop().data(),
+                   &ControlLoop::notifyObstacleDetectedStatusChanged,
+                   viewerWidget,
+                   &ViewerWidget::highlightAgent);
     }
 }
 

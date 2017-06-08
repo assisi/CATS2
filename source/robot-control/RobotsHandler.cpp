@@ -45,6 +45,7 @@ void RobotsHandler::requestSetupMap()
 {
     if (RobotControlSettings::get().setupMap().isValid()) {
         QList<WorldPolygon> polygons = {RobotControlSettings::get().setupMap().polygon()};
+        polygons.append(RobotControlSettings::get().setupMap().excludedPolygons());
         AnnotatedPolygons annotatedPolygons;
         annotatedPolygons.polygons = polygons;
         emit notifySetupMap(annotatedPolygons);

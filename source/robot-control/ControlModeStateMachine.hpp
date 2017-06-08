@@ -3,6 +3,7 @@
 
 #include "RobotControlPointerTypes.hpp"
 #include <control-modes/ControlModeType.hpp>
+#include <control-modes/ModelParameters.hpp>
 
 #include <AgentState.hpp>
 
@@ -32,6 +33,10 @@ public:
 public:
     //! Sets the target position for the go-to-position control mode.
     void setTargetPosition(PositionMeters targetPosition);
+
+public:
+    //! Sets the parameters of the fish model.
+    void setModelParameters(ModelParameters parameters);
     //! Limits the arena matrix of the model-based control mode by a mask.
     //! The mask is defined by a set of polygons and is labeled with an id.
     void limitModelArea(QString maskId, QList<WorldPolygon> allowedArea);

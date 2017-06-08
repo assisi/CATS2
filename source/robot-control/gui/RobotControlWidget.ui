@@ -175,7 +175,6 @@
           </widget>
          </item>
         </layout>
-        <zorder></zorder>
         <zorder>controlModeStatusLabel</zorder>
        </widget>
       </item>

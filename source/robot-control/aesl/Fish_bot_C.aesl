@@ -63,8 +63,8 @@ var DesiredSpeedRight=0
 var IDControl=0
 
 # Variables used for obstacle avoidance
-var ObstacleAvoidance=0 #0=no obstacle avoidance 1=braitenberg  2=turn to avoid
-var ThreshSensor=150
+var ObstacleAvoidance=1 #0=no obstacle avoidance 1=braitenberg  2=turn to avoid
+var ThreshSensor=30
 
 # Variables used for turn to avoid
 var SpeedAvoid=5
@@ -73,7 +73,7 @@ var TimeAvoid=6000
 var TimeAvoidBack=2000
 
 # Variables used for braitenberg
-var coeffAvoid=300
+var coeffAvoid=150
 var threshback=500 #hack pour reculer
 
 #Variables used for Fish Behavior
@@ -111,12 +111,46 @@ mot1.pid.enable=2
 mot2.pid.enable=2
 DesiredSpeedLeft=event.args[1]
 DesiredSpeedRight=event.args[0]
+
 if (event.args[0])>mot1.pid.speed_max or (event.args[1])>mot2.pid.speed_max or (event.args[0])&lt;-mot1.pid.speed_max or (event.args[1])&lt;-mot2.pid.speed_max then
 	mot1.pid.target_speed=0
 	mot2.pid.target_speed=0
 else
-	mot1.pid.target_speed=event.args[1]
-	mot2.pid.target_speed=-event.args[0]
+	if ObstacleAvoidance==1 then
+		Mot1BefSensor=DesiredSpeedLeft
+		Mot2BefSensor=-DesiredSpeedRight
+		if IR_front_left > ThreshSensor and IR_front_right &lt; ThreshSensor then
+			mot1.pid.target_speed=Mot1BefSensor-(IR_front_left/coeffAvoid)
+			mot2.pid.target_speed=Mot2BefSensor
+			emit Obstacle[IDControl]
+		elseif IR_front_right > ThreshSensor and IR_front_left &lt; ThreshSensor then
+			mot1.pid.target_speed=Mot1BefSensor
+			mot2.pid.target_speed=Mot2BefSensor+(IR_front_right/coeffAvoid)
+			emit Obstacle[IDControl]
+		elseif IR_front_right > ThreshSensor and IR_front_left > ThreshSensor then
+			i=0
+			emit Obstacle[IDControl]
+			if  IR_front_right>IR_front_left then
+				mot1.pid.target_speed=-2
+				mot2.pid.target_speed=5				
+			else
+				mot1.pid.target_speed=-5
+				mot2.pid.target_speed=2		
+			end
+	
+			while i&lt;TimeAvoid do
+				i=i+1		
+			end
+			mot1.pid.target_speed=Mot1BefSensor
+			mot2.pid.target_speed=Mot2BefSensor
+		else			
+			mot1.pid.target_speed=event.args[1]
+			mot2.pid.target_speed=-event.args[0]		
+		end
+	else
+		mot1.pid.target_speed=event.args[1]
+		mot2.pid.target_speed=-event.args[0]
+	end
 end
 
 onevent PositionControl
@@ -178,35 +212,35 @@ if pwgnd&lt;1 then
 	emit PowerDown[IDControl]
 end
 	
-if ObstacleAvoidance==1 then
-	Mot1BefSensor=DesiredSpeedLeft
-	Mot2BefSensor=-DesiredSpeedRight
-	if IR_front_left > ThreshSensor and IR_front_right &lt; ThreshSensor then
-		mot1.pid.target_speed=Mot1BefSensor-(IR_front_left/coeffAvoid)
-		mot2.pid.target_speed=Mot2BefSensor
-	elseif IR_front_right > ThreshSensor and IR_front_left &lt; ThreshSensor then
-		mot1.pid.target_speed=Mot1BefSensor
-		mot2.pid.target_speed=Mot2BefSensor+(IR_front_right/coeffAvoid)
-	elseif IR_front_right > ThreshSensor and IR_front_left > ThreshSensor then
-		i=0
-		mot1.pid.enable=2
-		mot2.pid.enable=2	
-		if  IR_front_right>IR_front_left then
-			mot1.pid.target_speed=-2
-			mot2.pid.target_speed=5				
-		else
-			mot1.pid.target_speed=-5
-			mot2.pid.target_speed=2		
-		end
+#if ObstacleAvoidance==1 then
+#	Mot1BefSensor=DesiredSpeedLeft
+#	Mot2BefSensor=-DesiredSpeedRight
+#	if IR_front_left > ThreshSensor and IR_front_right &lt; ThreshSensor then
+#		mot1.pid.target_speed=Mot1BefSensor-(IR_front_left/coeffAvoid)
+#		mot2.pid.target_speed=Mot2BefSensor
+#	elseif IR_front_right > ThreshSensor and IR_front_left &lt; ThreshSensor then
+#		mot1.pid.target_speed=Mot1BefSensor
+#		mot2.pid.target_speed=Mot2BefSensor+(IR_front_right/coeffAvoid)
+#	elseif IR_front_right > ThreshSensor and IR_front_left > ThreshSensor then
+#		i=0
+#		mot1.pid.enable=2
+#		mot2.pid.enable=2	
+#		if  IR_front_right>IR_front_left then
+#			mot1.pid.target_speed=-2
+#			mot2.pid.target_speed=5				
+#		else
+#			mot1.pid.target_speed=-5
+#			mot2.pid.target_speed=2		
+#		end
+#
+#		while i&lt;TimeAvoid do
+#			i=i+1		
+#		end
+#		mot1.pid.target_speed=Mot1BefSensor
+#		mot2.pid.target_speed=Mot2BefSensor			
+#	end
 
-		while i&lt;TimeAvoid do
-			i=i+1		
-		end
-		mot1.pid.target_speed=Mot1BefSensor
-		mot2.pid.target_speed=Mot2BefSensor			
-	end
-
-elseif ObstacleAvoidance==2 then
+if ObstacleAvoidance==2 then
 	Mot1BefSensor=mot1.pid.target_speed
 	Mot2BefSensor=mot2.pid.target_speed
 	if IR_front_left > ThreshSensor and IR_front_right &lt; ThreshSensor then

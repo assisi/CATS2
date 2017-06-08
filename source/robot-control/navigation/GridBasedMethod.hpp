@@ -15,7 +15,9 @@ class GridBasedMethod
 {
 public:
     //! Constructor.
-    GridBasedMethod(double gridSizeMeters);
+    explicit GridBasedMethod(double gridSizeMeters);
+    //! Destructor.
+    virtual ~GridBasedMethod();
 
 public:
     //! Returns the polygon representing the setup.
@@ -99,6 +101,8 @@ protected:
     //! The masks that might be applied on the setup grid. They are ordered by
     //! ids.
     QMap<QString, cv::Mat> m_areaMasks;
+    //! The current mask id used.
+    QString m_currentMaskId;
     //! The current grid used by this method, it's the setup grid that might be
     //! limited by a mask.
     cv::Mat m_currentGrid;
