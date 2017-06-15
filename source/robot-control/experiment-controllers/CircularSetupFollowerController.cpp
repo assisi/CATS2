@@ -8,6 +8,15 @@ CircularSetupFollowerController::CircularSetupFollowerController(FishBot* robot,
 }
 
 /*!
+ * Called when the controller is activated. Used to reset parameters.
+ */
+void CircularSetupFollowerController::start()
+{
+    // start the timer
+    m_fishTurningAngleUpdateTimer.reset();
+}
+
+/*!
  * Returns the control values for given position.
  */
 ExperimentController::ControlData CircularSetupFollowerController::step()
@@ -15,8 +24,11 @@ ExperimentController::ControlData CircularSetupFollowerController::step()
     ControlData controlData;
     // a check for the valid robot pointer
     if (m_robot) {
-        // find out where the fish go
-        computeFishTurningDirection();
+        // find out where the fish go, updated regularly
+        if (m_fishTurningAngleUpdateTimer.isTimedOutSec(FishTurningDirectionUpdateTimeout)) {
+            computeFishTurningDirection();
+            m_fishTurningAngleUpdateTimer.reset();
+        }
         // and do the same
         updateTargetTurningDirection(m_fishGroupTurningDirection);
         // notify
