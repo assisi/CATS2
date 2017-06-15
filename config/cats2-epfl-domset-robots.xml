@@ -10,8 +10,8 @@
         <setupMapPath>setup/epfl-domset.xml</setupMapPath>
     </experiment>
     <robots>
-        <numberOfRobots>1</numberOfRobots>
-        <controlFrequencyHz>15</controlFrequencyHz>
+        <numberOfRobots>0</numberOfRobots>
+        <controlFrequencyHz>10</controlFrequencyHz>
         <fishModel>
             <agent>
                 <length>0.02</length>
@@ -160,7 +160,7 @@
                 <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
                     <fishBot_C>
-                        <threshold>70</threshold>
+                        <threshold>30</threshold>
                     </fishBot_C>
                     <fishBot_H>
                         <threshold>30</threshold>
