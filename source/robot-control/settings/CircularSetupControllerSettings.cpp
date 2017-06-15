@@ -43,7 +43,11 @@ bool CircularSetupControllerSettings::init(QString configurationFileName)
     m_data.setControlAreasFileName(configurationFolder +
                                    QDir::separator() +
                                    QString::fromStdString(controlAreasFilePath));
-
+    // read the target position radius
+    double targetRadius = 0;
+    settings.readVariable(QString("%1/targetPositionRadius").arg(m_settingPathPrefix),
+                          targetRadius, targetRadius);
+    m_data.setTargetRadiusM(targetRadius);
     // read the delta angle
     double angleDeg = 0;
     settings.readVariable(QString("%1/targetDeltaAngleDeg").arg(m_settingPathPrefix),

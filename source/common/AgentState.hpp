@@ -181,6 +181,23 @@ public:
         return PositionMeters(rotated_x + center.x(), rotated_y + center.y() / 2);
     }
 
+    //! Returns the angle to another point.
+    double angleRadTo(const PositionMeters &other)
+    {
+        if (qFuzzyCompare(other.y(), m_y) && qFuzzyCompare(other.x(), m_x))
+            return 0;
+        else
+            return qAtan2(other.y() - m_y, other.x() - m_x);
+    }
+
+    //! Returns a point at given angle and distance.
+    PositionMeters positionAt(double angleRad, double distanceM)
+    {
+        double x = m_x + distanceM * qCos(angleRad);
+        double y = m_y + distanceM * qSin(angleRad);
+        return PositionMeters(x, y);
+    }
+
 private:
     //! Position x.
     double m_x;  // [m]

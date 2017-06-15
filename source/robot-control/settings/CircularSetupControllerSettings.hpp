@@ -25,6 +25,14 @@ public:
         m_controlAreasFileName = controlAreasFileName;
     }
 
+    //! Returns the radius to set the target.
+    double targetRadiusM() const { return m_targetRadiusM; }
+    //! Set the radius to set the target.
+    void setTargetRadiusM(double targetRadiusM)
+    {
+        m_targetRadiusM = targetRadiusM;
+    }
+
     //! Returns the delta angle to set the target.
     double targetDeltaAngleRad() const { return m_targetDeltaAngleRad; }
     //! Set the delta angle to set the target.
@@ -36,7 +44,10 @@ public:
 protected:
     //! The path to the file describine the control areas.
     QString m_controlAreasFileName;
-    //! The delta angle to set the target position with respect to the robot
+    //! The radius of trajectory in meters to set the target position with
+    //! respect to the robot.
+    double m_targetRadiusM;
+    //! The delta angle to set the target position with respect to the robot.
     double m_targetDeltaAngleRad;
 };
 

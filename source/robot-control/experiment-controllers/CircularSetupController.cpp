@@ -99,7 +99,8 @@ PositionMeters CircularSetupController::computeTargetPosition()
         double deltaAngleRad = m_settings.targetDeltaAngleRad();
         if (m_targetTurningDirection == TurningDirection::CLOCK_WISE)
             deltaAngleRad *= -1;
-        return (m_robot->state().position().rotated2d(deltaAngleRad, m_setupCenter));
+        double angleToRobotRad = m_setupCenter.angleRadTo(m_robot->state().position());
+        return m_setupCenter.positionAt(angleToRobotRad + deltaAngleRad, m_settings.targetRadiusM());
     } else {
         return PositionMeters::invalidPosition();
     }
