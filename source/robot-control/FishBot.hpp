@@ -164,6 +164,8 @@ signals: // robot on-board data
 signals: // navigation
     //! Sends the control map areas' polygons.
     void notifyControlAreasPolygons(QString agentId, QList<AnnotatedPolygons> polygons);
+    //! Sends the areas' occupation by fish information.
+    void notifyFishNumberByAreas(QString agentId, QMap<QString, int> fishNumberByArea);
     //! Sends the current target.
     void notifyTargetPositionChanged(QString agentId, PositionMeters position);
     //! Sends the current trajectory.
