@@ -48,7 +48,7 @@ ExperimentController::ControlData DominatingSetController::step()
             if (m_controlAreas.contains(m_robotAreaId)) {
                 m_robotAreaDefined = true;
                 controlData.controlMode = ControlModeType::MODEL_BASED;
-                controlData.motionPattern = MotionPatternType::FISH_MOTION;
+                controlData.motionPattern = MotionPatternType::PID;
                 controlData.data = QVariant::fromValue(m_controlAreas[m_robotAreaId]->annotatedPolygons());
             } else {
                 // stop until it's detected
@@ -57,7 +57,7 @@ ExperimentController::ControlData DominatingSetController::step()
         } else {
             // do model motion
             controlData.controlMode = ControlModeType::MODEL_BASED;
-            controlData.motionPattern = MotionPatternType::FISH_MOTION;
+            controlData.motionPattern = MotionPatternType::PID;
         }
     }
     return controlData;
