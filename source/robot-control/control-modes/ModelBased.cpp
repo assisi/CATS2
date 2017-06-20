@@ -66,6 +66,11 @@ ControlTargetPtr ModelBased::step()
             status += QString(", dist. %1 m")
                     .arg(robotPosition.distance2DTo(m_targetPosition), 0, 'f', 3);
         }
+        // TODO : temporary, to remove
+        // check if the target position is inside the model area
+        if (!containsPoint(m_targetPosition)) {
+            qDebug() << "Attention: the target position is outside of the map";
+        }
         emit notifyControlModeStatus(status);
         return ControlTargetPtr(new TargetPosition(m_targetPosition));
     }
