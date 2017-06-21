@@ -26,8 +26,10 @@ public:
             string = "controlMap";
             break;
         case INITIATION_LEADER:
+            string = "initiationLeader";
+            break;
         case INITIATION_LURE:
-            string = "initiation";
+            string = "initiationLure";
             break;
         case NONE:
         default:
