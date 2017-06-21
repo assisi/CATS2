@@ -24,6 +24,12 @@ private:
     Timer m_fishTurningAngleUpdateTimer;
     //! The constant that define how often we update the fish turning direction.
     static constexpr double FishTurningDirectionUpdateTimeout = 1.0;
+
+    //! The timer to give the robot to turn efficiently when changing direction.
+    Timer m_changingDirectionTimer;
+    //! The constant that define the sufficient time to change the direction.
+    static constexpr double RobotChangingDirectionTimeout = 1.0;
+
 };
 
 #endif // CATS2_CIRCULAR_SETUP_FOLLOWER_CONTROLLER_HPP
