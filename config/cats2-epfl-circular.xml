@@ -65,7 +65,7 @@
                 <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
-                <kp>3.5</kp>
+                <kp>5.0</kp>
                 <ki>0.05</ki>
                 <kd>0.00</kd>
                 <kpDist>150.0</kpDist>
@@ -82,7 +82,7 @@
             </controlMap>
             <circularSetup>
                 <controlAreasPath>control-maps/epfl-four-sectors-control-map.xml</controlAreasPath>
-                <targetPositionRadius>0.24</targetPositionRadius>
+                <targetPositionRadius>0.26</targetPositionRadius>
                 <targetDeltaAngleDeg>20.</targetDeltaAngleDeg>
             </circularSetup>
         </controllers>
