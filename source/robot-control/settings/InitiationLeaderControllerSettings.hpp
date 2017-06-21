@@ -19,7 +19,7 @@ public:
 
     //! Constructor.
     InitiationLeaderControllerSettingsData() :
-        m_controlAreasFileName(),
+        m_defaultControlAreasFileName(),
         m_depatureTrigger(ON_TIME_OUT),
         m_departureTimeOutSec(5.),
         m_fishNumberAroundOnDeparture(1),
@@ -42,11 +42,11 @@ public:
 
 public:
     //! Returns the path to the file describine the control areas.
-    QString controlAreasFileName() const { return m_controlAreasFileName; }
+    QString defaultControlAreasFileName() const { return m_defaultControlAreasFileName; }
     //! Set the path to the file describine the control areas.
-    void setControlAreasFileName(QString controlAreasFileName)
+    void setDefaultControlAreasFileName(QString controlAreasFileName)
     {
-        m_controlAreasFileName = controlAreasFileName;
+        m_defaultControlAreasFileName = controlAreasFileName;
     }
 
     //! Sets the departure trigger.
@@ -107,8 +107,9 @@ public:
     bool departureWhenInGroup() const { return (m_depatureTrigger == WHEN_IN_GROUP);}
 
 protected:
-    //! The path to the file describing the control areas.
-    QString m_controlAreasFileName;
+    //! The path to the file describing the control areas. In addition for every
+    //! robot we can set a specific control areas file.
+    QString m_defaultControlAreasFileName;
     //! The trigger event to leave the room.
     DepartureTrigger m_depatureTrigger;
     //! The time the robot waits before trying the initiation procedure.

@@ -71,6 +71,24 @@ bool RobotControlSettings::init(QString configurationFileName)
                               target, target);
         robotSettings.setConnectionTarget(QString::fromStdString(target));
 
+        // read the control areas for all available controllers
+        for (int type = ExperimentControllerType::CONTROL_MAP;
+             type <= ExperimentControllerType::INITIATION_LURE; type++ )
+        {
+            ExperimentControllerType::Enum controllerType =
+                    static_cast<ExperimentControllerType::Enum>(type);
+            std::string controlAreaFile = "";
+            settings.readVariable(QString("robots/fishBot_%1/robotControlMaps/%2/path")
+                                  .arg(index)
+                                  .arg(ExperimentControllerType::toSettingsString(controllerType)),
+                                  controlAreaFile);
+            if (!controlAreaFile.empty())
+                robotSettings.setControlAreasFile(controllerType,
+                                                  configurationFolder +
+                                                  QDir::separator() +
+                                                  QString::fromStdString(controlAreaFile));
+        }
+
         // add settings
         m_robotsSettings.insert(robotSettings.id(), robotSettings);
         settingsAccepted = settingsAccepted && (id.size() > 0);

@@ -236,3 +236,27 @@ void ExperimentController::updateRobotArea(QString areaId)
         m_robotAreaChanged = false;
     }
 }
+
+/*!
+ * Tries to read the robot specific control map for this controller.
+ */
+bool ExperimentController::readRobotControlMap()
+{
+    QString controlMapFileName = RobotControlSettings::get().
+            robotSettings(m_robot->id()).controlAreasFile(m_type);
+    if (!controlMapFileName.isEmpty()) {
+        qDebug() << QString("Load specific control map (%3) for %1 for "
+                            "experiment %2")
+                    .arg(m_robot->name())
+                    .arg(ExperimentControllerType::toString(m_type))
+                    .arg(controlMapFileName);
+        readControlMap(controlMapFileName);
+        return true;
+    } else {
+        qDebug() << QString("Will load default control map for %1 for experiment"
+                            " %2")
+                    .arg(m_robot->name())
+                    .arg(ExperimentControllerType::toString(m_type));
+        return false;
+    }
+}
