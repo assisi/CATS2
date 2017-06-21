@@ -18,13 +18,20 @@ ExperimentController::ControlData CircularSetupFollowerController::step()
         // find out where the fish go
         computeFishTurningDirection();
         // and do the same
-        updateTargetTurningDirection(m_fishGroupTurningDirection);
+        bool directionChanged = updateTargetTurningDirection(m_fishGroupTurningDirection);
         // notify
         emit notifyControllerStatus(QString("fish: %1; robot follows")
                                     .arg(TurningDirection::toString(m_fishGroupTurningDirection)));
         // set the control data
-        controlData.controlMode = ControlModeType::GO_TO_POSITION;
-        controlData.motionPattern = MotionPatternType::PID;
+        if (directionChanged) {
+            // when the robot changes swimming direction to the oposite we
+            // set the fish motion to make the robot turn sharper
+            controlData.controlMode = ControlModeType::GO_TO_POSITION;
+            controlData.motionPattern = MotionPatternType::FISH_MOTION;
+        } else {
+            controlData.controlMode = ControlModeType::GO_TO_POSITION;
+            controlData.motionPattern = MotionPatternType::PID;
+        }
         // target position is based on the turning direction
         controlData.data =
             QVariant::fromValue(computeTargetPosition());
