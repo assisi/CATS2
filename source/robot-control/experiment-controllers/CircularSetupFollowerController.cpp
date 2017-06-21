@@ -14,6 +14,8 @@ void CircularSetupFollowerController::start()
 {
     // start the timer
     m_fishTurningAngleUpdateTimer.reset();
+    // call the CircularSetupController's start method to reset statistics
+    CircularSetupController::start();
 }
 
 /*!
