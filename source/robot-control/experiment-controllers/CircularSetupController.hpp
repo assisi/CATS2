@@ -57,13 +57,20 @@ public:
     CircularSetupController(FishBot* robot,
                             ExperimentControllerSettingsPtr settings);
 
+public:
+    //! Called when the controller is activated. Used to reset parameters.
+    virtual void start() override;
+    //! Called when the controller is disactivated.
+    virtual void finish() override;
+
 protected:
     //! Calculates the turning directions of the fish group.
     void computeFishTurningDirection();
     //! Computes the target for the robot based on the target turning direction.
     PositionMeters computeTargetPosition();
-    //! Updates the current target turning direction for the robot.
-    void updateTargetTurningDirection(TurningDirection::Enum turningDirection);
+    //! Updates the current target turning direction for the robot. Returns true
+    //! if the turning direction changes.
+    bool updateTargetTurningDirection(TurningDirection::Enum turningDirection);
 
 private:
     //! Compares two area ids, returns 1 if first is bigger, -1 if it is smaller
@@ -89,6 +96,11 @@ protected:
     TurningDirection::Enum m_targetTurningDirection;
     //! The center of the circular setup (must be specified in the settings).
     PositionMeters m_setupCenter;
+
+    //! Counts the measements when the fish was going clock-wise.
+    int m_clockWiseCounter;
+    //! Counts all measements.
+    int m_allMeasurementsCounter;
 };
 
 #endif // CATS2_CIRCULAR_SETUP_CONTROLLER_HPP

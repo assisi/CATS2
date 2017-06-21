@@ -13,7 +13,9 @@ CircularSetupController::CircularSetupController(FishBot* robot,
     m_minAreaId(""),
     m_maxAreaId(""),
     m_targetTurningDirection(TurningDirection::UNDEFINED),
-    m_setupCenter(PositionMeters::invalidPosition())
+    m_setupCenter(PositionMeters::invalidPosition()),
+    m_clockWiseCounter(0),
+    m_allMeasurementsCounter(0)
 {
     CircularSetupControllerSettings* controllerSettings =
             dynamic_cast<CircularSetupControllerSettings*>(settings.data());
@@ -64,6 +66,11 @@ void CircularSetupController::computeFishTurningDirection()
             m_fishGroupTurningDirection = TurningDirection::CLOCK_WISE;
         else if (comparison < 0)
             m_fishGroupTurningDirection = TurningDirection::COUNTER_CLOCK_WISE;
+
+        // update the statistics
+        m_allMeasurementsCounter++;
+        if (m_fishGroupTurningDirection == TurningDirection::CLOCK_WISE)
+            m_clockWiseCounter++;
     }
 }
 
@@ -108,7 +115,7 @@ PositionMeters CircularSetupController::computeTargetPosition()
 /*!
  * Updates the current target turning direction for the robot.
  */
-void CircularSetupController::updateTargetTurningDirection(TurningDirection::Enum turningDirection)
+bool CircularSetupController::updateTargetTurningDirection(TurningDirection::Enum turningDirection)
 {
     if (m_targetTurningDirection != turningDirection) {
         qDebug() << QString("%1 turning direction changed from %2 to %3")
@@ -116,5 +123,34 @@ void CircularSetupController::updateTargetTurningDirection(TurningDirection::Enu
                     .arg(TurningDirection::toString(m_targetTurningDirection))
                     .arg(TurningDirection::toString(turningDirection));
         m_targetTurningDirection = turningDirection;
+        return true;
+    } else
+        return false;
+}
+
+/*!
+ * Called when the controller is activated. Used to reset parameters.
+ */
+void CircularSetupController::start()
+{
+    m_clockWiseCounter = 0;
+    m_allMeasurementsCounter = 0;
+}
+
+/*!
+ * Called when the controller is disactivated.
+ */
+void CircularSetupController::finish()
+{
+    if (m_allMeasurementsCounter != 0) {
+        double clockWisePercent = 100 * static_cast<double>(m_clockWiseCounter) /
+                static_cast<double>(m_allMeasurementsCounter);
+        qDebug() << QString("Experiment is finished: fish went clock-wise %1 "
+                            "percent of time and counter-clock-wise %2 percent "
+                            "of time")
+                    .arg(clockWisePercent)
+                    .arg(100 - clockWisePercent);
+    } else {
+        qDebug() << "Experiment is finished but no measurements were made";
     }
 }
