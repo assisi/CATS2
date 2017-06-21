@@ -30,7 +30,8 @@ ControlLoop::ControlLoop() :
                             robot->setControlMode(ControlModeType::IDLE);
                 });
 
-        // send the cotrol areas for the _selected_ robot if the corresponding flag is set
+        // send the control areas for the _selected_ robot if the corresponding
+        // flag is set
         connect(m_robots.last().data(), &FishBot::notifyControlAreasPolygons,
                 [=](QString agentId, QList<AnnotatedPolygons> polygons)
                 {
@@ -39,6 +40,17 @@ ControlLoop::ControlLoop() :
                             (m_selectedRobot->id() == agentId))
                     {
                         emit notifyRobotControlAreasPolygons(agentId, polygons);
+                    }
+                });
+
+        // send the control areas occupation by fish information for the
+        // _selected_ robot
+        connect(m_robots.last().data(), &FishBot::notifyFishNumberByAreas,
+                [=](QString agentId, QMap<QString, int> fishNumberByArea)
+                {
+                    if (m_selectedRobot && (m_selectedRobot->id() == agentId))
+                    {
+                        emit notifyFishNumberByRobotControlAreas(agentId, fishNumberByArea);
                     }
                 });
 

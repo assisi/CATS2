@@ -7,6 +7,7 @@
 #include <AgentData.hpp>
 
 #include <QtCore/QObject>
+#include <QtCore/QMap>
 #include <QtCore/QTimer>
 
 /*!
@@ -54,7 +55,11 @@ public slots:
 
 signals:
     //! Sends the control map areas' polygons of the robot.
-    void notifyRobotControlAreasPolygons(QString agentId, QList<AnnotatedPolygons> polygons);
+    void notifyRobotControlAreasPolygons(QString agentId,
+                                         QList<AnnotatedPolygons> polygons);
+    //!  Sends the current robot's control areas' occupation by fish information.
+    void notifyFishNumberByRobotControlAreas(QString agentId,
+                                             QMap<QString, int> fishNumberByArea);
     //! Sends the trajectory of the robot.
     void notifyRobotTrajectoryChanged(QString agentId, QQueue<PositionMeters> trajectory);
     //! Sends the target of the robot.

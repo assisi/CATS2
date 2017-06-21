@@ -16,7 +16,13 @@ public:
     enum { Type = UserType + 5 };
 
     //! Constructor.
-    AnnotatedPolygonItem(QPolygonF polygon, QString label);
+    AnnotatedPolygonItem(QPolygonF polygon, QString title);
+
+public:
+    //! Return the area's label.
+    QString title() const { return m_title; }
+    //! Sets the status string.
+    void setText(QString text);
 
 public:
     //! Returns the type of the item.
@@ -30,7 +36,9 @@ private:
     //! The polygon to draw.
     QPolygonF m_polygon;
     //! The label to put on the polygon.
-    QString m_label;
+    QString m_title;
+    //! The polygon text, provides some extra-information.
+    QString m_text;
 };
 
 #endif // CATS2_ANNOTATED_POLYGON_ITEM_HPP

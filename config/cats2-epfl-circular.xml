@@ -82,26 +82,27 @@
             </controlMap>
             <circularSetup>
                 <controlAreasPath>control-maps/epfl-four-sectors-control-map.xml</controlAreasPath>
-                <targetDeltaAngleDeg>10.</targetDeltaAngleDeg>
+                <targetPositionRadius>0.24</targetPositionRadius>
+                <targetDeltaAngleDeg>20.</targetDeltaAngleDeg>
             </circularSetup>
         </controllers>
         <fishBot_1>
-             <id>C</id>
-                <ledColor>
-                    <r>190</r>
-                    <g>255</g>
-                    <b>190</b>
-                </ledColor>
-                <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
+            <id>H</id>
+            <ledColor>
+                <r>90</r>
+                <g>150</g>
+                <b>200</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
         </fishBot_1>
         <fishBot_2>
-            <id>H</id>
-                <ledColor>
-                    <r>90</r>
-                    <g>150</g>
-                    <b>200</b>
-                </ledColor>
-                <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
+            <id>C</id>
+            <ledColor>
+                <r>190</r>
+                <g>255</g>
+                <b>190</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
         </fishBot_2>
         <fishBot_3>
             <id>B</id>
