@@ -12,7 +12,7 @@ class InitiationLeaderControllerSettingsData
 public:
     //! Constructor.
     InitiationLeaderControllerSettingsData() :
-        m_controlAreasFileName(),
+        m_defaultControlAreasFileName(),
         m_fishNumberAroundOnDeparture(1),
         m_groupRadius(0.1),
         m_fishFollowCheckTimeOutSec(5.),
@@ -21,11 +21,11 @@ public:
 
 public:
     //! Returns the path to the file describine the control areas.
-    QString controlAreasFileName() const { return m_controlAreasFileName; }
+    QString defaultControlAreasFileName() const { return m_defaultControlAreasFileName; }
     //! Set the path to the file describine the control areas.
-    void setControlAreasFileName(QString controlAreasFileName)
+    void setDefaultControlAreasFileName(QString controlAreasFileName)
     {
-        m_controlAreasFileName = controlAreasFileName;
+        m_defaultControlAreasFileName = controlAreasFileName;
     }
 
     //! Returns the number of fish that should be around the robot when it leaves.
@@ -67,8 +67,9 @@ public:
     }
 
 protected:
-    //! The path to the file describing the control areas.
-    QString m_controlAreasFileName;
+    //! The path to the file describing the control areas. In addition for every
+    //! robot we can set a specific control areas file.
+    QString m_defaultControlAreasFileName;
     //! The number of fish that should be around the robot when it leaves.
     int m_fishNumberAroundOnDeparture;
     //! The radius around the robot where we search for fish.

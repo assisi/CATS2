@@ -40,7 +40,7 @@ bool InitiationLeaderControllerSettings::init(QString configurationFileName)
     std::string controlAreasFilePath = "";
     settings.readVariable(QString("%1/controlAreasPath").arg(m_settingPathPrefix),
                           controlAreasFilePath, controlAreasFilePath);
-    m_data.setControlAreasFileName(configurationFolder +
+    m_data.setDefaultControlAreasFileName(configurationFolder +
                                    QDir::separator() +
                                    QString::fromStdString(controlAreasFilePath));
 
@@ -66,5 +66,5 @@ bool InitiationLeaderControllerSettings::init(QString configurationFileName)
                           fishNumber, m_data.maximalFishNumberAllowedToStay());
     m_data.setMaximalFishNumberAllowedToStay(fishNumber);
 
-    return (QFileInfo(m_data.controlAreasFileName()).exists());
+    return (QFileInfo(m_data.defaultControlAreasFileName()).exists());
 }

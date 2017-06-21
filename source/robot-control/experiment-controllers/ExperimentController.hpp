@@ -66,6 +66,8 @@ signals:
     void notifyControllerStatus(QString status);
 
 protected:
+    //! Tries to read the robot specific control map for this controller.
+    bool readRobotControlMap();
     //! Reads the control map from a file.
     void readControlMap(QString controlAreasFileName);
 

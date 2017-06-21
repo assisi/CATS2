@@ -90,13 +90,21 @@
             </initiation>
         </controllers>
         <fishBot_1>
-             <id>C</id>
-                <ledColor>
-                    <r>190</r>
-                    <g>255</g>
-                    <b>190</b>
-                </ledColor>
-                <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
+            <id>C</id>
+            <ledColor>
+                <r>190</r>
+                <g>255</g>
+                <b>190</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
+            <robotControlMaps>
+                <controlMap>
+                    <path>control-maps/test-control-map.xml</path>
+                </controlMap>
+                <initiation>
+                    <path>control-maps/epfl-two-rooms-control-map.xml</path>
+                </initiation>
+            </robotControlMaps>
         </fishBot_1>
         <fishBot_2>
             <id>H</id>
