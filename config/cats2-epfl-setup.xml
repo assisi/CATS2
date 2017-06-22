@@ -171,6 +171,7 @@
     </setups>
     <interSpecies>
         <publisherAddress>tcp://127.0.0.1:50001</publisherAddress>
+        <subscriberAddress>tcp://127.0.0.1:50002</subscriberAddress>
     </interSpecies>
 </opencv_storage>
 

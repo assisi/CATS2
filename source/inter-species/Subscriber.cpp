@@ -15,6 +15,12 @@ Subscriber::Subscriber(zmq::context_t& context, QString subscriberAddress):
     m_subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
     // connect to the socket
     m_subscriber.connect(subscriberAddress.toStdString().c_str());
+    if (!m_subscriber.connected())
+        qDebug() << QString("Could not connect to the address %1")
+                    .arg(subscriberAddress.toStdString().c_str());
+    else
+        qDebug() << QString("Connected to the address %1")
+                    .arg(subscriberAddress.toStdString().c_str());
 }
 
 /*!
@@ -39,7 +45,10 @@ void Subscriber::process()
 
     // receive and recode incoming messages
     while (!m_stopped) {
-        if (recvMultipart(m_subscriber, name, device, command, data)) {
+        if (m_subscriber.connected() && recvMultipart(m_subscriber, name, device, command, data)) {
+            qDebug() << "Message received"
+                     << QString::fromStdString(name)
+                     << QString::fromStdString(device) << QString::fromStdString(command) << QString::fromStdString(data);
             // TODO : analyse the type of the message and to send the
             // corresponding message
         } else {

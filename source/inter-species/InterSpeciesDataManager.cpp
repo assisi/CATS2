@@ -31,7 +31,7 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
  */
 void InterSpeciesDataManager::publishMessage(std::string& name,std::string& device,std::string& desc,std::string& data)
 {
-    zmq::sendMultipart (m_publisher, name, device, desc, data);
+    zmq::sendMultipart(m_publisher, name, device, desc, data);
 }
 
 /*!
