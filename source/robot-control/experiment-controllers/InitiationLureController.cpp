@@ -188,6 +188,7 @@ ExperimentController::ControlData InitiationLureController::stateControlData()
         } else {
             ModelParameters parameters;
             parameters.ignoreFish = true;
+//            parameters.ignoreRobot = true;
             controlData.data = QVariant::fromValue(parameters);
         }
         break;
