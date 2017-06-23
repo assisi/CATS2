@@ -13,7 +13,8 @@ public:
         NONE,
         CONTROL_MAP,
         INITIATION_LEADER,
-        INITIATION_LURE
+        INITIATION_LURE,
+        UNDEFINED
     };
 
     //! Returns the controller type string that is used to look for the settings
@@ -32,6 +33,7 @@ public:
             string = "initiationLure";
             break;
         case NONE:
+        case UNDEFINED:
         default:
             break;
         }
@@ -53,8 +55,11 @@ public:
             string = "Initiation lure";
             break;
         case NONE:
+            string = "Disabled";
+            break;
+        case UNDEFINED:
         default:
-            string = "None";
+            string = "Undefined";
             break;
         }
         return string;
