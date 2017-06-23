@@ -47,6 +47,10 @@ void ExperimentController::readControlMap(QString controlAreasFileName)
         // read area id
         std::string id;
         settings.readVariable(QString("area_%1/id").arg(areaIndex), id);
+        if (id.empty()) {
+            qDebug() << "Could not read the area's id, it should start with a letter";
+            continue;
+        }
         // read the area type
         std::string type;
         settings.readVariable(QString("area_%1/type").arg(areaIndex), type);
@@ -90,6 +94,7 @@ void ExperimentController::readControlMap(QString controlAreasFileName)
         // add to the areas map
         m_controlAreas[area->id()] = area;
     }
+    qDebug() << QString("Read %1 areas").arg(m_controlAreas.size());
 
     // read the prefered area if available
     std::string preferedAreaId;
@@ -140,17 +145,18 @@ void ExperimentController::updateAreasOccupation()
  */
 bool ExperimentController::findFishArea(QString& maxFishNumberAreaId)
 {
+    bool status = false;
     if (m_robot) {
+        // setup the map to count the fish
+        for (const auto& areaId : m_controlAreas.keys())
+            m_fishNumberByArea[areaId] = 0;
         // get the fish states
         QList<StateWorld> fishStates = m_robot->fishStates();
         if (fishStates.size() > 0) {
-            // setup the map to count the fish
-            for (const auto& areaId : m_controlAreas.keys())
-                m_fishNumberByArea[areaId] = 0;
             // for every fish check where it is
-            for (const auto& state : fishStates) {
+            for (const auto& fishState : fishStates) {
                 QString areaId;
-                if (findAreaByPosition(areaId, state.position())) {
+                if (findAreaByPosition(areaId, fishState.position())) {
                     m_fishNumberByArea[areaId]++;
                 }
             }
@@ -166,14 +172,16 @@ bool ExperimentController::findFishArea(QString& maxFishNumberAreaId)
             // restore the values if nothing found
             if (maxFishNumber == 0) {
                 maxFishNumberAreaId = prevMaxFishNumberAreaId;
-                return false;
+                status = false;
             } else {
-                return true;
+                status = true;
             }
-
         }
     }
-    return false;
+    // send the area's occupation data update
+    emit notifyFishNumberByAreas(m_fishNumberByArea);
+    // return the status
+    return status;
 }
 
 /*!

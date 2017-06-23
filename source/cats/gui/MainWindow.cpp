@@ -242,6 +242,10 @@ void MainWindow::connectPrimaryView()
                 viewerWidget,
                 &ViewerWidget::updateControlAreas);
         connect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifyFishNumberByRobotControlAreas,
+                viewerWidget,
+                &ViewerWidget::updateControlAreasOccupation);
+        connect(m_robotsHandler->contolLoop().data(),
                 &ControlLoop::notifySelectedRobotChanged,
                 viewerWidget,
                 &ViewerWidget::updateCurrentAgent);
@@ -322,6 +326,10 @@ void MainWindow::disconnectPrimaryView()
                    &ControlLoop::notifyRobotControlAreasPolygons,
                    viewerWidget,
                    &ViewerWidget::updateControlAreas);
+        disconnect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifyFishNumberByRobotControlAreas,
+                viewerWidget,
+                &ViewerWidget::updateControlAreasOccupation);
         disconnect(m_robotsHandler->contolLoop().data(),
                    &ControlLoop::notifySelectedRobotChanged,
                    viewerWidget,
