@@ -15,7 +15,7 @@ public:
         INITIATION_LEADER,
         INITIATION_LURE,
         INTERSPECIES,
-	UNDEFINED
+        UNDEFINED
     };
 
     //! Returns the controller type string that is used to look for the settings
