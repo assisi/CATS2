@@ -45,6 +45,10 @@ void ExperimentController::readControlMap(QString controlAreasFileName)
         // read area id
         std::string id;
         settings.readVariable(QString("area_%1/id").arg(areaIndex), id);
+        if (id.empty()) {
+            qDebug() << "Could not read the area's id, it should start with a letter";
+            continue;
+        }
         // read the area type
         std::string type;
         settings.readVariable(QString("area_%1/type").arg(areaIndex), type);
@@ -88,6 +92,7 @@ void ExperimentController::readControlMap(QString controlAreasFileName)
         // add to the areas map
         m_controlAreas[area->id()] = area;
     }
+    qDebug() << QString("Read %1 areas").arg(m_controlAreas.size());
 
     // read the prefered area if available
     std::string preferedAreaId;

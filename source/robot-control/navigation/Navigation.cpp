@@ -179,9 +179,9 @@ void Navigation::sendFishMotionParameters(int angle, int distance, int speed)
     Values data;
 
     // bound the angle
-    if(angle >180)
+    if (angle > 180)
         angle = 180;
-    else if (angle <-180)
+    else if (angle < -180)
         angle = -180;
 
     // TODO : to check other parameters

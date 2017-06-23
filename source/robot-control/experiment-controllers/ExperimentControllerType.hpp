@@ -16,7 +16,8 @@ public:
         INITIATION_LURE,
         CIRCULAR_SETUP_FOLLOWER,
         CIRCULAR_SETUP_LEADER_CW,
-        CIRCULAR_SETUP_LEADER_CCW
+        CIRCULAR_SETUP_LEADER_CCW,
+        UNDEFINED
     };
 
     //! Returns the controller type string that is used to look for the settings
@@ -37,6 +38,7 @@ public:
             string = "circularSetup";
             break;
         case NONE:
+        case UNDEFINED:
         default:
             break;
         }
@@ -66,8 +68,11 @@ public:
             string = "Circular setup leader (CCW)";
             break;
         case NONE:
+            string = "Disabled";
+            break;
+        case UNDEFINED:
         default:
-            string = "None";
+            string = "Undefined";
             break;
         }
         return string;
