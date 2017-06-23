@@ -73,6 +73,9 @@ public slots:
     void updateTarget(QString agentId, PositionMeters position);
     //! Update areas on the scene for specific agent.
     void updateControlAreas(QString agentId, QList<AnnotatedPolygons> polygons);
+    //! Update the number of animals for every area on the screen.
+    void updateControlAreasOccupation(QString agentId,
+                                      QMap<QString, int> animalsNumberByArea);
     //! Show/hides the navigation data.
     void setShowControlAreas(bool dataShown);
 

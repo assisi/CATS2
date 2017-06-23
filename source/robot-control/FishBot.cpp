@@ -32,6 +32,12 @@ FishBot::FishBot(QString id) :
             {
                 emit notifyControlAreasPolygons(m_id, polygons);
             });
+    // fish number by area
+    connect(&m_experimentManager, &ExperimentManager::notifyFishNumberByAreas,
+            [=](QMap<QString, int> fishNumberByArea)
+            {
+                emit notifyFishNumberByAreas(m_id, fishNumberByArea);
+            });
     // navigation data
     connect(&m_navigation, &Navigation::notifyTargetPositionChanged,
             [=](PositionMeters position)

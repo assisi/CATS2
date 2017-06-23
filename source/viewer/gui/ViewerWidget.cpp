@@ -456,6 +456,28 @@ void ViewerWidget::updateControlAreas(QString agentId, QList<AnnotatedPolygons> 
 }
 
 /*!
+ * Update the number of animals for every area on the screen.
+ */
+void ViewerWidget::updateControlAreasOccupation(QString agentId,
+                                                QMap<QString, int> animalsNumberByArea)
+{
+    // if the agent is not known then do nothing
+    if (!m_controlAreas.contains(agentId)) {
+        return;
+    }
+
+    QList<AnnotatedPolygonItem*>& items = m_controlAreas[agentId];
+
+    // update the occupation
+    for (AnnotatedPolygonItem* item : items) {
+        QString areaId = item->title();
+        if (animalsNumberByArea.contains(areaId)) {
+            item->setText(QString::number(animalsNumberByArea[areaId]));
+        }
+    }
+}
+
+/*!
  * Request to update the trajectory on the scene.
  */
 void ViewerWidget::updateTrajectory(QString agentId, QQueue<PositionMeters> worldPolygon)
