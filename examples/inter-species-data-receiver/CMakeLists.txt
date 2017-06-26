@@ -10,23 +10,19 @@ if (NOT ZeroMQ_INCLUDE_DIR)
 endif()
 include_directories(${ZeroMQ_INCLUDE_DIR})
 
-# make the list of files to compile
 set(srcs
-    InterSpeciesDataManager.cpp
-    Subscriber.cpp
+    main.cpp
+    MainWindow.cpp
 )
 
-set(hdrs
-    zmqHelpers.hpp
-    settings/InterSpeciesSettings.cpp
-)
+qt5_wrap_ui(uis_hdrs MainWindow.ui)
+#qt5_add_resources(resources icons.qrc)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
-include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/source/messages)
+include_directories(${CMAKE_SOURCE_DIR}/source/inter-species)
+include_directories(${CMAKE_SOURCE_DIR}/source/messages)
 
-add_library(inter-species SHARED ${inter-species_source_files} ${srcs} ${hdrs})
-target_link_libraries(inter-species common messages Qt5::Core ${ZeroMQ_LIBRARY} ${PROTOBUF_LIBRARIES})
-
-#install(TARGETS inter-species DESTINATION .)
-#install(FILES
-#         DESTINATION include/inter-species)
+add_executable(inter-species-data-receiver ${srcs} ${uis_hdrs})
+target_link_libraries(inter-species-data-receiver common inter-species messages
+                      Qt5::DBus Qt5::Core Qt5::Widgets Qt5::Gui
+                      ${ZeroMQ_LIBRARY})
