@@ -14,7 +14,6 @@ public:
         CONTROL_MAP,
         INITIATION_LEADER,
         INITIATION_LURE,
-        INTERSPECIES,
         UNDEFINED
     };
 
