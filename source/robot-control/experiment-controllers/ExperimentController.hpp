@@ -70,14 +70,13 @@ protected:
 protected:
     //! Find where the robot and the fish are.
     void updateAreasOccupation();
-    //! Finds the room that contains given point.
-    bool findAreaByPosition(QString& areaId, const PositionMeters& position);
-    //! Finds the room with the majority of fish. Returns the success status.
-    bool findFishArea(QString& areaId);
+    //! Search for the fish.
+    void searchForFish();
+    //! Search for the robot.
+    void searchForRobot();
+
     //! Counts the fish number in all rooms different from the current one.
     int fishNumberInOtherRooms(QString currentAreaId);
-    //! Finds the room where the robot is. Returns the success status.
-    bool findRobotArea(QString& areaId);
 
 protected:
     //! A pointer to the robot that is controlled by this controller.
@@ -95,10 +94,21 @@ protected:
     QMap<QString, int> m_fishNumberByArea;
     //! The flag that shows that the robot's area has changed.
     bool m_robotAreaChanged;
+    //! The flag that shows that the fish's area has changed.
+    bool m_fishAreaChanged;
 
 private:
+    //! Finds the room that contains given point.
+    bool findAreaByPosition(QString& areaId, const PositionMeters& position);
+    //! Finds the room with the majority of fish. Returns the success status.
+    bool findFishArea(QString& areaId);
+    //! Finds the room where the robot is. Returns the success status.
+    bool findRobotArea(QString& areaId);
+
     //! Sets the robot's area.
     void updateRobotArea(QString areaId);
+    //! Sets the fish's area.
+    void updateFishArea(QString areaId);
 };
 
 #endif // CATS2_EXPERIMENT_CONTROLLER_HPP
