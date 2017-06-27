@@ -63,6 +63,11 @@ public:
     //! Called when the controller is disactivated.
     virtual void finish() override;
 
+signals:
+    //! Informs the interspecies-module on the fish and robots turning directions.
+    void notifyTurningDirections(QString fishTurningDirection,
+                                 QString robotTurningDirection);
+
 protected:
     //! Calculates the turning directions of the fish group.
     void computeFishTurningDirection();

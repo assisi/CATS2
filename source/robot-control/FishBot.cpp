@@ -56,6 +56,14 @@ FishBot::FishBot(QString id) :
             [=]() { releaseModelArea(); });
     connect(&m_experimentManager, &ExperimentManager::notifyControllerStatus,
             this, &FishBot::notifyControllerStatus);
+    connect(&m_experimentManager, &ExperimentManager::notifyCircularSetupTurningDirections,
+            [=](QString fishTurningDirection, QString robotTurningDirection)
+            {
+                emit notifyCircularSetupTurningDirections(m_id,
+                                                                fishTurningDirection,
+                                                                robotTurningDirection);
+            });
+
     // control modes
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);

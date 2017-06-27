@@ -138,6 +138,12 @@ signals: // control states
     void notifyControllerChanged(ExperimentControllerType::Enum type);
     //! Sends out the current controller status.
     void notifyControllerStatus(QString status);
+
+    //! Sends the data from the circular experiment.
+    void notifyCircularSetupTurningDirections(QString agentId,
+                                                    QString fishTurningDirection,
+                                                    QString robotTurningDirection);
+
     //! Informs that the robot's control mode was modified.
     void notifyControlModeChanged(ControlModeType::Enum type);
     //! Sends out the current control mode status.
@@ -182,7 +188,6 @@ public:
 private:
     //! Sets the control parameters based on the control map.
     void stepExperimentManager();
-
 
     //! Updates the parameters of the model.
     void setModelParameters(ModelParameters parameters);

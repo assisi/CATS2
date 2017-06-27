@@ -82,3 +82,27 @@ std::string InterSpeciesDataManager::agentTypeToString(AgentType agentType)
         return "undefined";
     }
 }
+
+/*!
+ * Triggered when new data on the fish group and robot rotation direction
+ * arrive from the circular experiment.
+ */
+void InterSpeciesDataManager::publishCicrularExperimentData(QString agentId,
+                                                            QString fishTurningDirection,
+                                                            QString robotTurningDirection)
+{
+    std::string message;
+    message.append("fish:");
+    message.append(fishTurningDirection.toStdString());
+    message.append(",");
+    message.append("fishCasu:");
+    message.append(robotTurningDirection.toStdString());
+
+    std::string name = "casu-001";
+    std::string device = "CommEth";
+    std::string command = "cats";
+    publishMessage(name, device, command, message);
+
+    name = "casu-002";
+    publishMessage(name, device, command, message);
+}

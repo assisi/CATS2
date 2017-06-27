@@ -70,6 +70,10 @@ signals:
     void notifyRobotLedColor(QString agentId, QColor ledColor);
     //! Notifies that the obstacle avoidance status has changed.
     void notifyObstacleDetectedStatusChanged(QString agentId, bool obstacleDetected);
+    //! Sends the data from the circular experiment.
+    void notifyCircularSetupTurningDirections(QString agentId,
+                                              QString fishTurningDirection,
+                                              QString robotTurningDirection);
 
 private:
     //! Loads and initializes the robots' firmware scripts for the shared

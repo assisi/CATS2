@@ -47,6 +47,12 @@ signals:
     //! Sends the areas' occupation by fish information.
     void notifyFishNumberByAreas(QMap<QString, int>);
 
+signals: // experiment specific
+    //! Informs the interspecies-module on the fish and robots turning
+    //! directions in the circular setup experiment.
+    void notifyCircularSetupTurningDirections(QString fishTurningDirection,
+                                              QString robotTurningDirection);
+
 private:
     //! The list of experiment controllers available to this manager.
     QMap<ExperimentControllerType::Enum, ExperimentControllerPtr> m_controllers;

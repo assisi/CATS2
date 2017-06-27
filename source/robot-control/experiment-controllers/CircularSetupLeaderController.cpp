@@ -18,12 +18,18 @@ ExperimentController::ControlData CircularSetupLeaderController::step()
     ControlData controlData;
     // a check for the valid robot pointer
     if (m_robot) {
-        // find out where the fish go for the informative purposes
-        computeFishTurningDirection();
-        // notify
-        emit notifyControllerStatus(QString("fish: %1; robot: %2")
-                                    .arg(TurningDirection::toString(m_fishGroupTurningDirection))
-                                    .arg(TurningDirection::toString(m_targetTurningDirection)));
+        // find out where the fish go for the informative purposes, updated regularly
+        if (m_fishTurningAngleUpdateTimer.isTimedOutSec(FishTurningDirectionUpdateTimeout)) {
+            computeFishTurningDirection();
+            m_fishTurningAngleUpdateTimer.reset();
+            // notify
+            emit notifyControllerStatus(QString("fish: %1; robot: %2")
+                                        .arg(TurningDirection::toString(m_fishGroupTurningDirection))
+                                        .arg(TurningDirection::toString(m_targetTurningDirection)));
+            emit notifyTurningDirections(TurningDirection::toString(m_fishGroupTurningDirection),
+                                         TurningDirection::toString(m_targetTurningDirection));
+        }
+
         // set the control data
         controlData.controlMode = ControlModeType::GO_TO_POSITION;
         controlData.motionPattern = MotionPatternType::PID;

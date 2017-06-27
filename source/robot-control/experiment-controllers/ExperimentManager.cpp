@@ -39,6 +39,24 @@ ExperimentManager::ExperimentManager(FishBot* robot) :
     connect(m_controllers[m_currentController].data(),
             &ExperimentController::notifyControllerStatus,
             this, &ExperimentManager::notifyControllerStatus);
+
+    // connect experiment specific signals
+    for (int controllerTypeInd = ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER;
+         controllerTypeInd <= ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW;
+         controllerTypeInd++)
+    {
+        ExperimentControllerType::Enum controllerType;
+        if (m_controllers.contains(static_cast<ExperimentControllerType::Enum>(controllerType))) {
+            CircularSetupController* controller =
+                    dynamic_cast<CircularSetupController*>(m_controllers[controllerType].data());
+            if (controller) {
+                connect(controller,
+                        &CircularSetupController::notifyTurningDirections,
+                        this,
+                        &ExperimentManager::notifyCircularSetupTurningDirections);
+            }
+        }
+    }
 }
 
 /*!

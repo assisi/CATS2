@@ -51,10 +51,10 @@ MainWindow::MainWindow(QWidget *parent) :
     m_interSpeciesDataManager =
             InterSpeciesDataManagerPtr(new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress(),
                                                                    InterSpeciesSettings::get().subscriberAddress()));
-    connect(m_trackingDataManager.data(),
-            &TrackingDataManager::notifyAgentDataImageMerged,
-            m_interSpeciesDataManager.data(),
-            &InterSpeciesDataManager::publishAgentData);
+//    connect(m_trackingDataManager.data(),
+//            &TrackingDataManager::notifyAgentDataImageMerged,
+//            m_interSpeciesDataManager.data(),
+//            &InterSpeciesDataManager::publishAgentData);
 
     // create the robot control handler
     m_robotsHandler = RobotsHandlerPtr(new RobotsHandler());
@@ -89,6 +89,12 @@ MainWindow::MainWindow(QWidget *parent) :
         else
             setSecondaryView(SetupType::CAMERA_BELOW);
     }
+
+    // connecting to inter-species
+    connect(m_robotsHandler->contolLoop().data(),
+            &ControlLoop::notifyCircularSetupTurningDirections,
+            m_interSpeciesDataManager.data(),
+            &InterSpeciesDataManager::publishCicrularExperimentData);
 
     // show the window maximazed
      setWindowState(Qt::WindowMaximized);

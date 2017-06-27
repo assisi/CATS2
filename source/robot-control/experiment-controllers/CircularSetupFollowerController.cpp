@@ -28,16 +28,19 @@ ExperimentController::ControlData CircularSetupFollowerController::step()
     ControlData controlData;
     // a check for the valid robot pointer
     if (m_robot) {
+        bool directionChanged;
         // find out where the fish go, updated regularly
         if (m_fishTurningAngleUpdateTimer.isTimedOutSec(FishTurningDirectionUpdateTimeout)) {
             computeFishTurningDirection();
             m_fishTurningAngleUpdateTimer.reset();
+            // update the target direction
+            directionChanged = updateTargetTurningDirection(m_fishGroupTurningDirection);
+            // notify
+            emit notifyControllerStatus(QString("fish: %1; robot follows")
+                                        .arg(TurningDirection::toString(m_fishGroupTurningDirection)));
+            emit notifyTurningDirections(TurningDirection::toString(m_fishGroupTurningDirection),
+                                         TurningDirection::toString(m_targetTurningDirection));
         }
-        // and do the same
-        bool directionChanged = updateTargetTurningDirection(m_fishGroupTurningDirection);
-        // notify
-        emit notifyControllerStatus(QString("fish: %1; robot follows")
-                                    .arg(TurningDirection::toString(m_fishGroupTurningDirection)));
 
         // set the turning timer if the direction is changed
         if (directionChanged)

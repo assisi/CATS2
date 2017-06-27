@@ -28,7 +28,13 @@ public:
 
 public slots:
     //! Triggered when new agent data is to be published.
+    //! NOTE: seems like obsolete, it was done to sent data to CATS originally.
     void publishAgentData(QList<AgentDataImage> agentDataList);
+    //! Triggered when new data on the fish group and robot rotation direction
+    //! arrive from the circular experiment.
+    void publishCicrularExperimentData(QString agentId,
+                                       QString fishTurningDirection,
+                                       QString robotTurningDirection);
 
 private:
     //! Publishes the message.
