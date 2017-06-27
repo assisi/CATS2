@@ -9,7 +9,7 @@
 #include <QtCore/QThread>
 
 InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
-                                                 QString subscriberAddress) :
+                                                 QStringList subscriberAddresses) :
     QObject(nullptr),
     m_context(1),
     m_publisher(m_context, ZMQ_PUB)
@@ -17,7 +17,7 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
     m_publisher.bind(publisherAddress.toStdString().data());
 
     // launch the tracking routine in a separated thread
-    m_subscriber = SubscriberPtr(new Subscriber(m_context, subscriberAddress));
+    m_subscriber = SubscriberPtr(new Subscriber(m_context, subscriberAddresses));
     QThread* thread = new QThread;
     m_subscriber->moveToThread(thread);
     connect(thread, &QThread::started, m_subscriber.data(), &Subscriber::process);

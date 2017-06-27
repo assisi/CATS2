@@ -24,7 +24,7 @@ class InterSpeciesDataManager : public QObject
 public:
     //! Constructor. Creates the publisher socket on the provided address.
     explicit InterSpeciesDataManager(QString publisherAddress,
-                                     QString subscriberAddress);
+                                     QStringList subscriberAddresses);
 
 public slots:
     //! Triggered when new agent data is to be published.
