@@ -24,7 +24,13 @@ MainWindow::MainWindow(QWidget *parent) :
     if (!subscriberAddresses.isEmpty()) {
         m_ui->bindLabel->setText("Binds:" + subscriberAddresses[0]);
 
-        m_publisher.bind(subscriberAddresses[0].toStdString().c_str());
+        try {
+            m_publisher.connect(subscriberAddresses[0].toStdString().data());
+            qDebug() << QString("Connected to %1").arg(subscriberAddresses[0]);
+        } catch (const zmq::error_t& e) {
+            qDebug() <<  QString("Exception while connecting to %1").arg(subscriberAddresses[0])
+                      << e.what();
+        }
 
         connect(&m_timer, &QTimer::timeout, [=](){
             zmq::sendMultipart(m_publisher, "ASSISIbf", "ASSISIbf", "ASSISIbf", "ASSISIbf");

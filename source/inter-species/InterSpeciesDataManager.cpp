@@ -14,7 +14,13 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
     m_context(1),
     m_publisher(m_context, ZMQ_PUB)
 {
-    m_publisher.bind(publisherAddress.toStdString().data());
+    try {
+        m_publisher.connect(publisherAddress.toStdString().data());
+        qDebug() << QString("Connected to %1").arg(publisherAddress);
+    } catch (const zmq::error_t& e) {
+        qDebug() <<  QString("Exception while connecting to %1").arg(publisherAddress)
+                  << e.what();
+    }
 
     // launch the tracking routine in a separated thread
     m_subscriber = SubscriberPtr(new Subscriber(m_context, subscriberAddresses));
