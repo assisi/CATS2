@@ -35,7 +35,8 @@ RobotsWidget::RobotsWidget(ControlLoopPtr contolLoop, QWidget *parent) :
             });
     // populate the tabs with the robots' information
     for (auto& robot : contolLoop->robots()) {
-        int newTabIndex = m_ui->robotsTabWidget->addTab(new RobotControlWidget(robot), robot->name());
+        RobotControlWidget* robotControlWidget = new RobotControlWidget(robot);
+        int newTabIndex = m_ui->robotsTabWidget->addTab(robotControlWidget, robot->name());
 
         // set the current connection status
         ConnectionStatus status = ConnectionStatus::DISCONNECTED;

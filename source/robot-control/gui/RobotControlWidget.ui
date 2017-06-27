@@ -50,6 +50,13 @@
       <property name="spacing">
        <number>3</number>
       </property>
+      <item row="0" column="1">
+       <widget class="QLabel" name="robotNameLabel">
+        <property name="text">
+         <string>name</string>
+        </property>
+       </widget>
+      </item>
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
@@ -57,10 +64,29 @@
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QLabel" name="robotNameLabel">
+      <item row="0" column="2">
+       <widget class="QPushButton" name="reconnectButton">
+        <property name="maximumSize">
+         <size>
+          <width>32</width>
+          <height>32</height>
+         </size>
+        </property>
+        <property name="toolTip">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Reconnect this robot&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
         <property name="text">
-         <string>name</string>
+         <string/>
+        </property>
+        <property name="icon">
+         <iconset resource="../../cats/icons.qrc">
+          <normaloff>:/resources/icons/ic_autorenew_black_24dp.png</normaloff>:/resources/icons/ic_autorenew_black_24dp.png</iconset>
+        </property>
+        <property name="iconSize">
+         <size>
+          <width>24</width>
+          <height>24</height>
+         </size>
         </property>
        </widget>
       </item>
@@ -175,7 +201,6 @@
           </widget>
          </item>
         </layout>
-        <zorder>controlModeStatusLabel</zorder>
        </widget>
       </item>
       <item>
