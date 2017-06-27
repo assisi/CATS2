@@ -20,16 +20,20 @@ MainWindow::MainWindow(QWidget *parent) :
     m_publisher(m_context, ZMQ_PUB)
 {
     m_ui->setupUi(this);
-    QString subscriberAddress = InterSpeciesSettings::get().subscriberAddress();
-    m_ui->bindLabel->setText("Binds:" + subscriberAddress);
+    QStringList subscriberAddresses = InterSpeciesSettings::get().subscriberAddresses();
+    if (!subscriberAddresses.isEmpty()) {
+        m_ui->bindLabel->setText("Binds:" + subscriberAddresses[0]);
 
-    m_publisher.bind(subscriberAddress.toStdString().c_str());
+        m_publisher.bind(subscriberAddresses[0].toStdString().c_str());
 
-    connect(&m_timer, &QTimer::timeout, [=](){
-        zmq::sendMultipart(m_publisher, "ASSISIbf", "ASSISIbf", "ASSISIbf", "ASSISIbf");
-        qDebug() << "Message is sent";
-    });
-    m_timer.start(1000);
+        connect(&m_timer, &QTimer::timeout, [=](){
+            zmq::sendMultipart(m_publisher, "ASSISIbf", "ASSISIbf", "ASSISIbf", "ASSISIbf");
+            qDebug() << "Message is sent";
+        });
+        m_timer.start(1000);
+    } else {
+        qDebug() << "Don't have an address to publish the data";
+    }
 }
 
 /*!

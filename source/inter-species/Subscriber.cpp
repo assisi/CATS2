@@ -8,19 +8,22 @@
 /*!
  * Constructor. Creates the subscriber socket on the provided address.
 */
-Subscriber::Subscriber(zmq::context_t& context, QString subscriberAddress):
+Subscriber::Subscriber(zmq::context_t& context,
+                       QStringList subscriberAddresses):
     m_subscriber(context, ZMQ_SUB)
 {
     // we accept all messages
     m_subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
     // connect to the socket
-    m_subscriber.connect(subscriberAddress.toStdString().c_str());
-    if (!m_subscriber.connected())
-        qDebug() << QString("Could not connect to the address %1")
-                    .arg(subscriberAddress.toStdString().c_str());
-    else
-        qDebug() << QString("Connected to the address %1")
-                    .arg(subscriberAddress.toStdString().c_str());
+    for (QString address : subscriberAddresses) {
+        try {
+            m_subscriber.connect(address.toStdString().c_str());
+            qDebug() << QString("Connected to %1").arg(address);
+        } catch (const zmq::error_t& e) {
+            qDebug() <<  QString("Exception while connecting to %1").arg(address)
+                      << e.what();
+        }
+    }
 }
 
 /*!

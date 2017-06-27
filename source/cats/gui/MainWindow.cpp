@@ -50,7 +50,7 @@ MainWindow::MainWindow(QWidget *parent) :
     // create the inter-species data manager
     m_interSpeciesDataManager =
             InterSpeciesDataManagerPtr(new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress(),
-                                                                   InterSpeciesSettings::get().subscriberAddress()));
+                                                                   InterSpeciesSettings::get().subscriberAddresses()));
     connect(m_trackingDataManager.data(),
             &TrackingDataManager::notifyAgentDataImageMerged,
             m_interSpeciesDataManager.data(),

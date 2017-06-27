@@ -34,12 +34,12 @@ bool InterSpeciesSettings::init(QString configurationFileName,
 
     // read the subscriber address
     address = "";
-    settings.readVariable(QString("interSpecies/subscriberAddress"), address, address);
-    m_subscriberAddress = QString::fromStdString(address);
-    if (m_subscriberAddress.isNull())
+    settings.readVariable(QString("interSpecies/subscriberAddresses"), address, address);
+    m_subscriberAddresses = QString::fromStdString(address).split(";");
+    if (m_subscriberAddresses.isEmpty())
         qDebug() << "The subscriber address is not set in the configuration file";
 
-    settingsAccepted = ((!m_subscriberAddress.isNull()) || (!needSubscriberAddress));
+    settingsAccepted = ((!m_subscriberAddresses.isEmpty()) || (!needSubscriberAddress));
 
     return settingsAccepted;
 }

@@ -2,6 +2,7 @@
 #define CATS2_INTER_SPECIES_SETTINGS_HPP
 
 #include <QtCore/QString>
+#include <QtCore/QStringList>
 
 /*!
  * Class-signleton that is used to store parameters of the inter-species communication.
@@ -34,8 +35,8 @@ public:
 public:
     //! Returns the address for the publisher.
     QString publisherAddress() const { return m_publisherAddress; }
-    //! Returns the address for the subscriber.
-    QString subscriberAddress() const { return m_subscriberAddress; }
+    //! Returns the addresses to subscribe (their might be many of them).
+    QStringList subscriberAddresses() const { return m_subscriberAddresses; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -47,7 +48,7 @@ private:
     //! Stores the address to publish the data.
     QString m_publisherAddress;
     //! Stores the address to receive the data.
-    QString m_subscriberAddress;
+    QStringList m_subscriberAddresses;
 };
 
 

@@ -17,12 +17,12 @@ MainWindow::MainWindow(QWidget *parent) :
     m_ui->setupUi(this);
 
     QString publisherAddress = InterSpeciesSettings::get().publisherAddress();
-    QString subscriberAddress = InterSpeciesSettings::get().subscriberAddress();
-    m_ui->subscriberLabel->setText("Subscriber:" + subscriberAddress);
+    QStringList subscriberAddresses = InterSpeciesSettings::get().subscriberAddresses();
+    m_ui->subscriberLabel->setText("Subscriber:" + subscriberAddresses.join(";"));
     m_ui->publisherLabel->setText("Publisher:" + publisherAddress);
 
     m_communicationManager = InterSpeciesDataManagerPtr(new InterSpeciesDataManager(publisherAddress,
-                                                                                    subscriberAddress));
+                                                                                    subscriberAddresses));
 }
 
 /*!
