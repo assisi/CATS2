@@ -31,6 +31,9 @@ public:
     //! Is the experiment manager active.
     bool isActive() const { return (m_currentController != ExperimentControllerType::NONE); }
 
+    //! Sets the circular setup robot turning direction (CW/CCW).
+    void setCircularSetupTurningDirection(QString message);
+
 public slots:
     //! Sets the requested controller.
     void setController(ExperimentControllerType::Enum type);

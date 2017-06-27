@@ -53,6 +53,10 @@ public slots:
     //! Sets the experimental controller for all robots.
     void setController(ExperimentControllerType::Enum controllerType);
 
+public slots: // interspecies
+    //! Passes further to the robot the message from the bee setup (CW/CCW).
+    void setCircularSetupTurningDirection(QString message);
+
 signals:
     //! Sends the control map areas' polygons of the robot.
     void notifyRobotControlAreasPolygons(QString agentId,

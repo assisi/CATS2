@@ -624,3 +624,11 @@ MotionPatternType::Enum FishBot::currentMotionPattern() const
 {
     return m_navigation.motionPattern();
 }
+
+/*!
+ * Passes further to the experiments manager the message from the bee setup (CW/CCW).
+ */
+void FishBot::setCircularSetupTurningDirection(QString message)
+{
+    m_experimentManager.setCircularSetupTurningDirection(message);
+}

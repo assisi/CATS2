@@ -62,6 +62,12 @@ public:
     void setController(ExperimentControllerType::Enum type);
     //! Return the type of the current controller.
     ExperimentControllerType::Enum currentController() const;
+
+    // interspecies
+    //! Passes further to the experiments manager the message from the bee setup
+    //! (CW/CCW).
+    void setCircularSetupTurningDirection(QString message);
+
     //! Returns the supported control modes.
     QList<ControlModeType::Enum> supportedControlModes() const;
     //! Sets the control mode.

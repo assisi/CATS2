@@ -132,6 +132,16 @@ void ControlLoop::step()
 }
 
 /*!
+ * Passes further to the robot the message from the bee setup (CW/CCW).
+ */
+void ControlLoop::setCircularSetupTurningDirection(QString message)
+{
+    for (auto& robot : m_robots) {
+        robot->setCircularSetupTurningDirection(message);
+    }
+}
+
+/*!
  * Reconnect the robot's to the aseba interface.
  */
 void ControlLoop::reconnectRobots()
