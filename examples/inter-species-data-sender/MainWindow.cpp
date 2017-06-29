@@ -20,10 +20,11 @@ MainWindow::MainWindow(QWidget *parent) :
     m_publisher(m_context, ZMQ_PUB)
 {
     m_ui->setupUi(this);
-    QStringList subscriberAddresses = InterSpeciesSettings::get().subscriberAddresses();
+    QStringList subscriberAddresses;
+    subscriberAddresses = InterSpeciesSettings::get().subscriberAddresses();
+//    subscriberAddresses.append(InterSpeciesSettings::get().publisherAddress());
     if (!subscriberAddresses.isEmpty()) {
-        m_ui->bindLabel->setText("Binds:" + subscriberAddresses[0]);
-
+        m_ui->bindLabel->setText("Publish on:" + subscriberAddresses[0]);
         try {
             m_publisher.connect(subscriberAddresses[0].toStdString().data());
             qDebug() << QString("Connected to %1").arg(subscriberAddresses[0]);
@@ -31,9 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
             qDebug() <<  QString("Exception while connecting to %1").arg(subscriberAddresses[0])
                       << e.what();
         }
-
         connect(&m_timer, &QTimer::timeout, [=](){
-            zmq::sendMultipart(m_publisher, "ASSISIbf", "ASSISIbf", "ASSISIbf", "ASSISIbf");
+            zmq::sendMultipart(m_publisher, "casu-001", "casu-001", "casu-001", "casu-001");
             qDebug() << "Message is sent";
         });
         m_timer.start(1000);
