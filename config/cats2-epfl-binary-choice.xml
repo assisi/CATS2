@@ -175,6 +175,10 @@
     <interSpecies>
         <publisherAddress>tcp://143.50.158.98:5555</publisherAddress>
         <subscriberAddresses>tcp://143.50.158.98:5556</subscriberAddresses>
+        <!-- local addresses
+            <publisherAddress>tcp://127.0.0.1:5555</publisherAddress>
+            <subscriberAddresses>tcp://127.0.0.1:5556</subscriberAddresses>
+        -->
     </interSpecies>
 </opencv_storage>
 
