@@ -16,23 +16,27 @@ public:
     //! Constructor.
     explicit ReadSettingsHelper(QString fileName)
     {
-        m_fs = cv::FileStorage(fileName.toStdString(), cv::FileStorage::READ);
+        try {
+            m_fs = cv::FileStorage(fileName.toStdString(), cv::FileStorage::READ);
 
-        if (!m_fs.isOpened())
-            qDebug() << QString("Could not open the configuration file: %1").arg(fileName);
+            if (!m_fs.isOpened())
+                qDebug() << QString("Could not open the configuration file: %1").arg(fileName);
+        } catch (const cv::Exception& e) {
+            qDebug() << "OpenCV exception: " << e.what();
+        }
     }
 
     //! Desctructor.
     virtual ~ReadSettingsHelper()
     {
-        if (m_fs.isOpened())
-            close();
+        close();
     }
 
     //! Close the file.
     void close()
     {
-        m_fs.release();
+        if (m_fs.isOpened())
+            m_fs.release();
     }
 
     //! Checks if the node exists. Used to check if certain sections exist in

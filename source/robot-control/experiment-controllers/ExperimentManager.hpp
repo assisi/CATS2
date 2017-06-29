@@ -44,6 +44,8 @@ signals:
     void notifyControllerStatus(QString status);
     //! Sends the map areas' polygons.
     void notifyPolygons(QList<AnnotatedPolygons>);
+    //! Sends the areas' occupation by fish information.
+    void notifyFishNumberByAreas(QMap<QString, int>);
 
 private:
     //! The list of experiment controllers available to this manager.
