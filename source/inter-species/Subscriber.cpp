@@ -18,7 +18,7 @@ Subscriber::Subscriber(zmq::context_t& context,
     for (QString address : subscriberAddresses) {
         try {
             m_subscriber.connect(address.toStdString().c_str());
-            qDebug() << QString("Connected to %1").arg(address);
+            qDebug() << QString("Subscriber is connected to %1").arg(address);
         } catch (const zmq::error_t& e) {
             qDebug() <<  QString("Exception while connecting to %1").arg(address)
                       << e.what();
