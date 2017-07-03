@@ -316,6 +316,7 @@ ExperimentController::ControlData InitiationLeaderController::stateControlData()
 
     switch (m_state) {
     case SWIMMING_WITH_FISH:
+    {
         controlData.controlMode = ControlModeType::MODEL_BASED;
         controlData.motionPattern = MotionPatternType::PID;
 //        // if we need to limit the model
@@ -327,7 +328,13 @@ ExperimentController::ControlData InitiationLeaderController::stateControlData()
 //            controlData.data =
 //                QVariant::fromValue(m_controlAreas[m_robotAreaId]->annotatedPolygons());
 //        }
+        //
+        ModelParameters parameters;
+        parameters.ignoreFish = false;
+        parameters.ignoreRobot = false;
+        controlData.data = QVariant::fromValue(parameters);
         break;
+    }
     case INITIATING_TRANSITION:
         if (m_controlAreas.contains(m_targetAreaId)) {
             controlData.controlMode = ControlModeType::GO_TO_POSITION;

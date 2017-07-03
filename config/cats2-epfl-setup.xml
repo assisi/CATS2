@@ -28,7 +28,7 @@
                 <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
             </BM>
             <simulation>
-                <dt>1</dt>
+                <dt>0.2</dt>
             </simulation>
         </fishModel>
         <pathPlanning>
