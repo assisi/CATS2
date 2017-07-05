@@ -34,7 +34,7 @@ inline bool operator==(const ModelParameters& lhs, const ModelParameters& rhs)
 inline bool operator!=(const ModelParameters& lhs, const ModelParameters& rhs)
 {
     return ((lhs.ignoreFish != rhs.ignoreFish) ||
-            (lhs.ignoreRobot == rhs.ignoreRobot));
+            (lhs.ignoreRobot != rhs.ignoreRobot));
 }
 
 #endif // CATS2_MODEL_PARAMETERS_HPP
