@@ -5,6 +5,7 @@
 #include "gui/BlobDetectorWidget.hpp"
 #include "gui/ColorDetectorWidget.hpp"
 #include "gui/TwoColorsTagsTrackingWidget.hpp"
+#include "gui/FishBotLedsTrackingWidget.hpp"
 
 #include <QtCore/QDebug>
 
@@ -31,6 +32,10 @@ QWidget* TrackingUiFactory::createWidget(TrackingDataPtr trackingData)
             break;
         }
         case TrackingRoutineType::FISHBOT_LEDS_TRACKING:
+        {
+            widget = new FishBotLedsTrackingWidget(trackingData->m_trackingRoutine);
+            break;
+        }
         default:
             // TODO : to implement
             qDebug() << "Tracking routine settings widget could not be created.";
