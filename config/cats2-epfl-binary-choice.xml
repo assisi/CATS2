@@ -7,7 +7,7 @@
         <agents>
             <numberOfAnimals>0</numberOfAnimals>
         </agents>
-        <setupMapPath>setup/epfl-two-rooms.xml</setupMapPath>
+        <setupMapPath>setup/epfl-circular.xml</setupMapPath>
     </experiment>
     <robots>
         <numberOfRobots>1</numberOfRobots>
@@ -65,55 +65,44 @@
                 <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
-                <kp>3.5</kp>
+                <kp>5.0</kp>
                 <ki>0.05</ki>
                 <kd>0.00</kd>
                 <kpDist>150.0</kpDist>
                 <kiDist>1.00</kiDist>
                 <kdDist>2.00</kdDist>
             </pid>
-            <defaultLinearSpeedCmSec>10</defaultLinearSpeedCmSec>
+            <defaultLinearSpeedCmSec>25</defaultLinearSpeedCmSec>
             <needOrientationToNavigate>0</needOrientationToNavigate>
         </navigation>
+        <!-- Controllers settings. Controller is available only if its settings are provided -->
         <controllers>
             <controlMap>
-                <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
+                <controlAreasPath>control-maps/epfl-four-sectors-control-map.xml</controlAreasPath>
             </controlMap>
-            <initiationLeader>
-                <controlAreasPath>control-maps/epfl-two-rooms-control-map.xml</controlAreasPath>
-                <fishFollowCheckTimeOutSec>10</fishFollowCheckTimeOutSec>
-                <maximalFishNumberAllowedToStay>1</maximalFishNumberAllowedToStay>
-                <!-- timeOut / inGroup -->
-                <departureTrigger>inGroup</departureTrigger>
-                <departureOnTimeOut>
-                    <departureTimeOutSec>10</departureTimeOutSec>
-                </departureOnTimeOut>
-                <departureWhenInGroup>
-                    <fishNumberAround>1</fishNumberAround>
-                    <groupRadius>0.10</groupRadius>
-                </departureWhenInGroup>
-                </initiationLeader>
-                <initiationLure>
-                    <controlAreasPath>control-maps/epfl-two-rooms-control-map.xml</controlAreasPath>
-                </initiationLure>
+            <circularSetup>
+                <controlAreasPath>control-maps/epfl-four-sectors-control-map.xml</controlAreasPath>
+                <targetPositionRadius>0.26</targetPositionRadius>
+                <targetDeltaAngleDeg>20.</targetDeltaAngleDeg>
+            </circularSetup>
         </controllers>
         <fishBot_1>
-             <id>C</id>
-                <ledColor>
-                    <r>190</r>
-                    <g>255</g>
-                    <b>190</b>
-                </ledColor>
-                <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
+            <id>H</id>
+            <ledColor>
+                <r>90</r>
+                <g>150</g>
+                <b>200</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
         </fishBot_1>
         <fishBot_2>
-            <id>H</id>
-                <ledColor>
-                    <r>90</r>
-                    <g>150</g>
-                    <b>200</b>
-                </ledColor>
-                <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
+        <id>C</id>
+            <ledColor>
+                <r>190</r>
+                <g>255</g>
+                <b>190</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
         </fishBot_2>
         <fishBot_3>
             <id>B</id>
@@ -173,8 +162,10 @@
         </cameraBelow>
     </setups>
     <interSpecies>
-        <publisherAddress>tcp://143.50.158.98:5555</publisherAddress>
-        <subscriberAddresses>tcp://143.50.158.98:5556</subscriberAddresses>
+        <!-- where we send data -->
+        <publisherAddress>tcp://143.50.158.98:5556</publisherAddress>
+        <!-- from where we get data -->
+        <subscriberAddresses>tcp://143.50.158.98:5555</subscriberAddresses>
         <!-- local addresses
             <publisherAddress>tcp://127.0.0.1:5555</publisherAddress>
             <subscriberAddresses>tcp://127.0.0.1:5556</subscriberAddresses>
