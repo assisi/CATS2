@@ -45,8 +45,8 @@ ExperimentManager::ExperimentManager(FishBot* robot) :
          controllerTypeInd <= ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW;
          controllerTypeInd++)
     {
-        ExperimentControllerType::Enum controllerType;
-        if (m_controllers.contains(static_cast<ExperimentControllerType::Enum>(controllerType))) {
+        ExperimentControllerType::Enum controllerType = static_cast<ExperimentControllerType::Enum>(controllerTypeInd);
+        if (m_controllers.contains(controllerType)) {
             CircularSetupController* controller =
                     dynamic_cast<CircularSetupController*>(m_controllers[controllerType].data());
             if (controller) {

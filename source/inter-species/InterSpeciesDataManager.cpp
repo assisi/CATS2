@@ -37,7 +37,17 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
  */
 void InterSpeciesDataManager::publishMessage(std::string& name,std::string& device,std::string& desc,std::string& data)
 {
-    zmq::sendMultipart(m_publisher, name, device, desc, data);
+//    qDebug() << "Sending message:"
+//             << QString::fromStdString(name)
+//             << QString::fromStdString(device)
+//             << QString::fromStdString(desc)
+//             << QString::fromStdString(data);
+    try {
+        zmq::sendMultipart(m_publisher, name, device, desc, data);
+    } catch (const zmq::error_t& e) {
+        qDebug() <<  QString("Exception while sending messages")
+                  << e.what();
+    }
 }
 
 /*!
