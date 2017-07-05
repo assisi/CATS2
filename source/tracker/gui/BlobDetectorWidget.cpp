@@ -49,6 +49,17 @@ BlobDetectorWidget::BlobDetectorWidget(TrackingRoutinePtr routine, QWidget *pare
 
     connect(m_ui->useHarrisDetectorCheckBox, &QCheckBox::toggled,
             this, &BlobDetectorWidget::updateSettings);
+
+    connect(m_ui->resetBackgroundButton, &QPushButton::clicked,
+            [=]
+            {
+                BlobDetector* blobDetector = dynamic_cast<BlobDetector*>(m_routine.data());
+                if (blobDetector) {
+                    blobDetector->resetBackground();
+                } else {
+                    qDebug() << "The tracking routine is ill-defined";
+                }
+            });
 }
 
 /*!

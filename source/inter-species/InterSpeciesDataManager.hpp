@@ -1,8 +1,9 @@
 #ifndef CATS2_INTERSPECIES_DATA_MANAGER_HPP
 #define CATS2_INTERSPECIES_DATA_MANAGER_HPP
 
-#include "msg/AgentData.pb.h"
+#include "Subscriber.hpp"
 
+#include <msg/AgentData.pb.h>
 #include <AgentData.hpp>
 
 #include <zmq.hpp>
@@ -10,19 +11,20 @@
 #include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
 
-
 /*!
  * Gets messages via qt signals and sends them through zmq.
  * TODO : to add the reception part
- * NOTE : data classes should be managed through smart pointers without using the Qt's mechanism
- * of ownership; thus we set the parent to nullptr in the constructor.
+ * NOTE : data classes should be managed through smart pointers without using
+ * the Qt's mechanism of ownership; thus we set the parent to nullptr in the
+ * constructor.
  */
 class InterSpeciesDataManager : public QObject
 {
     Q_OBJECT
 public:
     //! Constructor. Creates the publisher socket on the provided address.
-    explicit InterSpeciesDataManager(QString publisherAddress);
+    explicit InterSpeciesDataManager(QString publisherAddress,
+                                     QStringList subscriberAddresses);
 
 public slots:
     //! Triggered when new agent data is to be published.
@@ -44,6 +46,8 @@ private:
     zmq::context_t m_context;
     //! The publisher socket.
     zmq::socket_t m_publisher;
+    //! The subscriber receiving the data from the remote system.
+    SubscriberPtr m_subscriber;
 };
 
 using InterSpeciesDataManagerPtr = QSharedPointer<InterSpeciesDataManager>;

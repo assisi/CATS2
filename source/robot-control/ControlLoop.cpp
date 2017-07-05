@@ -165,8 +165,10 @@ void ControlLoop::reinitializeSharedRobotInterface()
     }
 }
 
-//! Asks robots to setup unique connections with the hardware, to load and
-//! initialize the firmware scripts.
+/*!
+ * Asks robots to setup unique connections with the hardware, to load and
+ * initialize the firmware scripts.
+ */
 void ControlLoop::reinitializeUniqueRobotInterface()
 {
     for (auto& robot : m_robots) {
