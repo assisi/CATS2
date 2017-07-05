@@ -23,7 +23,7 @@ public:
     //! Reports on what type of agent can be tracked by this routine.
     virtual QList<AgentType> capabilities() const override;
 
-    //! Getter for the settings.
+    //! Const getter for the settings.
     const FishBotLedsTrackingSettingsData& settings() const { return m_settings; }
     //! Updates the settings.
     void setSettings(const FishBotLedsTrackingSettingsData& settings);

@@ -46,6 +46,16 @@ public:
         }
     }
 
+    //! Sets the robot's description.
+    void setRobotDescription(int robotIndex, FishBotDescription description)
+    {
+        if ((robotIndex < m_robotsDescriptions.size()) && (robotIndex >=0))
+            m_robotsDescriptions[robotIndex] = description;
+        else {
+            qDebug() << "Requesting the robot description out of bounds";
+        }
+    }
+
     void addRobotDescription(FishBotDescription description)
     {
         m_robotsDescriptions.append(description);
