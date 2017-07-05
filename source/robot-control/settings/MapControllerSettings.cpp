@@ -39,11 +39,11 @@ bool MapControllerSettings::init(QString configurationFileName)
     std::string controlAreasFilePath = "";
     settings.readVariable(QString("%1/controlAreasPath").arg(m_settingPathPrefix),
                           controlAreasFilePath, controlAreasFilePath);
-    m_data.setControlAreasFileName(configurationFolder +
+    m_data.setDefaultControlAreasFileName(configurationFolder +
                                    QDir::separator() +
                                    QString::fromStdString(controlAreasFilePath));
 
-    return (QFileInfo(m_data.controlAreasFileName()).exists());
+    return (QFileInfo(m_data.defaultControlAreasFileName()).exists());
 }
 
 

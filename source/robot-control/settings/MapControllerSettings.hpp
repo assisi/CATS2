@@ -12,21 +12,21 @@ class MapControllerSettingsData
 public:
     //! Constructor.
     MapControllerSettingsData() :
-        m_controlAreasFileName()
+        m_defaultControlAreasFileName()
     {}
 
 public:
     //! Returns the path to the file describine the control areas.
-    QString controlAreasFileName() const { return m_controlAreasFileName; }
+    QString defaultControlAreasFileName() const { return m_defaultControlAreasFileName; }
     //! Set the path to the file describine the control areas.
-    void setControlAreasFileName(QString controlAreasFileName)
+    void setDefaultControlAreasFileName(QString controlAreasFileName)
     {
-        m_controlAreasFileName = controlAreasFileName;
+        m_defaultControlAreasFileName = controlAreasFileName;
     }
 
 protected:
     //! The path to the file describine the control areas.
-    QString m_controlAreasFileName;
+    QString m_defaultControlAreasFileName;
 };
 
 class MapControllerSettings : public ExperimentControllerSettings

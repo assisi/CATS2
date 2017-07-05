@@ -24,7 +24,9 @@ MapController::MapController(FishBot* robot,
     }
 
     // load the control map
-    readControlMap(m_settings.controlAreasFileName());
+    // if there is no robot specifi control map then take form the default settings
+    if (!readRobotControlMap())
+        readControlMap(m_settings.defaultControlAreasFileName());
 }
 
 /*!

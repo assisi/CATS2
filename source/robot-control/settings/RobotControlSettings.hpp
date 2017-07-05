@@ -60,6 +60,20 @@ public:
     //! Get the target.
     QString connectionTarget() const { return m_connectionTarget; }
 
+    //! Set the control areas file for the experiment.
+    void setControlAreasFile(ExperimentControllerType::Enum type, QString path)
+    {
+        m_controlAreasFileNames[type] = path;
+    }
+    //! Get the control areas file for the experiment.
+    QString controlAreasFile(ExperimentControllerType::Enum type)
+    {
+        if (m_controlAreasFileNames.contains(type))
+            return m_controlAreasFileNames[type];
+        else
+            return "";
+    }
+
 private:
     //! Robot's id.
     QString m_id;
@@ -67,6 +81,10 @@ private:
     QColor m_ledColor;
     //! The target to connect directly to the robot.
     QString m_connectionTarget;
+    //! The path to the file describing the control areas. Normally it is setup
+    //! par a controller, but for some experiments we might need to have a
+    //! robot specific control area.
+    QMap<ExperimentControllerType::Enum, QString> m_controlAreasFileNames;
 };
 
 /*!
@@ -200,7 +218,8 @@ struct PotentialFieldSettings
         obstacleAvoidanceAreaDiameterMeters(0.1)
     { }
 
-    //! Repulsive parameters rho0 being the distance of influence and nu the "strength" of the repulsion.
+    //! Repulsive parameters rho0 being the distance of influence and nu the
+    //! "strength" of the repulsion.
     float influenceDistanceArenaMeters;
     float influenceStrengthArena;
     float influenceDistanceRobotsMeters;
