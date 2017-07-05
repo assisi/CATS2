@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <opencv_storage>
     <experiment>
-        <type>Test</type>
-        <name>Orientation</name>
+        <type>Interspecies</type>
+        <name>Binary-choice</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
             <numberOfAnimals>0</numberOfAnimals>
@@ -79,7 +79,7 @@
             <controlMap>
                 <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
             </controlMap>
-            <initiation>
+            <initiationLeader>
                 <controlAreasPath>control-maps/epfl-two-rooms-control-map.xml</controlAreasPath>
                 <fishFollowCheckTimeOutSec>10</fishFollowCheckTimeOutSec>
                 <maximalFishNumberAllowedToStay>1</maximalFishNumberAllowedToStay>
@@ -92,24 +92,19 @@
                     <fishNumberAround>1</fishNumberAround>
                     <groupRadius>0.10</groupRadius>
                 </departureWhenInGroup>
-            </initiation>
+                </initiationLeader>
+                <initiationLure>
+                    <controlAreasPath>control-maps/epfl-two-rooms-control-map.xml</controlAreasPath>
+                </initiationLure>
         </controllers>
         <fishBot_1>
-            <id>C</id>
-            <ledColor>
-                <r>190</r>
-                <g>255</g>
-                <b>190</b>
-            </ledColor>
-            <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
-            <robotControlMaps>
-                <controlMap>
-                    <path>control-maps/test-control-map.xml</path>
-                </controlMap>
-                <initiation>
-                    <path>control-maps/epfl-two-rooms-control-map.xml</path>
-                </initiation>
-            </robotControlMaps>
+             <id>C</id>
+                <ledColor>
+                    <r>190</r>
+                    <g>255</g>
+                    <b>190</b>
+                </ledColor>
+                <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
         </fishBot_1>
         <fishBot_2>
             <id>H</id>
@@ -178,8 +173,12 @@
         </cameraBelow>
     </setups>
     <interSpecies>
-        <publisherAddress>tcp://127.0.0.1:50001</publisherAddress>
-        <subscriberAddresses>tcp://127.0.0.1:50002;tcp://127.0.0.1:50003</subscriberAddresses>
+        <publisherAddress>tcp://143.50.158.98:5555</publisherAddress>
+        <subscriberAddresses>tcp://143.50.158.98:5556</subscriberAddresses>
+        <!-- local addresses
+            <publisherAddress>tcp://127.0.0.1:5555</publisherAddress>
+            <subscriberAddresses>tcp://127.0.0.1:5556</subscriberAddresses>
+        -->
     </interSpecies>
 </opencv_storage>
 

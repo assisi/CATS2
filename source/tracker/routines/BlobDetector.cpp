@@ -73,8 +73,7 @@ void BlobDetector::doTracking(const TimestampedFrame& frame)
     // lock the mutex
     m_settingsMutex.lock();
     // filter out small blobs on the mask image
-    if (m_settings.minBlobSizePx() > 0)
-    {
+    if (m_settings.minBlobSizePx() > 0) {
         removeSmallBlobs(m_foregroundImage, m_settings.minBlobSizePx());
     }
 
@@ -250,4 +249,13 @@ void BlobDetector::setSettings(const BlobDetectorSettingsData& settings)
 {
     QMutexLocker locker(&m_settingsMutex);
     m_settings = settings;
+}
+
+/*!
+ * Resets the background.
+ */
+void BlobDetector::resetBackground()
+{
+    qDebug() << "Resetting the background image";
+    m_backgroundCalculationStepCounter = 0;
 }
