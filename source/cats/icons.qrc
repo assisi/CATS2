@@ -20,5 +20,6 @@
         <file alias="not-connected.png">resources/icons/ic_signal_wifi_statusbar_null_black_26x24dp.png</file>
         <file alias="pending-connection.png">resources/icons/ic_signal_wifi_statusbar_not_connected_black_26x24dp.png</file>
         <file alias="connected.png">resources/icons/ic_signal_wifi_statusbar_4_bar_black_26x24dp.png</file>
+        <file>resources/icons/ic_color_lens_black_24dp.png</file>
     </qresource>
 </RCC>
