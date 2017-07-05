@@ -48,6 +48,9 @@ public:
     //! Inititialises the robot's firmware. The robot's index is used to
     //! initilize the robot's id in its firmware.
     void setupSharedConnection(int robotIndex);
+    //! Convenience method. Inititialises the robot's firmware, it uses the
+    //! stored robot's index if available.
+    void setupSharedConnection();
     //! Connects to the robot via its own interface.
     void setupUniqueConnection();
     //! Returns the connection status.

@@ -16,7 +16,7 @@
 FishBot::FishBot(QString id) :
     QObject(nullptr),
     m_id(id),
-    m_firmwareId(0),
+    m_firmwareId(-1),
     m_name(QString("Fish_bot_%1").arg(m_id)), // NOTE : don't change this name as the .aesl files are searched by it
     m_ledColor(Qt::black),
     m_state(),
@@ -152,6 +152,19 @@ void FishBot::setupSharedConnection(int robotIndex)
         qDebug() << QString("The %1 interface is not set").arg(m_name);
         emit notifyConnectionStatusChanged(name(), ConnectionStatus::DISCONNECTED);
     }
+}
+
+/*!
+ * Convenience method. Inititialises the robot's firmware, it uses the stored
+ * robot's index if available.
+ */
+void FishBot::setupSharedConnection()
+{
+    if (m_firmwareId >= 0) // if the index is valid
+        setupSharedConnection(m_firmwareId);
+    else
+        qDebug() << "Can not reconnect to the robot, the firmware id is not "
+                    "defined";
 }
 
 /*!

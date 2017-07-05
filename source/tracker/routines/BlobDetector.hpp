@@ -26,6 +26,8 @@ public:
     const BlobDetectorSettingsData& settings() const { return m_settings; }
     //! Updates the settings.
     void setSettings(const BlobDetectorSettingsData& settings);
+    //! Reset the background.
+    void resetBackground();
 
 protected:
     //! The tracking routine excecuted. Gets the original frame, detects
@@ -41,7 +43,7 @@ private:
 
 private:
     //! First processing steps are used to compute the background.
-    size_t m_backgroundCalculationStepCounter;
+    std::atomic_size_t m_backgroundCalculationStepCounter;
     //! The number of steps that is enough to compute the background.
     static const size_t BackgroundCalculationSufficientNumber = 100;
     //! The tracking settings.

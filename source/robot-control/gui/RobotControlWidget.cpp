@@ -6,6 +6,8 @@
 #include "settings/RobotControlSettings.hpp"
 #include "PotentialFieldWidget.hpp"
 
+#include <settings/CommandLineParameters.hpp>
+
 #include <QtCore/QDebug>
 
 /*!
@@ -176,6 +178,15 @@ RobotControlWidget::RobotControlWidget(FishBotPtr robot, QWidget *parent) :
     connect(m_ui->showDetailsButton, &QPushButton::toggled,
             [=](bool checked){
                 m_ui->obstacleAvoidanceSettingsWidget->setVisible(checked);
+            });
+    
+    // connect the reconnection button
+    connect(m_ui->reconnectButton, &QPushButton::clicked,
+            [=](bool checked){
+                if (CommandLineParameters::get().useSharedRobotInterface())
+                    m_robot->setupSharedConnection();
+                else
+                    m_robot->setupUniqueConnection();
             });
 }
 
