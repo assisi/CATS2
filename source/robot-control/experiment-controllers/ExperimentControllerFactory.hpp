@@ -6,10 +6,12 @@
 #include "experiment-controllers/MapController.hpp"
 #include "experiment-controllers/InitiationLeaderController.hpp"
 #include "experiment-controllers/InitiationLureController.hpp"
+#include "experiment-controllers/DominatingSetController.hpp"
 #include "settings/MapControllerSettings.hpp"
 #include "settings/RobotControlSettings.hpp"
 #include "settings/InitiationLureControllerSettings.hpp"
 #include "settings/InitiationLeaderControllerSettings.hpp"
+#include "settings/DominatingSetControllerSettings.hpp"
 
 #include <QtCore/QDebug>
 
@@ -36,6 +38,8 @@ public:
                 return ExperimentControllerPtr(new InitiationLeaderController(robot, settings), &QObject::deleteLater);
             case ExperimentControllerType::INITIATION_LURE:
                 return ExperimentControllerPtr(new InitiationLureController(robot, settings), &QObject::deleteLater);
+            case ExperimentControllerType::DOMINATING_SET:
+                return ExperimentControllerPtr(new DominatingSetController(robot, settings), &QObject::deleteLater);
             default:
                 qDebug() << "Controller could not be created.";
                 break;
@@ -56,6 +60,8 @@ public:
             return ExperimentControllerSettingsPtr(new InitiationLeaderControllerSettings());
         case ExperimentControllerType::INITIATION_LURE:
             return ExperimentControllerSettingsPtr(new InitiationLureControllerSettings());
+        case ExperimentControllerType::DOMINATING_SET:
+            return ExperimentControllerSettingsPtr(new DominatingSetControllerSettings());
         default:
             qDebug() << "Experiment controller settings could not be created.";
             break;

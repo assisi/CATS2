@@ -14,6 +14,7 @@ public:
         CONTROL_MAP,
         INITIATION_LEADER,
         INITIATION_LURE,
+        DOMINATING_SET,
         UNDEFINED
     };
 
@@ -31,6 +32,9 @@ public:
             break;
         case INITIATION_LURE:
             string = "initiationLure";
+            break;
+        case DOMINATING_SET:
+            string = "domset";
             break;
         case NONE:
         case UNDEFINED:
@@ -53,6 +57,9 @@ public:
             break;
         case INITIATION_LURE:
             string = "Initiation lure";
+            break;
+        case DOMINATING_SET:
+            string = "Dominating set";
             break;
         case NONE:
             string = "Disabled";
