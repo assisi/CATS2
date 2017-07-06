@@ -164,12 +164,15 @@
                 <fishBotLedsTracking>
                     <fishBot_C>
                         <threshold>70</threshold>
+                        <areaMaskFile>bottom-camera-mask.png</areaMaskFile>
                     </fishBot_C>
                     <fishBot_H>
                         <threshold>30</threshold>
+                        <areaMaskFile>bottom-camera-mask.png</areaMaskFile>
                     </fishBot_H>
                     <fishBot_B>
                         <threshold>70</threshold>
+                        <areaMaskFile>bottom-camera-mask.png</areaMaskFile>
                     </fishBot_B>
                 </fishBotLedsTracking>
             </tracking>
