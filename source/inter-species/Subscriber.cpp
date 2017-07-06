@@ -46,18 +46,23 @@ void Subscriber::process()
     std::string command;
     std::string data;
 
-    // receive and recode incoming messages
-    while (!m_stopped) {
-        if (m_subscriber.connected() && recvMultipart(m_subscriber, name, device, command, data)) {
-            qDebug() << "Message received"
-                     << QString::fromStdString(name)
-                     << QString::fromStdString(device) << QString::fromStdString(command) << QString::fromStdString(data);
-            // TODO : analyse the type of the message and to send the
-            // corresponding message
-        } else {
-            // if no data available when we make a pause
-            std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    try {
+        // receive and recode incoming messages
+        while (!m_stopped) {
+            if (m_subscriber.connected() && recvMultipart(m_subscriber, name, device, command, data)) {
+                qDebug() << "Message received"
+                         << QString::fromStdString(name)
+                         << QString::fromStdString(device) << QString::fromStdString(command) << QString::fromStdString(data);
+                // TODO : analyse the type of the message and to send the
+                // corresponding message
+            } else {
+                // if no data available when we make a pause
+                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            }
         }
+    } catch (const zmq::error_t& e) {
+        qDebug() <<  QString("Exception while receiving messages")
+                  << e.what();
     }
     emit finished();
 }

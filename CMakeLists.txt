@@ -64,13 +64,13 @@ if("${CMAKE_CXX_COMPILER_ID}" STREQUAL "GNU")
             set(CATS2_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Wformat=2 \
             -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Woverloaded-virtual \
             -Wredundant-decls -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default \
-            -Wno-unused-parameter -Wold-style-cast -Wfloat-equal -Wundef -Wshadow -Wsuggest-override -Wsuggest-final-methods")
+            -Wno-unused-parameter -Wold-style-cast -Wfloat-equal -Wundef -Wsuggest-override -Wsuggest-final-methods")
         else()
             message("GCC version is earlier than 5.0")
             set(CATS2_CXX_FLAGS "-std=c++11 -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Wformat=2 \
             -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Woverloaded-virtual \
             -Wredundant-decls -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default \
-            -Wno-unused-parameter -Wold-style-cast -Wfloat-equal -Wundef -Wshadow")
+            -Wno-unused-parameter -Wold-style-cast -Wfloat-equal -Wundef")
         endif()
     endif()
 #elseif ("${CMAKE_CXX_COMPILER_ID}" STREQUAL "Clang")

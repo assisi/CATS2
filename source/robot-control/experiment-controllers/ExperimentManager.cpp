@@ -39,6 +39,24 @@ ExperimentManager::ExperimentManager(FishBot* robot) :
     connect(m_controllers[m_currentController].data(),
             &ExperimentController::notifyControllerStatus,
             this, &ExperimentManager::notifyControllerStatus);
+
+    // connect experiment specific signals
+    for (int controllerTypeInd = ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER;
+         controllerTypeInd <= ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW;
+         controllerTypeInd++)
+    {
+        ExperimentControllerType::Enum controllerType = static_cast<ExperimentControllerType::Enum>(controllerTypeInd);
+        if (m_controllers.contains(controllerType)) {
+            CircularSetupController* controller =
+                    dynamic_cast<CircularSetupController*>(m_controllers[controllerType].data());
+            if (controller) {
+                connect(controller,
+                        &CircularSetupController::notifyTurningDirections,
+                        this,
+                        &ExperimentManager::notifyCircularSetupTurningDirections);
+            }
+        }
+    }
 }
 
 /*!
@@ -91,4 +109,26 @@ void ExperimentManager::setController(ExperimentControllerType::Enum type)
 ExperimentController::ControlData ExperimentManager::step()
 {
     return m_controllers[m_currentController]->step();
+}
+
+/*!
+ * Sets the circular setup robot turning direction (CW/CCW).
+ */
+void ExperimentManager::setCircularSetupTurningDirection(QString message)
+{
+    TurningDirection::Enum turningDirection = TurningDirection::fromString(message.toUpper());
+    if (turningDirection != TurningDirection::UNDEFINED) {
+        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW)
+                && (turningDirection == TurningDirection::CLOCK_WISE))
+        {
+            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW);
+        };
+        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW)
+                && (turningDirection == TurningDirection::COUNTER_CLOCK_WISE))
+        {
+            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW);
+        };
+    } else {
+        qDebug() << "Can't set the turning direction for the message" << message;
+    }
 }

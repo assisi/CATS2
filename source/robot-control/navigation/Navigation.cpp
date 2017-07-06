@@ -288,7 +288,7 @@ void Navigation::pidControlToPosition(PositionMeters targetPosition)
                 m_pidControllerSettings.kd() * derivativeTermAngle;
 
         //PID on the distance error
-        double distanceToTravel = m_robot->state().position().distance2DTo(targetPosition);
+        double distanceToTravel = m_robot->state().position().distance2dTo(targetPosition);
         // proportional term
         double proportionalTermDistance = distanceToTravel;
         // derivative term

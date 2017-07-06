@@ -31,6 +31,9 @@ public:
     //! Is the experiment manager active.
     bool isActive() const { return (m_currentController != ExperimentControllerType::NONE); }
 
+    //! Sets the circular setup robot turning direction (CW/CCW).
+    void setCircularSetupTurningDirection(QString message);
+
 public slots:
     //! Sets the requested controller.
     void setController(ExperimentControllerType::Enum type);
@@ -46,6 +49,12 @@ signals:
     void notifyPolygons(QList<AnnotatedPolygons>);
     //! Sends the areas' occupation by fish information.
     void notifyFishNumberByAreas(QMap<QString, int>);
+
+signals: // experiment specific
+    //! Informs the interspecies-module on the fish and robots turning
+    //! directions in the circular setup experiment.
+    void notifyCircularSetupTurningDirections(QString fishTurningDirection,
+                                              QString robotTurningDirection);
 
 private:
     //! The list of experiment controllers available to this manager.

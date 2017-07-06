@@ -29,6 +29,7 @@ set(srcs
     settings/InitiationLeaderControllerSettings.cpp
     settings/InitiationLureControllerSettings.cpp
     settings/DominatingSetControllerSettings.cpp
+    settings/CircularSetupControllerSettings.cpp
     FishBot.cpp
     ControlLoop.cpp
     control-modes/Idle.cpp
@@ -52,6 +53,9 @@ set(srcs
     experiment-controllers/InitiationLeaderController.cpp
     experiment-controllers/InitiationLureController.cpp
     experiment-controllers/DominatingSetController.cpp
+    experiment-controllers/CircularSetupController.cpp
+    experiment-controllers/CircularSetupFollowerController.cpp
+    experiment-controllers/CircularSetupLeaderController.cpp
     model/model.cpp
     model/zones.cpp
     model/factory.cpp

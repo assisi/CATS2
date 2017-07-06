@@ -56,6 +56,14 @@ FishBot::FishBot(QString id) :
             [=]() { releaseModelArea(); });
     connect(&m_experimentManager, &ExperimentManager::notifyControllerStatus,
             this, &FishBot::notifyControllerStatus);
+    connect(&m_experimentManager, &ExperimentManager::notifyCircularSetupTurningDirections,
+            [=](QString fishTurningDirection, QString robotTurningDirection)
+            {
+                emit notifyCircularSetupTurningDirections(m_id,
+                                                                fishTurningDirection,
+                                                                robotTurningDirection);
+            });
+
     // control modes
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,
             this, &FishBot::notifyControlModeChanged);
@@ -628,4 +636,12 @@ ControlModeType::Enum FishBot::currentControlMode() const
 MotionPatternType::Enum FishBot::currentMotionPattern() const
 {
     return m_navigation.motionPattern();
+}
+
+/*!
+ * Passes further to the experiments manager the message from the bee setup (CW/CCW).
+ */
+void FishBot::setCircularSetupTurningDirection(QString message)
+{
+    m_experimentManager.setCircularSetupTurningDirection(message);
 }

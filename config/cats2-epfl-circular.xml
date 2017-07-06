@@ -1,11 +1,11 @@
 <?xml version="1.0"?>
 <opencv_storage>
     <experiment>
-        <type>Interspecies</type>
-        <name>Binary-choice</name>
+        <type>Circular</type>
+        <name>TestExperiment</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>0</numberOfAnimals>
+            <numberOfAnimals>4</numberOfAnimals>
         </agents>
         <setupMapPath>setup/epfl-circular.xml</setupMapPath>
     </experiment>
@@ -51,7 +51,7 @@
         <controlModes>
             <!-- TODO : to implement -->
             <trajectory>
-                <points>trajectories/fish-two-rooms-small.xml</points>
+                <points>trajectories/fish-two-rooms.xml</points>
                 <loopTrajectory>1</loopTrajectory>
                 <providePointsOnTimer>1</providePointsOnTimer>
                 <updateRateHz>15</updateRateHz>
@@ -96,7 +96,7 @@
             <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
         </fishBot_1>
         <fishBot_2>
-        <id>C</id>
+            <id>C</id>
             <ledColor>
                 <r>190</r>
                 <g>255</g>
@@ -127,7 +127,7 @@
             <cameraCalibrationFile>camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
-                <numberOfAgents>1</numberOfAgents>
+                <numberOfAgents>5</numberOfAgents>
                 <blobDetector>
                     <minBlobSizePx>3</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
@@ -148,28 +148,21 @@
                 <trackingMethod>fishBotLedsTracking</trackingMethod>
                 <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
-                    <fishBot_C>
-                        <threshold>70</threshold>
-                    </fishBot_C>
                     <fishBot_H>
                         <threshold>30</threshold>
                     </fishBot_H>
                     <fishBot_B>
                         <threshold>70</threshold>
                     </fishBot_B>
+                    <fishBot_C>
+                        <threshold>70</threshold>
+                    </fishBot_C>
                 </fishBotLedsTracking>
             </tracking>
         </cameraBelow>
     </setups>
     <interSpecies>
-        <!-- where we send data -->
-        <publisherAddress>tcp://143.50.158.98:5556</publisherAddress>
-        <!-- from where we get data -->
-        <subscriberAddresses>tcp://143.50.158.98:5555</subscriberAddresses>
-        <!-- local addresses
-            <publisherAddress>tcp://127.0.0.1:5555</publisherAddress>
-            <subscriberAddresses>tcp://127.0.0.1:5556</subscriberAddresses>
-        -->
+        <publisherAddress>tcp://127.0.0.1:50001</publisherAddress>
     </interSpecies>
 </opencv_storage>
 

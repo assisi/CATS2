@@ -10,7 +10,7 @@
  */
 InitiationLeaderController::InitiationLeaderController(FishBot* robot,
                              ExperimentControllerSettingsPtr settings) :
-    ExperimentController(robot, ExperimentControllerType::INITIATION_LEADER),
+    ExperimentController(robot),
     m_settings(),
     m_state(UNDEFINED),
 //    m_limitModelArea(false),
@@ -326,7 +326,7 @@ int InitiationLeaderController::fishAroundRobot()
     if (robotPosition.isValid()) {
         for (auto const& fishState : m_robot->fishStates()) {
             if (fishState.position().isValid() &&
-                (fishState.position().distance2DTo(robotPosition) < m_settings.groupRadius()))
+                (fishState.position().distance2dTo(robotPosition) < m_settings.groupRadius()))
             {
                 fishCount++;
             }
