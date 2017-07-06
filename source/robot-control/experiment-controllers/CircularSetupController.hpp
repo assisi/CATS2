@@ -55,7 +55,8 @@ class CircularSetupController : public ExperimentController
 public:
     //! Constructor. Gets the robot and the settings.
     CircularSetupController(FishBot* robot,
-                            ExperimentControllerSettingsPtr settings);
+                            ExperimentControllerSettingsPtr settings,
+                            ExperimentControllerType::Enum controllerType);
 
 public:
     //! Called when the controller is activated. Used to reset parameters.

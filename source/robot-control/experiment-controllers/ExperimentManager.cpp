@@ -18,7 +18,8 @@ ExperimentManager::ExperimentManager(FishBot* robot) :
     // first we add an empty controller for the sake simplicity in the
     // setController() implementation
     m_controllers.insert(ExperimentControllerType::NONE,
-                         ExperimentControllerPtr(new ExperimentController(m_robot)));
+                         ExperimentControllerPtr(new ExperimentController(m_robot,
+                                                                          ExperimentControllerType::NONE)));
 
     // and then the rest of controllers available in the settings
     for (auto controllerType : RobotControlSettings::get().availableControllers())

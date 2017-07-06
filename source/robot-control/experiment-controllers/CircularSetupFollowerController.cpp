@@ -2,7 +2,7 @@
 
 CircularSetupFollowerController::CircularSetupFollowerController(FishBot* robot,
                                                                  ExperimentControllerSettingsPtr settings):
-    CircularSetupController(robot, settings)
+    CircularSetupController(robot, settings, ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER)
 {
 
 }

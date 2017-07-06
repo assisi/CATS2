@@ -27,7 +27,8 @@ class ExperimentController : public QObject
 public:
     //! Constructor. It gets a pointer to the robot that is controlled by this
     //! controller.
-    ExperimentController(FishBot* robot);
+    ExperimentController(FishBot* robot,
+                         ExperimentControllerType::Enum type);
 
     //! The data from the control map returned on request for given position.
     struct ControlData {
@@ -111,6 +112,10 @@ private:
     void updateRobotArea(QString areaId);
     //! Sets the fish's area.
     void updateFishArea(QString areaId);
+
+private:
+    //! A type of the controller.
+    ExperimentControllerType::Enum m_type;
 };
 
 #endif // CATS2_EXPERIMENT_CONTROLLER_HPP

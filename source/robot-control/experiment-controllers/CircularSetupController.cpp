@@ -5,8 +5,9 @@
 #include <QtCore/QDebug>
 
 CircularSetupController::CircularSetupController(FishBot* robot,
-                                                 ExperimentControllerSettingsPtr settings):
-    ExperimentController(robot),
+                                                 ExperimentControllerSettingsPtr settings,
+                                                 ExperimentControllerType::Enum controllerType):
+    ExperimentController(robot, controllerType),
     m_settings(),
     m_fishGroupTurningDirection(TurningDirection::UNDEFINED),
     m_previousFishAreaId(""),

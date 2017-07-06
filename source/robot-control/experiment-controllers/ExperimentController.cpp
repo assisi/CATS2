@@ -9,7 +9,8 @@
 /*!
  * Constructor. Gets the file name containing the control areas description.
  */
-ExperimentController::ExperimentController(FishBot* robot) :
+ExperimentController::ExperimentController(FishBot* robot,
+                                           ExperimentControllerType::Enum type) :
     QObject(nullptr),
     m_robot(robot),
     m_controlAreas(),
@@ -17,7 +18,8 @@ ExperimentController::ExperimentController(FishBot* robot) :
     m_fishAreaId(""),
     m_robotAreaId(""),
     m_robotAreaChanged(false),
-    m_fishAreaChanged(false)
+    m_fishAreaChanged(false),
+    m_type(type)
 {
 
 }
