@@ -5,7 +5,10 @@
 CircularSetupLeaderController::CircularSetupLeaderController(FishBot* robot,
                                                              ExperimentControllerSettingsPtr settings,
                                                              TurningDirection::Enum turningDirection):
-    CircularSetupController(robot, settings)
+    CircularSetupController(robot, settings,
+                            turningDirection == TurningDirection::CLOCK_WISE ?
+                                ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW :
+                                ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW)
 {
     updateTargetTurningDirection(turningDirection);
 }
@@ -39,17 +42,3 @@ ExperimentController::ControlData CircularSetupLeaderController::step()
     }
     return controlData;
 }
-
-///*!
-// * Sets the direction to keep, expected values are "CW" or "CCW".
-// */
-//void CircularSetupLeaderController::setTurningDirection(QString directionString)
-//{
-//    TurningDirection::Enum direction = TurningDirection::fromString(directionString);
-//    if (direction != TurningDirection::UNDEFINED) {
-//        updateTargetTurningDirection(direction);
-//    } else {
-//        qDebug() << QString("Trying to set an invalid turning direction %1")
-//                    .arg(directionString);
-//    }
-//}

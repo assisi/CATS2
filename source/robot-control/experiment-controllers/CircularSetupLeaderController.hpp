@@ -23,10 +23,6 @@ public:
     //! Returns the control values for given position.
     virtual ControlData step() override;
 
-//public slots:
-//    //! Sets the direction to keep, expected values are "CW" or "CCW".
-//    void setTurningDirection(QString directionString);
-
 private:
     //! The fish turning angle update timer.
     Timer m_fishTurningAngleUpdateTimer;

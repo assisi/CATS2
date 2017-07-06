@@ -9,7 +9,7 @@
  */
 MapController::MapController(FishBot* robot,
                              ExperimentControllerSettingsPtr settings) :
-    ExperimentController(robot),
+    ExperimentController(robot, ExperimentControllerType::CONTROL_MAP),
     m_settings()
 {
     // NOTE : to get parameters specific for this controller we need to convert
