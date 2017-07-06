@@ -14,6 +14,7 @@ InitiationLeaderController::InitiationLeaderController(FishBot* robot,
     m_settings(),
     m_state(UNDEFINED),
 //    m_limitModelArea(false),
+    m_switchedToModel(false),
     m_inTargetRoom(false),
     m_targetAreaId(""),
     m_departureAreaId("")
@@ -249,10 +250,13 @@ void InitiationLeaderController::updateState(State state)
                     .arg(stateToString(state));
         m_state = state;
         emit notifyControllerStatus(stateToString(m_state).toLower().replace("-", " "));
-//        // a specific check for the case when the robot is switching to the
-//        // model-based control mode
-//        if (m_state == SWIMMING_WITH_FISH)
+        if (m_state == SWIMMING_WITH_FISH) {
+            // remember that we have just switched to the model mode
+            m_switchedToModel = true;
+//            // a specific check for the case when the robot is switching to the
+//            // model-based control mode
 //            m_limitModelArea = true;
+        }
     }
 }
 
@@ -328,10 +332,18 @@ ExperimentController::ControlData InitiationLeaderController::stateControlData()
 //            controlData.data =
 //                QVariant::fromValue(m_controlAreas[m_robotAreaId]->annotatedPolygons());
 //        }
-        //
         ModelParameters parameters;
         parameters.ignoreFish = false;
-        parameters.ignoreRobot = false;
+        if (m_switchedToModel) {
+            m_switchedToModel = false;
+            // when robot switches to the model mode the model needs to get its
+            // position to function normally
+            parameters.ignoreRobot = false;
+        } else {
+            // here we can decide if we ignore of not the robot in other
+            // situations
+            parameters.ignoreRobot = false;
+        }
         controlData.data = QVariant::fromValue(parameters);
         break;
     }

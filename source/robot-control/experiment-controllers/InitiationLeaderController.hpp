@@ -88,6 +88,9 @@ private:
 //    //! current room occupied by the robot. The goal is to prevent the robot
 //    //! from leaving the room when in the model-based control mode.
 //    bool m_limitModelArea;
+    //! The flag that defines that the robot has just switched to the
+    //! SWIMMING_WITH_FISH (= model) mode.
+    bool m_switchedToModel;
 
     //! The departure timer.
     Timer m_departureTimer;
