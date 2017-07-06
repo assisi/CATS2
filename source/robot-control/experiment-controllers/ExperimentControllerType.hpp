@@ -35,6 +35,7 @@ public:
             break;
         case DOMINATING_SET:
             string = "domset";
+            break;
         case CIRCULAR_SETUP_FOLLOWER:
         case CIRCULAR_SETUP_LEADER_CW:
         case CIRCULAR_SETUP_LEADER_CCW:
@@ -63,6 +64,7 @@ public:
             break;
         case DOMINATING_SET:
             string = "Dominating set";
+            break;
         case CIRCULAR_SETUP_FOLLOWER:
             string = "Circular setup follower";
             break;
