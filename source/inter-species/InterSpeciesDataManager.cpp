@@ -29,6 +29,8 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
     connect(thread, &QThread::started, m_subscriber.data(), &Subscriber::process);
     connect(m_subscriber.data(), &Subscriber::finished, thread, &QThread::quit);
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+    connect(m_subscriber.data(), &Subscriber::notifyBeeSetCircularSetupTurningDirection,
+            this, &InterSpeciesDataManager::notifyBeesSetCircularSetupTurningDirection);
     thread->start();
 }
 

@@ -26,6 +26,10 @@ public:
     explicit InterSpeciesDataManager(QString publisherAddress,
                                      QStringList subscriberAddresses);
 
+signals:
+    //! Notifies on the turning direction deduced from the bee setup bees (CW/CCW).
+    void notifyBeesSetCircularSetupTurningDirection(QString message);
+
 public slots:
     //! Triggered when new agent data is to be published.
     //! NOTE: seems like obsolete, it was done to sent data to CATS originally.

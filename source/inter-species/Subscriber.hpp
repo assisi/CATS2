@@ -4,6 +4,7 @@
 #include <zmq.hpp>
 
 #include <QtCore/QObject>
+#include <QtCore/QMap>
 
 #include <atomic>
 
@@ -25,6 +26,8 @@ signals:
     void finished();
     //! Notifies about an error.
     void error(QString errorMessage);
+    //! Notifies on the turning direction deduced from the bee setup bees (CW/CCW).
+    void notifyBeeSetCircularSetupTurningDirection(QString message);
 
 public slots:
     //! Starts listening.
@@ -33,11 +36,20 @@ public slots:
     void stop();
 
 private:
+    //! Processes the input message.
+    void processMessage(std::string name, std::string device,
+                        std::string command, std::string data);
+
+private:
     //! The subscriber socket.
     zmq::socket_t m_subscriber;
 
     //! The flag that defines if the convertor is to be stopped.
     std::atomic_bool m_stopped;
+
+private: // binary choice experiment related data
+    //! The densities of bees around the bee casus.
+    QMap<QString, double> m_beeDensities;
 };
 
 using SubscriberPtr = QSharedPointer<Subscriber>;
