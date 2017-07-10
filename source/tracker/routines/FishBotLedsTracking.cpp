@@ -104,7 +104,7 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
                                      agent.state().position().y()),
                            2, cv::Scalar(255, 255, 255));
             }
-            enqueueDebugImage(m_blurredImage);
+            enqueueDebugImage(m_maskedImage);
         }
     }
     else
@@ -132,7 +132,7 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
     m_settingsMutex.unlock();
 
     // convert to hsv
-    cv::cvtColor(m_blurredImage, m_hsvImage, CV_RGB2HSV);
+    cv::cvtColor(m_maskedImage, m_hsvImage, CV_RGB2HSV);
     // threshold the image in the HSV color space
     cv::inRange(m_hsvImage,
                 cv::Scalar(h / 2 - tolerance, 0 , v - 2 * tolerance),

@@ -161,12 +161,15 @@
                 <fishBotLedsTracking>
                     <fishBot_C>
                         <threshold>30</threshold>
+                        <areaMaskFile>masks/epfl-below-camera-domset-mask-1.png</areaMaskFile>
                     </fishBot_C>
                     <fishBot_H>
                         <threshold>30</threshold>
+                        <areaMaskFile>masks/epfl-below-camera-domset-mask-1.png</areaMaskFile>
                     </fishBot_H>
                     <fishBot_B>
                         <threshold>70</threshold>
+                        <areaMaskFile>masks/epfl-below-camera-domset-mask-1.png</areaMaskFile>
                     </fishBot_B>
                 </fishBotLedsTracking>
             </tracking>

@@ -60,7 +60,8 @@ bool FishBotLedsTrackingSettings::init(QString configurationFileName)
                               .arg(m_settingPathPrefix)
                               .arg(id.data()),
                               areaMaskFilePath);
-        robotDescription.areaMaskFilePath = areaMaskFilePath;
+        robotDescription.areaMaskFilePath = configurationFolder.toStdString() +
+                QDir::separator().toLatin1() + areaMaskFilePath;
         m_data.addRobotDescription(robotDescription);
     }
 
