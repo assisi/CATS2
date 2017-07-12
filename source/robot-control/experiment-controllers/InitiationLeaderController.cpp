@@ -14,7 +14,6 @@ InitiationLeaderController::InitiationLeaderController(FishBot* robot,
     m_settings(),
     m_state(UNDEFINED),
 //    m_limitModelArea(false),
-    m_switchedToModel(false),
     m_inTargetRoom(false),
     m_targetAreaId(""),
     m_departureAreaId("")
@@ -252,7 +251,7 @@ void InitiationLeaderController::updateState(State state)
         emit notifyControllerStatus(stateToString(m_state).toLower().replace("-", " "));
         if (m_state == SWIMMING_WITH_FISH) {
             // remember that we have just switched to the model mode
-            m_switchedToModel = true;
+            m_updateRobotPositionTimer.reset();
 //            // a specific check for the case when the robot is switching to the
 //            // model-based control mode
 //            m_limitModelArea = true;
@@ -334,14 +333,14 @@ ExperimentController::ControlData InitiationLeaderController::stateControlData()
 //        }
         ModelParameters parameters;
         parameters.ignoreFish = false;
-        if (m_switchedToModel) {
-            m_switchedToModel = false;
+        if (m_updateRobotPositionTimer.isSet()) {
             // when robot switches to the model mode the model needs to get its
             // position to function normally
             parameters.ignoreRobot = false;
+            if (m_updateRobotPositionTimer.isTimedOutSec(1.)) // TODO : make a constant
+                m_updateRobotPositionTimer.clear();
         } else {
-            // here we can decide if we ignore of not the robot in other
-            // situations
+            // here we can decide if we ignore of not the robot the rest of time
             parameters.ignoreRobot = false;
         }
         controlData.data = QVariant::fromValue(parameters);
@@ -350,10 +349,10 @@ ExperimentController::ControlData InitiationLeaderController::stateControlData()
     case INITIATING_TRANSITION:
         if (m_controlAreas.contains(m_targetAreaId)) {
             controlData.controlMode = ControlModeType::GO_TO_POSITION;
-
             // if the robot hasn't arrived to the target room
             if (!m_inTargetRoom) {
                 // first we start in fish-motion and then switch to PID
+                // FIXME : this time is never set => if is always false
                 if (m_fishToPIDTimer.isSet()){
                     controlData.motionPattern = MotionPatternType::FISH_MOTION;
                     if (m_fishToPIDTimer.isTimedOutSec(1.)) // TODO : 1sec might be moved to settings
