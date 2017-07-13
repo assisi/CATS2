@@ -11,7 +11,7 @@ public:
     enum { Type = UserType + 8 };
 
     //! Constructor.
-    TargetItem();
+    explicit TargetItem();
 
 public:
     //! Returns the type of the item.

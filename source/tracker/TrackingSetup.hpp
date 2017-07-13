@@ -23,7 +23,7 @@ class TrackingSetup
 public:
     //! Constructor. The needOutputQueue specifies if this class needs to provide
     //! an queue with the camera images to be shown on an external GUI.
-    TrackingSetup(SetupType::Enum setupType, bool needOutputQueue = false);
+    explicit TrackingSetup(SetupType::Enum setupType, bool needOutputQueue = false);
 
     //! Destructor.
     virtual ~TrackingSetup() final;

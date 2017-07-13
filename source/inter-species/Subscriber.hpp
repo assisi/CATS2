@@ -17,7 +17,7 @@ class Subscriber : public QObject
     Q_OBJECT
 public:
     //! Constructor. Creates the subscriber socket on the provided address.
-    Subscriber(zmq::context_t& context, QStringList subscriberAddresses);
+    explicit Subscriber(zmq::context_t& context, QStringList subscriberAddresses);
     //! Destructor.
     virtual ~Subscriber();
 

@@ -12,7 +12,7 @@ class DebugLogger
 {
 public:
     //! Constructor. Defining it here prevents construction.
-    DebugLogger();
+    explicit DebugLogger();
     //! Destructor. Defining it here prevents unwanted destruction.
     ~DebugLogger();
 

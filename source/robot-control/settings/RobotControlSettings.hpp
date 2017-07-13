@@ -16,7 +16,7 @@
 struct FishModelSettings {
 public:
     //! Constructor.
-    FishModelSettings() {}
+    explicit FishModelSettings() {}
 
     //! Agents parameters.
     float length = 0.02;
@@ -206,7 +206,7 @@ private:
 struct PotentialFieldSettings
 {
     //! Constructor.
-    PotentialFieldSettings() :
+    explicit PotentialFieldSettings() :
         influenceDistanceArenaMeters(0.03),
         influenceStrengthArena(10),
         influenceDistanceRobotsMeters(0.09),

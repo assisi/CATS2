@@ -18,7 +18,7 @@ public:
     };
 
     //! Constructor.
-    InitiationLeaderControllerSettingsData() :
+    explicit InitiationLeaderControllerSettingsData() :
         m_defaultControlAreasFileName(),
         m_depatureTrigger(ON_TIME_OUT),
         m_departureTimeOutSec(5.),
@@ -128,7 +128,7 @@ class InitiationLeaderControllerSettings : public ExperimentControllerSettings
 {
 public:
     //! Constructor.
-    InitiationLeaderControllerSettings();
+    explicit InitiationLeaderControllerSettings();
     //! Destructor.
     virtual ~InitiationLeaderControllerSettings();
 
