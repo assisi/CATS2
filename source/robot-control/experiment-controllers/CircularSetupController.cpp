@@ -4,6 +4,9 @@
 
 #include <QtCore/QDebug>
 
+/*!
+ * Constructor. Gets the robot and the settings.
+ */
 CircularSetupController::CircularSetupController(FishBot* robot,
                                                  ExperimentControllerSettingsPtr settings,
                                                  ExperimentControllerType::Enum controllerType):
@@ -15,7 +18,10 @@ CircularSetupController::CircularSetupController(FishBot* robot,
     m_maxAreaId(""),
     m_targetTurningDirection(TurningDirection::UNDEFINED),
     m_setupCenter(PositionMeters::invalidPosition()),
-    m_clockWiseCounter(0),
+    m_robotClockWiseCounter(0),
+    m_robotUndefCounter(0),
+    m_fishClockWiseCounter(0),
+    m_fishUndefCounter(0),
     m_allMeasurementsCounter(0)
 {
     CircularSetupControllerSettings* controllerSettings =
@@ -46,6 +52,18 @@ CircularSetupController::CircularSetupController(FishBot* robot,
     // find the setup center
     if (RobotControlSettings::get().setupMap().isValid())
         m_setupCenter = RobotControlSettings::get().setupMap().polygon().center();
+
+    // connect the timer to the print method
+    connect(&m_statisticsPrintTimer, &QTimer::timeout, [=](){ printStatistics(); });
+}
+
+/*!
+ * Destructor.
+ */
+CircularSetupController::~CircularSetupController()
+{
+    m_statisticsPrintTimer.stop();
+    printStatistics();
 }
 
 /*!
@@ -67,12 +85,25 @@ void CircularSetupController::computeFishTurningDirection()
             m_fishGroupTurningDirection = TurningDirection::CLOCK_WISE;
         else if (comparison < 0)
             m_fishGroupTurningDirection = TurningDirection::COUNTER_CLOCK_WISE;
-
-        // update the statistics
-        m_allMeasurementsCounter++;
-        if (m_fishGroupTurningDirection == TurningDirection::CLOCK_WISE)
-            m_clockWiseCounter++;
     }
+}
+
+/*!
+ * Update the turning directions statistics.
+ */
+void CircularSetupController::updateStatistics()
+{
+    m_allMeasurementsCounter++;
+
+    if (m_fishGroupTurningDirection == TurningDirection::CLOCK_WISE)
+        m_fishClockWiseCounter++;
+    else if (m_fishGroupTurningDirection == TurningDirection::UNDEFINED)
+        m_fishUndefCounter++;
+
+    if (m_targetTurningDirection == TurningDirection::CLOCK_WISE)
+        m_robotClockWiseCounter++;
+    else if (m_targetTurningDirection == TurningDirection::UNDEFINED)
+        m_robotUndefCounter++;
 }
 
 /*!
@@ -138,6 +169,9 @@ void CircularSetupController::start()
 // NOTE : we collect the data for the whole program run-time
 //    m_clockWiseCounter = 0;
 //    m_allMeasurementsCounter = 0;
+    // start the timer to print the circular setup statistics
+    int stepMsec = 60000; // 1 minute
+    m_statisticsPrintTimer.start(stepMsec);
 }
 
 /*!
@@ -145,16 +179,50 @@ void CircularSetupController::start()
  */
 void CircularSetupController::finish()
 {
+    // NOTE : it's printed upon the destruction instead
+//    printStatistics();
+    m_statisticsPrintTimer.stop();
+}
+
+/*!
+ * Prints the turning directions statistics.
+ */
+void CircularSetupController::printStatistics(bool final)
+{
     if (m_allMeasurementsCounter != 0) {
-        double clockWisePercent = 100 * static_cast<double>(m_clockWiseCounter) /
+        QString startingText = final ?
+                    "Experiment is finished, final" : "Ongoing experiment";
+
+        double fishClockWisePercent = 100 * static_cast<double>(m_fishClockWiseCounter) /
                 static_cast<double>(m_allMeasurementsCounter);
-        qDebug() << QString("Experiment is finished: fish went clock-wise %1 (%3/%4) "
-                            "percent of time and counter-clock-wise %2 percent "
-                            "of time")
-                    .arg(clockWisePercent)
-                    .arg(100 - clockWisePercent)
-                    .arg(m_clockWiseCounter)
-                    .arg(m_allMeasurementsCounter);
+        double fishCounterClockWisePercent = 100 *
+                static_cast<double>(m_allMeasurementsCounter -
+                                    m_fishClockWiseCounter -
+                                    m_fishUndefCounter) /
+                static_cast<double>(m_allMeasurementsCounter);
+
+        double robotClockWisePercent = 100 * static_cast<double>(m_robotClockWiseCounter) /
+                static_cast<double>(m_allMeasurementsCounter);
+        double robotCounterClockWisePercent = 100 *
+                static_cast<double>(m_allMeasurementsCounter -
+                                    m_robotClockWiseCounter -
+                                    m_robotUndefCounter) /
+                static_cast<double>(m_allMeasurementsCounter);
+
+        qDebug() << QString("%10 statistics: fish went clock-wise %1\% of time "
+                            "(%2/%3)  and counter-clock-wise %4\% of time; the "
+                            "robot %5 went clock-wise %6\% of time (%7/%8) and "
+                            "counter-clock-wise %9\% of time")
+                    .arg(fishClockWisePercent)
+                    .arg(m_fishClockWiseCounter)
+                    .arg(m_allMeasurementsCounter)
+                    .arg(fishCounterClockWisePercent)
+                    .arg(m_robot->name())
+                    .arg(robotClockWisePercent)
+                    .arg(m_robotClockWiseCounter)
+                    .arg(m_allMeasurementsCounter)
+                    .arg(robotCounterClockWisePercent)
+                    .arg(startingText);
     } else {
         qDebug() << "Experiment is finished but no measurements were made";
     }
