@@ -135,8 +135,9 @@ bool CircularSetupController::updateTargetTurningDirection(TurningDirection::Enu
  */
 void CircularSetupController::start()
 {
-    m_clockWiseCounter = 0;
-    m_allMeasurementsCounter = 0;
+// NOTE : we collect the data for the whole program run-time
+//    m_clockWiseCounter = 0;
+//    m_allMeasurementsCounter = 0;
 }
 
 /*!
