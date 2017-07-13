@@ -251,6 +251,7 @@ void InitiationLeaderController::updateState(State state)
         emit notifyControllerStatus(stateToString(m_state).toLower().replace("-", " "));
         if (m_state == SWIMMING_WITH_FISH) {
             // remember that we have just switched to the model mode
+            qDebug() << "Start the timer to update the fish position in the model";
             m_updateRobotPositionTimer.reset();
 //            // a specific check for the case when the robot is switching to the
 //            // model-based control mode
@@ -337,8 +338,10 @@ ExperimentController::ControlData InitiationLeaderController::stateControlData()
             // when robot switches to the model mode the model needs to get its
             // position to function normally
             parameters.ignoreRobot = false;
-            if (m_updateRobotPositionTimer.isTimedOutSec(1.)) // TODO : make a constant
+            if (m_updateRobotPositionTimer.isTimedOutSec(1.)) { // TODO : make a constant
+                qDebug() << "Stop the timer to update the fish position in the model";
                 m_updateRobotPositionTimer.clear();
+            }
         } else {
             // here we can decide if we ignore of not the robot the rest of time
             parameters.ignoreRobot = false;

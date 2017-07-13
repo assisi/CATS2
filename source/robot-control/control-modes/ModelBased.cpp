@@ -37,8 +37,9 @@ ModelBased::~ModelBased()
  */
 void ModelBased::start()
 {
-    // in the beginning the model always check the position of fish
-    m_parameters.ignoreFish = false; // TODO : better move this to GUI instead and do not reset it here
+//     in the beginning the model always check the position of fish
+    // NOTE : commented out since the purpose was not clear
+//    m_parameters.ignoreFish = false; // TODO : better move this to GUI instead and do not reset it here
     m_targetUpdateTimer.reset();
     // compute the first target position
     m_targetPosition = computeTargetPosition();
@@ -93,6 +94,7 @@ QList<ControlTargetType> ModelBased::supportedTargets()
 void ModelBased::resetModel()
 {
     if (!m_currentGrid.empty()) {
+        qDebug() << "Resetting the model";
         // size of the area covered by the matrix
         Fishmodel::Coord_t size = {m_currentGrid.cols * m_gridSizeMeters,
                                    m_currentGrid.rows * m_gridSizeMeters};
@@ -106,6 +108,7 @@ void ModelBased::resetModel()
         factory.behaviorRobots = "BM";
         factory.behaviorVirtuals = "BM";
         // create the simulator
+        m_sim.reset(nullptr);
         m_sim = factory.create();
         const FishModelSettings& fishModelSettings = RobotControlSettings::get().fishModelSettings();
         m_sim->dt = fishModelSettings.dt;
@@ -133,6 +136,7 @@ void ModelBased::resetModel()
 PositionMeters ModelBased::computeTargetPosition()
 {
     if ((m_sim == nullptr) || (m_sim && (m_sim->fishes.size() == 0))) {
+        qDebug() << "Simulator is not properly initialized";
         return PositionMeters::invalidPosition();
     }
 
@@ -204,6 +208,7 @@ PositionMeters ModelBased::computeTargetPosition()
             m_sim->robots[0].first->present = false;
         }
     } else {
+        // we ignore the robot
         m_sim->robots[0].first->present = false;
     }
 
@@ -242,6 +247,7 @@ void ModelBased::setParameters(ModelParameters parameters)
                             "ignore-robot:%2")
                     .arg(m_parameters.ignoreFish)
                     .arg(m_parameters.ignoreRobot);
-        resetModel();
+        // NOTE : we don't reset the model to check
+        //        resetModel();
     }
 }
