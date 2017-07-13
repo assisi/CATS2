@@ -147,11 +147,13 @@ void CircularSetupController::finish()
     if (m_allMeasurementsCounter != 0) {
         double clockWisePercent = 100 * static_cast<double>(m_clockWiseCounter) /
                 static_cast<double>(m_allMeasurementsCounter);
-        qDebug() << QString("Experiment is finished: fish went clock-wise %1 "
+        qDebug() << QString("Experiment is finished: fish went clock-wise %1 (%3/%4) "
                             "percent of time and counter-clock-wise %2 percent "
                             "of time")
                     .arg(clockWisePercent)
-                    .arg(100 - clockWisePercent);
+                    .arg(100 - clockWisePercent)
+                    .arg(m_clockWiseCounter)
+                    .arg(m_allMeasurementsCounter);
     } else {
         qDebug() << "Experiment is finished but no measurements were made";
     }
