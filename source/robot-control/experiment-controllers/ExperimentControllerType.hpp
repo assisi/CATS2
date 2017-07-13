@@ -66,6 +66,7 @@ public:
             break;
         case DOMINATING_SET:
             string = "Dominating set";
+            break;
         case CIRCULAR_SETUP_FOLLOWER:
             string = "Circular setup follower";
             break;
