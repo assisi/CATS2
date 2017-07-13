@@ -13,13 +13,18 @@
 #include <cmath>
 
 /*!
- * Constructor. Gets the settings, the input queue to process and a queue to place debug images on request.
+ * Constructor. Gets the settings, the input queue to process and a queue to
+ * place debug images on request.
  */
-FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings, TimestampedFrameQueuePtr inputQueue, TimestampedFrameQueuePtr debugQueue) :
+FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings,
+                                         TimestampedFrameQueuePtr inputQueue,
+                                         TimestampedFrameQueuePtr debugQueue) :
     TrackingRoutine(inputQueue, debugQueue)
 {
-    // HACK : to get parameters specific for this tracker we need to convert the settings to the corresponding format
-    FishBotLedsTrackingSettings* fishBotLedsTrackingSettings = dynamic_cast<FishBotLedsTrackingSettings*>(settings.data());
+    // HACK : to get parameters specific for this tracker we need to convert the
+    // settings to the corresponding format
+    FishBotLedsTrackingSettings* fishBotLedsTrackingSettings =
+            dynamic_cast<FishBotLedsTrackingSettings*>(settings.data());
     if (fishBotLedsTrackingSettings != nullptr){
         // copy the parameters
         m_settings = fishBotLedsTrackingSettings->data();
@@ -32,10 +37,16 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings, Ti
 
     // set the agents' list
     FishBotLedsTrackingSettingsData::FishBotDescription robotDescription;
-    for (size_t robotIndex = 0; robotIndex < m_settings.numberOfAgents(); robotIndex++) {
+    for (size_t robotIndex = 0;
+         robotIndex < m_settings.numberOfAgents();
+         robotIndex++)
+    {
         robotDescription = m_settings.robotDescription(robotIndex);
         AgentDataImage agent(robotDescription.id, AgentType::CASU);
         m_agents.append(agent);
+
+        // set the mask files
+        m_areaRobotMasks.append(cv::imread(robotDescription.areaMaskFilePath));
     }
 
     // initialize the previous states
@@ -64,9 +75,11 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
         cv::blur(image, m_blurredImage, cv::Size(3, 3));
         // apply the mask if defined
         // TODO : to add support for different types of masks to be less picky
-        if ((m_maskImage.data != nullptr) && (m_blurredImage.type() == m_maskImage.type()))
+        if ((m_maskImage.data != nullptr) &&
+                (m_blurredImage.type() == m_maskImage.type()))
+        {
             m_blurredImage = m_blurredImage & m_maskImage;
-        else {
+        } else {
 //            qDebug() << "The mask's type is not compatible with the image";
         }
 
@@ -86,9 +99,12 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
         // submit the debug image
         if (m_enqueueDebugFrames) {
             for (auto& agent: m_agents) {
-                cv::circle(m_blurredImage, cv::Point(agent.state().position().x(), agent.state().position().y()), 2, cv::Scalar(255, 255, 255));
+                cv::circle(m_blurredImage,
+                           cv::Point(agent.state().position().x(),
+                                     agent.state().position().y()),
+                           2, cv::Scalar(255, 255, 255));
             }
-            enqueueDebugImage(m_blurredImage);
+            enqueueDebugImage(m_maskedImage);
         }
     }
     else
@@ -100,6 +116,15 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
 */
 void FishBotLedsTracking::detectLeds(size_t robotIndex)
 {
+    // apply the mask if supported
+    if ((m_areaRobotMasks[robotIndex].data != nullptr) &&
+            (m_blurredImage.type() == m_areaRobotMasks[robotIndex].type()))
+    {
+        m_maskedImage = m_blurredImage & m_areaRobotMasks[robotIndex];
+    } else {
+        m_blurredImage.copyTo(m_maskedImage);
+    }
+    // get settings
     int h,s,v;
     m_settingsMutex.lock();
     m_settings.robotDescription(robotIndex).ledColor.getHsv(&h, &s, &v);
@@ -107,7 +132,7 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
     m_settingsMutex.unlock();
 
     // convert to hsv
-    cv::cvtColor(m_blurredImage, m_hsvImage, CV_RGB2HSV);
+    cv::cvtColor(m_maskedImage, m_hsvImage, CV_RGB2HSV);
     // threshold the image in the HSV color space
     cv::inRange(m_hsvImage,
                 cv::Scalar(h / 2 - tolerance, 0 , v - 2 * tolerance),
@@ -116,7 +141,10 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
 
     // postprocessing of the binary image
     int an = 1;
-    cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE, cv::Size(an*2+1, an*2+1), cv::Point(an, an)); // TODO : inititialize this in the constructor
+    // TODO : inititialize this in the constructor
+    cv::Mat element = cv::getStructuringElement(cv::MORPH_ELLIPSE,
+                                                cv::Size(an*2+1, an*2+1),
+                                                cv::Point(an, an));
 
     //morphological opening (remove small objects from the foreground)
     cv::erode(m_binaryImage, m_binaryImage, element);
@@ -129,19 +157,27 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
     // TODO : make a devoted method
     // detect the leds as contours, normally only two should be found
     std::vector<std::vector<cv::Point>> contours;
-    try { // TODO : to check if this try-catch can be removed or if it should be used everywhere where opencv methods are used.
+    try {
+        // TODO : to check if this try-catch can be removed or if it should be
+        // used everywhere where opencv methods are used.
         // retrieve contours from the binary image
-        cv::findContours(m_binaryImage, contours, cv::RETR_EXTERNAL, cv::CHAIN_APPROX_SIMPLE);
+        cv::findContours(m_binaryImage,
+                         contours,
+                         cv::RETR_EXTERNAL,
+                         cv::CHAIN_APPROX_SIMPLE);
     } catch (const cv::Exception& e) {
         qDebug() << "OpenCV exception: " << e.what();
     }
 
-    // sort the contours to find two biggest (inspired by http://stackoverflow.com/questions/33401745/find-largest-contours-opencv)
+    // sort the contours to find two biggest
+    // (inspired by http://stackoverflow.com/questions/33401745/find-largest-contours-opencv)
     std::vector<int> indices(contours.size());
     std::iota(indices.begin(), indices.end(), 0);
-    std::sort(indices.begin(), indices.end(), [&contours](int lhs, int rhs) {
-        return cv::contourArea(contours[lhs],false) > cv::contourArea(contours[rhs],false);
-    });
+    std::sort(indices.begin(), indices.end(),
+              [&contours](int lhs, int rhs)
+              {
+                return cv::contourArea(contours[lhs],false) > cv::contourArea(contours[rhs],false);
+              });
 
     // current agent
     AgentDataImage& robot = m_agents[robotIndex];
@@ -156,20 +192,27 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
         for (size_t i = 0; i < 2; ++i) {
             contourCenters.push_back(contourCenter(contours[i]));
         }
-        // compute the agent's position that is between two contours, and the orientation
+        // compute the agent's position that is between two contours, and the
+        // orientation
         agentPosition = ((contourCenters[0] + contourCenters[1]) / 2);
 
         // this orientation is still precise up to +180 degrees
         double agentOrientationRad = qAtan2(contourCenters[1].y - contourCenters[0].y,
                 contourCenters[1].x - contourCenters[0].x);
         // define the direction
-        cv::Point2f agentVector = contourCenters[1] - contourCenters[0]; // the agent body
-        cv::Point2f agentDisplacementVector = agentPosition - previousState.position().toCvPoint2f(); // new postion minus previous position
+        // the agent body
+        cv::Point2f agentVector = contourCenters[1] - contourCenters[0];
+        // new postion minus previous position
+        cv::Point2f agentDisplacementVector =
+                agentPosition - previousState.position().toCvPoint2f();
         // first we define the orientation with the displacement, 1.0 px is an
         // empirical parameter to decide that the robot moves
         if (previousState.position().isValid() &&
-                (!previousState.orientation().isInvalid()) && // i.e. both markers were detected successfully, thus the centre of the robot is correct
-                (cv::norm(agentDisplacementVector) > 1.0)) {
+                // i.e. both markers were detected successfully, thus the centre
+                // of the robot is correct
+                (!previousState.orientation().isInvalid()) &&
+                (cv::norm(agentDisplacementVector) > 1.0))
+        {
             // if vectors are oppositely directed then we correct the orientation
             if (agentVector.dot(agentDisplacementVector) < 0)
                 agentOrientationRad += M_PI;

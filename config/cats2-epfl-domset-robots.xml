@@ -10,7 +10,7 @@
         <setupMapPath>setup/epfl-domset.xml</setupMapPath>
     </experiment>
     <robots>
-        <numberOfRobots>0</numberOfRobots>
+        <numberOfRobots>1</numberOfRobots>
         <controlFrequencyHz>10</controlFrequencyHz>
         <fishModel>
             <agent>
@@ -98,22 +98,22 @@
             </domset>
         </controllers>
         <fishBot_1>
-             <id>C</id>
-                <ledColor>
-                    <r>190</r>
-                    <g>255</g>
-                    <b>190</b>
-                </ledColor>
-                <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
+            <id>H</id>
+            <ledColor>
+                <r>90</r>
+                <g>150</g>
+                <b>200</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
         </fishBot_1>
         <fishBot_2>
-            <id>H</id>
-                <ledColor>
-                    <r>90</r>
-                    <g>150</g>
-                    <b>200</b>
-                </ledColor>
-                <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
+            <id>C</id>
+            <ledColor>
+                <r>190</r>
+                <g>255</g>
+                <b>190</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
         </fishBot_2>
         <fishBot_3>
             <id>B</id>
@@ -161,12 +161,15 @@
                 <fishBotLedsTracking>
                     <fishBot_C>
                         <threshold>30</threshold>
+                        <areaMaskFile>masks/epfl-below-camera-domset-mask-1.png</areaMaskFile>
                     </fishBot_C>
                     <fishBot_H>
                         <threshold>30</threshold>
+                        <areaMaskFile>masks/epfl-below-camera-domset-mask-1.png</areaMaskFile>
                     </fishBot_H>
                     <fishBot_B>
                         <threshold>70</threshold>
+                        <areaMaskFile>masks/epfl-below-camera-domset-mask-1.png</areaMaskFile>
                     </fishBot_B>
                 </fishBotLedsTracking>
             </tracking>

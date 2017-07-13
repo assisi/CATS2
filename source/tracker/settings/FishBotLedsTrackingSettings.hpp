@@ -26,13 +26,20 @@ public:
     struct FishBotDescription
     {
         //! Initialization.
-        FishBotDescription() : id('Z'), ledColor(0,0,0), colorThreshold(100) {}
+        FishBotDescription() :
+            id('Z'),
+            ledColor(0,0,0),
+            colorThreshold(100),
+            areaMaskFilePath("")
+        {}
         //! The FishBot's id.
         QString id;
         //! The robot LEDs' color.
         QColor ledColor;
         //! The color detection threshold.
         int colorThreshold;
+        //! (Optional) Robot area mask to have separated robot areas.
+        std::string areaMaskFilePath;
     };
 
     //! Returns the robot's description.

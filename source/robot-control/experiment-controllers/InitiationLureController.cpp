@@ -175,7 +175,7 @@ ExperimentController::ControlData InitiationLureController::stateControlData()
     switch (m_state) {
     case SWIMMING_IN_ROOM:
         controlData.controlMode = ControlModeType::MODEL_BASED;
-        controlData.motionPattern = MotionPatternType::FISH_MOTION;
+        controlData.motionPattern = MotionPatternType::PID;
         // if we need to limit the model
         if (m_limitModelArea &&
                 m_controlAreas.contains(m_robotAreaId) &&
@@ -188,6 +188,7 @@ ExperimentController::ControlData InitiationLureController::stateControlData()
         } else {
             ModelParameters parameters;
             parameters.ignoreFish = true;
+//            parameters.ignoreRobot = true;
             controlData.data = QVariant::fromValue(parameters);
         }
         break;
