@@ -55,6 +55,7 @@ void Subscriber::process()
                          << QString::fromStdString(device) << QString::fromStdString(command) << QString::fromStdString(data);
                 // TODO : analyse the type of the message and to send the
                 // corresponding message
+                processMessage(name, device, command, data);
             } else {
                 // if no data available when we make a pause
                 std::this_thread::sleep_for(std::chrono::milliseconds(100));
