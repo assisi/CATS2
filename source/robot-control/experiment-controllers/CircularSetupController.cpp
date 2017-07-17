@@ -63,7 +63,8 @@ CircularSetupController::CircularSetupController(FishBot* robot,
 CircularSetupController::~CircularSetupController()
 {
     m_statisticsPrintTimer.stop();
-    printStatistics();
+    bool finalCall = true;
+    printStatistics(finalCall);
 }
 
 /*!
@@ -179,8 +180,7 @@ void CircularSetupController::start()
  */
 void CircularSetupController::finish()
 {
-    // NOTE : it's printed upon the destruction instead
-//    printStatistics();
+    printStatistics();
     m_statisticsPrintTimer.stop();
 }
 
