@@ -14,6 +14,7 @@ include_directories(${ZeroMQ_INCLUDE_DIR})
 set(srcs
     InterSpeciesDataManager.cpp
     Subscriber.cpp
+    GenericSubscriber.cpp
 )
 
 set(hdrs
