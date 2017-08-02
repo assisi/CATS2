@@ -7,7 +7,8 @@
  */
 CommandLineParameters::CommandLineParameters() :
     m_useSharedRobotInterface(true),
-    m_useInterSpacesModule(true)
+    m_useInterSpacesModule(true),
+    m_useSettingsInterface(false)
 {
 }
 
@@ -114,6 +115,18 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile,
         m_useInterSpacesModule = true;
     }
 
+    // get the flag for the settings interface
+    bool foundSettingsInterfaceFlag =
+            (CommandLineParser::parseArgument(argc, argv, "-si", flag) ||
+             CommandLineParser::parseArgument(argc, argv, "--settings-interface", flag));
+    if (foundSettingsInterfaceFlag) {
+        m_useSettingsInterface = (flag.toInt() == 1);
+    } else {
+        qDebug() << "Couldn't find the settings interface flag, set  to default "
+                    "value 'false' (settings interface is disabled)";
+        m_useSettingsInterface = true;
+    }
+
     return settingsAccepted;
 }
 
@@ -134,6 +147,9 @@ void CommandLineParameters::printSupportedArguments()
                 "is on";
     qDebug() << "\t -is --inter-spaces\tThe flag to activate the interspaces "
                 "module. Format : -is 1/0, by default is on";
+    qDebug() << "\t -si --settings-interface\tThe flag to activate the remote"
+                "access to the settings interface. Format : -si 1/0, by default"
+                "is off";
 }
 
 /*!

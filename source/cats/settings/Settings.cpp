@@ -84,6 +84,10 @@ bool Settings::init(int argc, char *argv[],
         return false;
     }
 
+    // initialize the settings interface
+    if (CommandLineParameters::get().useSettingsInterface())
+        m_settingsInterface = SettingsInterfacePtr(new SettingsInterface());
+
     return true;
 }
 

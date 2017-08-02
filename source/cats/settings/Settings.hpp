@@ -1,6 +1,8 @@
 #ifndef CATS2_SETTINGS_HPP
 #define CATS2_SETTINGS_HPP
 
+#include <SettingsInterface.hpp>
+
 #include <SetupType.hpp>
 
 #include <QtCore/QDebug>
@@ -49,6 +51,10 @@ private:
     Settings() {}
     //! Destructor. Defining it here prevents unwanted destruction.
     ~Settings() {}
+
+private:
+    //! The interface to provide settings values to external services.
+    SettingsInterfacePtr m_settingsInterface;
 };
 
 #endif // CATS2_SETTINGS_HPP
