@@ -105,26 +105,48 @@ bool RobotControlSettings::init(QString configurationFileName)
 
     // read the pid controller settings
     double kp = 0;
-    settings.readVariable("robots/navigation/pid/kp", kp, kp);
+    QString settingsPath = "robots/navigation/pid/kp";
+    settings.readVariable(settingsPath, kp, kp);
     m_pidControllerSettings.setKp(kp);
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.kp(); };
+    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKp(value); };
+
     double ki = 0;
-    settings.readVariable("robots/navigation/pid/ki", ki, ki);
+    settingsPath = "robots/navigation/pid/ki";
+    settings.readVariable(settingsPath, ki, ki);
     m_pidControllerSettings.setKi(ki);
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.ki(); };
+    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKi(value); };
+
     double kd = 0;
-    settings.readVariable("robots/navigation/pid/kd", kd, kd);
+    settingsPath = "robots/navigation/pid/kd";
+    settings.readVariable(settingsPath, kd, kd);
     m_pidControllerSettings.setKd(kd);
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.kd(); };
+    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKd(value); };
     settingsAccepted = settingsAccepted && (!qFuzzyIsNull(m_pidControllerSettings.kp()));
 
     // read the pid controller settings
     double kpDist = 0;
-    settings.readVariable("robots/navigation/pid/kpDist", kpDist, kpDist);
+    settingsPath = "robots/navigation/pid/kpDist";
+    settings.readVariable(settingsPath, kpDist, kpDist);
     m_pidControllerSettings.setKpDist(kpDist);
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.kpDist(); };
+    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKpDist(value); };
+
     double kiDist = 0;
-    settings.readVariable("robots/navigation/pid/kiDist", kiDist, kiDist);
+    settingsPath = "robots/navigation/pid/kiDist";
+    settings.readVariable(settingsPath, kiDist, kiDist);
     m_pidControllerSettings.setKiDist(kiDist);
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.kiDist(); };
+    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKiDist(value); };
+
     double kdDist = 0;
-    settings.readVariable("robots/navigation/pid/kdDist", kdDist, kdDist);
+    settingsPath = "robots/navigation/pid/kdDist";
+    settings.readVariable(settingsPath, kdDist, kdDist);
     m_pidControllerSettings.setKdDist(kdDist);
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.kdDist(); };
+    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKdDist(value); };
     settingsAccepted = settingsAccepted && (!qFuzzyIsNull(m_pidControllerSettings.kpDist()));
 
     // read the default linear speed
@@ -284,4 +306,31 @@ ExperimentControllerSettingsPtr RobotControlSettings::controllerSettings(Experim
         return m_controllerSettings.value(type);
     else
         return ExperimentControllerSettingsPtr();
+}
+
+/*!
+ * Provides the settings value by its path in the configuration file. Only
+ * numerical values are supported.
+ */
+double RobotControlSettings::valueByPath(std::string path)
+{
+    if (m_parametersGetters.count(path) > 0) {
+        return m_parametersGetters[path]();
+    } else {
+        qDebug() << QString("Path %1 is not supported.").arg(QString::fromStdString(path));
+        return 0;
+    }
+}
+
+/*!
+ * Sets the settings value by its path in the configuration file. Only numerical
+ * values are supported.
+ */
+void RobotControlSettings::setValueByPath(std::string path, double value)
+{
+    if (m_parametersSetters.count(path) > 0) {
+        m_parametersSetters[path](value);
+    } else {
+        qDebug() << QString("Path %1 is not supported.").arg(QString::fromStdString(path));
+    }
 }

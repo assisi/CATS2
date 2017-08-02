@@ -8,6 +8,8 @@
 #include <QtCore/QString>
 #include <QtCore/QMap>
 
+#include <functional>
+
 /*!
  * Stores settings of the fish model.
  */
@@ -322,6 +324,13 @@ public:
     //! on a timeout.
     int trajectoryUpdateRateHz() const { return m_trajectoryUpdateRateHz; }
 
+    //! Provides the settings value by its path in the configuration file.
+    //! Only numerical values are supported.
+    double valueByPath(std::string path);
+    //! Sets the settings value by its path in the configuration file.
+    //! Only numerical values are supported.
+    void setValueByPath(std::string path, double value);
+
 private:
     //! Constructor. Defining it here prevents construction.
     RobotControlSettings() {}
@@ -373,6 +382,11 @@ private:
     //! The update rate for the trajectory points when they are provided on a
     //! timeout.
     int m_trajectoryUpdateRateHz;
+
+    //! Map that stores the paramers getters.
+    std::map<std::string, std::function<double()>> m_parametersGetters;
+    //! Map that stores the paramers setters.
+    std::map<std::string, std::function<void(double)>> m_parametersSetters;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP

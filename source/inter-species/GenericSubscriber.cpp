@@ -10,6 +10,7 @@
 */
 GenericSubscriber::GenericSubscriber(zmq::context_t& context,
                                      QStringList subscriberAddresses):
+    QObject(nullptr),
     m_subscriber(context, ZMQ_SUB)
 {
     // we accept all messages
