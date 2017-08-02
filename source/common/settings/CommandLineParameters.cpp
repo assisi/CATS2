@@ -6,7 +6,7 @@
  * Constructor.
  */
 CommandLineParameters::CommandLineParameters() :
-    m_sharedRobotInterface(true)
+    m_useSharedRobotInterface(true)
 {
 }
 
@@ -92,13 +92,13 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile,
     QString flag;
     bool foundRobotInterfaceFlag =
             (CommandLineParser::parseArgument(argc, argv, "-sri", flag) ||
-             CommandLineParser::parseArgument(argc, argv, "--shared-interface-flag", flag));
+             CommandLineParser::parseArgument(argc, argv, "--shared-robot-interface", flag));
     if (foundRobotInterfaceFlag) {
-        m_sharedRobotInterface = (flag.toInt() == 1);
+        m_useSharedRobotInterface = (flag.toInt() == 1);
     } else {
         qDebug() << "Couldn't find the robot interface flag, set  to default "
                     "value 'true' (connecting to the shared interface)";
-        m_sharedRobotInterface = true;
+        m_useSharedRobotInterface = true;
     }
 
     return settingsAccepted;
@@ -117,7 +117,8 @@ void CommandLineParameters::printSupportedArguments()
                 "robot under the aquarium. Format : -mc <StreamType> <parameters>";
     qDebug() << "\t -c --config\tThe configuration file. Format : -c <PathToFile>";
     qDebug() << "\t -sri --shared-robot-interface\tThe flag to use a shared"
-                "interface to connect to robots. Format : -sri 1/0";
+                "interface to connect to robots. Format : -sri 1/0, by default"
+                "is on";
 }
 
 /*!

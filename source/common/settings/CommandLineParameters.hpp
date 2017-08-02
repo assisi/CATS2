@@ -66,7 +66,7 @@ public:
         return m_cameraDescriptors.keys();
     }
     //! Returns the flag defining wether one interface is shared by all robots.
-    bool useSharedRobotInterface() const { return m_sharedRobotInterface; }
+    bool useSharedRobotInterface() const { return m_useSharedRobotInterface; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -92,7 +92,7 @@ private:
 
     //! Defines if one interface is shared by all robots or is created exclusively
     //! for every robot.
-    bool m_sharedRobotInterface;
+    bool m_useSharedRobotInterface;
 };
 
 #endif // CATS2_COMMAND_LINE_PARAMETERS_HPP
