@@ -1,7 +1,7 @@
 #ifndef CATS2_SUBSCRIBER_HPP
 #define CATS2_SUBSCRIBER_HPP
 
-#include <GenericSubscriber.hpp>
+#include "GenericSubscriber.hpp"
 
 /*!
  * Receives messages via zmq, decodes them and sends out qt signals.

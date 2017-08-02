@@ -6,5 +6,6 @@ add_subdirectory(hub)
 add_subdirectory(messages)
 add_subdirectory(inter-species)
 add_subdirectory(robot-control)
+add_subdirectory(settings-interface)
 add_subdirectory(cats)
 

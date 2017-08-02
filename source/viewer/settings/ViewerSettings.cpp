@@ -37,7 +37,8 @@ bool ViewerSettings::init(QString configurationFileName, SetupType::Enum setupTy
     // check that the settings are valid
     bool foundTargetFrameSize = m_targetFrameSizes[setupType].isValid();
     if (!foundTargetFrameSize) {
-        qDebug() << "The target frame size in not set for setup" << SetupType::toString(setupType);
+        qDebug() << "The target frame size in not set for setup"
+                 << SetupType::toString(setupType);
     }
     settingsAccepted = (foundTargetFrameSize || (!needTargetFrameSize));
 
