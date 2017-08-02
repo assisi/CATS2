@@ -6,7 +6,8 @@
  * Constructor.
  */
 CommandLineParameters::CommandLineParameters() :
-    m_useSharedRobotInterface(true)
+    m_useSharedRobotInterface(true),
+    m_useInterSpacesModule(true)
 {
 }
 
@@ -101,6 +102,18 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile,
         m_useSharedRobotInterface = true;
     }
 
+    // get the flag for the interspaces communication
+    bool foundInterSpacesFlag =
+            (CommandLineParser::parseArgument(argc, argv, "-is", flag) ||
+             CommandLineParser::parseArgument(argc, argv, "--inter-spaces", flag));
+    if (foundInterSpacesFlag) {
+        m_useInterSpacesModule = (flag.toInt() == 1);
+    } else {
+        qDebug() << "Couldn't find the inter-spaces flag, set  to default "
+                    "value 'true' (inter-spaces activated)";
+        m_useInterSpacesModule = true;
+    }
+
     return settingsAccepted;
 }
 
@@ -119,6 +132,8 @@ void CommandLineParameters::printSupportedArguments()
     qDebug() << "\t -sri --shared-robot-interface\tThe flag to use a shared"
                 "interface to connect to robots. Format : -sri 1/0, by default"
                 "is on";
+    qDebug() << "\t -is --inter-spaces\tThe flag to activate the interspaces "
+                "module. Format : -is 1/0, by default is on";
 }
 
 /*!

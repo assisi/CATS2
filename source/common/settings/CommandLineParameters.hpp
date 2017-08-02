@@ -67,6 +67,9 @@ public:
     }
     //! Returns the flag defining wether one interface is shared by all robots.
     bool useSharedRobotInterface() const { return m_useSharedRobotInterface; }
+    //! Returns the flag defining wether the inter-spaces module is to be
+    //! activated.
+    bool useInterSpacesModule() const { return m_useInterSpacesModule; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -93,6 +96,8 @@ private:
     //! Defines if one interface is shared by all robots or is created exclusively
     //! for every robot.
     bool m_useSharedRobotInterface;
+    //! Defines if the inter-spaces module is to be activated.
+    bool m_useInterSpacesModule;
 };
 
 #endif // CATS2_COMMAND_LINE_PARAMETERS_HPP

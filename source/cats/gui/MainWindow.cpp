@@ -6,6 +6,7 @@
 #include "settings/Settings.hpp"
 #include "settings/Registry.hpp"
 #include <settings/InterSpeciesSettings.hpp>
+#include <settings/CommandLineParameters.hpp>
 
 #include <TrackingSetup.hpp>
 #include <TrackingDataManager.hpp>
@@ -48,9 +49,11 @@ MainWindow::MainWindow(QWidget *parent) :
     m_trackingDataManager = TrackingDataManagerPtr(new TrackingDataManager(path));
 
     // create the inter-species data manager
-    m_interSpeciesDataManager =
-            InterSpeciesDataManagerPtr(new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress(),
-                                                                   InterSpeciesSettings::get().subscriberAddresses()));
+    if (CommandLineParameters::get().useInterSpacesModule()) {
+        m_interSpeciesDataManager = InterSpeciesDataManagerPtr(
+                    new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress(),
+                                                InterSpeciesSettings::get().subscriberAddresses()));
+    }
 //    connect(m_trackingDataManager.data(),
 //            &TrackingDataManager::notifyAgentDataImageMerged,
 //            m_interSpeciesDataManager.data(),
@@ -91,10 +94,12 @@ MainWindow::MainWindow(QWidget *parent) :
     }
 
     // connecting to inter-species
-    connect(m_robotsHandler->contolLoop().data(),
-            &ControlLoop::notifyCircularSetupTurningDirections,
-            m_interSpeciesDataManager.data(),
-            &InterSpeciesDataManager::publishCicrularExperimentData);
+    if (CommandLineParameters::get().useInterSpacesModule()) {
+        connect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifyCircularSetupTurningDirections,
+                m_interSpeciesDataManager.data(),
+                &InterSpeciesDataManager::publishCicrularExperimentData);
+    }
 
     // show the window maximazed
      setWindowState(Qt::WindowMaximized);
