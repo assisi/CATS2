@@ -244,8 +244,10 @@ struct PotentialFieldSettings
  * the drawback is that initialization of many objects becomes obscure because of this.
  * NOTE : All the settings must be initialized on the program startup.
 */
-class RobotControlSettings
+class RobotControlSettings : public QObject
 {
+    Q_OBJECT
+
 public:
     //! The singleton getter.
     static RobotControlSettings& get();
@@ -331,9 +333,13 @@ public:
     //! Only numerical values are supported.
     void setValueByPath(std::string path, double value);
 
+signals:
+    //! Informs on the changes in the settings.
+    void notifyPidControllerSettingsChanged();
+
 private:
     //! Constructor. Defining it here prevents construction.
-    RobotControlSettings() {}
+    RobotControlSettings() : QObject(nullptr) {}
     //! Destructor. Defining it here prevents unwanted destruction.
     ~RobotControlSettings() {}
 

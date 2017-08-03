@@ -29,6 +29,11 @@ Navigation::Navigation(FishBot* robot):
 {
     connect(&m_pathPlanner, &PathPlanner::notifyTrajectoryChanged,
             this, &Navigation::notifyTrajectoryChanged);
+    connect(&RobotControlSettings::get(), &RobotControlSettings::notifyPidControllerSettingsChanged,
+            [this]()
+            {
+                m_pidControllerSettings = RobotControlSettings::get().pidControllerSettings();
+            });
 }
 
 /*!

@@ -109,21 +109,24 @@ bool RobotControlSettings::init(QString configurationFileName)
     settings.readVariable(settingsPath, kp, kp);
     m_pidControllerSettings.setKp(kp);
     m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.kp(); };
-    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKp(value); };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_pidControllerSettings.setKp(value); emit notifyPidControllerSettingsChanged(); };
 
     double ki = 0;
     settingsPath = "robots/navigation/pid/ki";
     settings.readVariable(settingsPath, ki, ki);
     m_pidControllerSettings.setKi(ki);
     m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.ki(); };
-    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKi(value); };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_pidControllerSettings.setKi(value); emit notifyPidControllerSettingsChanged(); };
 
     double kd = 0;
     settingsPath = "robots/navigation/pid/kd";
     settings.readVariable(settingsPath, kd, kd);
     m_pidControllerSettings.setKd(kd);
     m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.kd(); };
-    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKd(value); };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_pidControllerSettings.setKd(value); emit notifyPidControllerSettingsChanged(); };
     settingsAccepted = settingsAccepted && (!qFuzzyIsNull(m_pidControllerSettings.kp()));
 
     // read the pid controller settings
@@ -132,21 +135,24 @@ bool RobotControlSettings::init(QString configurationFileName)
     settings.readVariable(settingsPath, kpDist, kpDist);
     m_pidControllerSettings.setKpDist(kpDist);
     m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.kpDist(); };
-    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKpDist(value); };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_pidControllerSettings.setKpDist(value); emit notifyPidControllerSettingsChanged(); };
 
     double kiDist = 0;
     settingsPath = "robots/navigation/pid/kiDist";
     settings.readVariable(settingsPath, kiDist, kiDist);
     m_pidControllerSettings.setKiDist(kiDist);
     m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.kiDist(); };
-    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKiDist(value); };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_pidControllerSettings.setKiDist(value); emit notifyPidControllerSettingsChanged(); };
 
     double kdDist = 0;
     settingsPath = "robots/navigation/pid/kdDist";
     settings.readVariable(settingsPath, kdDist, kdDist);
     m_pidControllerSettings.setKdDist(kdDist);
     m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_pidControllerSettings.kdDist(); };
-    m_parametersSetters[settingsPath.toStdString()] = [this](double value) { m_pidControllerSettings.setKdDist(value); };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_pidControllerSettings.setKdDist(value); emit notifyPidControllerSettingsChanged(); };
     settingsAccepted = settingsAccepted && (!qFuzzyIsNull(m_pidControllerSettings.kpDist()));
 
     // read the default linear speed
