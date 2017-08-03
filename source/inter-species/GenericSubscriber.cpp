@@ -9,7 +9,8 @@
  * Constructor. Creates the subscriber socket on the provided address.
 */
 GenericSubscriber::GenericSubscriber(zmq::context_t& context,
-                                     QStringList subscriberAddresses):
+                                     QStringList subscriberAddresses,
+                                     bool bindSocket):
     QObject(nullptr),
     m_subscriber(context, ZMQ_SUB)
 {
@@ -18,8 +19,14 @@ GenericSubscriber::GenericSubscriber(zmq::context_t& context,
     // connect to the socket
     for (QString address : subscriberAddresses) {
         try {
-            m_subscriber.connect(address.toStdString().c_str());
-            qDebug() << QString("Subscriber is connected to %1").arg(address);
+            if (bindSocket) {
+                m_subscriber.bind(address.toStdString().c_str());
+                qDebug() << QString("Subscriber binds %1").arg(address);
+            } else {
+                m_subscriber.connect(address.toStdString().c_str());
+                qDebug() << QString("Subscriber is connected to %1").arg(address);
+
+            }
         } catch (const zmq::error_t& e) {
             qDebug() <<  QString("Exception while connecting to %1").arg(address)
                       << e.what();

@@ -16,7 +16,9 @@ class GenericSubscriber : public QObject
     Q_OBJECT
 public:
     //! Constructor. Creates the subscriber socket on the provided address.
-    GenericSubscriber(zmq::context_t& context, QStringList subscriberAddresses);
+    GenericSubscriber(zmq::context_t& context,
+                      QStringList subscriberAddresses,
+                      bool bindSocket = false);
     //! Destructor.
     virtual ~GenericSubscriber();
 
