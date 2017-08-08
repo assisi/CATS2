@@ -26,13 +26,13 @@ class CatsSettingsInterface:
         self.subscriber = self.context.socket(zmq.SUB)
         self.subscriber.setsockopt(zmq.SUBSCRIBE, '')
         # Connects to the address to listen to CATS
-        self.subscriber.connect('tcp://127.0.0.1:5556')
-        print('Internet subscriber connected!')
+        self.subscriber.connect('tcp://127.0.0.1:5558')
+        print('Settings subscriber connected!')
 
         self.publisher = self.context.socket(zmq.PUB)
         # Connects to the address to publish to CATS
-        self.publisher.connect('tcp://127.0.0.1:5555')
-        print('Internet publisher connected!')
+        self.publisher.connect('tcp://127.0.0.1:5557')
+        print('Settings publisher connected!')
 
         self.incoming_thread = threading.Thread(target = self.recieve_settings)
         self.outgoing_thread = threading.Thread(target = self.send_settings)
@@ -51,7 +51,7 @@ class CatsSettingsInterface:
         while not self.stop:
             try: 
                 [name, device, command, data] = self.subscriber.recv_multipart(flags=zmq.NOBLOCK)
-                print('Received from cats: ' + name + ';' + device + ';' + command + ';' + data)
+                print('Received settings from cats: ' + name + ';' + device + ';' + command + ';' + data)
                 if (command == 'set'):
                     self.lock.acquire()
                     self.value_by_path[device] = float(data) 
