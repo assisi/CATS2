@@ -124,7 +124,19 @@ bool CommandLineParameters::init(int argc, char** argv, bool needConfigFile,
     } else {
         qDebug() << "Couldn't find the settings interface flag, set  to default "
                     "value 'false' (settings interface is disabled)";
-        m_useSettingsInterface = true;
+        m_useSettingsInterface = false;
+    }
+
+    // get the flag for the robot statistics publishing
+    bool foundRobotStatisticsPublishingFlag =
+            (CommandLineParser::parseArgument(argc, argv, "-sp", flag) ||
+             CommandLineParser::parseArgument(argc, argv, "--statistics-publisher", flag));
+    if (foundRobotStatisticsPublishingFlag) {
+        m_publishRobotsStatistics = (flag.toInt() == 1);
+    } else {
+        qDebug() << "Couldn't find the statistics publishing flag, set  to "
+                    "default value 'false' (statistics publishing is disabled)";
+        m_publishRobotsStatistics = false;
     }
 
     return settingsAccepted;
@@ -150,6 +162,9 @@ void CommandLineParameters::printSupportedArguments()
     qDebug() << "\t -si --settings-interface\tThe flag to activate the remote"
                 "access to the settings interface. Format : -si 1/0, by default"
                 "is off";
+    qDebug() << "\t -sp --statistics-publisher\tThe flag to activate the "
+                "puplishing of the robots statistics. Format : -sp 1/0, by "
+                "default is off";
 }
 
 /*!

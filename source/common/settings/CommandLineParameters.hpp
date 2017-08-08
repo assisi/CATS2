@@ -73,6 +73,8 @@ public:
     //! Returns the flag defining the settings interface is to be activated (it
     //! exposes certain settings to third-party applications).
     bool useSettingsInterface() const { return m_useSettingsInterface; }
+    //! Returns the flag defining is the robot statistics is to be published.
+    bool publishRobotsStatistics() const { return m_publishRobotsStatistics; }
 
 private:
     //! Constructor. Defining it here prevents construction.
@@ -104,6 +106,8 @@ private:
     //! Defines if the settings interface is to be activated (it exposes certain
     //! settings to third-party applications).
     bool m_useSettingsInterface;
+    //! Defines if the robot statistics publising is to be activated.
+    bool m_publishRobotsStatistics;
 };
 
 #endif // CATS2_COMMAND_LINE_PARAMETERS_HPP
