@@ -186,6 +186,10 @@ signals: // navigation
     //! Sends the current trajectory.
     void notifyTrajectoryChanged(QString agentId, QQueue<PositionMeters> trajectory);
 
+signals: // statistics
+    //! Updates statistics.
+    void updateStatistics(QString id, double value);
+
 signals: // other
     //! Informs about the leds color.
     void notifyLedColor(QString agentId, QColor color);
@@ -279,6 +283,14 @@ private: // to manage the obstacle events
     //! If the obstacle-detected message is not received for at least this value
     //! then we consider that it is not valid anymore.
     static constexpr double ObstacleDetectedUpdateTimeoutSec = 0.5;
+
+private:
+    //! Defines if the statistics are to be computed and updated.
+    bool m_computeStatistics;
+    //! Computes and updates statistics.
+    void computeStatistics();
+    //! Provides the id for the robot-fish-group distance statistics id.
+    QString robotFishGroupStatisticsId();
 };
 
 #endif // CATS2_FISH_BOT_HPP

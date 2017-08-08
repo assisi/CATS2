@@ -3,6 +3,9 @@
 #include "control-modes/ControlTarget.hpp"
 
 #include "interfaces/DashelInterface.hpp"
+#include "statistics/StatisticsPublisher.hpp"
+
+#include <settings/CommandLineParameters.hpp>
 
 #include <AgentData.hpp>
 #include <Timer.hpp>
@@ -24,7 +27,8 @@ FishBot::FishBot(QString id) :
     m_uniqueRobotInterface(nullptr),
     m_experimentManager(this),
     m_controlStateMachine(this),
-    m_navigation(this)
+    m_navigation(this),
+    m_computeStatistics(CommandLineParameters::get().publishRobotsStatistics())
 {
     // control areas
     connect(&m_experimentManager, &ExperimentManager::notifyPolygons,
@@ -32,6 +36,7 @@ FishBot::FishBot(QString id) :
             {
                 emit notifyControlAreasPolygons(m_id, polygons);
             });
+
     // fish number by area
     connect(&m_experimentManager, &ExperimentManager::notifyFishNumberByAreas,
             [=](QMap<QString, int> fishNumberByArea)
@@ -49,6 +54,7 @@ FishBot::FishBot(QString id) :
             {
                 emit notifyTrajectoryChanged(m_id, trajectory);
             });
+
     // controller data
     connect(&m_experimentManager, &ExperimentManager::notifyControllerChanged,
             this, &FishBot::notifyControllerChanged);
@@ -60,8 +66,8 @@ FishBot::FishBot(QString id) :
             [=](QString fishTurningDirection, QString robotTurningDirection)
             {
                 emit notifyCircularSetupTurningDirections(m_id,
-                                                                fishTurningDirection,
-                                                                robotTurningDirection);
+                                                          fishTurningDirection,
+                                                          robotTurningDirection);
             });
 
     // control modes
@@ -79,6 +85,13 @@ FishBot::FishBot(QString id) :
             this, &FishBot::notifyUsePathPlanningChanged);
     connect(&m_navigation, &Navigation::notifyUseObstacleAvoidanceChanged,
             this, &FishBot::notifyUseObstacleAvoidanceChanged);
+
+    // connect to the statistics module
+    if (m_computeStatistics) {
+        StatisticsPublisher::get().addStatistics(robotFishGroupStatisticsId());
+        connect(this, &FishBot::updateStatistics,
+                &StatisticsPublisher::get(), &StatisticsPublisher::updateStatistics);
+    }
 }
 
 /*!
@@ -299,7 +312,7 @@ void FishBot::setRobotsData(QList<AgentDataWorld> robotsData)
     m_otherRobotsData.clear();
     foreach (AgentDataWorld agentData, robotsData) {
         if (agentData.id() == m_id)
-            this->setState(agentData.state());
+            setState(agentData.state());
         else
             m_otherRobotsData.append(agentData);
     }
@@ -312,6 +325,10 @@ void FishBot::setRobotsData(QList<AgentDataWorld> robotsData)
 void FishBot::setFishStates(QList<StateWorld> fishStates)
 {
     m_fishStates = fishStates;
+
+    // updates the statistics
+    if (m_computeStatistics)
+        computeStatistics();
 }
 
 /*!
@@ -644,4 +661,29 @@ MotionPatternType::Enum FishBot::currentMotionPattern() const
 void FishBot::setCircularSetupTurningDirection(QString message)
 {
     m_experimentManager.setCircularSetupTurningDirection(message);
+}
+
+/*!
+ * Computes and updates statistics.
+ */
+void FishBot::computeStatistics()
+{
+    // the distance between the robot and the center 
+    if (m_fishStates.size() > 0) {
+        WorldPolygon fishPositions;
+        for (auto& state : m_fishStates) {
+            fishPositions.append(state.position());
+        }
+        double distance = m_state.position().distance2dTo(fishPositions.center());
+        emit updateStatistics(robotFishGroupStatisticsId(), distance);
+    }
+
+}
+
+/*!
+ * Provides the id for the robot-fish-group distance statistics id.
+ */
+QString FishBot::robotFishGroupStatisticsId()
+{
+    return QString("fishbot-%1-fish-group-distance").arg(m_id);
 }
