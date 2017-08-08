@@ -98,10 +98,10 @@ class CatsSettingsInterface:
                 self.lock.release()
                 time.sleep(0.1)
 
-    def get_variable(self, path):
-        """Requests the variable from CATS until it received.
+    def set_value(self, path):
+        """Requests the settings value from CATS until it received.
         
-        The resulted variables is read from value_by_path dictionary.
+        The resulted settings value is read from value_by_path dictionary.
         """
         request = Request('get', path)
         self.lock.acquire()
@@ -127,8 +127,8 @@ class CatsSettingsInterface:
             self.lock.release()
         return self.value_by_path[path]
 
-    def set_variable(self, path, value):
-        """Updates the variable value in CATS2."""
+    def set_value(self, path, value):
+        """Updates the settings value in CATS2."""
         request = Request('set', path)
         self.lock.acquire()
         self.value_by_path[path] = value # we assume that this value will not \

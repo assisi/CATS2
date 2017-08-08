@@ -11,15 +11,15 @@ if __name__ == '__main__':
     settings_interface = CatsSettingsInterface()
 
     # get variables
-    kp = settings_interface.get_variable('robots/navigation/pid/kp')
-    ki = settings_interface.get_variable('robots/navigation/pid/ki')
-    kd = settings_interface.get_variable('robots/navigation/pid/kd')
+    kp = settings_interface.get_value('robots/navigation/pid/kp')
+    ki = settings_interface.get_value('robots/navigation/pid/ki')
+    kd = settings_interface.get_value('robots/navigation/pid/kd')
     print('Received ' + str(kp) + ';' + str(ki) + ';' + str(kd))
 
     # set variables
-    settings_interface.set_variable('robots/navigation/pid/kp', kp * 2)
-    settings_interface.set_variable('robots/navigation/pid/ki', ki * 2)
-    settings_interface.set_variable('robots/navigation/pid/kd', kd * 2)
+    settings_interface.set_value('robots/navigation/pid/kp', kp * 2)
+    settings_interface.set_value('robots/navigation/pid/ki', ki * 2)
+    settings_interface.set_value('robots/navigation/pid/kd', kd * 2)
 
     cmd = 'a'
     while cmd != 'q':
