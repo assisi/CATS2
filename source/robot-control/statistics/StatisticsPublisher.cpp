@@ -113,7 +113,8 @@ void StatisticsPublisher::publishStatistics()
     std::string name = "optimiser";
     std::string device = "";
     std::string command = "update";
-    sendMessage(name, device, command, data);
+    if (data.size() > 0)
+        sendMessage(name, device, command, data);
 }
 
 /*!

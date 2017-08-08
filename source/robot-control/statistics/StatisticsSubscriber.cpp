@@ -32,7 +32,7 @@ void StaticsticsSubscriber::processMessage(std::string name, std::string device,
 {
     if (command.compare("get-statistics") == 0) {
         emit getStatisticsReceived();
-    } else if (command.compare("post") == 0) {
+    } else if (command.compare("subscribe") == 0) {
         QStringList statisticsIdsList = QString::fromStdString(data).split(';');
         emit postStatisticsReceived(statisticsIdsList);
     }
