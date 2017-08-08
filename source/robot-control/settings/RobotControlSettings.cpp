@@ -210,41 +210,104 @@ bool RobotControlSettings::init(QString configurationFileName)
                           m_potentialFieldSettings.obstacleAvoidanceAreaDiameterMeters);
 
     // read the model settings
-    settings.readVariable("robots/fishModel/agent/length",
+    settingsPath = "robots/fishModel/agent/length";
+    settings.readVariable(settingsPath,
                           m_fishModelSettings.length,
                           m_fishModelSettings.length);
-    settings.readVariable("robots/fishModel/agent/width",
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.length; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.length = value;
+                                   emit notifyFishModelSettingsChanged(); };
+
+    settingsPath = "robots/fishModel/agent/width";
+    settings.readVariable(settingsPath,
                           m_fishModelSettings.width,
                           m_fishModelSettings.width);
-    settings.readVariable("robots/fishModel/agent/height",
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.width; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.width = value;
+                                   emit notifyFishModelSettingsChanged(); };
+
+    settingsPath = "robots/fishModel/agent/height";
+    settings.readVariable(settingsPath,
                           m_fishModelSettings.height,
                           m_fishModelSettings.height);
-    settings.readVariable("robots/fishModel/agent/fov",
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.height; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.height = value;
+                                   emit notifyFishModelSettingsChanged(); };
+
+    settingsPath = "robots/fishModel/agent/fov";
+    settings.readVariable(settingsPath,
                           m_fishModelSettings.fov,
                           m_fishModelSettings.fov);
-    settings.readVariable("robots/fishModel/agent/meanSpeed",
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.fov; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.fov = value;
+                                   emit notifyFishModelSettingsChanged(); };
+
+    settingsPath = "robots/fishModel/agent/meanSpeed";
+    settings.readVariable(settingsPath,
                           m_fishModelSettings.meanSpeed,
                           m_fishModelSettings.meanSpeed);
-    settings.readVariable("robots/fishModel/agent/varSpeed",
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.meanSpeed; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.meanSpeed = value;
+                                   emit notifyFishModelSettingsChanged(); };
+
+    settingsPath = "robots/fishModel/agent/varSpeed";
+    settings.readVariable(settingsPath,
                           m_fishModelSettings.varSpeed,
                           m_fishModelSettings.varSpeed);
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.varSpeed; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.varSpeed = value;
+                                   emit notifyFishModelSettingsChanged(); };
 
-    settings.readVariable("robots/fishModel/BM/kappaFishes",
+    settingsPath = "robots/fishModel/BM/kappaFishes";
+    settings.readVariable(settingsPath,
                           m_fishModelSettings.kappaFishes,
                           m_fishModelSettings.kappaFishes);
-    settings.readVariable("robots/fishModel/BM/alphasCenter",
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.kappaFishes; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.kappaFishes = value;
+                                   emit notifyFishModelSettingsChanged(); };
+
+    settingsPath = "robots/fishModel/BM/alphasCenter";
+    settings.readVariable(settingsPath,
                           m_fishModelSettings.alphasCenter,
                           m_fishModelSettings.alphasCenter);
-    settings.readVariable("robots/fishModel/BM/kappaNeutCenter",
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.alphasCenter; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.alphasCenter = value;
+                                   emit notifyFishModelSettingsChanged(); };
+
+    settingsPath = "robots/fishModel/BM/kappaNeutCenter";
+    settings.readVariable(settingsPath,
                           m_fishModelSettings.kappaNeutCenter,
                           m_fishModelSettings.kappaNeutCenter);
-    settings.readVariable("robots/fishModel/BM/repulsionFromAgentsAtDist",
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.kappaNeutCenter; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.kappaNeutCenter = value;
+                                   emit notifyFishModelSettingsChanged(); };
+
+    settingsPath = "robots/fishModel/BM/repulsionFromAgentsAtDist";
+    settings.readVariable(settingsPath,
                           m_fishModelSettings.repulsionFromAgentsAtDist,
                           m_fishModelSettings.repulsionFromAgentsAtDist);
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.repulsionFromAgentsAtDist; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.repulsionFromAgentsAtDist = value;
+                                   emit notifyFishModelSettingsChanged(); };
 
-    settings.readVariable("robots/fishModel/simulation/dt",
+    settingsPath = "robots/fishModel/simulation/dt";
+    settings.readVariable(settingsPath,
                           m_fishModelSettings.dt,
                           m_fishModelSettings.dt);
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.dt; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.dt = value;
+                                   emit notifyFishModelSettingsChanged(); };
 
     // read a trajectory for the Trajectory control mode
     std::string relativeTrajectoryPath = "";

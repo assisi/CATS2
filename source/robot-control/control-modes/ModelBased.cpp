@@ -21,6 +21,10 @@ ModelBased::ModelBased(FishBot* robot) :
 {
     resetModel();
 //    cv::namedWindow("ModelGrid", cv::WINDOW_NORMAL);
+    // updates the model parameters on change
+    connect(&RobotControlSettings::get(),
+            &RobotControlSettings::notifyFishModelSettingsChanged,
+            this, &ModelBased::updateModelParameters);
 }
 
 /*!
@@ -102,23 +106,31 @@ void ModelBased::resetModel()
         factory.behaviorVirtuals = "BM";
         // create the simulator
         m_sim = factory.create();
-        const FishModelSettings& fishModelSettings = RobotControlSettings::get().fishModelSettings();
-        m_sim->dt = fishModelSettings.dt;
-        for(auto& a: m_sim->agents) {
-            a.first->length = fishModelSettings.length;
-            a.first->width = fishModelSettings.width;
-            a.first->height = fishModelSettings.height;
-            a.first->fov = fishModelSettings.fov;
-            a.first->meanSpeed = fishModelSettings.meanSpeed;
-            a.first->varSpeed = fishModelSettings.varSpeed;
-            a.first->maxTurningRate = M_PI_2;
-            Fishmodel::BM* bm = reinterpret_cast<Fishmodel::BM*>(a.second.get());
-            bm->kappaFishes = fishModelSettings.kappaFishes;
-            bm->alphasCenter = fishModelSettings.alphasCenter;
-            bm->kappaNeutCenter = fishModelSettings.kappaNeutCenter;
-            bm->repulsionFromAgentsAtDist = fishModelSettings.repulsionFromAgentsAtDist;
-        }
+        updateModelParameters();
 //        cv::imshow( "ModelGrid", m_currentGrid);
+    }
+}
+
+/*!
+ * Sets the model parameters from the settings.
+ */
+void ModelBased::updateModelParameters()
+{
+    const FishModelSettings& fishModelSettings = RobotControlSettings::get().fishModelSettings();
+    m_sim->dt = fishModelSettings.dt;
+    for (auto& a: m_sim->agents) {
+        a.first->length = fishModelSettings.length;
+        a.first->width = fishModelSettings.width;
+        a.first->height = fishModelSettings.height;
+        a.first->fov = fishModelSettings.fov;
+        a.first->meanSpeed = fishModelSettings.meanSpeed;
+        a.first->varSpeed = fishModelSettings.varSpeed;
+        a.first->maxTurningRate = M_PI_2;
+        Fishmodel::BM* bm = reinterpret_cast<Fishmodel::BM*>(a.second.get());
+        bm->kappaFishes = fishModelSettings.kappaFishes;
+        bm->alphasCenter = fishModelSettings.alphasCenter;
+        bm->kappaNeutCenter = fishModelSettings.kappaNeutCenter;
+        bm->repulsionFromAgentsAtDist = fishModelSettings.repulsionFromAgentsAtDist;
     }
 }
 

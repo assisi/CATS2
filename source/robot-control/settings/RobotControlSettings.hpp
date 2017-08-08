@@ -335,6 +335,8 @@ public:
 signals:
     //! Informs on the changes in the pid settings.
     void notifyPidControllerSettingsChanged();
+    //! Informs on the changes in the model settings.
+    void notifyFishModelSettingsChanged();
 
 private:
     //! Constructor. Defining it here prevents construction.

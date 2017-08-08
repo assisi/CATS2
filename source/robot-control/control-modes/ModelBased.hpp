@@ -34,6 +34,10 @@ public:
     //! model is reset.
     void setParameters(ModelParameters parameters);
 
+private slots:
+    //! Sets the model parameters from the settings.
+    void updateModelParameters();
+
 private:
     //! Initializes the model based on the setup map and parameters.
     void resetModel();
