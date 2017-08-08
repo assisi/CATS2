@@ -67,6 +67,8 @@ set(srcs
     navigation/PotentialField.cpp
     navigation/GridBasedMethod.cpp
     SetupMap.cpp
+    statistics/StatisticsSubscriber.cpp
+    statistics/StatisticsPublisher.cpp
 )
 
 set(hdrs
@@ -85,8 +87,9 @@ qt5_wrap_ui(uis_hdrs gui/RobotControlWidget.ui gui/RobotsWidget.ui gui/Potential
 qt5_add_resources(resources icons.qrc)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
+include_directories(${CMAKE_SOURCE_DIR}/source/inter-species)
 add_library(robot-control SHARED ${srcs} ${hdrs} ${uis_hdrs}) #${resources})
-target_link_libraries(robot-control common Qt5::Core Qt5::Widgets Qt5::DBus
+target_link_libraries(robot-control common inter-species Qt5::Core Qt5::Widgets Qt5::DBus
                       Qt5::Xml ${Boost_LIBRARIES}
                       ${dashel_LIBRARIES} ${Aseba_LIBRARIES})
 

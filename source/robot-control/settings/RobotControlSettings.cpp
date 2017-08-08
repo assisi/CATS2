@@ -2,6 +2,9 @@
 #include "experiment-controllers/ExperimentControllerType.hpp"
 #include "experiment-controllers/ExperimentControllerFactory.hpp"
 
+#include <settings/CommandLineParameters.hpp>
+#include <statistics/StatisticsPublisher.hpp>
+
 #include <QtCore/QFileInfo>
 #include <QtCore/QDir>
 
@@ -339,4 +342,16 @@ void RobotControlSettings::setValueByPath(std::string path, double value)
     } else {
         qDebug() << QString("Path %1 is not supported.").arg(QString::fromStdString(path));
     }
+}
+
+/*!
+ * Constructor. Defining it here prevents construction.
+ */
+RobotControlSettings::RobotControlSettings() :
+    QObject(nullptr)
+{
+    // starts the robot statistics publisher
+    // TODO : move it somewhere else
+    if (CommandLineParameters::get().publishRobotsStatistics())
+        StatisticsPublisher::get();
 }

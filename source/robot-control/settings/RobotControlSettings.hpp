@@ -247,7 +247,6 @@ struct PotentialFieldSettings
 class RobotControlSettings : public QObject
 {
     Q_OBJECT
-
 public:
     //! The singleton getter.
     static RobotControlSettings& get();
@@ -334,12 +333,12 @@ public:
     void setValueByPath(std::string path, double value);
 
 signals:
-    //! Informs on the changes in the settings.
+    //! Informs on the changes in the pid settings.
     void notifyPidControllerSettingsChanged();
 
 private:
     //! Constructor. Defining it here prevents construction.
-    RobotControlSettings() : QObject(nullptr) {}
+    RobotControlSettings();
     //! Destructor. Defining it here prevents unwanted destruction.
     ~RobotControlSettings() {}
 
