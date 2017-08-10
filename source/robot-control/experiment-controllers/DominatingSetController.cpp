@@ -107,13 +107,13 @@ void DominatingSetController::updateRoomsStatistics()
             }        
         }
         // update the fish rooms occupation statistics
-        if (fishByRoom[0] > fishByRoom[0]) {
+        if (fishByRoom[0] > fishByRoom[1]) {
             m_fishRoomId = 0;
-            m_fishRoomsOccupationCounter[0] ++;
+            m_fishRoomsOccupationCounter[0]++;
         }
-        else if (fishByRoom[0] < fishByRoom[0]) {
+        else if (fishByRoom[0] < fishByRoom[1]) {
             m_fishRoomId = 1;
-            m_fishRoomsOccupationCounter[1] ++;
+            m_fishRoomsOccupationCounter[1]++;
         }
         // updates the robot room occupation statistics
         int robotRoomIndex = m_robotArea->polygonIndexOf(m_robot->state().position());
