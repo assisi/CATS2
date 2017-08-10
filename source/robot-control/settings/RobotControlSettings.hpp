@@ -33,7 +33,7 @@ public:
     float repulsionFromAgentsAtDist = 0.02; //! Repulsion from agent if other is too close
 
     //! Simulation parameters.
-    float dt = 1.;
+    float dt = 0.2;
 };
 
 /*!

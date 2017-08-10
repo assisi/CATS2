@@ -50,7 +50,18 @@ bool FishBotLedsTrackingSettings::init(QString configurationFileName)
         settings.readVariable(QString("robots/fishBot_%1/ledColor/b").arg(robotIndex), blue);
         robotDescription.ledColor = QColor(red, green, blue);
         // read the color threshold
-        settings.readVariable(QString("%1/tracking/fishBotLedsTracking/fishBot_%2/threshold").arg(m_settingPathPrefix).arg(id.data()), robotDescription.colorThreshold);
+        settings.readVariable(QString("%1/tracking/fishBotLedsTracking/fishBot_%2/threshold")
+                              .arg(m_settingPathPrefix)
+                              .arg(id.data()),
+                              robotDescription.colorThreshold);
+        // read the area mask file path
+        std::string areaMaskFilePath;
+        settings.readVariable(QString("%1/tracking/fishBotLedsTracking/fishBot_%2/areaMaskFile")
+                              .arg(m_settingPathPrefix)
+                              .arg(id.data()),
+                              areaMaskFilePath);
+        robotDescription.areaMaskFilePath = configurationFolder.toStdString() +
+                QDir::separator().toLatin1() + areaMaskFilePath;
         m_data.addRobotDescription(robotDescription);
     }
 

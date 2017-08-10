@@ -28,7 +28,7 @@
                 <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
             </BM>
             <simulation>
-                <dt>1</dt>
+                <dt>0.2</dt>
             </simulation>
         </fishModel>
         <pathPlanning>
@@ -79,20 +79,18 @@
             <controlMap>
                 <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
             </controlMap>
-            <initiation>
+            <initiationLeader>
                 <controlAreasPath>control-maps/epfl-two-rooms-control-map.xml</controlAreasPath>
                 <fishFollowCheckTimeOutSec>10</fishFollowCheckTimeOutSec>
                 <maximalFishNumberAllowedToStay>1</maximalFishNumberAllowedToStay>
-                <!-- timeOut / inGroup -->
-                <departureTrigger>inGroup</departureTrigger>
-                <departureOnTimeOut>
-                    <departureTimeOutSec>10</departureTimeOutSec>
-                </departureOnTimeOut>
                 <departureWhenInGroup>
                     <fishNumberAround>1</fishNumberAround>
                     <groupRadius>0.10</groupRadius>
                 </departureWhenInGroup>
-            </initiation>
+            </initiationLeader>
+            <initiationLure>
+                <controlAreasPath>control-maps/epfl-two-rooms-control-map.xml</controlAreasPath>
+            </initiationLure>
         </controllers>
         <fishBot_1>
             <id>C</id>
@@ -106,9 +104,9 @@
                 <controlMap>
                     <path>control-maps/test-control-map.xml</path>
                 </controlMap>
-                <initiation>
+                <initiationLure>
                     <path>control-maps/epfl-two-rooms-control-map.xml</path>
-                </initiation>
+                </initiationLure>
             </robotControlMaps>
         </fishBot_1>
         <fishBot_2>
@@ -166,12 +164,15 @@
                 <fishBotLedsTracking>
                     <fishBot_C>
                         <threshold>70</threshold>
+                        <areaMaskFile>bottom-camera-mask.png</areaMaskFile>
                     </fishBot_C>
                     <fishBot_H>
                         <threshold>30</threshold>
+                        <areaMaskFile>bottom-camera-mask.png</areaMaskFile>
                     </fishBot_H>
                     <fishBot_B>
                         <threshold>70</threshold>
+                        <areaMaskFile>bottom-camera-mask.png</areaMaskFile>
                     </fishBot_B>
                 </fishBotLedsTracking>
             </tracking>

@@ -44,8 +44,12 @@ private:
     //! The intermediate data.
     //! The binary mask image.
     cv::Mat m_maskImage; // TODO : consider moving the mask on the parent's level
+    //! Individual masks for robots.
+    QList<cv::Mat> m_areaRobotMasks;
     //! The image after blurring.
     cv::Mat m_blurredImage;
+    //! The image after robot's area mask application.
+    cv::Mat m_maskedImage;
     //! The image in HSV format.
     cv::Mat m_hsvImage;
     //! The binary image after the color subtraction.

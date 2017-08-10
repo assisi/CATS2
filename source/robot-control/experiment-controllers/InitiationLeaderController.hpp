@@ -12,6 +12,24 @@
  * The controller that implements the initiation procedure. The goal of the
  * robot is to either make the fish to change the room from time to time, or to
  * make the stay in one room defined in the settings.
+ * Here is the outline of the robot's behavior:
+ * (1) The robot follows the fish model (not restricted to specific room) and
+ * does the fish-motion pattern.
+ * (2) IF the robot arrives to a room, where most of the fish are not with him,
+ * then it joins them (go-to-target).
+ * (3) IF the robot arrives to the Other-Room AND the most of the fish is with
+ * him AND there are fish close to the robot THEN the robot starts the
+ * initiation, it goes to the center of the Target-Room, first for one second in
+ * the fish-motion, and then in PID. Once it arrives to the Target-Room it
+ * switches again to the fish-motion, but still makes circles around the center
+ * of the room.
+ * (4) When the robot starts the initiation (by going to the target room) a
+ * timer is started, on its timeout the robot checks if the fish follow, IF they
+ * don’t follow THEN the robot returns back to the Other-Room in PID, once on
+ * the target it switches to (1).
+ * (5) IF the robot is in the Target-Room AND the fish follow it THEN it waits
+ * until there is at least one fish in the proximity, in this case it switches
+ * to (1).
  */
 class InitiationLeaderController : public ExperimentController
 {
@@ -30,9 +48,9 @@ public:
 private:
     //! The controller's state machine
     enum State {
-        SWIMMING_WITH_FISH, // fish model based
-        CHANGING_ROOM,      // try to bring the fish to another room
-        GOING_BACK,          // return back to the original room if fail
+        SWIMMING_WITH_FISH,     // fish model based
+        INITIATING_TRANSITION,  // try to bring the fish to another room
+        JOINING_FISH,           // going where the fish are
         UNDEFINED
     };
 
@@ -42,20 +60,22 @@ private:
 private:
     //! Updates the current state.
     void updateState(State state);
-    //! Checks if the conditions are met to start the inititaion procedure.
-    bool needToChangeRoom();
-    //! Runs the initiation state machine.
-    ControlData changeRoom();
     //! Gets the control data that corresponds to the current state.
     ControlData stateControlData();
-    //! Checks if the robot is already changing the room.
-    inline bool changingRoom() const { return m_state != SWIMMING_WITH_FISH; }
     //! Checks the departure timer.
     bool timeToDepart();
     //! Checks that the fish follow.
     bool fishFollow();
     //! Counts the number of fish around the robot.
     int fishAroundRobot();
+
+private:
+    //! Logics when in swimming-with-fish mode.
+    void stepSwimmingWithFish();
+    //! Logics when in initiating-transition mode.
+    void stepInitiatingTransition();
+    //! Logics when in joining-fish mode.
+    void stepJoiningFish();
 
 private:
     //! The settings for this controller.
@@ -68,6 +88,9 @@ private:
 //    //! current room occupied by the robot. The goal is to prevent the robot
 //    //! from leaving the room when in the model-based control mode.
 //    bool m_limitModelArea;
+    //! The flag that defines that the robot has just switched to the
+    //! SWIMMING_WITH_FISH (= model) mode.
+    bool m_switchedToModel;
 
     //! The departure timer.
     Timer m_departureTimer;
