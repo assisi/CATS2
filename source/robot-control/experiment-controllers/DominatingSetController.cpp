@@ -130,11 +130,11 @@ void DominatingSetController::updateRoomsStatistics()
             emit notifyRoomsOccupation(m_robotArea->id(),
                                        roomIdToString(m_fishRoomId),
                                        roomIdToString(m_robotRoomId));
-            qDebug() << QString("Room occupation for the area %1 is: fish are "
-                                "on the %1, robot is on the %2")
-                        .arg(m_robotArea->id())
-                        .arg(roomIdToString(m_fishRoomId))
-                        .arg(roomIdToString(m_robotRoomId));
+//            qDebug() << QString("Room occupation for the area %1 is: fish are "
+//                                "on the %2, robot is on the %3")
+//                        .arg(m_robotArea->id())
+//                        .arg(roomIdToString(m_fishRoomId))
+//                        .arg(roomIdToString(m_robotRoomId));
         } else {
             if (m_robotRoomId < 0)
                 qDebug() << QString("Robot room is undefined on the area %1")
