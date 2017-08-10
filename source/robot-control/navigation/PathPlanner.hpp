@@ -19,7 +19,7 @@ class PathPlanner : public QObject
     Q_OBJECT
 public:
     //! Constructor.
-    PathPlanner();
+    explicit PathPlanner();
 
     //! Tells where to go.
     PositionMeters currentWaypoint(PositionMeters currentPosition,

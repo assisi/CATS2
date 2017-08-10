@@ -10,20 +10,9 @@
 */
 Subscriber::Subscriber(zmq::context_t& context,
                        QStringList subscriberAddresses):
-    m_subscriber(context, ZMQ_SUB)
+    GenericSubscriber(context, subscriberAddresses)
 {
-    // we accept all messages
-    m_subscriber.setsockopt(ZMQ_SUBSCRIBE, "", 0);
-    // connect to the socket
-    for (QString address : subscriberAddresses) {
-        try {
-            m_subscriber.connect(address.toStdString().c_str());
-            qDebug() << QString("Subscriber is connected to %1").arg(address);
-        } catch (const zmq::error_t& e) {
-            qDebug() <<  QString("Exception while connecting to %1").arg(address)
-                      << e.what();
-        }
-    }
+
 }
 
 /*!
@@ -35,42 +24,28 @@ Subscriber::~Subscriber()
 }
 
 /*!
- * Starts listening.
+ * Processes the input message.
  */
-void Subscriber::process()
+void Subscriber::processMessage(std::string name, std::string device,
+                                std::string command, std::string data)
 {
-    m_stopped = false;
+    // at the moment we manage the binary-choice message only
+    if (QString(command.data()).toLower().contains("casu")) {
+        if (QString(device.data()).toLower().contains("message")) {
+            m_beeDensities[QString(command.data()).toLower()] =
+                    QString(data.data()).toDouble();
 
-    std::string name;
-    std::string device;
-    std::string command;
-    std::string data;
-
-    try {
-        // receive and recode incoming messages
-        while (!m_stopped) {
-            if (m_subscriber.connected() && recvMultipart(m_subscriber, name, device, command, data)) {
-                qDebug() << "Message received"
-                         << QString::fromStdString(name)
-                         << QString::fromStdString(device) << QString::fromStdString(command) << QString::fromStdString(data);
-                // TODO : analyse the type of the message and to send the
-                // corresponding message
-            } else {
-                // if no data available when we make a pause
-                std::this_thread::sleep_for(std::chrono::milliseconds(100));
+            // by agreement when we get the data from the second casu we decide
+            // on the turning direction
+            if (QString(command.data()).toLower().contains("002")) {
+                QString message;
+                if (m_beeDensities["casu-001"] < m_beeDensities["casu-002"])
+                    message = "CW";
+                else
+                    message = "CCW";
+                emit notifyBeeSetCircularSetupTurningDirection(message);
             }
         }
-    } catch (const zmq::error_t& e) {
-        qDebug() <<  QString("Exception while receiving messages")
-                  << e.what();
     }
-    emit finished();
-}
 
-/*!
- * Stops listening.
- */
-void Subscriber::stop()
-{
-    m_stopped = true;
 }

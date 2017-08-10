@@ -10,8 +10,8 @@ class CircularSetupFollowerController : public CircularSetupController
     Q_OBJECT
 public:
     //! Constructor. Gets the robot and the settings.
-    CircularSetupFollowerController(FishBot* robot,
-                                    ExperimentControllerSettingsPtr settings);
+    explicit CircularSetupFollowerController(FishBot* robot,
+                                             ExperimentControllerSettingsPtr settings);
 
 public:
     //! Called when the controller is activated. Used to reset parameters.

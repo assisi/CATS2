@@ -16,7 +16,7 @@ void CircularSetupFollowerController::start()
     m_fishTurningAngleUpdateTimer.reset();
     // clear the timer
     m_changingDirectionTimer.clear();
-    // call the CircularSetupController's start method to reset statistics
+    // call the CircularSetupController's start method to start statistics
     CircularSetupController::start();
 }
 
@@ -63,6 +63,8 @@ ExperimentController::ControlData CircularSetupFollowerController::step()
         // target position is based on the turning direction
         controlData.data =
             QVariant::fromValue(computeTargetPosition());
+        // update the turning directions statistics
+        updateStatistics();
     }
     return controlData;
 }

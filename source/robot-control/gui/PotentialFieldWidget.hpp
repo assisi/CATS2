@@ -20,7 +20,7 @@ public:
     //! Constructor.
     explicit PotentialFieldWidget(PotentialFieldPtr obstacleAvoidanceRoutine, QWidget *parent = nullptr);
     //! Destructor.
-    ~PotentialFieldWidget() final;
+    virtual ~PotentialFieldWidget() final;
 
 protected slots:
     //! Triggered when the settings are modified.

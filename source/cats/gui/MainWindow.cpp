@@ -95,6 +95,10 @@ MainWindow::MainWindow(QWidget *parent) :
             &ControlLoop::notifyCircularSetupTurningDirections,
             m_interSpeciesDataManager.data(),
             &InterSpeciesDataManager::publishCicrularExperimentData);
+    connect(m_interSpeciesDataManager.data(),
+            &InterSpeciesDataManager::notifyBeesSetCircularSetupTurningDirection,
+            m_robotsHandler->contolLoop().data(),
+                        &ControlLoop::setCircularSetupTurningDirection);
 
     // show the window maximazed
      setWindowState(Qt::WindowMaximized);

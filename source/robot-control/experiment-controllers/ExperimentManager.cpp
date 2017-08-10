@@ -117,6 +117,7 @@ ExperimentController::ControlData ExperimentManager::step()
  */
 void ExperimentManager::setCircularSetupTurningDirection(QString message)
 {
+    qDebug() << QString("Set the turning direction %1").arg(message);
     TurningDirection::Enum turningDirection = TurningDirection::fromString(message.toUpper());
     if (turningDirection != TurningDirection::UNDEFINED) {
         if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW)

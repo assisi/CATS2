@@ -1,43 +1,35 @@
 #ifndef CATS2_SUBSCRIBER_HPP
 #define CATS2_SUBSCRIBER_HPP
 
-#include <zmq.hpp>
+#include <GenericSubscriber.hpp>
 
-#include <QtCore/QObject>
-
-#include <atomic>
+#include <QtCore/QMap>
 
 /*!
  * Receives messages via zmq, decodes them and sends out qt signals.
  * TODO : to add the reception part
  */
-class Subscriber : public QObject
+class Subscriber : public GenericSubscriber
 {
     Q_OBJECT
 public:
     //! Constructor. Creates the subscriber socket on the provided address.
-    Subscriber(zmq::context_t& context, QStringList subscriberAddresses);
+    explicit Subscriber(zmq::context_t& context, QStringList subscriberAddresses);
     //! Destructor.
     virtual ~Subscriber();
 
 signals:
-    //! Notifies that the subscriber is stopped.
-    void finished();
-    //! Notifies about an error.
-    void error(QString errorMessage);
+    //! Notifies on the turning direction deduced from the bee setup bees (CW/CCW).
+    void notifyBeeSetCircularSetupTurningDirection(QString message);
 
-public slots:
-    //! Starts listening.
-    void process();
-    //! Stops listening.
-    void stop();
+protected:
+    //! Processes the input message.
+    virtual void processMessage(std::string name, std::string device,
+                                std::string command, std::string data) override;
 
-private:
-    //! The subscriber socket.
-    zmq::socket_t m_subscriber;
-
-    //! The flag that defines if the convertor is to be stopped.
-    std::atomic_bool m_stopped;
+private: // binary choice experiment related data
+    //! The densities of bees around the bee casus.
+    QMap<QString, double> m_beeDensities;
 };
 
 using SubscriberPtr = QSharedPointer<Subscriber>;

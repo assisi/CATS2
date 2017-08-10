@@ -22,8 +22,8 @@ class StreamDescriptor
 {
 public:
     //! Constructor.
-    StreamDescriptor(StreamType streamType = StreamType::UNDEFINED,
-                     QString parameters = ""):
+    explicit StreamDescriptor(StreamType streamType = StreamType::UNDEFINED,
+                              QString parameters = ""):
         m_streamType(streamType),
         m_parameters(parameters)
     {}

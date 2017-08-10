@@ -13,7 +13,7 @@ class ColorDetectorSettingsData
 {
 public:
     //! Constructor.
-    ColorDetectorSettingsData() :
+    explicit ColorDetectorSettingsData() :
         m_numberOfAgents(0),
         m_color(0, 0, 0),
         m_colorThreshold(20),

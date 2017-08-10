@@ -15,9 +15,9 @@ class CircularSetupLeaderController : public CircularSetupController
     Q_OBJECT
 public:
     //! Constructor. Gets the robot and the settings.
-    CircularSetupLeaderController(FishBot* robot,
-                                  ExperimentControllerSettingsPtr settings,
-                                  TurningDirection::Enum turningDirection);
+    explicit CircularSetupLeaderController(FishBot* robot,
+                                           ExperimentControllerSettingsPtr settings,
+                                           TurningDirection::Enum turningDirection);
 
 public:
     //! Returns the control values for given position.

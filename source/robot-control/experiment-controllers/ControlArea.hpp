@@ -43,7 +43,7 @@ class ControlArea
 {
 public:
     //! Constructor.
-    ControlArea(QString id, ControlAreaType::Enum type);
+    explicit ControlArea(QString id, ControlAreaType::Enum type);
 
 public:
     //! Returns the id.
