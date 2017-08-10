@@ -11,7 +11,7 @@ class InitiationLeaderControllerSettingsData
 {
 public:
     //! Constructor.
-    InitiationLeaderControllerSettingsData() :
+    explicit InitiationLeaderControllerSettingsData() :
         m_defaultControlAreasFileName(),
         m_fishNumberAroundOnDeparture(1),
         m_groupRadius(0.1),
@@ -84,7 +84,7 @@ class InitiationLeaderControllerSettings : public ExperimentControllerSettings
 {
 public:
     //! Constructor.
-    InitiationLeaderControllerSettings();
+    explicit InitiationLeaderControllerSettings();
     //! Destructor.
     virtual ~InitiationLeaderControllerSettings();
 

@@ -29,6 +29,8 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
     connect(thread, &QThread::started, m_subscriber.data(), &Subscriber::process);
     connect(m_subscriber.data(), &Subscriber::finished, thread, &QThread::quit);
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+    connect(m_subscriber.data(), &Subscriber::notifyBeeSetCircularSetupTurningDirection,
+            this, &InterSpeciesDataManager::notifyBeesSetCircularSetupTurningDirection);
     thread->start();
 }
 
@@ -37,7 +39,17 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
  */
 void InterSpeciesDataManager::publishMessage(std::string& name,std::string& device,std::string& desc,std::string& data)
 {
-    zmq::sendMultipart(m_publisher, name, device, desc, data);
+    qDebug() << "Sending message:"
+             << QString::fromStdString(name)
+             << QString::fromStdString(device)
+             << QString::fromStdString(desc)
+             << QString::fromStdString(data);
+    try {
+        zmq::sendMultipart(m_publisher, name, device, desc, data);
+    } catch (const zmq::error_t& e) {
+        qDebug() <<  QString("Exception while sending messages")
+                  << e.what();
+    }
 }
 
 /*!
@@ -87,4 +99,28 @@ std::string InterSpeciesDataManager::agentTypeToString(AgentType agentType)
     default:
         return "undefined";
     }
+}
+
+/*!
+ * Triggered when new data on the fish group and robot rotation direction
+ * arrive from the circular experiment.
+ */
+void InterSpeciesDataManager::publishCicrularExperimentData(QString agentId,
+                                                            QString fishTurningDirection,
+                                                            QString robotTurningDirection)
+{
+    std::string message;
+    message.append("fish:");
+    message.append(fishTurningDirection.toStdString());
+    message.append(",");
+    message.append("fishCasu:");
+    message.append(robotTurningDirection.toStdString());
+
+    std::string name = "casu-001";
+    std::string device = "CommEth";
+    std::string command = "cats";
+    publishMessage(name, device, command, message);
+
+    name = "casu-002";
+    publishMessage(name, device, command, message);
 }

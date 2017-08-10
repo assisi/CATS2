@@ -2,6 +2,7 @@
 #define CATS2_CONTROL_LOOP_HPP
 
 #include "RobotControlPointerTypes.hpp"
+#include "experiment-controllers/ExperimentControllerType.hpp"
 
 #include <AgentData.hpp>
 
@@ -49,6 +50,12 @@ public slots:
     void reconnectRobots();
     //! Stops all the robots.
     void stopAllRobots();
+    //! Sets the experimental controller for all robots.
+    void setController(ExperimentControllerType::Enum controllerType);
+
+public slots: // interspecies
+    //! Passes further to the robot the message from the bee setup (CW/CCW).
+    void setCircularSetupTurningDirection(QString message);
 
 signals:
     //! Sends the control map areas' polygons of the robot.
@@ -67,6 +74,10 @@ signals:
     void notifyRobotLedColor(QString agentId, QColor ledColor);
     //! Notifies that the obstacle avoidance status has changed.
     void notifyObstacleDetectedStatusChanged(QString agentId, bool obstacleDetected);
+    //! Sends the data from the circular experiment.
+    void notifyCircularSetupTurningDirections(QString agentId,
+                                              QString fishTurningDirection,
+                                              QString robotTurningDirection);
 
 private:
     //! Loads and initializes the robots' firmware scripts for the shared

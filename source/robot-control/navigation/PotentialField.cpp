@@ -95,7 +95,7 @@ QVector2D PotentialField::computeLocalRepulsiveForce(PositionMeters robotPositio
 
     // compute the distance between the current position and the obstacle
     PositionMeters deltaPos = robotPosition - obstaclePosition;
-    float distanceToObstable = robotPosition.distance2DTo(obstaclePosition);
+    float distanceToObstable = robotPosition.distance2dTo(obstaclePosition);
 
     // if the distance is inferior to the limit
     if (distanceToObstable < m_rho0) {
@@ -155,7 +155,7 @@ QVector2D PotentialField::computeAttractiveForce(PositionMeters targetPosition)
     float distanceToTarget;
 
     // compute the distance between current robot and it's target
-    distanceToTarget = m_robot->state().position().distance2DTo(targetPosition);
+    distanceToTarget = m_robot->state().position().distance2dTo(targetPosition);
 
     float deltaX = targetPosition.x() - m_robot->state().position().x();
     float deltaY = targetPosition.y() - m_robot->state().position().y();

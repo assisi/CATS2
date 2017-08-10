@@ -7,11 +7,14 @@
 #include "experiment-controllers/InitiationLeaderController.hpp"
 #include "experiment-controllers/InitiationLureController.hpp"
 #include "experiment-controllers/DominatingSetController.hpp"
+#include "experiment-controllers/CircularSetupFollowerController.hpp"
+#include "experiment-controllers/CircularSetupLeaderController.hpp"
 #include "settings/MapControllerSettings.hpp"
 #include "settings/RobotControlSettings.hpp"
 #include "settings/InitiationLureControllerSettings.hpp"
 #include "settings/InitiationLeaderControllerSettings.hpp"
 #include "settings/DominatingSetControllerSettings.hpp"
+#include "settings/CircularSetupControllerSettings.hpp"
 
 #include <QtCore/QDebug>
 
@@ -31,7 +34,7 @@ public:
                 RobotControlSettings::get().controllerSettings(type);
 
         if (!settings.isNull()) {
-            switch (settings->type()) {
+            switch (type) {
             case ExperimentControllerType::CONTROL_MAP:
                 return ExperimentControllerPtr(new MapController(robot, settings), &QObject::deleteLater);
             case ExperimentControllerType::INITIATION_LEADER:
@@ -40,6 +43,12 @@ public:
                 return ExperimentControllerPtr(new InitiationLureController(robot, settings), &QObject::deleteLater);
             case ExperimentControllerType::DOMINATING_SET:
                 return ExperimentControllerPtr(new DominatingSetController(robot, settings), &QObject::deleteLater);
+            case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER:
+                return ExperimentControllerPtr(new CircularSetupFollowerController(robot, settings), &QObject::deleteLater);
+            case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW:
+                return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings, TurningDirection::CLOCK_WISE), &QObject::deleteLater);
+            case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW:
+                return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings, TurningDirection::COUNTER_CLOCK_WISE), &QObject::deleteLater);
             default:
                 qDebug() << "Controller could not be created.";
                 break;
@@ -62,6 +71,11 @@ public:
             return ExperimentControllerSettingsPtr(new InitiationLureControllerSettings());
         case ExperimentControllerType::DOMINATING_SET:
             return ExperimentControllerSettingsPtr(new DominatingSetControllerSettings());
+        case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER:
+        case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW:
+        case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW:
+            // NOTE: two controllers share the same settings
+            return ExperimentControllerSettingsPtr(new CircularSetupControllerSettings(type));
         default:
             qDebug() << "Experiment controller settings could not be created.";
             break;

@@ -18,6 +18,7 @@ ExperimentController::ExperimentController(FishBot* robot,
     m_fishAreaId(""),
     m_robotAreaId(""),
     m_robotAreaChanged(false),
+    m_fishAreaChanged(false),
     m_type(type)
 {
 
@@ -119,24 +120,35 @@ void ExperimentController::requestPolygons()
  */
 void ExperimentController::updateAreasOccupation()
 {
+    searchForRobot();
+    searchForFish();
+}
+
+/*!
+ * Search for the fish.
+ */
+void ExperimentController::searchForFish()
+{
+    QString areaId;
+    if (findFishArea(areaId)) {
+        updateFishArea(areaId);
+    } else {
+        // reset the variable
+        m_fishAreaId = "";
+    }
+}
+
+/*!
+ * Search for the robot.
+ */
+void ExperimentController::searchForRobot()
+{
     QString areaId;
     if (findRobotArea(areaId)) {
         updateRobotArea(areaId);
     } else {
         // reset the variable
         m_robotAreaId = "";
-    }
-    if (findFishArea(areaId)) {
-        if (m_fishAreaId != areaId) {
-//            qDebug() << QString("Most of fish is now in room %1 (before %2) : %3")
-//                        .arg(areaId)
-//                        .arg(m_fishAreaId)
-//                        .arg(m_fishNumberByArea[areaId]);
-            m_fishAreaId = areaId;
-        }
-    } else {
-        // reset the variable
-        m_fishAreaId = "";
     }
 }
 
@@ -242,6 +254,23 @@ void ExperimentController::updateRobotArea(QString areaId)
 //                        .arg(areaId);
     } else {
         m_robotAreaChanged = false;
+    }
+}
+
+/*!
+ * Sets the fish's area.
+ */
+void ExperimentController::updateFishArea(QString areaId)
+{
+    if (m_fishAreaId != areaId) {
+        m_fishAreaChanged = true;
+//            qDebug() << QString("Most of fish is now in room %1 (before %2) : %3")
+//                        .arg(areaId)
+//                        .arg(m_fishAreaId)
+//                        .arg(m_fishNumberByArea[areaId]);
+        m_fishAreaId = areaId;
+    } else {
+       m_fishAreaChanged = false;
     }
 }
 

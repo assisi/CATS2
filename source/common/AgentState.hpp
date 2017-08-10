@@ -133,7 +133,7 @@ public:
     }
 
     //! Only x and y coordinates are taken into account.
-    double distance2DTo(const PositionMeters& other) const
+    double distance2dTo(const PositionMeters& other) const
     {
         return qSqrt((m_x - other.x()) * (m_x - other.x()) +
                      (m_y - other.y()) * (m_y - other.y()));
@@ -143,7 +143,7 @@ public:
     bool closeTo(const PositionMeters& other, double threshold = ProximityThreshold) const
     {
         if (m_valid && other.isValid())
-            return (distance2DTo(other) < threshold);
+            return (distance2dTo(other) < threshold);
         else
             return false;
     }
@@ -171,6 +171,31 @@ public:
     static PositionMeters invalidPosition()
     {
         return PositionMeters(0, 0, 0, false);
+    }
+
+    //! Returns the point rotates by theta radians.
+    PositionMeters rotated2d(double thetaRad, PositionMeters center) const
+    {
+        double rotated_x = (m_x - center.x()) * qCos(thetaRad) - (m_y - center.y() / 2) * qSin(thetaRad);
+        double rotated_y = (m_x - center.x()) * qSin(thetaRad) + (m_y - center.y() / 2) * qCos(thetaRad);
+        return PositionMeters(rotated_x + center.x(), rotated_y + center.y() / 2);
+    }
+
+    //! Returns the angle to another point.
+    double angleRadTo(const PositionMeters &other)
+    {
+        if (qFuzzyCompare(other.y(), m_y) && qFuzzyCompare(other.x(), m_x))
+            return 0;
+        else
+            return qAtan2(other.y() - m_y, other.x() - m_x);
+    }
+
+    //! Returns a point at given angle and distance.
+    PositionMeters positionAt(double angleRad, double distanceM)
+    {
+        double x = m_x + distanceM * qCos(angleRad);
+        double y = m_y + distanceM * qSin(angleRad);
+        return PositionMeters(x, y);
     }
 
 private:
@@ -272,7 +297,7 @@ public:
     }
 
     //! Returns the point rotates by theta radians.
-    PositionPixels rotated(double thetaRad, PositionPixels center) const
+    PositionPixels rotated2d(double thetaRad, PositionPixels center) const
     {
         double rotated_x = (m_x - center.x()) * qCos(thetaRad) - (m_y - center.y() / 2) * qSin(thetaRad);
         double rotated_y = (m_x - center.x()) * qSin(thetaRad) + (m_y - center.y() / 2) * qCos(thetaRad);
@@ -296,8 +321,8 @@ class StateWorld
 public:
     //! Constructor. If position or orientation are not provided then they are
     //! considered unknown.
-    StateWorld(PositionMeters position = PositionMeters(0, 0, 0, false),
-               OrientationRad orientation = OrientationRad(0, false)) :
+    explicit StateWorld(PositionMeters position = PositionMeters(0, 0, 0, false),
+                        OrientationRad orientation = OrientationRad(0, false)) :
         m_positionMeters(position),
         m_orientationRad(orientation)
     {
@@ -343,8 +368,8 @@ class StateImage
 public:
     //! Constructor. If position or orientation are not provided then they are
     //! considered unknown.
-    StateImage(PositionPixels position = PositionPixels(0, 0, false),
-               OrientationRad orientation = OrientationRad(0, false)) :
+    explicit StateImage(PositionPixels position = PositionPixels(0, 0, false),
+                        OrientationRad orientation = OrientationRad(0, false)) :
         m_positionPixels(position),
         m_orientationRad(orientation)
     {
@@ -412,6 +437,20 @@ public:
         for (const PositionMeters& point : *this)
             polygon.append(QPointF(point.x(), point.y()));
         return polygon.containsPoint(QPointF(position.x(), position.y()), Qt::OddEvenFill);
+    }
+
+    /*!
+     * Computes the polygon's center.
+     */
+    PositionMeters center() const
+    {
+        PositionMeters polygonCenter(0, 0, 0);
+        if (size() > 0) {
+            for (const PositionMeters& position : *this)
+                polygonCenter += position;
+            polygonCenter /= size();
+        }
+        return polygonCenter;
     }
 };
 

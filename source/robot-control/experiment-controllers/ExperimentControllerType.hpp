@@ -15,6 +15,9 @@ public:
         INITIATION_LEADER,
         INITIATION_LURE,
         DOMINATING_SET,
+        CIRCULAR_SETUP_FOLLOWER,
+        CIRCULAR_SETUP_LEADER_CW,
+        CIRCULAR_SETUP_LEADER_CCW,
         UNDEFINED
     };
 
@@ -22,7 +25,6 @@ public:
     //! values in the configuration file.
     static QString toSettingsString(Enum controllerType) {
         QString string = "none";
-
         switch (controllerType) {
         case CONTROL_MAP:
             string = "controlMap";
@@ -35,6 +37,10 @@ public:
             break;
         case DOMINATING_SET:
             string = "domset";
+        case CIRCULAR_SETUP_FOLLOWER:
+        case CIRCULAR_SETUP_LEADER_CW:
+        case CIRCULAR_SETUP_LEADER_CCW:
+            string = "circularSetup";
             break;
         case NONE:
         case UNDEFINED:
@@ -47,7 +53,6 @@ public:
     //! Returns that experiment controller type string in human friendly format.
     static QString toString(Enum controllerType) {
         QString string;
-
         switch (controllerType) {
         case CONTROL_MAP:
             string = "Control map";
@@ -60,6 +65,14 @@ public:
             break;
         case DOMINATING_SET:
             string = "Dominating set";
+        case CIRCULAR_SETUP_FOLLOWER:
+            string = "Circular setup follower";
+            break;
+        case CIRCULAR_SETUP_LEADER_CW:
+            string = "Circular setup leader (CW)";
+            break;
+        case CIRCULAR_SETUP_LEADER_CCW:
+            string = "Circular setup leader (CCW)";
             break;
         case NONE:
             string = "Disabled";

@@ -83,6 +83,9 @@ ControlLoop::ControlLoop() :
         // notify on the on-board obstacle avoidance on/off
         connect(m_robots.last().data(), &FishBot::notifyObstacleDetectedStatusChanged,
                 this, &ControlLoop::notifyObstacleDetectedStatusChanged);
+        // passes further the data from the circular experiment
+        connect(m_robots.last().data(), &FishBot::notifyCircularSetupTurningDirections,
+                this, &ControlLoop::notifyCircularSetupTurningDirections);
     }
 
     // conect the robots
@@ -125,6 +128,16 @@ void ControlLoop::step()
 {
     for (auto& robot : m_robots) {
         robot->stepControl();
+    }
+}
+
+/*!
+ * Passes further to the robot the message from the bee setup (CW/CCW).
+ */
+void ControlLoop::setCircularSetupTurningDirection(QString message)
+{
+    for (auto& robot : m_robots) {
+        robot->setCircularSetupTurningDirection(message);
     }
 }
 
@@ -173,6 +186,16 @@ void ControlLoop::reinitializeUniqueRobotInterface()
 {
     for (auto& robot : m_robots) {
         robot->setupUniqueConnection();
+    }
+}
+
+/*!
+ * Sets the experimental controller for all robots.
+ */
+void ControlLoop::setController(ExperimentControllerType::Enum controllerType)
+{
+    for (auto& robot : m_robots) {
+        robot->setController(controllerType);
     }
 }
 

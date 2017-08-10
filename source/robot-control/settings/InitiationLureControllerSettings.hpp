@@ -11,7 +11,7 @@ class InitiationLureControllerSettingsData
 {
 public:
     //! Constructor.
-    InitiationLureControllerSettingsData() :
+    explicit InitiationLureControllerSettingsData() :
         m_defaultControlAreasFileName()
     {}
 
@@ -33,7 +33,7 @@ class InitiationLureControllerSettings : public ExperimentControllerSettings
 {
 public:
     //! Constructor.
-    InitiationLureControllerSettings();
+    explicit InitiationLureControllerSettings();
     //! Destructor.
     virtual ~InitiationLureControllerSettings();
 
