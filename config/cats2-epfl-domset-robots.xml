@@ -161,22 +161,29 @@
                 <fishBotLedsTracking>
                     <fishBot_C>
                         <threshold>30</threshold>
-                        <areaMaskFile>masks/epfl-below-camera-domset-mask-4.png</areaMaskFile>
+                        <areaMaskFile>masks/epfl-below-camera-domset-mask-1.png</areaMaskFile>
                     </fishBot_C>
                     <fishBot_H>
                         <threshold>30</threshold>
-                        <areaMaskFile>masks/epfl-below-camera-domset-mask-5.png</areaMaskFile>
+                        <areaMaskFile>masks/epfl-below-camera-domset-mask-2.png</areaMaskFile>
                     </fishBot_H>
                     <fishBot_B>
                         <threshold>70</threshold>
-                        <areaMaskFile>masks/epfl-below-camera-domset-mask-1.png</areaMaskFile>
+                        <areaMaskFile>masks/epfl-below-camera-domset-mask-5.png</areaMaskFile>
                     </fishBot_B>
                 </fishBotLedsTracking>
             </tracking>
         </cameraBelow>
     </setups>
     <interSpecies>
-        <publisherAddress>tcp://127.0.0.1:50001</publisherAddress>
+        <!-- where we send data -->
+        <publisherAddress>tcp://143.50.158.98:5556</publisherAddress>
+        <!-- from where we get data -->
+        <subscriberAddresses>tcp://143.50.158.98:5555</subscriberAddresses>
+        <!-- local addresses
+            <publisherAddress>tcp://127.0.0.1:5555</publisherAddress>
+            <subscriberAddresses>tcp://127.0.0.1:5556</subscriberAddresses>
+        -->
     </interSpecies>
 </opencv_storage>
 
