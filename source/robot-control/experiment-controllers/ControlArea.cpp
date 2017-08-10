@@ -24,6 +24,19 @@ bool ControlArea::contains(PositionMeters point) const
 }
 
 /*!
+ *  Returns the index of the area's polygon to which belongs the point, or
+ * -1 of the point is not contained by any polygon.
+ */
+int ControlArea::polygonIndexOf(PositionMeters point) const
+{
+    for (int index = 0; index < m_polygons.size(); ++index) {
+        if (m_polygons.at(index).contains(point))
+            return index;
+    }
+    return -1;
+}
+
+/*!
  * Adds a polygon included in this area.
  */
 void ControlArea::addPolygon(WorldPolygon polygon)

@@ -72,6 +72,9 @@ public:
     void addPolygon(std::vector<cv::Point2f>);
     //! Checks if the point is inside this area.
     bool contains(PositionMeters) const;
+    //! Returns the index of the area's polygon to which belongs the point, or
+    //! -1 of the point is not contained by any polygon.
+    int polygonIndexOf(PositionMeters) const;
 
     //! Returns the polygons to be used in gui.
     AnnotatedPolygons annotatedPolygons() const;
