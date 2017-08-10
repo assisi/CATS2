@@ -55,6 +55,11 @@ signals: // experiment specific
     //! directions in the circular setup experiment.
     void notifyCircularSetupTurningDirections(QString fishTurningDirection,
                                               QString robotTurningDirection);
+    //! Informs the interspecies-module on the fish and robots room occupation
+    //! in the dominating set experiment.
+    void notifyDominatingSetRoomsOccupation(QString areaId,
+                                            QString fishRoomId,
+                                            QString robotRoomId);
 
 private:
     //! The list of experiment controllers available to this manager.

@@ -78,6 +78,11 @@ signals:
     void notifyCircularSetupTurningDirections(QString agentId,
                                               QString fishTurningDirection,
                                               QString robotTurningDirection);
+    //! Sends the data from the dominating set experiment.
+    void notifyDominatingSetRoomsOccupation(QString agentId,
+                                            QString areaId,
+                                            QString fishRoomId,
+                                            QString robotRoomId);
 
 private:
     //! Loads and initializes the robots' firmware scripts for the shared

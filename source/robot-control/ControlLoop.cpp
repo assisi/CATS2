@@ -86,6 +86,9 @@ ControlLoop::ControlLoop() :
         // passes further the data from the circular experiment
         connect(m_robots.last().data(), &FishBot::notifyCircularSetupTurningDirections,
                 this, &ControlLoop::notifyCircularSetupTurningDirections);
+        // passes further the data from the domset experiment
+        connect(m_robots.last().data(), &FishBot::notifyDominatingSetRoomsOccupation,
+                this, &ControlLoop::notifyDominatingSetRoomsOccupation);
     }
 
     // conect the robots

@@ -60,8 +60,14 @@ FishBot::FishBot(QString id) :
             [=](QString fishTurningDirection, QString robotTurningDirection)
             {
                 emit notifyCircularSetupTurningDirections(m_id,
-                                                                fishTurningDirection,
-                                                                robotTurningDirection);
+                                                          fishTurningDirection,
+                                                          robotTurningDirection);
+            });
+    connect(&m_experimentManager, &ExperimentManager::notifyDominatingSetRoomsOccupation,
+            [=](QString areaId, QString fishRoomId, QString robotRoomId)
+            {
+                emit notifyDominatingSetRoomsOccupation(m_id, areaId,
+                                                        fishRoomId, robotRoomId);
             });
 
     // control modes

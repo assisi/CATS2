@@ -124,3 +124,32 @@ void InterSpeciesDataManager::publishCicrularExperimentData(QString agentId,
     name = "casu-002";
     publishMessage(name, device, command, message);
 }
+
+/*!
+ * Triggered when new data on the fish group and robot room occupation
+ * arrive from the dominating set experiment.
+ */
+void InterSpeciesDataManager::publishDominatingSetExperimentData(QString agentId,
+                                                                 QString areaId,
+                                                                 QString fishRoomId,
+                                                                 QString robotRoomId)
+{
+    std::string message;
+    message.append("fish_");
+    message.append(areaId.toStdString());
+    message.append(":");
+    message.append(fishRoomId.toStdString());
+    message.append(",");
+    message.append("fishCasu_");
+    message.append(areaId.toStdString());
+    message.append(":");
+    message.append(robotRoomId.toStdString());
+
+    std::string name = "casu-001";
+    std::string device = "CommEth";
+    std::string command = "cats";
+    publishMessage(name, device, command, message);
+
+    name = "casu-002";
+    publishMessage(name, device, command, message);
+}

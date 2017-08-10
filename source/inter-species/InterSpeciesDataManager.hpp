@@ -39,6 +39,12 @@ public slots:
     void publishCicrularExperimentData(QString agentId,
                                        QString fishTurningDirection,
                                        QString robotTurningDirection);
+    //! Triggered when new data on the fish group and robot room occupation
+    //! arrive from the dominating set experiment.
+    void publishDominatingSetExperimentData(QString agentId,
+                                            QString areaId,
+                                            QString fishRoomId,
+                                            QString robotRoomId);
 
 private:
     //! Publishes the message.

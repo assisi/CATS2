@@ -58,6 +58,18 @@ ExperimentManager::ExperimentManager(FishBot* robot) :
             }
         }
     }
+    // domset experiment
+    ExperimentControllerType::Enum controllerType = ExperimentControllerType::DOMINATING_SET;
+    if (m_controllers.contains(controllerType)) {
+        DominatingSetController* controller =
+                dynamic_cast<DominatingSetController*>(m_controllers[controllerType].data());
+        if (controller) {
+            connect(controller,
+                    &DominatingSetController::notifyRoomsOccupation,
+                    this,
+                    &ExperimentManager::notifyDominatingSetRoomsOccupation);
+        }
+    }
 }
 
 /*!

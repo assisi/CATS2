@@ -150,9 +150,13 @@ signals: // control states
 
     //! Sends the data from the circular experiment.
     void notifyCircularSetupTurningDirections(QString agentId,
-                                                    QString fishTurningDirection,
-                                                    QString robotTurningDirection);
-
+                                              QString fishTurningDirection,
+                                              QString robotTurningDirection);
+    //! Sends the data from the dominating set experiment.
+    void notifyDominatingSetRoomsOccupation(QString agentId,
+                                            QString areaId,
+                                            QString fishRoomId,
+                                            QString robotRoomId);
     //! Informs that the robot's control mode was modified.
     void notifyControlModeChanged(ControlModeType::Enum type);
     //! Sends out the current control mode status.
