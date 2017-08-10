@@ -145,11 +145,13 @@ void InterSpeciesDataManager::publishDominatingSetExperimentData(QString agentId
     message.append(":");
     message.append(robotRoomId.toStdString());
 
-    std::string name = "casu-001";
     std::string device = "CommEth";
     std::string command = "cats";
-    publishMessage(name, device, command, message);
+    std::string name;
 
-    name = "casu-002";
-    publishMessage(name, device, command, message);
+    int casuCnt = 4; // up to 9
+    for (int id = 1; id <= casuCnt; ++id) {
+        name = "casu-00" + std::to_string(id);
+        publishMessage(name, device, command, message);
+    }
 }
