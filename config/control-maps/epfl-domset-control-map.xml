@@ -1,25 +1,32 @@
 <?xml version="1.0"?>
 <opencv_storage>
+     <!-- CCW orientation for polygons. -->
     <numberOfAreas>5</numberOfAreas>
     <area_1>
         <id>r1</id>
         <type>room</type>
         <polygons>
-            <numberOfPolygons>1</numberOfPolygons>
+            <numberOfPolygons>2</numberOfPolygons>
             <polygon_1>
                 0.283 0.261
                 0.282 0.308
+                0.308 0.308
+                0.308 0.360
+                0.279 0.358
+                0.278 0.418
+                0.124 0.413
+                0.126 0.256
+            </polygon_1>
+            <polygon_2>
+                0.308 0.308
                 0.332 0.308
                 0.332 0.261
                 0.491 0.266
                 0.488 0.422
                 0.329 0.419
                 0.328 0.360
-                0.279 0.358
-                0.278 0.418
-                0.124 0.413
-                0.126 0.256
-            </polygon_1>
+                0.308 0.360
+            </polygon_2>
         </polygons>
         <color>
             <r>45</r>
@@ -33,21 +40,27 @@
         <id>r2</id>
         <type>room</type>
         <polygons>
-            <numberOfPolygons>1</numberOfPolygons>
+            <numberOfPolygons>2</numberOfPolygons>
             <polygon_1>
-                0.124 0.413
-                -0.029 0.409
-                -0.029 0.355
                 -0.081 0.354
                 -0.085 0.412
                 -0.244 0.408
                 -0.243 0.252
                 -0.081 0.257
                 -0.082 0.309
+                -0.055 0.307
+                -0.055 0.354
+            </polygon_1>
+            <polygon_2>
+                0.124 0.413
+                -0.029 0.409
+                -0.029 0.355
+                -0.055 0.354
+                -0.055 0.307
                 -0.034 0.307
                 -0.034 0.255
                 0.126 0.256
-            </polygon_1>
+            </polygon_2>
         </polygons>
         <color>
             <r>100</r>
@@ -61,21 +74,27 @@
         <id>r3</id>
         <type>room</type>
         <polygons>
-            <numberOfPolygons>1</numberOfPolygons>
+            <numberOfPolygons>2</numberOfPolygons>
             <polygon_1>
                 -0.081 0.257
                 -0.243 0.252
                 -0.239 0.095
                 -0.180 0.095
+                -0.180 0.072
+                -0.128 0.072
+                -0.128 0.102
+                -0.076 0.104
+            </polygon_1>
+            <polygon_2>
+                -0.180 0.072
                 -0.180 0.047
                 -0.240 0.045
                 -0.238 -0.109
                 -0.075 -0.100
                 -0.079 0.055
                 -0.128 0.052
-                -0.128 0.102
-                -0.076 0.104
-            </polygon_1>
+                -0.128 0.072
+            </polygon_2>
         </polygons>
         <color>
             <r>255</r>
@@ -89,21 +108,27 @@
         <id>r4</id>
         <type>room</type>
         <polygons>
-            <numberOfPolygons>1</numberOfPolygons>
+            <numberOfPolygons>2</numberOfPolygons>
             <polygon_1>
                 0.126 0.256
                 -0.034 0.255
                 -0.028 0.105
                 0.021 0.106
+                0.022 0.080
+                0.079 0.080
+                0.079 0.102
+                0.131 0.102
+            </polygon_1>
+            <polygon_2>
+                0.022 0.080
                 0.022 0.057
                 -0.028 0.056
                 -0.024 -0.098
                 0.133 -0.096
                 0.130 0.052
                 0.080 0.051
-                0.079 0.102
-                0.131 0.102
-            </polygon_1>
+                0.079 0.080
+            </polygon_2>
         </polygons>
         <color>
             <r>255</r>
@@ -117,21 +142,27 @@
         <id>r5</id>
         <type>room</type>
         <polygons>
-            <numberOfPolygons>1</numberOfPolygons>
+            <numberOfPolygons>2</numberOfPolygons>
             <polygon_1>
-                0.133 -0.096
-                0.137 -0.270
-                -0.020 -0.274
-                -0.020 -0.210
-                -0.072 -0.211
-                -0.072 -0.273
-                -0.238 -0.275
-                -0.238 -0.109
-                -0.075 -0.100
+                -0.047 -0.153
                 -0.075 -0.153
-                -0.022 -0.153
-                -0.024 -0.098
+                -0.075 -0.100
+                -0.238 -0.109
+                -0.238 -0.275
+                -0.072 -0.273
+                -0.072 -0.211
+                -0.047 -0.210
             </polygon_1>
+            <polygon_2>
+                -0.024 -0.098
+                -0.022 -0.153
+                -0.047 -0.153
+                -0.047 -0.210
+                -0.020 -0.210
+                -0.020 -0.274
+                0.137 -0.270
+                0.133 -0.096
+            </polygon_2>
         </polygons>
         <color>
             <r>255</r>
