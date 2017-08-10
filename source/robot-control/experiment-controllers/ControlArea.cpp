@@ -30,7 +30,7 @@ bool ControlArea::contains(PositionMeters point) const
 int ControlArea::polygonIndexOf(PositionMeters point) const
 {
     for (int index = 0; index < m_polygons.size(); ++index) {
-        if (m_polygons.at(index).contains(point))
+        if (m_polygons.at(index).containsPoint(point))
             return index;
     }
     return -1;
