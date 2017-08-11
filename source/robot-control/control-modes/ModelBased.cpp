@@ -20,7 +20,7 @@ ModelBased::ModelBased(FishBot* robot) :
     m_targetUpdateTimer()
 {
     resetModel();
-//    cv::namedWindow("ModelGrid", cv::WINDOW_NORMAL);
+    //    cv::namedWindow("ModelGrid", cv::WINDOW_NORMAL);
 }
 
 /*!
@@ -28,7 +28,7 @@ ModelBased::ModelBased(FishBot* robot) :
  */
 ModelBased::~ModelBased()
 {
-//    cv::destroyWindow("ModelGrid");
+    //    cv::destroyWindow("ModelGrid");
     qDebug() << "Destroying the object";
 }
 
@@ -123,7 +123,7 @@ void ModelBased::resetModel()
             bm->kappaNeutCenter = fishModelSettings.kappaNeutCenter;
             bm->repulsionFromAgentsAtDist = fishModelSettings.repulsionFromAgentsAtDist;
         }
-//        cv::imshow( "ModelGrid", m_currentGrid);
+        //        cv::imshow( "ModelGrid", m_currentGrid);
     }
 }
 
@@ -136,14 +136,14 @@ PositionMeters ModelBased::computeTargetPosition()
         return PositionMeters::invalidPosition();
     }
 
-//    cv::imshow( "ModelGrid", m_currentGrid);
+    //    cv::imshow( "ModelGrid", m_currentGrid);
 
-//    // if no data is available, don't update the target
-//    if (m_robot->fishStates().size() == 0) {
-//        qDebug() << "No fish detected, impossible to run the model";
-//        // returning the previous target
-//        return m_targetPosition;
-//    }
+    //    // if no data is available, don't update the target
+    //    if (m_robot->fishStates().size() == 0) {
+    //        qDebug() << "No fish detected, impossible to run the model";
+    //        // returning the previous target
+    //        return m_targetPosition;
+    //    }
 
     // set the target invalid until it's computed
     PositionMeters targetPosition;
@@ -187,7 +187,7 @@ PositionMeters ModelBased::computeTargetPosition()
         PositionMeters robotPosition = m_robot->state().position();
         OrientationRad robotOrientation = m_robot->state().orientation();
         if (robotPosition.isValid() && containsPoint(robotPosition) &&
-            (m_sim->robots.size() == 1))
+                (m_sim->robots.size() == 1))
         {
             m_sim->robots[0].first->headPos.first = robotPosition.x() - minX();
             m_sim->robots[0].first->headPos.second = robotPosition.y() - minY();
@@ -200,7 +200,7 @@ PositionMeters ModelBased::computeTargetPosition()
             m_sim->robots[0].first->present = true;
         } else {
             qDebug() << "The robot position is outside of the setup "
-                                       "area or invalid";
+                        "area or invalid";
             m_sim->robots[0].first->present = false;
         }
     } else {
@@ -218,21 +218,13 @@ PositionMeters ModelBased::computeTargetPosition()
     m_sim->step();
     // get the target value
     if (m_sim->robots.size() > 0) { // we have only one robot so it is #0
-        // check first if the position is not (0,0) meaning that it could not be
-        // computed
-        if (qFuzzyIsNull(m_sim->robots[0].first->headPos.first) &&
-                qFuzzyIsNull(m_sim->robots[0].first->headPos.second)) {
-            qDebug() << "The model returned target position (0,0), ignoring";
-            return PositionMeters::invalidPosition();
-        } else {
-            targetPosition.setX((m_sim->robots[0].first->headPos.first +
-                                m_sim->robots[0].first->tailPos.first) / 2. + minX());
-            targetPosition.setY((m_sim->robots[0].first->headPos.second +
-                                m_sim->robots[0].first->tailPos.second) / 2. + minY());
-            targetPosition.setValid(true);
-    //        qDebug() << QString("New target is %1")
-    //                    .arg(targetPosition.toString());
-        }
+        targetPosition.setX((m_sim->robots[0].first->headPos.first +
+                            m_sim->robots[0].first->tailPos.first) / 2. + minX());
+        targetPosition.setY((m_sim->robots[0].first->headPos.second +
+                            m_sim->robots[0].first->tailPos.second) / 2. + minY());
+        targetPosition.setValid(true);
+        //        qDebug() << QString("New target is %1")
+        //                    .arg(targetPosition.toString());
     }
 
     return targetPosition;
