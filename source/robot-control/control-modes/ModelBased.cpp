@@ -218,13 +218,21 @@ PositionMeters ModelBased::computeTargetPosition()
     m_sim->step();
     // get the target value
     if (m_sim->robots.size() > 0) { // we have only one robot so it is #0
-        targetPosition.setX((m_sim->robots[0].first->headPos.first +
-                            m_sim->robots[0].first->tailPos.first) / 2. + minX());
-        targetPosition.setY((m_sim->robots[0].first->headPos.second +
-                            m_sim->robots[0].first->tailPos.second) / 2. + minY());
-        targetPosition.setValid(true);
-//        qDebug() << QString("New target is %1")
-//                    .arg(targetPosition.toString());
+        // check first if the position is not (0,0) meaning that it could not be
+        // computed
+        if (qFuzzyIsNull(m_sim->robots[0].first->headPos.first) &&
+                qFuzzyIsNull(m_sim->robots[0].first->headPos.second)) {
+            qDebug() << "The model returned target position (0,0), ignoring";
+            return PositionMeters::invalidPosition();
+        } else {
+            targetPosition.setX((m_sim->robots[0].first->headPos.first +
+                                m_sim->robots[0].first->tailPos.first) / 2. + minX());
+            targetPosition.setY((m_sim->robots[0].first->headPos.second +
+                                m_sim->robots[0].first->tailPos.second) / 2. + minY());
+            targetPosition.setValid(true);
+    //        qDebug() << QString("New target is %1")
+    //                    .arg(targetPosition.toString());
+        }
     }
 
     return targetPosition;
