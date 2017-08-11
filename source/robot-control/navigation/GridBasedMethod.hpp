@@ -35,7 +35,7 @@ public:
     //! a specific area. Since the same mask can be requested to be applied
     //! several times, we keep a map of used matrices; that's why a maskId is
     //! requested.
-    void setAreaMask(QString maskId, QList<WorldPolygon> maskPolygons);
+    bool setAreaMask(QString maskId, QList<WorldPolygon> maskPolygons);
     //! Removes the mask from the arena matrix.
     void clearAreaMask();
 

@@ -34,6 +34,9 @@ public:
     //! model is reset.
     void setParameters(ModelParameters parameters);
 
+    //! Restrict the model's allowed area.
+    void restrictModelArea(QString maskId, QList<WorldPolygon> allowedArea);
+
 private:
     //! Initializes the model based on the setup map and parameters.
     void resetModel();

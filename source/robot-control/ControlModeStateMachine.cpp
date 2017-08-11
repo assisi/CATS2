@@ -130,9 +130,7 @@ void ControlModeStateMachine::limitModelArea(QString maskId,
 {
     if (m_controlModes.contains(ControlModeType::MODEL_BASED)) {
         ControlMode* mode = m_controlModes[ControlModeType::MODEL_BASED].data();
-        qDebug() << QString("Request installing an area mask on robot")
-                    .arg(m_robot->name());
-        dynamic_cast<ModelBased*>(mode)->setAreaMask(maskId, allowedArea);
+        dynamic_cast<ModelBased*>(mode)->restrictModelArea(maskId, allowedArea);
     }
 }
 

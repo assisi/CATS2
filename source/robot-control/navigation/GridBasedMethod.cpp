@@ -128,7 +128,7 @@ bool GridBasedMethod::checkPointIncluded(PositionMeters position,
  * specific area. Since the same mask can be requested to be applied several
  * times, we keep a map of used matrices; that's why a maskId is requested.
  */
-void GridBasedMethod::setAreaMask(QString maskId, QList<WorldPolygon> maskPolygons)
+bool GridBasedMethod::setAreaMask(QString maskId, QList<WorldPolygon> maskPolygons)
 {
     if (maskId != m_currentMaskId) {
         // if the mask is not yet known then generate the matrix and put it to the map
@@ -139,8 +139,10 @@ void GridBasedMethod::setAreaMask(QString maskId, QList<WorldPolygon> maskPolygo
         m_currentGrid = m_setupGrid & m_areaMasks[maskId];
         m_currentMaskId = maskId;
         qDebug() << QString("Applied mask %1").arg(maskId);
+        return true;
     } else {
-        qDebug() << QString("Mask %1 is already ued").arg(maskId);
+        qDebug() << QString("Mask %1 is already applied").arg(maskId);
+        return false;
     }
 }
 

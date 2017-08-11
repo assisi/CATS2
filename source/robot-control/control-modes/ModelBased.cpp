@@ -93,6 +93,7 @@ QList<ControlTargetType> ModelBased::supportedTargets()
 void ModelBased::resetModel()
 {
     if (!m_currentGrid.empty()) {
+        qDebug() << "Reseting the fish model";
         // size of the area covered by the matrix
         Fishmodel::Coord_t size = {m_currentGrid.cols * m_gridSizeMeters,
                                    m_currentGrid.rows * m_gridSizeMeters};
@@ -242,6 +243,20 @@ void ModelBased::setParameters(ModelParameters parameters)
                             "ignore-robot:%2")
                     .arg(m_parameters.ignoreFish)
                     .arg(m_parameters.ignoreRobot);
+        resetModel();
+    }
+}
+
+/*!
+ * Restrict the model's allowed area.
+ */
+void ModelBased::restrictModelArea(QString maskId, QList<WorldPolygon> allowedArea)
+{
+    qDebug() << QString("Request restricting the model area for %1")
+                .arg(m_robot->name());
+    // if the mask is correctly set then reset the model to take the changes
+    // into account
+    if (setAreaMask(maskId, allowedArea)) {
         resetModel();
     }
 }
