@@ -138,6 +138,9 @@ void GridBasedMethod::setAreaMask(QString maskId, QList<WorldPolygon> maskPolygo
         // apply the mask
         m_currentGrid = m_setupGrid & m_areaMasks[maskId];
         m_currentMaskId = maskId;
+        qDebug() << QString("Applied mask %1").arg(maskId);
+    } else {
+        qDebug() << QString("Mask %1 is already ued").arg(maskId);
     }
 }
 
