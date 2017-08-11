@@ -39,6 +39,8 @@ void DominatingSetController::start()
     m_robotAreaDefined = false;
     // prepare the timer
     m_roomsStatisticsUpdateTimer.clear();
+    // activates the path planner
+    m_robot->setUsePathPlanning(true);
 }
 
 /*!
@@ -78,6 +80,15 @@ ExperimentController::ControlData DominatingSetController::step()
         }
     }
     return controlData;
+}
+
+/*!
+ * Called when the controller is disactivated.
+ */
+void DominatingSetController::finish()
+{
+    // dis-activates the path planner
+    m_robot->setUsePathPlanning(false);
 }
 
 /*!

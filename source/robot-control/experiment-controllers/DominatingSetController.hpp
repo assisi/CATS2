@@ -24,6 +24,8 @@ public:
     virtual void start() override;
     //! Returns the control values for given position.
     virtual ControlData step() override;
+    //! Called when the controller is disactivated.
+    virtual void finish() override;
 
 signals:
     //! Informs the interspecies-module on the fish and robots room occupation.
