@@ -1,0 +1,91 @@
+<?xml version="1.0"?>
+<opencv_storage>
+    <cameraType>c930e</cameraType>
+    <worldUnits>cm</worldUnits>
+    <cameraHeight>58</cameraHeight>
+    <agentHeight>0.</agentHeight>
+    <imageSize>
+        <width>640</width>
+        <height>480</height>
+    </imageSize>
+    <cameraMatrix type_id="opencv-matrix">
+    <rows>3</rows>
+    <cols>3</cols>
+    <dt>d</dt>
+    <data>
+        5.1089412525528064e+02 0. 3.2872857364314893e+02 0.
+        5.1050457476466408e+02 2.5296830009221435e+02 0. 0. 1.
+    </data>
+    </cameraMatrix>
+    <distortionCoefficients type_id="opencv-matrix">
+    <rows>1</rows>
+    <cols>14</cols>
+    <dt>d</dt>
+    <data>
+        2.6455503057827539e+01 -1.3923005567785626e+02
+        5.9865351486967167e-03 2.4190546863786118e-03 3.3580962228461385e+02
+        2.6372582966760181e+01 -1.3977796032220772e+02
+        3.3770214190560785e+02 0. 0. 0. 0. 0. 0.
+    </data>
+    </distortionCoefficients>
+    <invertX>1</invertX>
+    <invertY>1</invertY>
+    <calibrationPoints>
+        <numberOfPoints>9</numberOfPoints>
+        <point_0>
+            <xWorld>0</xWorld>
+            <yWorld>0</yWorld>
+            <xImage>199.653</xImage>
+            <yImage>103.684</yImage>
+        </point_0>
+        <point_1>
+            <xWorld>13.6</xWorld>
+            <yWorld>0</yWorld>
+            <xImage>319.734</xImage>
+            <yImage>100.309</yImage>
+        </point_1>
+        <point_2>
+            <xWorld>27.2</xWorld>
+            <yWorld>0</yWorld>
+            <xImage>438.85</xImage>
+            <yImage>93.5571</yImage>
+        </point_2>
+        <point_3>
+            <xWorld>0</xWorld>
+            <yWorld>13.6</yWorld>
+            <xImage>204.958</xImage>
+            <yImage>226.273</yImage>
+        </point_3>
+        <point_4>
+            <xWorld>13.6</xWorld>
+            <yWorld>13.6</yWorld>
+            <xImage>323.592</xImage>
+            <yImage>222.801</yImage>
+        </point_4>
+        <point_5>
+            <xWorld>27.2</xWorld>
+            <yWorld>13.6</yWorld>
+            <xImage>440.297</xImage>
+            <yImage>217.978</yImage>
+        </point_5>
+        <point_6>
+            <xWorld>0</xWorld>
+            <yWorld>27.2</yWorld>
+            <xImage>210.262</xImage>
+            <yImage>341.917</yImage>
+        </point_6>
+        <point_7>
+            <xWorld>13.6</xWorld>
+            <yWorld>27.2</yWorld>
+            <xImage>327.45</xImage>
+            <yImage>339.988</yImage>
+        </point_7>
+        <point_8>
+            <xWorld>27.2</xWorld>
+            <yWorld>27.2</yWorld>
+            <xImage>446.084</xImage>
+            <yImage>336.613</yImage>
+        </point_8>
+    </calibrationPoints>
+</opencv_storage>
+

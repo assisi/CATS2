@@ -18,7 +18,7 @@
 struct FishModelSettings {
 public:
     //! Constructor.
-    FishModelSettings() {}
+    explicit FishModelSettings() {}
 
     //! Agents parameters.
     float length = 0.02;
@@ -35,7 +35,7 @@ public:
     float repulsionFromAgentsAtDist = 0.02; //! Repulsion from agent if other is too close
 
     //! Simulation parameters.
-    float dt = 1.;
+    float dt = 0.2;
 };
 
 /*!
@@ -208,7 +208,7 @@ private:
 struct PotentialFieldSettings
 {
     //! Constructor.
-    PotentialFieldSettings() :
+    explicit PotentialFieldSettings() :
         influenceDistanceArenaMeters(0.03),
         influenceStrengthArena(10),
         influenceDistanceRobotsMeters(0.09),

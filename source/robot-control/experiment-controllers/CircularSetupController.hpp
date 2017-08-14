@@ -4,6 +4,8 @@
 #include "ExperimentController.hpp"
 #include "settings/CircularSetupControllerSettings.hpp"
 
+#include "QtCore/QTimer"
+
 class TurningDirection {
 public:
     enum Enum {
@@ -54,9 +56,11 @@ class CircularSetupController : public ExperimentController
     Q_OBJECT
 public:
     //! Constructor. Gets the robot and the settings.
-    CircularSetupController(FishBot* robot,
+    explicit CircularSetupController(FishBot* robot,
                             ExperimentControllerSettingsPtr settings,
                             ExperimentControllerType::Enum controllerType);
+    //! Destructor.
+    virtual ~CircularSetupController();
 
 public:
     //! Called when the controller is activated. Used to reset parameters.
@@ -77,11 +81,15 @@ protected:
     //! Updates the current target turning direction for the robot. Returns true
     //! if the turning direction changes.
     bool updateTargetTurningDirection(TurningDirection::Enum turningDirection);
+    //! Update the turning directions statistics.
+    void updateStatistics();
 
 private:
     //! Compares two area ids, returns 1 if first is bigger, -1 if it is smaller
     //! and 0 if they are the same.
     int compareAreaIds(QString areaId1, QString areaId2);
+    //! Prints the turning directions statistics.
+    void printStatistics(bool final = false);
 
 protected:
     //! The settings for this controller.
@@ -103,10 +111,20 @@ protected:
     //! The center of the circular setup (must be specified in the settings).
     PositionMeters m_setupCenter;
 
+    //! Counts the measements when the robot was going clock-wise.
+    int m_robotClockWiseCounter;
+    //! Counts the measements when the robot turning direction was unknown.
+    int m_robotUndefCounter;
     //! Counts the measements when the fish was going clock-wise.
-    int m_clockWiseCounter;
+    int m_fishClockWiseCounter;
+    //! Counts the measements when the robot turning direction was unknown.
+    int m_fishUndefCounter;
     //! Counts all measements.
     int m_allMeasurementsCounter;
+
+private:
+    //! The timer to print the experiment statistics every minute.
+    QTimer m_statisticsPrintTimer;
 };
 
 #endif // CATS2_CIRCULAR_SETUP_CONTROLLER_HPP

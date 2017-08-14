@@ -5,7 +5,7 @@
         <name>Binary-choice</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>0</numberOfAnimals>
+            <numberOfAnimals>4</numberOfAnimals>
         </agents>
         <setupMapPath>setup/epfl-circular.xml</setupMapPath>
     </experiment>
@@ -127,7 +127,7 @@
             <cameraCalibrationFile>camera-calibration/epfl-setup-180/cats2-epfl-main-camera-basler.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
-                <numberOfAgents>1</numberOfAgents>
+                <numberOfAgents>5</numberOfAgents>
                 <blobDetector>
                     <minBlobSizePx>3</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>

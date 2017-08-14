@@ -6,12 +6,14 @@
 #include "experiment-controllers/MapController.hpp"
 #include "experiment-controllers/InitiationLeaderController.hpp"
 #include "experiment-controllers/InitiationLureController.hpp"
+#include "experiment-controllers/DominatingSetController.hpp"
 #include "experiment-controllers/CircularSetupFollowerController.hpp"
 #include "experiment-controllers/CircularSetupLeaderController.hpp"
 #include "settings/MapControllerSettings.hpp"
 #include "settings/RobotControlSettings.hpp"
 #include "settings/InitiationLureControllerSettings.hpp"
 #include "settings/InitiationLeaderControllerSettings.hpp"
+#include "settings/DominatingSetControllerSettings.hpp"
 #include "settings/CircularSetupControllerSettings.hpp"
 
 #include <QtCore/QDebug>
@@ -39,6 +41,8 @@ public:
                 return ExperimentControllerPtr(new InitiationLeaderController(robot, settings), &QObject::deleteLater);
             case ExperimentControllerType::INITIATION_LURE:
                 return ExperimentControllerPtr(new InitiationLureController(robot, settings), &QObject::deleteLater);
+            case ExperimentControllerType::DOMINATING_SET:
+                return ExperimentControllerPtr(new DominatingSetController(robot, settings), &QObject::deleteLater);
             case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER:
                 return ExperimentControllerPtr(new CircularSetupFollowerController(robot, settings), &QObject::deleteLater);
             case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW:
@@ -65,6 +69,8 @@ public:
             return ExperimentControllerSettingsPtr(new InitiationLeaderControllerSettings());
         case ExperimentControllerType::INITIATION_LURE:
             return ExperimentControllerSettingsPtr(new InitiationLureControllerSettings());
+        case ExperimentControllerType::DOMINATING_SET:
+            return ExperimentControllerSettingsPtr(new DominatingSetControllerSettings());
         case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER:
         case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW:
         case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW:

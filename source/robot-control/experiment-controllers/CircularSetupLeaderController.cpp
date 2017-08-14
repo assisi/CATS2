@@ -39,6 +39,8 @@ ExperimentController::ControlData CircularSetupLeaderController::step()
         // target position is based on the turning direction
         controlData.data =
             QVariant::fromValue(computeTargetPosition());
+        // update the turning directions statistics
+        updateStatistics();
     }
     return controlData;
 }

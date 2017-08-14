@@ -15,7 +15,7 @@ public:
     enum { Type = UserType + 17 };
 
     //! Constructor.
-    AgentItem();
+    explicit AgentItem();
 
 public:
     //! Set the orientation flag.

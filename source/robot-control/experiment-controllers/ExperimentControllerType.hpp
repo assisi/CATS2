@@ -14,6 +14,7 @@ public:
         CONTROL_MAP,
         INITIATION_LEADER,
         INITIATION_LURE,
+        DOMINATING_SET,
         CIRCULAR_SETUP_FOLLOWER,
         CIRCULAR_SETUP_LEADER_CW,
         CIRCULAR_SETUP_LEADER_CCW,
@@ -29,9 +30,13 @@ public:
             string = "controlMap";
             break;
         case INITIATION_LEADER:
-        case INITIATION_LURE:
-            string = "initiation";
+            string = "initiationLeader";
             break;
+        case INITIATION_LURE:
+            string = "initiationLure";
+            break;
+        case DOMINATING_SET:
+            string = "domset";
         case CIRCULAR_SETUP_FOLLOWER:
         case CIRCULAR_SETUP_LEADER_CW:
         case CIRCULAR_SETUP_LEADER_CCW:
@@ -58,6 +63,8 @@ public:
         case INITIATION_LURE:
             string = "Initiation lure";
             break;
+        case DOMINATING_SET:
+            string = "Dominating set";
         case CIRCULAR_SETUP_FOLLOWER:
             string = "Circular setup follower";
             break;

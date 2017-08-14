@@ -54,10 +54,10 @@ MainWindow::MainWindow(QWidget *parent) :
                     new InterSpeciesDataManager(InterSpeciesSettings::get().publisherAddress(),
                                                 InterSpeciesSettings::get().subscriberAddresses()));
     }
-//    connect(m_trackingDataManager.data(),
-//            &TrackingDataManager::notifyAgentDataImageMerged,
-//            m_interSpeciesDataManager.data(),
-//            &InterSpeciesDataManager::publishAgentData);
+    //    connect(m_trackingDataManager.data(),
+    //            &TrackingDataManager::notifyAgentDataImageMerged,
+    //            m_interSpeciesDataManager.data(),
+    //            &InterSpeciesDataManager::publishAgentData);
 
     // create the robot control handler
     m_robotsHandler = RobotsHandlerPtr(new RobotsHandler());
@@ -99,22 +99,26 @@ MainWindow::MainWindow(QWidget *parent) :
                 &ControlLoop::notifyCircularSetupTurningDirections,
                 m_interSpeciesDataManager.data(),
                 &InterSpeciesDataManager::publishCicrularExperimentData);
+        connect(m_interSpeciesDataManager.data(),
+                &InterSpeciesDataManager::notifyBeesSetCircularSetupTurningDirection,
+                m_robotsHandler->contolLoop().data(),
+                &ControlLoop::setCircularSetupTurningDirection);
     }
 
     // show the window maximazed
-     setWindowState(Qt::WindowMaximized);
+    setWindowState(Qt::WindowMaximized);
 
-     // automatically toogle some of the toolbar buttons
-     m_ui->actionShowAgentsData->toggle();
-     m_ui->actionShowControlAreas->toggle();
-     m_ui->actionShowSetupOutline->toggle();
+    // automatically toogle some of the toolbar buttons
+    m_ui->actionShowAgentsData->toggle();
+    m_ui->actionShowControlAreas->toggle();
+    m_ui->actionShowSetupOutline->toggle();
 
-     // preferences dialog
-     connect(m_ui->actionPreferences, &QAction::triggered,
-             [=](){
-                QSharedPointer<PreferencesDialog> dialog(new PreferencesDialog());
-                dialog->exec();
-             });
+    // preferences dialog
+    connect(m_ui->actionPreferences, &QAction::triggered,
+            [=](){
+        QSharedPointer<PreferencesDialog> dialog(new PreferencesDialog());
+        dialog->exec();
+    });
 }
 
 /*!
@@ -244,10 +248,10 @@ void MainWindow::connectPrimaryView()
         // connect to the robots controller
         connect(viewerWidget, &ViewerWidget::notifyButtonClick,
                 [=](Qt::MouseButton button, PositionMeters worldPosition)
-                {
-                    if (button == Qt::RightButton)
-                        m_robotsHandler->contolLoop().data()->goToPosition(worldPosition);
-                });
+        {
+            if (button == Qt::RightButton)
+                m_robotsHandler->contolLoop().data()->goToPosition(worldPosition);
+        });
         connect(m_robotsHandler->contolLoop().data(),
                 &ControlLoop::notifyRobotControlAreasPolygons,
                 viewerWidget,
@@ -338,9 +342,9 @@ void MainWindow::disconnectPrimaryView()
                    viewerWidget,
                    &ViewerWidget::updateControlAreas);
         disconnect(m_robotsHandler->contolLoop().data(),
-                &ControlLoop::notifyFishNumberByRobotControlAreas,
-                viewerWidget,
-                &ViewerWidget::updateControlAreasOccupation);
+                   &ControlLoop::notifyFishNumberByRobotControlAreas,
+                   viewerWidget,
+                   &ViewerWidget::updateControlAreasOccupation);
         disconnect(m_robotsHandler->contolLoop().data(),
                    &ControlLoop::notifySelectedRobotChanged,
                    viewerWidget,
@@ -354,7 +358,7 @@ void MainWindow::disconnectPrimaryView()
                    viewerWidget,
                    &ViewerWidget::updateTrajectory);
         disconnect(m_robotsHandler.data(), &RobotsHandler::notifySetupMap,
-                viewerWidget, &ViewerWidget::updateSetup);
+                   viewerWidget, &ViewerWidget::updateSetup);
         disconnect(m_robotsHandler->contolLoop().data(),
                    &ControlLoop::notifyObstacleDetectedStatusChanged,
                    viewerWidget,

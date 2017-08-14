@@ -28,6 +28,7 @@ set(srcs
     settings/MapControllerSettings.cpp
     settings/InitiationLeaderControllerSettings.cpp
     settings/InitiationLureControllerSettings.cpp
+    settings/DominatingSetControllerSettings.cpp
     settings/CircularSetupControllerSettings.cpp
     FishBot.cpp
     ControlLoop.cpp
@@ -51,6 +52,7 @@ set(srcs
     experiment-controllers/ExperimentManager.cpp
     experiment-controllers/InitiationLeaderController.cpp
     experiment-controllers/InitiationLureController.cpp
+    experiment-controllers/DominatingSetController.cpp
     experiment-controllers/CircularSetupController.cpp
     experiment-controllers/CircularSetupFollowerController.cpp
     experiment-controllers/CircularSetupLeaderController.cpp

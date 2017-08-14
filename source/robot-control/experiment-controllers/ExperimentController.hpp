@@ -27,8 +27,8 @@ class ExperimentController : public QObject
 public:
     //! Constructor. It gets a pointer to the robot that is controlled by this
     //! controller.
-    ExperimentController(FishBot* robot,
-                         ExperimentControllerType::Enum type);
+    explicit ExperimentController(FishBot* robot,
+                                  ExperimentControllerType::Enum type);
 
     //! The data from the control map returned on request for given position.
     struct ControlData {

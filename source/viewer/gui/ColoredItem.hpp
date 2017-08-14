@@ -10,7 +10,7 @@ class ColoredItem
 {
 public:
     //! Constructor.
-    ColoredItem() :
+    explicit ColoredItem() :
         m_color(Qt::black)/*,
         m_active(true)*/
     {

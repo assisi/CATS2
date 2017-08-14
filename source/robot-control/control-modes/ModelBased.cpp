@@ -70,6 +70,11 @@ ControlTargetPtr ModelBased::step()
             status += QString(", dist. %1 m")
                     .arg(robotPosition.distance2dTo(m_targetPosition), 0, 'f', 3);
         }
+        // TODO : temporary, to remove
+        // check if the target position is inside the model area
+        if (!containsPoint(m_targetPosition)) {
+            qDebug() << "Attention: the target position is outside of the map";
+        }
         emit notifyControlModeStatus(status);
         return ControlTargetPtr(new TargetPosition(m_targetPosition));
     }
@@ -190,23 +195,27 @@ PositionMeters ModelBased::computeTargetPosition()
     }
 
     // update position of the robot in model
-    PositionMeters robotPosition = m_robot->state().position();
-    OrientationRad robotOrientation = m_robot->state().orientation();
-    if (robotPosition.isValid() && containsPoint(robotPosition) &&
-        (m_sim->robots.size() == 1))
-    {
-        m_sim->robots[0].first->headPos.first = robotPosition.x() - minX();
-        m_sim->robots[0].first->headPos.second = robotPosition.y() - minY();
+    if (!m_parameters.ignoreRobot) {
+        PositionMeters robotPosition = m_robot->state().position();
+        OrientationRad robotOrientation = m_robot->state().orientation();
+        if (robotPosition.isValid() && containsPoint(robotPosition) &&
+            (m_sim->robots.size() == 1))
+        {
+            m_sim->robots[0].first->headPos.first = robotPosition.x() - minX();
+            m_sim->robots[0].first->headPos.second = robotPosition.y() - minY();
 
-        if (robotOrientation.isValid()) {
-            m_sim->robots[0].first->direction = robotOrientation.angleRad();
+            if (robotOrientation.isValid()) {
+                m_sim->robots[0].first->direction = robotOrientation.angleRad();
+            } else {
+                m_sim->robots[0].first->direction = 0;
+            }
+            m_sim->robots[0].first->present = true;
         } else {
-            m_sim->robots[0].first->direction = 0;
+            qDebug() << "The robot position is outside of the setup "
+                                       "area or invalid";
+            m_sim->robots[0].first->present = false;
         }
-        m_sim->robots[0].first->present = true;
     } else {
-        qDebug() << "The robot position is outside of the setup "
-                                   "area or invalid";
         m_sim->robots[0].first->present = false;
     }
 
@@ -241,6 +250,10 @@ void ModelBased::setParameters(ModelParameters parameters)
 {
     if (parameters != m_parameters) {
         m_parameters = parameters;
+        qDebug() << QString("Model parameters are updated, ignore-fish:%1,"
+                            "ignore-robot:%2")
+                    .arg(m_parameters.ignoreFish)
+                    .arg(m_parameters.ignoreRobot);
         resetModel();
     }
 }

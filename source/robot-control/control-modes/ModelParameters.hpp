@@ -11,6 +11,10 @@ struct ModelParameters
     //! Defines if the model is aware of the presense of fish and receives their
     //! positions.
     bool ignoreFish;
+    //! Defines if the model receives the position of the robot.
+    bool ignoreRobot;
+    //! Constructor.
+    ModelParameters(): ignoreFish(false), ignoreRobot(false) { }
 };
 
 Q_DECLARE_METATYPE(ModelParameters)
@@ -20,7 +24,8 @@ Q_DECLARE_METATYPE(ModelParameters)
  */
 inline bool operator==(const ModelParameters& lhs, const ModelParameters& rhs)
 {
-    return (lhs.ignoreFish == rhs.ignoreFish);
+    return ((lhs.ignoreFish == rhs.ignoreFish) &&
+            (lhs.ignoreRobot == rhs.ignoreRobot));
 }
 
 /*!
@@ -28,7 +33,8 @@ inline bool operator==(const ModelParameters& lhs, const ModelParameters& rhs)
  */
 inline bool operator!=(const ModelParameters& lhs, const ModelParameters& rhs)
 {
-    return !(lhs.ignoreFish == rhs.ignoreFish);
+    return ((lhs.ignoreFish != rhs.ignoreFish) ||
+            (lhs.ignoreRobot != rhs.ignoreRobot));
 }
 
 #endif // CATS2_MODEL_PARAMETERS_HPP

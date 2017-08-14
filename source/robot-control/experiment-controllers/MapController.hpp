@@ -18,8 +18,8 @@ class MapController : public ExperimentController
     Q_OBJECT
 public:
     //! Constructor. Gets the robot and the settings.
-    MapController(FishBot* robot,
-                  ExperimentControllerSettingsPtr settings);
+    explicit MapController(FishBot* robot,
+                           ExperimentControllerSettingsPtr settings);
 
 public:
     //! Returns the control values for given position.

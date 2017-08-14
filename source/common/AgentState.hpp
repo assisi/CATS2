@@ -321,8 +321,8 @@ class StateWorld
 public:
     //! Constructor. If position or orientation are not provided then they are
     //! considered unknown.
-    StateWorld(PositionMeters position = PositionMeters(0, 0, 0, false),
-               OrientationRad orientation = OrientationRad(0, false)) :
+    explicit StateWorld(PositionMeters position = PositionMeters(0, 0, 0, false),
+                        OrientationRad orientation = OrientationRad(0, false)) :
         m_positionMeters(position),
         m_orientationRad(orientation)
     {
@@ -368,8 +368,8 @@ class StateImage
 public:
     //! Constructor. If position or orientation are not provided then they are
     //! considered unknown.
-    StateImage(PositionPixels position = PositionPixels(0, 0, false),
-               OrientationRad orientation = OrientationRad(0, false)) :
+    explicit StateImage(PositionPixels position = PositionPixels(0, 0, false),
+                        OrientationRad orientation = OrientationRad(0, false)) :
         m_positionPixels(position),
         m_orientationRad(orientation)
     {

@@ -11,7 +11,7 @@ class MapControllerSettingsData
 {
 public:
     //! Constructor.
-    MapControllerSettingsData() :
+    explicit MapControllerSettingsData() :
         m_defaultControlAreasFileName()
     {}
 
@@ -33,7 +33,7 @@ class MapControllerSettings : public ExperimentControllerSettings
 {
 public:
     //! Constructor.
-    MapControllerSettings();
+    explicit MapControllerSettings();
     //! Destructor.
     virtual ~MapControllerSettings();
 

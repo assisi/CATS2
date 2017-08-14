@@ -11,7 +11,7 @@ class SetupMap
 {
 public:
     //! Constructor.
-    SetupMap();
+    explicit SetupMap();
 
     //! Returns the polygon representing the setup.
     WorldPolygon polygon() const { return m_polygon; }

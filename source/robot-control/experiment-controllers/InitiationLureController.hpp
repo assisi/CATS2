@@ -20,8 +20,8 @@ class InitiationLureController : public ExperimentController
     Q_OBJECT
 public:
     //! Constructor. Gets the robot and the settings.
-    InitiationLureController(FishBot* robot,
-                             ExperimentControllerSettingsPtr settings);
+    explicit InitiationLureController(FishBot* robot,
+                                      ExperimentControllerSettingsPtr settings);
 
 public:
     //! Called when the controller is activated. Used to reset parameters.

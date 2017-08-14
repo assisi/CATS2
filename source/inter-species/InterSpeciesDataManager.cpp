@@ -29,6 +29,8 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
     connect(thread, &QThread::started, m_subscriber.data(), &Subscriber::process);
     connect(m_subscriber.data(), &Subscriber::finished, thread, &QThread::quit);
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);
+    connect(m_subscriber.data(), &Subscriber::notifyBeeSetCircularSetupTurningDirection,
+            this, &InterSpeciesDataManager::notifyBeesSetCircularSetupTurningDirection);
     thread->start();
 }
 
@@ -37,11 +39,11 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
  */
 void InterSpeciesDataManager::publishMessage(std::string& name,std::string& device,std::string& desc,std::string& data)
 {
-//    qDebug() << "Sending message:"
-//             << QString::fromStdString(name)
-//             << QString::fromStdString(device)
-//             << QString::fromStdString(desc)
-//             << QString::fromStdString(data);
+    qDebug() << "Sending message:"
+             << QString::fromStdString(name)
+             << QString::fromStdString(device)
+             << QString::fromStdString(desc)
+             << QString::fromStdString(data);
     try {
         zmq::sendMultipart(m_publisher, name, device, desc, data);
     } catch (const zmq::error_t& e) {
