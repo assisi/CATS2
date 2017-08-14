@@ -1,0 +1,12 @@
+
+sudo rfcomm release all
+sudo rfcomm bind 1 10:00:E8:6C:F0:49
+sudo rfcomm bind 0 10:00:E8:6C:F0:69
+sudo rfcomm bind 2 10:00:E8:6C:F0:5B
+
+asebamedulla -v -d "ser:device=/dev/rfcomm1"
+
+asebamedulla -v -d "ser:device=/dev/rfcomm0" "ser:device=/dev/rfcomm1"
+
+asebamedulla -v -d "ser:device=/dev/rfcomm0" "ser:device=/dev/rfcomm1" "ser:device=/dev/rfcomm2"
+
