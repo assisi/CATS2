@@ -15,7 +15,7 @@ class GridBasedMethod
 {
 public:
     //! Constructor.
-    explicit GridBasedMethod(double gridSizeMeters);
+    explicit GridBasedMethod(double gridSizeMeters = DefaultGridResolutionM);
     //! Destructor.
     virtual ~GridBasedMethod();
 
@@ -95,6 +95,8 @@ protected:
     SetupMap m_setupMap;
     //! The size of the grid square.
     double m_gridSizeMeters;
+    //! The default grid resolution.
+    static constexpr double DefaultGridResolutionM = 0.01; // i.e. 1 cm
 
     //! The rectangular grid covering the whole setup.
     cv::Mat m_setupGrid;

@@ -16,6 +16,7 @@ public:
         GO_STRAIGHT,
         MODEL_BASED,
         TRAJECTORY,
+        FOLLOW_GROUP,
         UNDEFINED
     };
 
@@ -34,6 +35,8 @@ public:
             return MODEL_BASED;
         else if (modeName.toLower() == "trajectory")
             return TRAJECTORY;
+        else if (modeName.toLower() == "followgroup")
+            return FOLLOW_GROUP;
         else
             return UNDEFINED;
     }
@@ -57,6 +60,9 @@ public:
             break;
         case TRAJECTORY:
             string = "Trajectory";
+            break;
+        case FOLLOW_GROUP:
+            string = "Follow group";
             break;
         case IDLE:
         default:

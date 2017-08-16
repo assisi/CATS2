@@ -157,6 +157,9 @@ void GridBasedMethod::clearAreaMask()
  */
 bool GridBasedMethod::containsPoint(PositionMeters position) const
 {
+    if (!position.isValid())
+        return false;
+
     // first check the grid
     if (!m_currentGrid.empty()) {
         QPoint node = positionToGridNode(position);

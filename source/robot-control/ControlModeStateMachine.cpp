@@ -8,6 +8,7 @@
 #include "control-modes/Manual.hpp"
 #include "control-modes/ModelBased.hpp"
 #include "control-modes/Trajectory.hpp"
+#include "control-modes/FollowGroup.hpp"
 #include "FishBot.hpp"
 
 #include <QtCore/QDebug>
@@ -21,17 +22,27 @@ ControlModeStateMachine::ControlModeStateMachine(FishBot* robot, QObject *parent
     m_robot(robot)
 {
     // fill the map will all control modes
-    m_controlModes.insert(ControlModeType::IDLE, ControlModePtr(new Idle(m_robot)));
-    m_controlModes.insert(ControlModeType::MANUAL, ControlModePtr(new Manual(m_robot)));
-    m_controlModes.insert(ControlModeType::GO_STRAIGHT, ControlModePtr(new GoStraight(m_robot)));
-    m_controlModes.insert(ControlModeType::GO_TO_POSITION, ControlModePtr(new GoToPosition(m_robot)));
-    m_controlModes.insert(ControlModeType::MODEL_BASED, ControlModePtr(new ModelBased(m_robot)));
-    m_controlModes.insert(ControlModeType::TRAJECTORY, ControlModePtr(new Trajectory(m_robot)));
+    m_controlModes.insert(ControlModeType::IDLE,
+                          ControlModePtr(new Idle(m_robot)));
+    m_controlModes.insert(ControlModeType::MANUAL,
+                          ControlModePtr(new Manual(m_robot)));
+    m_controlModes.insert(ControlModeType::GO_STRAIGHT,
+                          ControlModePtr(new GoStraight(m_robot)));
+    m_controlModes.insert(ControlModeType::GO_TO_POSITION,
+                          ControlModePtr(new GoToPosition(m_robot)));
+    m_controlModes.insert(ControlModeType::MODEL_BASED,
+                          ControlModePtr(new ModelBased(m_robot)));
+    m_controlModes.insert(ControlModeType::TRAJECTORY,
+                          ControlModePtr(new Trajectory(m_robot)));
+    m_controlModes.insert(ControlModeType::FOLLOW_GROUP,
+                          ControlModePtr(new FollowGroup(m_robot)));
 
     // make necessary connections
     foreach (ControlModePtr controlMode, m_controlModes.values()) {
-       connect(controlMode.data(), &ControlMode::requestControlModeChange, this, &ControlModeStateMachine::setControlMode);
-       connect(controlMode.data(), &ControlMode::notifyControlModeStatus, this, &ControlModeStateMachine::notifyControlModeStatus);
+       connect(controlMode.data(), &ControlMode::requestControlModeChange,
+               this, &ControlModeStateMachine::setControlMode);
+       connect(controlMode.data(), &ControlMode::notifyControlModeStatus,
+               this, &ControlModeStateMachine::notifyControlModeStatus);
     }
 }
 
