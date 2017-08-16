@@ -28,7 +28,7 @@ ExperimentController::ControlData CircularSetupFollowerController::step()
     ControlData controlData;
     // a check for the valid robot pointer
     if (m_robot) {
-        bool directionChanged;
+        bool directionChanged = false;
         // find out where the fish go, updated regularly
         if (m_fishTurningAngleUpdateTimer.isTimedOutSec(FishTurningDirectionUpdateTimeout)) {
             computeFishTurningDirection();
