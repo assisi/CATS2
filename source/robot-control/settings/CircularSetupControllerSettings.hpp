@@ -11,7 +11,7 @@ class CircularSetupControllerSettingsData
 {
 public:
     //! Constructor.
-    CircularSetupControllerSettingsData() :
+    explicit CircularSetupControllerSettingsData() :
         m_controlAreasFileName(),
         m_targetDeltaAngleRad(0)
     {}
@@ -55,7 +55,7 @@ class CircularSetupControllerSettings : public ExperimentControllerSettings
 {
 public:
     //! Constructor.
-    CircularSetupControllerSettings(ExperimentControllerType::Enum type);
+    explicit CircularSetupControllerSettings(ExperimentControllerType::Enum type);
     //! Destructor.
     virtual ~CircularSetupControllerSettings();
 
