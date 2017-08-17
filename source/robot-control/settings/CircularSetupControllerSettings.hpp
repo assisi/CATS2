@@ -13,6 +13,7 @@ public:
     //! Constructor.
     explicit CircularSetupControllerSettingsData() :
         m_controlAreasFileName(),
+        m_targetRadiusM(0),
         m_targetDeltaAngleRad(0)
     {}
 
