@@ -5,9 +5,9 @@
         <name>PID-tuning</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>0</numberOfAnimals>
+            <numberOfAnimals>3</numberOfAnimals>
         </agents>
-        <setupMapPath>setup/epfl-two-rooms.xml</setupMapPath>
+        <setupMapPath>setup/graz-full-arena.xml</setupMapPath>
     </experiment>
     <robots>
         <numberOfRobots>1</numberOfRobots>
@@ -76,42 +76,8 @@
             <needOrientationToNavigate>0</needOrientationToNavigate>
         </navigation>
         <controllers>
-            <controlMap>
-                <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
-            </controlMap>
-            <initiation>
-                <controlAreasPath>control-maps/epfl-two-rooms-control-map.xml</controlAreasPath>
-                <fishFollowCheckTimeOutSec>10</fishFollowCheckTimeOutSec>
-                <maximalFishNumberAllowedToStay>1</maximalFishNumberAllowedToStay>
-                <!-- timeOut / inGroup -->
-                <departureTrigger>inGroup</departureTrigger>
-                <departureOnTimeOut>
-                    <departureTimeOutSec>10</departureTimeOutSec>
-                </departureOnTimeOut>
-                <departureWhenInGroup>
-                    <fishNumberAround>1</fishNumberAround>
-                    <groupRadius>0.10</groupRadius>
-                </departureWhenInGroup>
-            </initiation>
         </controllers>
         <fishBot_1>
-            <id>C</id>
-            <ledColor>
-                <r>190</r>
-                <g>255</g>
-                <b>190</b>
-            </ledColor>
-            <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
-            <robotControlMaps>
-                <controlMap>
-                    <path>control-maps/test-control-map.xml</path>
-                </controlMap>
-                <initiation>
-                    <path>control-maps/epfl-two-rooms-control-map.xml</path>
-                </initiation>
-            </robotControlMaps>
-        </fishBot_1>
-        <fishBot_2>
             <id>H</id>
                 <ledColor>
                     <r>90</r>
@@ -119,6 +85,15 @@
                     <b>200</b>
                 </ledColor>
                 <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
+        </fishBot_1>
+        <fishBot_2>
+            <id>C</id>
+            <ledColor>
+                <r>190</r>
+                <g>255</g>
+                <b>190</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
         </fishBot_2>
         <fishBot_3>
             <id>B</id>
@@ -143,11 +118,11 @@
             <cameraCalibrationFile>camera-calibration/graz-setup/cats2-graz-main-camera.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
-                <numberOfAgents>1</numberOfAgents>
+                <numberOfAgents>4</numberOfAgents>
                 <blobDetector>
-                    <minBlobSizePx>3</minBlobSizePx>
+                    <minBlobSizePx>2</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
-                    <minDistance>5.0</minDistance>
+                    <minDistance>2.0</minDistance>
                     <blockSize>5</blockSize>
                     <useHarrisDetector>1</useHarrisDetector>
                     <k>0.04</k>
@@ -162,13 +137,13 @@
             <cameraCalibrationFile>camera-calibration/graz-setup/cats2-graz-below-camera.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>fishBotLedsTracking</trackingMethod>
-                <maskFile>bottom-camera-mask.png</maskFile>
+                <maskFile>masks/graz-below-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
                     <fishBot_C>
                         <threshold>70</threshold>
                     </fishBot_C>
                     <fishBot_H>
-                        <threshold>30</threshold>
+                        <threshold>15</threshold>
                     </fishBot_H>
                     <fishBot_B>
                         <threshold>70</threshold>

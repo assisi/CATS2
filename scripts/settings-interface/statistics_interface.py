@@ -108,7 +108,10 @@ class CatsStatisticsInterface:
     def get_value(self, id):
         """Returns the statistics value."""
         self.lock.acquire()
-        value = self.value_by_path[id]
+        if id in self.value_by_path:
+            value = self.value_by_path[id]
+        else: 
+            value = 0
         self.lock.release()
         return value
 
