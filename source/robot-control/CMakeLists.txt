@@ -94,7 +94,7 @@ include_directories(${CMAKE_SOURCE_DIR}/source/inter-species)
 add_library(robot-control SHARED ${srcs} ${hdrs} ${uis_hdrs}) #${resources})
 target_link_libraries(robot-control common inter-species Qt5::Core Qt5::Widgets Qt5::DBus
                       Qt5::Xml ${Boost_LIBRARIES}
-                      ${dashel_LIBRARIES} ${Aseba_LIBRARIES})
+                      ${dashel_LIBRARIES} ${Aseba_LIBRARIES} -fsanitize=address)
 
 #install(TARGETS robot-control DESTINATION .)
 #install(FILES
