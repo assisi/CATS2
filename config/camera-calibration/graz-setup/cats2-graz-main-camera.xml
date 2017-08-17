@@ -35,56 +35,56 @@
         <point_0>
             <xWorld>0</xWorld>
             <yWorld>0</yWorld>
-            <xImage>232.419</xImage>
-            <yImage>340.591</yImage>
+            <xImage>230.276</xImage>
+            <yImage>339.988</yImage>
         </point_0>
         <point_1>
             <xWorld>13.6</xWorld>
             <yWorld>0</yWorld>
-            <xImage>325.186</xImage>
-            <yImage>348.629</yImage>
+            <xImage>324.315</xImage>
+            <yImage>344.007</yImage>
         </point_1>
         <point_2>
             <xWorld>27.2</xWorld>
             <yWorld>0</yWorld>
-            <xImage>426.325</xImage>
-            <yImage>355.997</yImage>
+            <xImage>425.186</xImage>
+            <yImage>346.82</yImage>
         </point_2>
         <point_3>
             <xWorld>0</xWorld>
             <yWorld>13.6</yWorld>
-            <xImage>241.796</xImage>
-            <yImage>245.48</yImage>
+            <xImage>234.295</xImage>
+            <yImage>243.136</yImage>
         </point_3>
         <point_4>
             <xWorld>13.6</xWorld>
             <yWorld>13.6</yWorld>
-            <xImage>334.563</xImage>
-            <yImage>251.173</yImage>
+            <xImage>328.736</xImage>
+            <yImage>244.743</yImage>
         </point_4>
         <point_5>
             <xWorld>27.2</xWorld>
             <yWorld>13.6</yWorld>
-            <xImage>430.679</xImage>
-            <yImage>260.216</yImage>
+            <xImage>427.196</xImage>
+            <yImage>249.566</yImage>
         </point_5>
         <point_6>
             <xWorld>0</xWorld>
             <yWorld>27.2</yWorld>
-            <xImage>250.169</xImage>
-            <yImage>151.709</yImage>
+            <xImage>236.706</xImage>
+            <yImage>148.293</yImage>
         </point_6>
         <point_7>
             <xWorld>13.6</xWorld>
             <yWorld>27.2</yWorld>
-            <xImage>341.596</xImage>
-            <yImage>159.077</yImage>
+            <xImage>332.755</xImage>
+            <yImage>149.498</yImage>
         </point_7>
         <point_8>
             <xWorld>27.2</xWorld>
             <yWorld>27.2</yWorld>
-            <xImage>437.712</xImage>
-            <yImage>164.1</yImage>
+            <xImage>430.411</xImage>
+            <yImage>152.713</yImage>
         </point_8>
     </calibrationPoints>
 </opencv_storage>
