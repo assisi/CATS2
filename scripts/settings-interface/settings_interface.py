@@ -98,7 +98,7 @@ class CatsSettingsInterface:
                 self.lock.release()
                 time.sleep(0.1)
 
-    def set_value(self, path):
+    def get_value(self, path):
         """Requests the settings value from CATS until it received.
         
         The resulted settings value is read from value_by_path dictionary.
@@ -143,7 +143,7 @@ class CatsSettingsInterface:
         self.stop = True
         while self.outgoing_thread.isAlive():
             time.sleep(0.1)
-        print('Sending thread finished')
+        print('Settings sending thread finished')
         while self.incoming_thread.isAlive():
             time.sleep(0.1)
-        print('Receiving thread finished')
+        print('Settings receiving thread finished')
