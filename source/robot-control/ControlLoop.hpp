@@ -87,6 +87,21 @@ private:
     //! initialize the firmware scripts.
     void reinitializeUniqueRobotInterface();
 
+private: // statistics related code
+    //! Registers the statistics data available at the control loop level at the
+    //! statistics module.
+    void registerStatistics();
+    //! Updates the statistics.
+    void updateStatistics(const QList<AgentDataWorld>& agentsData);
+    //! Computes the statistics id for the position x.
+    QString agentStatisticsPoxitionXId(AgentType type, QString agentId);
+    //! Computes the statistics id for the position y.
+    QString agentStatisticsPoxitionYId(AgentType type, QString agentId);
+    //! Computes the statistics id for the orientation.
+    QString agentStatisticsDirectionId(AgentType type, QString agentId);
+    //! Computes the statistics id.
+    QString agentStatisticsId(AgentType type, QString agentId, QString postfix);
+
 private:
     //! An inferface with the robots' Aseba firmware. It's shared by all
     //! robots, like this they have a direct access to set parameters.
