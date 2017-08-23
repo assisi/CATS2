@@ -6,6 +6,7 @@
 #include <QtCore/QString>
 #include <QtCore/QObject>
 #include <QtCore/QtMath>
+#include <QtCore/QDebug>
 #include <QtGui/QColor>
 #include <QtGui/QPolygonF>
 
@@ -76,6 +77,12 @@ private:
     OrientationValidity m_validity;
 };
 
+// forward declarations
+class PositionMeters;
+PositionMeters operator-(const PositionMeters& lhs, const PositionMeters& rhs);
+PositionMeters operator*(const double &v, const PositionMeters& rhs);
+PositionMeters operator+(const PositionMeters& lhs, const PositionMeters& rhs);
+
 /*!
  * \brief The class that stores the position in meters.
  */
@@ -137,6 +144,27 @@ public:
     {
         return qSqrt((m_x - other.x()) * (m_x - other.x()) +
                      (m_y - other.y()) * (m_y - other.y()));
+    }
+
+    //! Computes the distance between the point and a line segment p1->p2.
+    double distance2dToSegment(const PositionMeters& p1,
+                               const PositionMeters& p2) const
+    {
+        double l = p1.distance2dTo(p2);
+        // line is defined as p(t) = p1 + t(p2 - p1), if t is in [0,1] then the
+        // point is on the edge
+        double t = - ((p2.x() - p1.x()) * (p1.x() - m_x) + (p2.y() - p1.y()) * (p1.y() - m_y)) /
+                (l * l);
+        if ((t >= 0) && (t <= 1)) {
+            // compute the projection of the point 'p' to the edge
+            PositionMeters proj = p1 + t * (p2 - p1);
+            // return the distance to this projection
+            return distance2dTo(proj);
+        } else if (t < 0) {
+            return distance2dTo(p1);
+        } else if (t > 1) {
+            return distance2dTo(p2);
+        }
     }
 
     //! Checks if two points are close in 2D.
@@ -221,13 +249,19 @@ Q_DECLARE_METATYPE(PositionMeters)
 //! Addition operator.
 inline PositionMeters operator+(const PositionMeters& lhs, const PositionMeters& rhs)
 {
-    return PositionMeters(lhs.x() + rhs.x(), lhs.y() + rhs.y());
+    return PositionMeters(lhs.x() + rhs.x(), lhs.y() + rhs.y(), lhs.z() + rhs.z());
 }
 
 //! Subtraction operator.
 inline PositionMeters operator-(const PositionMeters& lhs, const PositionMeters& rhs)
 {
-    return PositionMeters(lhs.x() - rhs.x(), lhs.y() - rhs.y());
+    return PositionMeters(lhs.x() - rhs.x(), lhs.y() - rhs.y(), lhs.z() - rhs.z());
+}
+
+//! Multiplication by a scalar operator.
+inline PositionMeters operator*(const double &v, const PositionMeters& rhs)
+{
+    return PositionMeters(v * rhs.x() , v * rhs.y(), v * rhs.z());
 }
 
 //! Comparison operator.
