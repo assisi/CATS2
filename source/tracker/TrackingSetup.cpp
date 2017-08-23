@@ -65,7 +65,10 @@ TimestampedFrameQueuePtr TrackingSetup::viewerQueue()
  */
 QWidget* TrackingSetup::trackingWidget()
 {
-    return m_tracking->widget();
+    if (!m_tracking.isNull())
+        return m_tracking->widget();
+    else
+        return nullptr;
 }
 
 /*!
@@ -73,8 +76,10 @@ QWidget* TrackingSetup::trackingWidget()
  */
 void TrackingSetup::connectToDataManager(TrackingDataManagerPtr& trackingDataManager)
 {
-    trackingDataManager->addDataSource(m_setupType, m_tracking->data()->routineCapabilities());
-    trackingDataManager->addCoordinatesConversion(m_setupType, m_coordinatesConversion);
-    QObject::connect(m_tracking->data().data(), &TrackingData::trackedAgents,
-                     trackingDataManager.data(), &TrackingDataManager::onNewData);
+    if (!m_tracking.isNull()) {
+        trackingDataManager->addDataSource(m_setupType, m_tracking->data()->routineCapabilities());
+        trackingDataManager->addCoordinatesConversion(m_setupType, m_coordinatesConversion);
+        QObject::connect(m_tracking->data().data(), &TrackingData::trackedAgents,
+                         trackingDataManager.data(), &TrackingDataManager::onNewData);
+    }
 }
