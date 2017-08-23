@@ -200,6 +200,15 @@ public:
         return *this;
     }
 
+    //! Operator *=.
+    PositionMeters& operator*=(const double &value)
+    {
+        m_x *= value;
+        m_y *= value;
+        m_z *= value;
+        return *this;
+    }
+
     //! Return an invalid point.
     static PositionMeters invalidPosition()
     {
