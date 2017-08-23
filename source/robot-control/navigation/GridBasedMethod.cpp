@@ -183,3 +183,19 @@ bool GridBasedMethod::containsNode(QPoint node) const
 {
     return containsPoint(gridNodeToPosition(node));
 }
+
+/*!
+ * Computes the distance to the closest setup border (wall).
+ */
+double GridBasedMethod::distanceToClosestWall(PositionMeters position)
+{
+    // initialization
+    double distance = qMax(maxX() - minX(), maxY() - minY());
+    // compute the distancd to the setup
+    distance = qMin(distance, m_setupMap.polygon().distance2dTo(position));
+    // compute the distance to excluded polygons
+    for (const WorldPolygon& polygon : m_setupMap.excludedPolygons()) {
+        distance = qMin(distance, polygon.distance2dTo(position));
+    }
+    return distance;
+}

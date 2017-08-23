@@ -31,6 +31,10 @@ protected:
     };
 
 public:
+    //! Computes the distance to the closest setup border (wall).
+    double distanceToClosestWall(PositionMeters);
+
+public:
     //! Applies the mask on the arena matrix; used to limit the model output to
     //! a specific area. Since the same mask can be requested to be applied
     //! several times, we keep a map of used matrices; that's why a maskId is
@@ -91,13 +95,18 @@ protected:
     bool containsNode(QPoint node) const;
 
 protected:
-    //! The setup map.
-    SetupMap m_setupMap;
     //! The size of the grid square.
     double m_gridSizeMeters;
+
+    //! The current grid used by this method, it's the setup grid that might be
+    //! limited by a mask.
+    cv::Mat m_currentGrid;
+
+private:
+    //! The setup map.
+    SetupMap m_setupMap;
     //! The default grid resolution.
     static constexpr double DefaultGridResolutionM = 0.01; // i.e. 1 cm
-
     //! The rectangular grid covering the whole setup.
     cv::Mat m_setupGrid;
     //! The masks that might be applied on the setup grid. They are ordered by
@@ -105,9 +114,6 @@ protected:
     QMap<QString, cv::Mat> m_areaMasks;
     //! The current mask id used.
     QString m_currentMaskId;
-    //! The current grid used by this method, it's the setup grid that might be
-    //! limited by a mask.
-    cv::Mat m_currentGrid;
 };
 
 #endif // CATS2_GRID_BASED_METHOD_HPP
