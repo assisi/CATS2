@@ -189,9 +189,14 @@ public:
     //! Operator /=.
     PositionMeters& operator/=(const double &value)
     {
-        m_x /= value;
-        m_y /= value;
-        m_z /= value;
+        if (!qFuzzyIsNull(value)) {
+            m_x /= value;
+            m_y /= value;
+            m_z /= value;
+        } else {
+            qDebug() << "Division by zero";
+            setValid(false);
+        }
         return *this;
     }
 
