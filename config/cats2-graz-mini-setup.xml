@@ -120,10 +120,10 @@
                 <trackingMethod>blobDetector</trackingMethod>
                 <numberOfAgents>4</numberOfAgents>
                 <blobDetector>
-                    <minBlobSizePx>2</minBlobSizePx>
+                    <minBlobSizePx>1</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
-                    <minDistance>2.0</minDistance>
-                    <blockSize>5</blockSize>
+                    <minDistance>1.0</minDistance>
+                    <blockSize>7</blockSize>
                     <useHarrisDetector>1</useHarrisDetector>
                     <k>0.04</k>
             </blobDetector>
