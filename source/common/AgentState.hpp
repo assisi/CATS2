@@ -500,6 +500,20 @@ public:
         }
         return polygonCenter;
     }
+
+    /*!
+     * Computes the distance to the point.
+     */
+    double distance2dTo(const PositionMeters& p) const
+    {
+        double distance = std::numeric_limits<double>::max();
+        for (int i = 0; i < size(); ++i) {
+            const PositionMeters& p1 = at(i);
+            const PositionMeters& p2 = at((i + 1) % size());
+            distance = qMin(distance, p.distance2dToSegment(p1, p2));
+        }
+        return distance;
+    }
 };
 
 //! The structure to store polygons with the corresponding color and
