@@ -3,6 +3,7 @@
 #include "FishBot.hpp"
 
 #include "interfaces/DBusInterface.hpp"
+#include "statistics/StatisticsPublisher.hpp"
 
 #include <settings/CommandLineParameters.hpp>
 
@@ -105,6 +106,11 @@ ControlLoop::ControlLoop() :
     int stepMsec = static_cast<int>(1000. / RobotControlSettings::get().controlFrequencyHz());
     connect(&m_controlLoopTimer, &QTimer::timeout, [=](){ step(); });
     m_controlLoopTimer.start(stepMsec);
+
+    // register statistics if necessary
+    if (CommandLineParameters::get().publishRobotsStatistics()) {
+        registerStatistics();
+    }
 }
 
 /*!
@@ -210,7 +216,7 @@ void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
     // the states of fish
     QList<StateWorld> fishStates;
 
-    foreach (AgentDataWorld agentData, agentsData) {
+    foreach (const AgentDataWorld& agentData, agentsData) {
         if (agentData.type() == AgentType::CASU) {
             robotsData.append(agentData);
         } else if (agentData.type() == AgentType::FISH) {
@@ -230,6 +236,11 @@ void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
         // detected
         if (fishStates.size() > 0)
             robot->setFishStates(fishStates);
+    }
+
+    // update statistics if necessary
+    if (CommandLineParameters::get().publishRobotsStatistics()) {
+        updateStatistics(agentsData);
     }
 }
 
@@ -306,4 +317,86 @@ void ControlLoop::selectRobot(QString name)
      for(auto& robot : m_robots) {
          robot->requestLedColor();
      }
+ }
+
+ /*!
+  * Registers the statistics data available at the control loop level at the
+  * statistics module.
+  */
+ void ControlLoop::registerStatistics()
+ {
+     // register robots
+     for (QString id : RobotControlSettings::get().ids()) {
+         StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionXId(AgentType::CASU, id));
+         StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionYId(AgentType::CASU, id));
+         StatisticsPublisher::get().addStatistics(agentStatisticsDirectionId(AgentType::CASU, id));
+     }
+
+     // register fish
+     for (int ind = 0; ind < RobotControlSettings::get().numberOfAnimals(); ++ind) {
+         QString id = QString::number(ind);
+         StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionXId(AgentType::FISH, id));
+         StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionYId(AgentType::FISH, id));
+         StatisticsPublisher::get().addStatistics(agentStatisticsDirectionId(AgentType::FISH, id));
+     }
+ }
+
+ /*!
+  * Updates the statistics.
+  */
+ void ControlLoop::updateStatistics(const QList<AgentDataWorld>& agentsData)
+ {
+    int fishInd = 0;
+    for (const AgentDataWorld& agentData : agentsData) {
+        QString id;
+        if (agentData.type() == AgentType::CASU) {
+            id = agentData.id();
+        } else {
+            id = QString::number(fishInd);
+            fishInd++;
+        }
+        StatisticsPublisher::get().updateStatistics(agentStatisticsPoxitionXId(agentData.type(), id),
+                                                    agentData.state().position().x());
+        StatisticsPublisher::get().updateStatistics(agentStatisticsPoxitionYId(agentData.type(), id),
+                                                    agentData.state().position().y());
+        StatisticsPublisher::get().updateStatistics(agentStatisticsDirectionId(agentData.type(), id),
+                                                    agentData.state().orientation().angleRad());
+    }
+ }
+
+ /*!
+  * Computes the statistics id for the position x.
+  */
+ QString ControlLoop::agentStatisticsPoxitionXId(AgentType type, QString agentId)
+ {
+    return agentStatisticsId(type, agentId, "x");
+ }
+
+ /*!
+  * Computes the statistics id for the position y.
+  */
+ QString ControlLoop::agentStatisticsPoxitionYId(AgentType type, QString agentId)
+ {
+     return agentStatisticsId(type, agentId, "y");
+ }
+
+ /*!
+  * Computes the statistics id for the orientation.
+  */
+ QString ControlLoop::agentStatisticsDirectionId(AgentType type, QString agentId)
+ {
+     return agentStatisticsId(type, agentId, "direction");
+ }
+
+ /*!
+  * Computes the statistics id.
+  */
+ QString ControlLoop::agentStatisticsId(AgentType type, QString agentId, QString postfix)
+ {
+     if (type == AgentType::CASU)
+         return QString("robot-%1-%2").arg(agentId).arg(postfix);
+     else if (type == AgentType::FISH)
+         return QString("fish-%1-%2").arg(agentId).arg(postfix);
+     else
+         return QString("undef-%1-%2").arg(agentId).arg(postfix);
  }

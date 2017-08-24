@@ -34,6 +34,9 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings,
 
     // set the mask file
     m_maskImage = cv::imread(m_settings.maskFilePath()/*, cv::IMREAD_GRAYSCALE*/);
+    if (m_maskImage.data == nullptr)
+        qDebug() << QString("Could not find the mask file: %1")
+                    .arg(QString::fromStdString(m_settings.maskFilePath()));
 
     // set the agents' list
     FishBotLedsTrackingSettingsData::FishBotDescription robotDescription;
@@ -47,6 +50,10 @@ FishBotLedsTracking::FishBotLedsTracking(TrackingRoutineSettingsPtr settings,
 
         // set the mask files
         m_areaRobotMasks.append(cv::imread(robotDescription.areaMaskFilePath));
+        if (m_areaRobotMasks.last().data == nullptr)
+            qDebug() << QString("Could not find the agent %1's mask file: %2")
+                        .arg(robotDescription.id)
+                        .arg(QString::fromStdString(robotDescription.areaMaskFilePath));
     }
 
     // initialize the previous states

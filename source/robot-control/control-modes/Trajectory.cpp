@@ -53,8 +53,12 @@ ControlTargetPtr Trajectory::step()
  */
 void Trajectory::updateCurrentIndex()
 {
-    if ((m_currentIndex != m_trajectory.size()) || m_loopTrajectory)
-        m_currentIndex = (m_currentIndex + 1) % m_trajectory.size();
+    if (m_trajectory.size() > 0) {
+        if ((m_currentIndex != m_trajectory.size()) || m_loopTrajectory)
+            m_currentIndex = (m_currentIndex + 1) % m_trajectory.size();
+    } else {
+        m_currentIndex = 0;
+    }
 }
 
 

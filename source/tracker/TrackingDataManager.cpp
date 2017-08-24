@@ -68,7 +68,7 @@ TrackingDataManager::~TrackingDataManager()
  * source is able to track.
  */
 void TrackingDataManager::addDataSource(SetupType::Enum setupType,
-                                           QList<AgentType> capabilities)
+                                        QList<AgentType> capabilities)
 {
     // add new data source
     m_trackingData[setupType] = QQueue<TimestampedWorldAgentsData>();
@@ -112,7 +112,8 @@ void TrackingDataManager::setLogResults(bool value)
  * there are recent data from the secondary source then we try to merge them together
  * otherwise the primary source data is sent as it is.
  */
-void TrackingDataManager::onNewData(SetupType::Enum setupType, TimestampedWorldAgentsData timestampedAgentsData)
+void TrackingDataManager::onNewData(SetupType::Enum setupType,
+                                    TimestampedWorldAgentsData timestampedAgentsData)
 {
     // if the new data comes from a secondary data source then it is stored in the input queue
     if (setupType != m_primaryDataSource) {
@@ -431,17 +432,22 @@ float TrackingDataManager::getCombinationCost(const QVector<int>& combination,
 /*!
  * Converts a list of agent data objects from world to image coordinates.
  */
-QList<AgentDataImage> TrackingDataManager::convertToFrameCoordinates(SetupType::Enum setupType, QList<AgentDataWorld> mergedAgentDataList)
+QList<AgentDataImage> TrackingDataManager::convertToFrameCoordinates(SetupType::Enum setupType,
+                                                                     QList<AgentDataWorld> mergedAgentDataList)
 {
     QList<AgentDataImage> agentsDataImageList;
     // if the conversion is available
     if (m_coordinatesConversions.contains(setupType)) {
         // convert all agents
         foreach (AgentDataWorld agentDataWorld, mergedAgentDataList) {
-            PositionPixels imagePosition = m_coordinatesConversions[setupType]->worldToImagePosition(agentDataWorld.state().position());
-            OrientationRad imageOrientation = m_coordinatesConversions[setupType]->worldToImageOrientation(agentDataWorld.state().position(),
-                                                                                                              agentDataWorld.state().orientation());
-            agentsDataImageList.append(AgentDataImage(agentDataWorld.id(), agentDataWorld.type(), StateImage(imagePosition, imageOrientation)));
+            PositionPixels imagePosition = m_coordinatesConversions[setupType]->
+                    worldToImagePosition(agentDataWorld.state().position());
+            OrientationRad imageOrientation = m_coordinatesConversions[setupType]->
+                    worldToImageOrientation(agentDataWorld.state().position(),
+                                            agentDataWorld.state().orientation());
+            agentsDataImageList.append(AgentDataImage(agentDataWorld.id(),
+                                                      agentDataWorld.type(),
+                                                      StateImage(imagePosition, imageOrientation)));
         }
     }
     return agentsDataImageList;

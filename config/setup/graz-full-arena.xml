@@ -1,0 +1,12 @@
+<?xml version="1.0"?>
+<opencv_storage>
+  <polygon>
+  <!-- contre-clock-wise -->
+    0.38 0.38
+    -0.125 0.375
+    -0.117 -0.142
+    0.4 -0.121
+  </polygon>
+  <excludedPolygons>
+  </excludedPolygons>
+</opencv_storage>
