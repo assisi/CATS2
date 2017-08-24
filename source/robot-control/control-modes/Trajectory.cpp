@@ -61,7 +61,6 @@ void Trajectory::updateCurrentIndex()
     }
 }
 
-
 /*!
  * Informs on what kind of control targets this control mode generates.
  */

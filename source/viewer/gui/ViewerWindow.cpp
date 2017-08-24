@@ -44,6 +44,7 @@ ViewerWindow::ViewerWindow(SetupType::Enum setupType,
 ViewerWindow::~ViewerWindow()
 {
     qDebug() << "Destroying the object";
+    delete m_ui;
 }
 
 /*!

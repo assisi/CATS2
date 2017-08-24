@@ -28,4 +28,5 @@ MainWindow::MainWindow(SetupType::Enum setupType, QWidget *parent) :
 MainWindow::~MainWindow()
 {
     qDebug() << "Destroying the object";
+    delete m_ui;
 }
