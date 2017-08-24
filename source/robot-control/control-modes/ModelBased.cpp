@@ -106,9 +106,10 @@ void ModelBased::resetModel()
         factory.nbFishes = RobotControlSettings::get().numberOfAnimals();
         factory.nbRobots = 1; // we generate one simulator for every robot
         factory.nbVirtuals = 0;
-        factory.behaviorFishes = "BM";
-        factory.behaviorRobots = "BM";
-        factory.behaviorVirtuals = "BM";
+        factory.behaviorFishes = "BMWithWalls";
+        factory.behaviorRobots = "BMWithWalls";
+        factory.behaviorVirtuals = "BMWithWalls";
+        factory.wallsCoord = setupWalls();
         // create the simulator
         m_sim = factory.create();
         updateModelParameters();
@@ -131,11 +132,12 @@ void ModelBased::updateModelParameters()
         a.first->meanSpeed = fishModelSettings.meanSpeed;
         a.first->varSpeed = fishModelSettings.varSpeed;
         a.first->maxTurningRate = M_PI_2;
-        Fishmodel::BM* bm = reinterpret_cast<Fishmodel::BM*>(a.second.get());
-        bm->kappaFishes = fishModelSettings.kappaFishes;
-        bm->alphasCenter = fishModelSettings.alphasCenter;
-        bm->kappaNeutCenter = fishModelSettings.kappaNeutCenter;
-        bm->repulsionFromAgentsAtDist = fishModelSettings.repulsionFromAgentsAtDist;
+        Fishmodel::BMWithWalls* bmww = reinterpret_cast<Fishmodel::BMWithWalls*>(a.second.get());
+        bmww->kappaFishes = fishModelSettings.kappaFishes;
+        bmww->alpha = fishModelSettings.alpha;
+        bmww->kappaNeutCenter = fishModelSettings.kappaNeutCenter;
+        bmww->repulsionFromAgentsAtDist = fishModelSettings.repulsionFromAgentsAtDist;
+        bmww->wallDistanceThreshold = fishModelSettings.wallDistanceThreshold;
     }
 }
 
@@ -218,13 +220,6 @@ PositionMeters ModelBased::computeTargetPosition()
     } else {
         m_sim->robots[0].first->present = false;
     }
-
-    // FIXME : what to do with this?
-    //		// XXX dirty
-    //		BM* behav = (BM*)sim->robots[i].second;
-    //		//behav->alphasCenter = 100. * 10. / (double)(detected + settings.numberOfCASUS);
-    //		behav->alphasCenter = 5000. / (double)(detected + settings.numberOfCASUS);
-    //	}
 
     // run the simulation
     m_sim->step();

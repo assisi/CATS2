@@ -8,6 +8,9 @@
 
 #include <QtCore/QMap>
 
+#include <utility>
+#include <functional>
+
 /*!
  * Stores the setup map, and the grid step.
  */
@@ -93,6 +96,14 @@ protected:
     bool containsPoint(PositionMeters position) const;
     //! Checks that the node belongs to a setup.
     bool containsNode(QPoint node) const;
+    //! A support type defines (x,y) position.
+    using Coordinates = std::pair<double,double>;
+    //! A support type defines a polygon edge.
+    using Edge = std::pair<Coordinates,Coordinates>;
+    //! Returns the list of setup edges shifted to match the grid.
+    std::vector<Edge> setupWalls();
+    //! Returns the list of polygon edges shifted to match the grid.
+    std::vector<Edge> polygonEdges(const WorldPolygon& polygon);
 
 protected:
     //! The size of the grid square.

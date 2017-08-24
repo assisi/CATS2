@@ -191,11 +191,47 @@ double GridBasedMethod::distanceToClosestWall(PositionMeters position)
 {
     // initialization
     double distance = qMax(maxX() - minX(), maxY() - minY());
-    // compute the distancd to the setup
+    // compute the distance to the setup
     distance = qMin(distance, m_setupMap.polygon().distance2dTo(position));
     // compute the distance to excluded polygons
     for (const WorldPolygon& polygon : m_setupMap.excludedPolygons()) {
         distance = qMin(distance, polygon.distance2dTo(position));
     }
     return distance;
+}
+
+/*!
+ * Returns the list of all setup edges shifted to match the grid.
+ */
+std::vector<GridBasedMethod::Edge> GridBasedMethod::setupWalls()
+{
+    std::vector<GridBasedMethod::Edge> walls;
+    // walls of the setup
+    WorldPolygon setupPolygon = m_setupMap.polygon();
+    std::vector<GridBasedMethod::Edge> polygonWalls;
+    polygonWalls = polygonEdges(setupPolygon);
+    walls.insert(std::end(walls), std::begin(polygonWalls), std::end(polygonWalls));
+    // walls of the excluded polygons
+    for (const WorldPolygon& polygon : m_setupMap.excludedPolygons()) {
+        polygonWalls = polygonEdges(polygon);
+        walls.insert(std::end(walls), std::begin(polygonWalls), std::end(polygonWalls));
+    }
+    return walls;
+}
+
+/*!
+ * Returns the list of polygon edges shifted to match the grid.
+ */
+std::vector<GridBasedMethod::Edge> GridBasedMethod::polygonEdges(const WorldPolygon& polygon)
+{
+    std::vector<GridBasedMethod::Edge> edges;
+    for (int i = 0; i < polygon.size(); ++i) {
+        const PositionMeters& p1 = polygon.at(i);
+        Coordinates coord1 = std::make_pair(p1.x() - minX(), p1.y() - minY());
+        const PositionMeters& p2 = polygon.at((i + 1) % polygon.size());
+        Coordinates coord2 = std::make_pair(p2.x() - minX(), p2.y() - minY());
+        Edge wall = std::make_pair(coord1, coord2);
+        edges.push_back(wall);
+    }
+    return edges;
 }

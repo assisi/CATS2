@@ -28,11 +28,12 @@ public:
     float meanSpeed = -2.65; // Log-normal distribution (so negative mean is normal)
     float varSpeed = 0.51;
 
-    //! BM parameters.
-    float kappaFishes = 20.0;  //! \kappa_f
-    float alphasCenter = 55.0;   //! \alpha_0
+    //! BMWithWalls parameters.
+    float kappaFishes = 10.0;  //! \kappa_f
+    float alpha = 25.0;   //! \alpha_0
     float kappaNeutCenter = 6.3; //! \kappa_0
     float repulsionFromAgentsAtDist = 0.02; //! Repulsion from agent if other is too close
+    float wallDistanceThreshold = 0.02;  //! d
 
     //! Simulation parameters.
     float dt = 0.2;

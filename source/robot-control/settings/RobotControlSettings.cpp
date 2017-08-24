@@ -264,7 +264,7 @@ bool RobotControlSettings::init(QString configurationFileName)
             [this](double value) { m_fishModelSettings.varSpeed = value;
                                    emit notifyFishModelSettingsChanged(); };
 
-    settingsPath = "robots/fishModel/BM/kappaFishes";
+    settingsPath = "robots/fishModel/BMWithWalls/kappaFishes";
     settings.readVariable(settingsPath,
                           m_fishModelSettings.kappaFishes,
                           m_fishModelSettings.kappaFishes);
@@ -273,16 +273,16 @@ bool RobotControlSettings::init(QString configurationFileName)
             [this](double value) { m_fishModelSettings.kappaFishes = value;
                                    emit notifyFishModelSettingsChanged(); };
 
-    settingsPath = "robots/fishModel/BM/alphasCenter";
+    settingsPath = "robots/fishModel/BMWithWalls/alpha";
     settings.readVariable(settingsPath,
-                          m_fishModelSettings.alphasCenter,
-                          m_fishModelSettings.alphasCenter);
-    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.alphasCenter; };
+                          m_fishModelSettings.alpha,
+                          m_fishModelSettings.alpha);
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.alpha; };
     m_parametersSetters[settingsPath.toStdString()] =
-            [this](double value) { m_fishModelSettings.alphasCenter = value;
+            [this](double value) { m_fishModelSettings.alpha = value;
                                    emit notifyFishModelSettingsChanged(); };
 
-    settingsPath = "robots/fishModel/BM/kappaNeutCenter";
+    settingsPath = "robots/fishModel/BMWithWalls/kappaNeutCenter";
     settings.readVariable(settingsPath,
                           m_fishModelSettings.kappaNeutCenter,
                           m_fishModelSettings.kappaNeutCenter);
@@ -291,13 +291,22 @@ bool RobotControlSettings::init(QString configurationFileName)
             [this](double value) { m_fishModelSettings.kappaNeutCenter = value;
                                    emit notifyFishModelSettingsChanged(); };
 
-    settingsPath = "robots/fishModel/BM/repulsionFromAgentsAtDist";
+    settingsPath = "robots/fishModel/BMWithWalls/repulsionFromAgentsAtDist";
     settings.readVariable(settingsPath,
                           m_fishModelSettings.repulsionFromAgentsAtDist,
                           m_fishModelSettings.repulsionFromAgentsAtDist);
     m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.repulsionFromAgentsAtDist; };
     m_parametersSetters[settingsPath.toStdString()] =
             [this](double value) { m_fishModelSettings.repulsionFromAgentsAtDist = value;
+                                   emit notifyFishModelSettingsChanged(); };
+
+    settingsPath = "robots/fishModel/BMWithWalls/wallDistanceThreshold";
+    settings.readVariable(settingsPath,
+                          m_fishModelSettings.wallDistanceThreshold,
+                          m_fishModelSettings.wallDistanceThreshold);
+    m_parametersGetters[settingsPath.toStdString()] = [this]() { return m_fishModelSettings.wallDistanceThreshold; };
+    m_parametersSetters[settingsPath.toStdString()] =
+            [this](double value) { m_fishModelSettings.wallDistanceThreshold = value;
                                    emit notifyFishModelSettingsChanged(); };
 
     settingsPath = "robots/fishModel/simulation/dt";

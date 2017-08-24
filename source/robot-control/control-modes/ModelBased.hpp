@@ -5,7 +5,7 @@
 #include "SetupMap.hpp"
 #include "ModelParameters.hpp"
 #include "navigation/GridBasedMethod.hpp"
-#include "model/bm.hpp"
+#include "model/bmWithWalls.hpp"
 
 #include <AgentState.hpp>
 #include <Timer.hpp>
