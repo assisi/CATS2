@@ -164,6 +164,9 @@ public:
             return distance2dTo(p1);
         } else if (t > 1) {
             return distance2dTo(p2);
+        } else {
+            qDebug() << "Invalid code";
+            return 0;
         }
     }
 
