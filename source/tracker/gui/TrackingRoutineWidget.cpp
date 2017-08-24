@@ -24,8 +24,10 @@ TrackingRoutineWidget::TrackingRoutineWidget(TrackingDataPtr trackingData, QWidg
 
     // show the debug viewer window
     connect(m_ui->showViewerButton, &QPushButton::toggled, this, &TrackingRoutineWidget::onShowDebugViewer);
-    // request to start feeding the debug queue
-    connect(m_ui->showViewerButton, &QPushButton::toggled, m_data.data(), &TrackingData::sendDebugImages);
+    if (!m_data.isNull()) {
+        // request to start feeding the debug queue
+        connect(m_ui->showViewerButton, &QPushButton::toggled, m_data.data(), &TrackingData::sendDebugImages);
+    }
 
     // create the specific settings widget
     QWidget* specificWidget = TrackingUiFactory::createWidget(trackingData);

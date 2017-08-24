@@ -68,4 +68,5 @@ MainWindow::MainWindow(SetupType::Enum setupType,
 MainWindow::~MainWindow()
 {
     qDebug() << "Destroying the object";
+    delete m_ui;
 }
