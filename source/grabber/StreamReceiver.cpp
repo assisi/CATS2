@@ -86,7 +86,9 @@ void StreamReceiver::process()
         QGlib::connect(m_pipeline->bus(), "message", this, &StreamReceiver::onMessage);
 
         // set the specific resolution on the video
-        QString capsString = QString("video/x-raw-rgb, width=%1, height=%2").arg(m_expectedFrameSize.width()).arg(m_expectedFrameSize.height());
+        QString capsString = QString("video/x-raw-rgb, width=%1, height=%2")
+                .arg(m_expectedFrameSize.width())
+                .arg(m_expectedFrameSize.height());
         m_pipeline->getElementByName("queueingsink")->setProperty("caps", QGst::Caps::fromString(capsString));
 
         m_pipeline->bus()->addSignalWatch();
