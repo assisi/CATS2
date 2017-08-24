@@ -470,6 +470,69 @@ private:
 };
 
 /*!
+ *  The structure defining a line segment.
+ */
+class WorldLine
+{
+public:
+    //! Constructor.
+    explicit WorldLine(PositionMeters p1 = PositionMeters::invalidPosition(),
+                       PositionMeters p2 = PositionMeters::invalidPosition()) :
+        m_p1(p1),
+        m_p2(p2)
+    {
+    }
+
+    //! Copy constructor.
+    WorldLine(const WorldLine&) = default;
+    //! Copy operator.
+    WorldLine& operator=(const WorldLine&) = default;
+    //! Move operator.
+    WorldLine& operator=(WorldLine&&) = default;
+    //! Destructor.
+    ~WorldLine() = default;
+
+    //! Return the first point.
+    PositionMeters p1() const { return m_p1; }
+    //! Return the second point.
+    PositionMeters p2() const { return m_p2; }
+
+    //! Sets the first point.
+    void setP1(const PositionMeters& p1) { m_p1 = p1; }
+    //! Sets the second point.
+    void setP2(const PositionMeters& p2) { m_p2 = p2; }
+
+    //! Sets the line.
+    void setLine(const WorldLine& line)
+    {
+        m_p1 = line.p1();
+        m_p2 = line.p2();
+    }
+
+    //! Sets the line.
+    void setLine(const PositionMeters& p1, const PositionMeters& p2)
+    {
+        m_p1 = p1;
+        m_p2 = p2;
+    }
+
+private:
+    //! The first point.
+    PositionMeters m_p1;
+    //! The second point.
+    PositionMeters m_p2;
+};
+
+Q_DECLARE_METATYPE(WorldLine)
+
+//! Comparison operator.
+inline bool operator==(const WorldLine& lhs, const WorldLine& rhs)
+{
+    return (((lhs.p1() == rhs.p1()) && (lhs.p2() == rhs.p2())) ||
+            ((lhs.p1() == rhs.p2()) && (lhs.p2() == rhs.p1())));
+}
+
+/*!
  * The class for the list of points.
  */
 class WorldPolygon : public QList<PositionMeters>
@@ -502,17 +565,32 @@ public:
     }
 
     /*!
+     * Computes the distance to the point, and sets the closest segment.
+     */
+    double distance2dTo(const PositionMeters& p, WorldLine& segment) const
+    {
+        WorldLine closestSegment;
+        double minDistance = std::numeric_limits<double>::max();
+        for (int i = 0; i < size(); ++i) {
+            const PositionMeters& p1 = at(i);
+            const PositionMeters& p2 = at((i + 1) % size());
+            double distance = p.distance2dToSegment(p1, p2);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestSegment.setLine(p1, p2);
+            }
+        }
+        segment.setLine(closestSegment);
+        return minDistance;
+    }
+
+    /*!
      * Computes the distance to the point.
      */
     double distance2dTo(const PositionMeters& p) const
     {
-        double distance = std::numeric_limits<double>::max();
-        for (int i = 0; i < size(); ++i) {
-            const PositionMeters& p1 = at(i);
-            const PositionMeters& p2 = at((i + 1) % size());
-            distance = qMin(distance, p.distance2dToSegment(p1, p2));
-        }
-        return distance;
+        WorldLine segment;
+        return distance2dTo(p, segment);
     }
 };
 

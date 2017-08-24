@@ -41,10 +41,16 @@ void TestAgentState::worldPolygonDistance2dTo()
     QVERIFY(qFuzzyCompare(polygon.distance2dTo(p), 0.5));
 
     p.setX(0.4);
-    QVERIFY(qFuzzyCompare(polygon.distance2dTo(p), 0.4));
+    WorldLine edge;
+    double distance = polygon.distance2dTo(p, edge);
+    QVERIFY(qFuzzyCompare(distance, 0.4) &&
+            (edge == WorldLine(PositionMeters(0, 0), PositionMeters(0, 2))));
 
     p.setY(1.8);
-    QVERIFY(qFuzzyCompare(polygon.distance2dTo(p), 0.2));
+    distance = polygon.distance2dTo(p, edge);
+    QVERIFY(qFuzzyCompare(distance, 0.2) &&
+            (edge == WorldLine(PositionMeters(0, 2), PositionMeters(1, 2))));
+
 }
 
 QTEST_MAIN(TestAgentState)
