@@ -27,6 +27,13 @@
                 <kappaNeutCenter>6.3</kappaNeutCenter>
                 <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
             </BM>
+            <BMWithWalls>
+                <kappaFishes>10.0</kappaFishes>
+                <alpha>25.0</alpha>
+                <kappaNeutCenter>6.3</kappaNeutCenter>
+                <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+                <wallDistanceThreshold>0.02</wallDistanceThreshold>
+            </BMWithWalls>
             <simulation>
                 <dt>0.2</dt>
             </simulation>
