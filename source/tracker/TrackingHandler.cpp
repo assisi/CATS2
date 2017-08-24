@@ -20,8 +20,10 @@ TrackingHandler::TrackingHandler(SetupType::Enum setupType,
                             m_debugQueue)),
     m_widget(new TrackingRoutineWidget(m_data, nullptr)) // on creation the widget's parent is not set, it is treated in the destructor
 {
-    // some security: when the tracking widget is destroyed, reset the pointer to it
-    connect(m_widget, &QObject::destroyed, [=]() { m_widget = nullptr; });
+    // NOTE : this code is commented out because the lambda was called after the
+    // destruction of TrackingHandler resulting in a crash
+//    // some security: when the tracking widget is destroyed, reset the pointer to it
+//    connect(m_widget, &QObject::destroyed, [=]() { m_widget = nullptr; });
 }
 
 /*!
@@ -31,6 +33,8 @@ TrackingHandler::~TrackingHandler()
 {
     qDebug() << "Destroying the object";
     // if the tracking widget's parent is not set then delete it, otherwise it will stay forever
-    if (m_widget && m_widget->parent() == nullptr)
-        delete m_widget;
+    // NOTE : at this moment we consider that even if the widget is owned by
+    // the main window it's still not destroyed and thus his pointer is not nullptr
+    if (/*m_widget &&*/ m_widget->parent() == nullptr)
+        m_widget->deleteLater();
 }
