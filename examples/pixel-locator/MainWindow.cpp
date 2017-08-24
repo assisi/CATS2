@@ -43,6 +43,7 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     qDebug() << "Destroying the object";
+    delete m_ui;
 }
 
 /*!
