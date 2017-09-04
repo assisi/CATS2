@@ -1,8 +1,9 @@
-#include "ModelBased.hpp"
+#include "FishModelWithWalls.hpp"
 #include "FishBot.hpp"
 
 #include "model/factory.hpp"
 #include "model/model.hpp"
+#include "model/bmWithWalls.hpp"
 
 #include <QtCore/QDebug>
 #include <QtCore/QtMath>
@@ -10,8 +11,8 @@
 /*!
  * Constructor.
  */
-ModelBased::ModelBased(FishBot* robot) :
-    GenericFishModel(robot, ControlModeType::FISH_MODEL)
+FishModelWithWalls::FishModelWithWalls(FishBot* robot) :
+    GenericFishModel(robot, ControlModeType::FISH_MODEL_WITH_WALLS)
 {
     resetModel();
 }
@@ -19,7 +20,7 @@ ModelBased::ModelBased(FishBot* robot) :
 /*!
  * Destructor.
  */
-ModelBased::~ModelBased()
+FishModelWithWalls::~FishModelWithWalls()
 {
     qDebug() << "Destroying the object";
 }
@@ -27,7 +28,7 @@ ModelBased::~ModelBased()
 /*!
  * Initializes the model based on the setup map and parameters.
  */
-void ModelBased::resetModel()
+void FishModelWithWalls::resetModel()
 {
     if (!m_currentGrid.empty()) {
         // size of the area covered by the matrix
@@ -39,20 +40,20 @@ void ModelBased::resetModel()
         factory.nbFishes = RobotControlSettings::get().numberOfAnimals();
         factory.nbRobots = 1; // we generate one simulator for every robot
         factory.nbVirtuals = 0;
-        factory.behaviorFishes = "BM";
-        factory.behaviorRobots = "BM";
-        factory.behaviorVirtuals = "BM";
+        factory.behaviorFishes = "BMWithWalls";
+        factory.behaviorRobots = "BMWithWalls";
+        factory.behaviorVirtuals = "BMWithWalls";
+        factory.wallsCoord = setupWalls();
         // create the simulator
         m_sim = factory.create();
         updateModelParameters();
-//        cv::imshow( "ModelGrid", m_currentGrid);
     }
 }
 
 /*!
  * Sets the model parameters from the settings.
  */
-void ModelBased::updateModelParameters()
+void FishModelWithWalls::updateModelParameters()
 {
     const FishModelSettings& fishModelSettings = RobotControlSettings::get().fishModelSettings();
     m_sim->dt = fishModelSettings.agentParameters.dt;
@@ -64,10 +65,11 @@ void ModelBased::updateModelParameters()
         a.first->meanSpeed = fishModelSettings.agentParameters.meanSpeed;
         a.first->varSpeed = fishModelSettings.agentParameters.varSpeed;
         a.first->maxTurningRate = M_PI_2;
-        Fishmodel::BM* bm = reinterpret_cast<Fishmodel::BM*>(a.second.get());
-        bm->kappaFishes = fishModelSettings.basicFishModelSettings.kappaFishes;
-        bm->alphasCenter = fishModelSettings.basicFishModelSettings.alphasCenter;
-        bm->kappaNeutCenter = fishModelSettings.basicFishModelSettings.kappaNeutCenter;
-        bm->repulsionFromAgentsAtDist = fishModelSettings.basicFishModelSettings.repulsionFromAgentsAtDist;
+        Fishmodel::BMWithWalls* bmww = reinterpret_cast<Fishmodel::BMWithWalls*>(a.second.get());
+        bmww->kappaFishes = fishModelSettings.fishModelWithWallsSettings.kappaFishes;
+        bmww->alpha = fishModelSettings.fishModelWithWallsSettings.alpha;
+        bmww->kappaNeutCenter = fishModelSettings.fishModelWithWallsSettings.kappaNeutCenter;
+        bmww->repulsionFromAgentsAtDist = fishModelSettings.fishModelWithWallsSettings.repulsionFromAgentsAtDist;
+        bmww->wallDistanceThreshold = fishModelSettings.fishModelWithWallsSettings.wallDistanceThreshold;
     }
 }

@@ -5,20 +5,20 @@
 #include "experiment-controllers/ExperimentControllerType.hpp"
 #include "RobotControlPointerTypes.hpp"
 
+#include <settings/ReadSettingsHelper.hpp>
+
 #include <QtCore/QString>
 #include <QtCore/QMap>
 
 #include <functional>
 
 /*!
- * Stores settings of the fish model.
+ * Stores agents parameters.
  */
-// TODO : read from the configuration file.
-// TODO : make the class and members private.
-struct FishModelSettings {
+struct AgentParameters {
 public:
     //! Constructor.
-    explicit FishModelSettings() {}
+    explicit AgentParameters() {}
 
     //! Agents parameters.
     float length = 0.02;
@@ -28,15 +28,57 @@ public:
     float meanSpeed = -2.65; // Log-normal distribution (so negative mean is normal)
     float varSpeed = 0.51;
 
+    //! Simulation parameters.
+    float dt = 0.2;
+};
+
+/*!
+ * Stores settings of the basic fish model.
+ */
+// TODO : make the class and members private.
+struct BasicFishModelSettings { // of Bertrand's models
+public:
+    //! Constructor.
+    explicit BasicFishModelSettings() {}
+
+    //! BM parameters.
+    float kappaFishes = 20.0;
+    float alphasCenter = 55.0;
+    float kappaNeutCenter = 6.3;
+    float repulsionFromAgentsAtDist = 0.02; //! Repulsion from agent if other is too close
+};
+
+/*!
+ * Stores settings of the fish model with walls.
+ */
+// TODO : make the class and members private.
+struct FishModelWithWallsSettings{
+public:
+    //! Constructor.
+    explicit FishModelWithWallsSettings() {}
+
     //! BMWithWalls parameters.
     float kappaFishes = 10.0;  //! \kappa_f
     float alpha = 25.0;   //! \alpha_0
     float kappaNeutCenter = 6.3; //! \kappa_0
     float repulsionFromAgentsAtDist = 0.02; //! Repulsion from agent if other is too close
     float wallDistanceThreshold = 0.02;  //! d
+};
 
-    //! Simulation parameters.
-    float dt = 0.2;
+struct FishModelSettings {
+public:
+    //! Constructor.
+    explicit FishModelSettings() {}
+
+    //! Reads the settings.
+    bool readModelSettings(ReadSettingsHelper& reader,
+                           std::map<std::string, std::function<double()>>& m_parametersGetters,
+                           std::map<std::string, std::function<void(double)>>& m_parametersSetters);
+
+    AgentParameters agentParameters;
+
+    BasicFishModelSettings basicFishModelSettings;
+    FishModelWithWallsSettings fishModelWithWallsSettings;
 };
 
 /*!
@@ -296,8 +338,11 @@ public:
     //! Return the number of animals used in the experiment.
     int numberOfAnimals() const { return m_numberOfAnimals; }
 
-    //! Gives the const reference to the fish model parameters.
-    const FishModelSettings& fishModelSettings() const { return m_fishModelSettings; }
+    //! Gives the const reference to the basic fish model parameters.
+    const FishModelSettings& fishModelSettings() const
+    {
+        return m_fishModelSettings;
+    }
 
     //! Gives the settings for the given controller type.
     ExperimentControllerSettingsPtr controllerSettings(ExperimentControllerType::Enum type);
@@ -371,8 +416,11 @@ private:
     PotentialFieldSettings m_potentialFieldSettings;
     //! The number of animals used in the experiment.
     int m_numberOfAnimals;
-    //! The fish model parameters.
+
+    //! The fish model settings.
     FishModelSettings m_fishModelSettings;
+    //! Reads the settings.
+    void readFishModelSettings(ReadSettingsHelper& settings);
 
     //! The settings for specific experiment controllers.
     QMap<ExperimentControllerType::Enum,

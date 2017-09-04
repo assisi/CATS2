@@ -37,7 +37,9 @@ set(srcs
     control-modes/Idle.cpp
     control-modes/GoStraight.cpp
     control-modes/GoToPosition.cpp
+    control-modes/GenericFishModel.cpp
     control-modes/ModelBased.cpp
+    control-modes/FishModelWithWalls.cpp
     control-modes/Manual.cpp
     control-modes/ControlMode.cpp
     control-modes/Trajectory.cpp

@@ -47,7 +47,7 @@ ExperimentController::ControlData DominatingSetController::step()
             // if the robot's zone is defined then set it in the model
             if (m_controlAreas.contains(m_robotAreaId)) {
                 m_robotAreaDefined = true;
-                controlData.controlMode = ControlModeType::MODEL_BASED;
+                controlData.controlMode = ControlModeType::FISH_MODEL;
                 controlData.motionPattern = MotionPatternType::PID;
                 controlData.data = QVariant::fromValue(m_controlAreas[m_robotAreaId]->annotatedPolygons());
             } else {
@@ -56,7 +56,7 @@ ExperimentController::ControlData DominatingSetController::step()
             }
         } else {
             // do model motion
-            controlData.controlMode = ControlModeType::MODEL_BASED;
+            controlData.controlMode = ControlModeType::FISH_MODEL;
             controlData.motionPattern = MotionPatternType::PID;
         }
     }
