@@ -203,12 +203,15 @@ private:
     void stepExperimentManager();
 
     //! Updates the parameters of the model.
-    void setModelParameters(ModelParameters parameters);
+    void setModelParameters(ControlModeType::Enum type,
+                            ModelParameters parameters);
     //! Requests the state machine to limit the arena matrix of the model-based
     //! control mode by a mask. The reason is to prevent the model's target to
     //! leave the control area defined by the experiment. The mask is defined by
     //! a set of polygons and is labeled with an id.
-    void limitModelArea(QString maskId, QList<WorldPolygon> allowedArea);
+    void limitModelArea(ControlModeType::Enum type,
+                        QString maskId,
+                        QList<WorldPolygon> allowedArea);
     //! Requests the state machine to remove the limitations on the model area
     //! that were applied by a experiment controller.
     void releaseModelArea();

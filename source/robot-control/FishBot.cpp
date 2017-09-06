@@ -345,10 +345,10 @@ void FishBot::goToPosition(PositionMeters position)
 /*!
  * Updates the parameters of the model.
  */
-void FishBot::setModelParameters(ModelParameters parameters)
+void FishBot::setModelParameters(ControlModeType::Enum type, ModelParameters parameters)
 {
-    if (m_controlStateMachine.currentControlMode() == ControlModeType::MODEL_BASED) {
-        m_controlStateMachine.setModelParameters(parameters);
+    if (m_controlStateMachine.currentControlMode() == type) {
+        m_controlStateMachine.setModelParameters(type, parameters);
     }
 }
 
@@ -356,10 +356,12 @@ void FishBot::setModelParameters(ModelParameters parameters)
  * Limits the arena matrix of the model-based control mode by a mask. The mask
  * is defined by a set of polygons and is labeled with an id.
  */
-void FishBot::limitModelArea(QString maskId, QList<WorldPolygon> allowedArea)
+void FishBot::limitModelArea(ControlModeType::Enum type,
+                             QString maskId,
+                             QList<WorldPolygon> allowedArea)
 {
-    if (m_controlStateMachine.currentControlMode() == ControlModeType::MODEL_BASED) {
-        m_controlStateMachine.limitModelArea(maskId, allowedArea);
+    if (m_controlStateMachine.currentControlMode() == type) {
+        m_controlStateMachine.limitModelArea(type, maskId, allowedArea);
     }
 }
 
@@ -371,7 +373,8 @@ void FishBot::releaseModelArea()
 {
     // no check is done on the current control mode as the model might be
     // released even when it's not active
-    m_controlStateMachine.releaseModelArea();
+    m_controlStateMachine.releaseModelArea(ControlModeType::FISH_MODEL);
+    m_controlStateMachine.releaseModelArea(ControlModeType::FISH_MODEL_WITH_WALLS);
 }
 
 /*!
@@ -450,7 +453,8 @@ void FishBot::stepExperimentManager()
                 }
                 break;
             }
-            case ControlModeType::MODEL_BASED:
+            case ControlModeType::FISH_MODEL:
+            case ControlModeType::FISH_MODEL_WITH_WALLS:
             {
                 if (controlData.data.canConvert<AnnotatedPolygons>()) {
                     // the polygons that define the limits of the model
@@ -461,11 +465,11 @@ void FishBot::stepExperimentManager()
                             .arg(ExperimentControllerType::toSettingsString(
                                      m_experimentManager.currentController()))
                             .arg(areaId.left(1).toUpper() + areaId.mid(1));
-                    limitModelArea(id, annotatedPolygons.polygons);
+                    limitModelArea(controlData.controlMode, id, annotatedPolygons.polygons);
                 } else if (controlData.data.canConvert<ModelParameters>()) {
                     // define if the model should follow or ignore the fish
                     ModelParameters parameters(controlData.data.value<ModelParameters>());
-                    setModelParameters(parameters);
+                    setModelParameters(controlData.controlMode, parameters);
                 }
                 break;
             }

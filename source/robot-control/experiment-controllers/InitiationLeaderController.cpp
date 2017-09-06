@@ -321,7 +321,7 @@ ExperimentController::ControlData InitiationLeaderController::stateControlData()
     switch (m_state) {
     case SWIMMING_WITH_FISH:
     {
-        controlData.controlMode = ControlModeType::MODEL_BASED;
+        controlData.controlMode = ControlModeType::FISH_MODEL;
         controlData.motionPattern = MotionPatternType::PID;
 //        // if we need to limit the model
 //        if (m_limitModelArea &&

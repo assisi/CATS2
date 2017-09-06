@@ -6,6 +6,7 @@
 #include <QtCore/QString>
 #include <QtCore/QObject>
 #include <QtCore/QtMath>
+#include <QtCore/QDebug>
 #include <QtGui/QColor>
 #include <QtGui/QPolygonF>
 
@@ -76,6 +77,12 @@ private:
     OrientationValidity m_validity;
 };
 
+// forward declarations
+class PositionMeters;
+PositionMeters operator-(const PositionMeters& lhs, const PositionMeters& rhs);
+PositionMeters operator*(const double &v, const PositionMeters& rhs);
+PositionMeters operator+(const PositionMeters& lhs, const PositionMeters& rhs);
+
 /*!
  * \brief The class that stores the position in meters.
  */
@@ -139,6 +146,30 @@ public:
                      (m_y - other.y()) * (m_y - other.y()));
     }
 
+    //! Computes the distance between the point and a line segment p1->p2.
+    double distance2dToSegment(const PositionMeters& p1,
+                               const PositionMeters& p2) const
+    {
+        double l = p1.distance2dTo(p2);
+        // line is defined as p(t) = p1 + t(p2 - p1), if t is in [0,1] then the
+        // point is on the edge
+        double t = - ((p2.x() - p1.x()) * (p1.x() - m_x) + (p2.y() - p1.y()) * (p1.y() - m_y)) /
+                (l * l);
+        if ((t >= 0) && (t <= 1)) {
+            // compute the projection of the point 'p' to the edge
+            PositionMeters proj = p1 + t * (p2 - p1);
+            // return the distance to this projection
+            return distance2dTo(proj);
+        } else if (t < 0) {
+            return distance2dTo(p1);
+        } else if (t > 1) {
+            return distance2dTo(p2);
+        } else {
+            qDebug() << "Invalid code";
+            return 0;
+        }
+    }
+
     //! Checks if two points are close in 2D.
     bool closeTo(const PositionMeters& other, double threshold = ProximityThreshold) const
     {
@@ -161,9 +192,23 @@ public:
     //! Operator /=.
     PositionMeters& operator/=(const double &value)
     {
-        m_x /= value;
-        m_y /= value;
-        m_z /= value;
+        if (!qFuzzyIsNull(value)) {
+            m_x /= value;
+            m_y /= value;
+            m_z /= value;
+        } else {
+            qDebug() << "Division by zero";
+            setValid(false);
+        }
+        return *this;
+    }
+
+    //! Operator *=.
+    PositionMeters& operator*=(const double &value)
+    {
+        m_x *= value;
+        m_y *= value;
+        m_z *= value;
         return *this;
     }
 
@@ -221,13 +266,19 @@ Q_DECLARE_METATYPE(PositionMeters)
 //! Addition operator.
 inline PositionMeters operator+(const PositionMeters& lhs, const PositionMeters& rhs)
 {
-    return PositionMeters(lhs.x() + rhs.x(), lhs.y() + rhs.y());
+    return PositionMeters(lhs.x() + rhs.x(), lhs.y() + rhs.y(), lhs.z() + rhs.z());
 }
 
 //! Subtraction operator.
 inline PositionMeters operator-(const PositionMeters& lhs, const PositionMeters& rhs)
 {
-    return PositionMeters(lhs.x() - rhs.x(), lhs.y() - rhs.y());
+    return PositionMeters(lhs.x() - rhs.x(), lhs.y() - rhs.y(), lhs.z() - rhs.z());
+}
+
+//! Multiplication by a scalar operator.
+inline PositionMeters operator*(const double &v, const PositionMeters& rhs)
+{
+    return PositionMeters(v * rhs.x() , v * rhs.y(), v * rhs.z());
 }
 
 //! Comparison operator.
@@ -422,6 +473,69 @@ private:
 };
 
 /*!
+ *  The structure defining a line segment.
+ */
+class WorldLine
+{
+public:
+    //! Constructor.
+    explicit WorldLine(PositionMeters p1 = PositionMeters::invalidPosition(),
+                       PositionMeters p2 = PositionMeters::invalidPosition()) :
+        m_p1(p1),
+        m_p2(p2)
+    {
+    }
+
+    //! Copy constructor.
+    WorldLine(const WorldLine&) = default;
+    //! Copy operator.
+    WorldLine& operator=(const WorldLine&) = default;
+    //! Move operator.
+    WorldLine& operator=(WorldLine&&) = default;
+    //! Destructor.
+    ~WorldLine() = default;
+
+    //! Return the first point.
+    PositionMeters p1() const { return m_p1; }
+    //! Return the second point.
+    PositionMeters p2() const { return m_p2; }
+
+    //! Sets the first point.
+    void setP1(const PositionMeters& p1) { m_p1 = p1; }
+    //! Sets the second point.
+    void setP2(const PositionMeters& p2) { m_p2 = p2; }
+
+    //! Sets the line.
+    void setLine(const WorldLine& line)
+    {
+        m_p1 = line.p1();
+        m_p2 = line.p2();
+    }
+
+    //! Sets the line.
+    void setLine(const PositionMeters& p1, const PositionMeters& p2)
+    {
+        m_p1 = p1;
+        m_p2 = p2;
+    }
+
+private:
+    //! The first point.
+    PositionMeters m_p1;
+    //! The second point.
+    PositionMeters m_p2;
+};
+
+Q_DECLARE_METATYPE(WorldLine)
+
+//! Comparison operator.
+inline bool operator==(const WorldLine& lhs, const WorldLine& rhs)
+{
+    return (((lhs.p1() == rhs.p1()) && (lhs.p2() == rhs.p2())) ||
+            ((lhs.p1() == rhs.p2()) && (lhs.p2() == rhs.p1())));
+}
+
+/*!
  * The class for the list of points.
  */
 class WorldPolygon : public QList<PositionMeters>
@@ -451,6 +565,35 @@ public:
             polygonCenter /= size();
         }
         return polygonCenter;
+    }
+
+    /*!
+     * Computes the distance to the point, and sets the closest segment.
+     */
+    double distance2dTo(const PositionMeters& p, WorldLine& segment) const
+    {
+        WorldLine closestSegment;
+        double minDistance = std::numeric_limits<double>::max();
+        for (int i = 0; i < size(); ++i) {
+            const PositionMeters& p1 = at(i);
+            const PositionMeters& p2 = at((i + 1) % size());
+            double distance = p.distance2dToSegment(p1, p2);
+            if (distance < minDistance) {
+                minDistance = distance;
+                closestSegment.setLine(p1, p2);
+            }
+        }
+        segment.setLine(closestSegment);
+        return minDistance;
+    }
+
+    /*!
+     * Computes the distance to the point.
+     */
+    double distance2dTo(const PositionMeters& p) const
+    {
+        WorldLine segment;
+        return distance2dTo(p, segment);
     }
 };
 

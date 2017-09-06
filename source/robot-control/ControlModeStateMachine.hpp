@@ -36,13 +36,15 @@ public:
 
 public:
     //! Sets the parameters of the fish model.
-    void setModelParameters(ModelParameters parameters);
+    void setModelParameters(ControlModeType::Enum type, ModelParameters parameters);
     //! Limits the arena matrix of the model-based control mode by a mask.
     //! The mask is defined by a set of polygons and is labeled with an id.
-    void limitModelArea(QString maskId, QList<WorldPolygon> allowedArea);
+    void limitModelArea(ControlModeType::Enum type,
+                        QString maskId,
+                        QList<WorldPolygon> allowedArea);
     //! Removes the applied limitations on the model area. After this the model
     //! will be applied on the whole setup.
-    void releaseModelArea();
+    void releaseModelArea(ControlModeType::Enum type);
 
 signals:
     //! Informs that the robot's control mode was modified.
