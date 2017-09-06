@@ -45,12 +45,12 @@ pid1=$!
 	#t.	! queue ! ffmpegcolorspace ! videoscale ! videorate ! video/x-raw-yuv,width=500,height=500,framerate=2/1 ! ffenc_mpeg4 ! rtpmp4vpay ! udpsink host=128.178.145.80 port=5200
 
 sleep 5
-gst-launch-0.10 v4l2src device=/dev/video0  ! queue ! ffmpegcolorspace ! videorate ! videoscale ! video/x-raw-yuv,width=500,height=500,framerate=5/1 ! jpegenc ! multipartmux ! tcpserversink port=5202 host=127.0.0.1 sync=false &
+gst-launch-0.10 v4l2src device=/dev/video0  ! queue ! ffmpegcolorspace ! videorate ! videoscale ! video/x-raw-yuv,width=500,height=500,framerate=5/1 ! jpegenc ! multipartmux ! tcpserversink port=5201 host=127.0.0.1 sync=false &
 pid2=$!
 
 #sleep 4
-##gst-launch-1.0 -v v4l2src device=/dev/video1  ! queue ! videoconvert ! videorate ! videoscale ! video/x-raw,width=500,height=500,framerate=5/1 !  x264enc ! flvmux !  rtmpsink location='rtmp://streamyfish.com/rtmp/paris2 live=1' &
-gst-launch-1.0 -v v4l2src device=/dev/video1  ! queue ! videoconvert ! videorate ! videoscale !  x264enc ! flvmux !  rtmpsink location='rtmp://streamyfish.com/rtmp/paris2 live=1' &
+##gst-launch-1.0 -v v4l2src device=/dev/video1  ! queue ! videoconvert ! videorate ! videoscale ! video/x-raw,width=500,height=500,framerate=5/1 !  x264enc ! flvmux !  rtmpsink location='rtmp://streamyfish.com/rtmp/paris1 live=1' &
+gst-launch-1.0 -v v4l2src device=/dev/video1  ! queue ! videoconvert ! videorate ! videoscale !  x264enc ! flvmux !  rtmpsink location='rtmp://streamyfish.com/rtmp/paris1 live=1' &
 pid3=$!
 
 sleep 1
