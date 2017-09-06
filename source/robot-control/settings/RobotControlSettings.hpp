@@ -403,10 +403,10 @@ public:
 
     //! Provides the settings value by its path in the configuration file.
     //! Only numerical values are supported.
-    double valueByPath(std::string path);
+    std::vector<double> valueByPath(std::string path);
     //! Sets the settings value by its path in the configuration file.
     //! Only numerical values are supported.
-    void setValueByPath(std::string path, double value);
+    void setValueByPath(std::string path, std::vector<double> value);
 
 signals:
     //! Informs on the changes in the pid settings.
@@ -470,9 +470,9 @@ private:
     int m_trajectoryUpdateRateHz;
 
     //! Map that stores the paramers getters.
-    std::map<std::string, std::function<double(std::string)>> m_parametersGetters;
+    std::map<std::string, std::function<std::vector<double>(std::string)>> m_parametersGetters;
     //! Map that stores the paramers setters.
-    std::map<std::string, std::function<void(double, std::string)>> m_parametersSetters;
+    std::map<std::string, std::function<void(std::vector<double>, std::string)>> m_parametersSetters;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP

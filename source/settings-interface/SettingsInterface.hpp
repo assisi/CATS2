@@ -21,7 +21,7 @@ public:
 
 public slots:
     //! Processes input set messages.
-    void onSetRequestReceived(std::string path, double value);
+    void onSetRequestReceived(std::string path, std::vector<double> values);
     //! Processes input get messages.
     void onGetRequestReceived(std::string path);
 

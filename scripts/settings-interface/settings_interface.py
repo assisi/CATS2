@@ -54,7 +54,12 @@ class CatsSettingsInterface:
                 print('Received settings from cats: ' + name + ';' + device + ';' + command + ';' + data)
                 if (command == 'set'):
                     self.lock.acquire()
-                    self.value_by_path[device] = float(data) 
+                    values = []
+                    if data:
+                        settings = data.split(';')
+                        for settings_value in settings:
+                            values.append(float(settings_value))
+                    self.value_by_path[device] =  values
                     self.sent_requests.discard(device)
                     self.lock.release()             
             except zmq.ZMQError, e:     
@@ -87,8 +92,13 @@ class CatsSettingsInterface:
                     self.publisher.send_multipart([name, device, command, data])                    
                 elif (request.requestType == 'set'):
                     self.lock.acquire()
-                    data = str(self.value_by_path[request.requestData])
+                    values = self.value_by_path[request.requestData]
                     self.lock.release()                    
+                    data = ''
+                    for value in values:
+                        data +=  str(value) + ';'
+                    # remove the last ';'
+                    data = data[0:-1]
                     name = 'cats'
                     device = request.requestData
                     command = 'set'  
