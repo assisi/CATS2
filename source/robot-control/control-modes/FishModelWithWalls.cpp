@@ -14,7 +14,7 @@
 FishModelWithWalls::FishModelWithWalls(FishBot* robot) :
     GenericFishModel(robot, ControlModeType::FISH_MODEL_WITH_WALLS)
 {
-    resetModel();
+    resetModelWithWalls();
 }
 
 /*!
@@ -28,7 +28,7 @@ FishModelWithWalls::~FishModelWithWalls()
 /*!
  * Initializes the model based on the setup map and parameters.
  */
-void FishModelWithWalls::resetModel()
+void FishModelWithWalls::resetModelWithWalls()
 {
     if (!m_currentGrid.empty()) {
         // size of the area covered by the matrix
@@ -46,14 +46,14 @@ void FishModelWithWalls::resetModel()
         factory.wallsCoord = setupWalls();
         // create the simulator
         m_sim = factory.create();
-        updateModelParameters();
+        updateFishModelWithWallsParameters();
     }
 }
 
 /*!
  * Sets the model parameters from the settings.
  */
-void FishModelWithWalls::updateModelParameters()
+void FishModelWithWalls::updateFishModelWithWallsParameters()
 {
     const FishModelSettings& fishModelSettings = RobotControlSettings::get().fishModelSettings();
     m_sim->dt = fishModelSettings.agentParameters.dt;

@@ -9,6 +9,7 @@
 #include "control-modes/ModelBased.hpp"
 #include "control-modes/GenericFishModel.hpp"
 #include "control-modes/FishModelWithWalls.hpp"
+#include "control-modes/ZoneBasedFishModel.hpp"
 #include "control-modes/Trajectory.hpp"
 #include "control-modes/FollowGroup.hpp"
 #include "FishBot.hpp"
@@ -36,6 +37,8 @@ ControlModeStateMachine::ControlModeStateMachine(FishBot* robot, QObject *parent
                           ControlModePtr(new ModelBased(m_robot)));
     m_controlModes.insert(ControlModeType::FISH_MODEL_WITH_WALLS,
                           ControlModePtr(new FishModelWithWalls(m_robot)));
+    m_controlModes.insert(ControlModeType::ZONE_BASED_FISH_MODEL,
+                          ControlModePtr(new ZoneBasedFishModel(m_robot)));
     m_controlModes.insert(ControlModeType::TRAJECTORY,
                           ControlModePtr(new Trajectory(m_robot)));
     m_controlModes.insert(ControlModeType::FOLLOW_GROUP,
@@ -150,6 +153,10 @@ void ControlModeStateMachine::limitModelArea(ControlModeType::Enum type,
         GenericFishModel* mode = dynamic_cast<GenericFishModel*>(m_controlModes[type].data());
         if (mode)
             mode->setAreaMask(maskId, allowedArea);
+            // FIXME : we might need to reset the model after applying the mask,
+            // but since the cv::Mat setup grid is directly used by the Arena
+            // and cv::Mat is a smart pointer hence all changes will be present
+            // in the simulator right away
     }
 }
 

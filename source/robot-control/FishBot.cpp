@@ -473,6 +473,15 @@ void FishBot::stepExperimentManager()
                 }
                 break;
             }
+            case ControlModeType::ZONE_BASED_FISH_MODEL:
+            {
+                if (controlData.data.canConvert<ModelParameters>()) {
+                    // define if the model should follow or ignore the fish
+                    ModelParameters parameters(controlData.data.value<ModelParameters>());
+                    setModelParameters(controlData.controlMode, parameters);
+                }
+                break;
+            }
             case ControlModeType::GO_STRAIGHT:
             case ControlModeType::IDLE:
             case ControlModeType::MANUAL:

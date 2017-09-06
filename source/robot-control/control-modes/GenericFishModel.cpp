@@ -197,6 +197,6 @@ void GenericFishModel::setParameters(ModelParameters parameters)
                             "ignore-robot:%2")
                     .arg(m_parameters.ignoreFish)
                     .arg(m_parameters.ignoreRobot);
-        resetModel();
+        resetModel(); // FIXME : this looks like a serious overkill, really necessary?
     }
 }

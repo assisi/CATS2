@@ -13,7 +13,7 @@
 ModelBased::ModelBased(FishBot* robot) :
     GenericFishModel(robot, ControlModeType::FISH_MODEL)
 {
-    resetModel();
+    resetBasicModel();
 }
 
 /*!
@@ -27,7 +27,7 @@ ModelBased::~ModelBased()
 /*!
  * Initializes the model based on the setup map and parameters.
  */
-void ModelBased::resetModel()
+void ModelBased::resetBasicModel()
 {
     if (!m_currentGrid.empty()) {
         // size of the area covered by the matrix
@@ -44,7 +44,7 @@ void ModelBased::resetModel()
         factory.behaviorVirtuals = "BM";
         // create the simulator
         m_sim = factory.create();
-        updateModelParameters();
+        updateBasicModelParameters();
 //        cv::imshow( "ModelGrid", m_currentGrid);
     }
 }
@@ -52,7 +52,7 @@ void ModelBased::resetModel()
 /*!
  * Sets the model parameters from the settings.
  */
-void ModelBased::updateModelParameters()
+void ModelBased::updateBasicModelParameters()
 {
     const FishModelSettings& fishModelSettings = RobotControlSettings::get().fishModelSettings();
     m_sim->dt = fishModelSettings.agentParameters.dt;

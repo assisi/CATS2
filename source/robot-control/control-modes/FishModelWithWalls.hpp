@@ -17,11 +17,17 @@ public:
 
 protected slots:
     //! Sets the model parameters from the settings.
-    virtual void updateModelParameters() override;
+    virtual void updateModelParameters() override { updateFishModelWithWallsParameters(); }
 
 protected:
     //! Initializes the model based on the setup map and parameters.
-    virtual void resetModel() override;
+    virtual void resetModel() override { resetModelWithWalls(); }
+
+private:
+    //! Initializes the model with walls.
+    void resetModelWithWalls();
+    //! Sets the model parameters from the settings.
+    void updateFishModelWithWallsParameters();
 };
 
 #endif // CATS2_FISH_MODEL_WITH_WALLS_HPP

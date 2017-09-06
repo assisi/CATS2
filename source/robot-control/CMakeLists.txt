@@ -40,6 +40,7 @@ set(srcs
     control-modes/GenericFishModel.cpp
     control-modes/ModelBased.cpp
     control-modes/FishModelWithWalls.cpp
+    control-modes/ZoneBasedFishModel.cpp
     control-modes/Manual.cpp
     control-modes/ControlMode.cpp
     control-modes/Trajectory.cpp

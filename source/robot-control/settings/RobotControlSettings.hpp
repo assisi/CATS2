@@ -80,11 +80,21 @@ public:
 
     float minSpeed = 0.0;
     float maxSpeed = 0.030;
-    std::vector<float> speedHistogram;
+    std::vector<double> speedHistogram;
+    std::vector<double> zonesAffinity;
 
     bool followWalls = false;
 
     QList<WorldPolygon> zone;
+    //! Checks if the point is inside one of the polygons.
+    bool contains(PositionMeters position) const
+    {
+        for (const WorldPolygon& polygon : zone) {
+            if (polygon.containsPoint(position))
+                return true;
+        }
+        return false;
+    }
 };
 
 /*!

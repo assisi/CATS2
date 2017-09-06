@@ -16,6 +16,7 @@ public:
         GO_STRAIGHT,
         FISH_MODEL,
         FISH_MODEL_WITH_WALLS,
+        ZONE_BASED_FISH_MODEL,
         TRAJECTORY,
         FOLLOW_GROUP,
         UNDEFINED
@@ -36,6 +37,8 @@ public:
             return FISH_MODEL;
         else if (modeName.toLower() == "fishmodelwithwalls")
             return FISH_MODEL_WITH_WALLS;
+        else if (modeName.toLower() == "zonebasedfishmodel")
+            return ZONE_BASED_FISH_MODEL;
         else if (modeName.toLower() == "trajectory")
             return TRAJECTORY;
         else if (modeName.toLower() == "followgroup")
@@ -63,6 +66,9 @@ public:
             break;
         case FISH_MODEL_WITH_WALLS:
             string = "Fish model with walls";
+            break;
+        case ZONE_BASED_FISH_MODEL:
+            string = "Zone based fish model";
             break;
         case TRAJECTORY:
             string = "Trajectory";

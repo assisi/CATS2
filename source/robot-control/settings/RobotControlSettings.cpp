@@ -864,8 +864,7 @@ void RobotControlSettings::readFishModelSettings(ReadSettingsHelper& reader)
                         [this](std::string path) {
                             int index = FishModelSettings::indexByPath(path);
                             if ((index < m_fishModelSettings.zonedFishModelSettings.size()) && (index >= 0)) {
-                                std::vector<float>& histogram = m_fishModelSettings.zonedFishModelSettings[index].speedHistogram;
-                                return std::vector<double>(histogram.begin(), histogram.end());
+                                return m_fishModelSettings.zonedFishModelSettings[index].speedHistogram;
                             } else
                                 return std::vector<double>();
                         };
@@ -873,7 +872,27 @@ void RobotControlSettings::readFishModelSettings(ReadSettingsHelper& reader)
                         [this](std::vector<double> values, std::string path) {
                             int index = FishModelSettings::indexByPath(path);
                             if ((index < m_fishModelSettings.zonedFishModelSettings.size()) && (index >= 0)) {
-                                m_fishModelSettings.zonedFishModelSettings[index].speedHistogram = std::vector<float>(values.begin(), values.end());
+                                m_fishModelSettings.zonedFishModelSettings[index].speedHistogram = values;
+                                emit notifyFishModelSettingsChanged();
+                            };
+                        };
+
+                // read zones affinity
+                settingsPath = QString("robots/fishModel/ZonedBM/zone_%1/zonesAffinity").arg(zoneIndex);
+                reader.readVariable(settingsPath, settings.zonesAffinity);
+                m_parametersGetters[settingsPath.toStdString()] =
+                        [this](std::string path) {
+                            int index = FishModelSettings::indexByPath(path);
+                            if ((index < m_fishModelSettings.zonedFishModelSettings.size()) && (index >= 0)) {
+                                return m_fishModelSettings.zonedFishModelSettings[index].zonesAffinity;
+                            } else
+                                return std::vector<double>();
+                        };
+                m_parametersSetters[settingsPath.toStdString()] =
+                        [this](std::vector<double> values, std::string path) {
+                            int index = FishModelSettings::indexByPath(path);
+                            if ((index < m_fishModelSettings.zonedFishModelSettings.size()) && (index >= 0)) {
+                                m_fishModelSettings.zonedFishModelSettings[index].zonesAffinity = values;
                                 emit notifyFishModelSettingsChanged();
                             };
                         };

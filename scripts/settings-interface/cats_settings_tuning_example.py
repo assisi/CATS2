@@ -18,6 +18,8 @@ if __name__ == '__main__':
 
     histogram = settings_interface.get_value('robots/fishModel/ZonedBM/zone_1/speedHistogram')
     print(histogram)
+    histogram.append(10)
+    settings_interface.set_value('robots/fishModel/ZonedBM/zone_1/speedHistogram', histogram)
 
     # set variables
     settings_interface.set_value('robots/navigation/pid/kp', [kp * 2])
