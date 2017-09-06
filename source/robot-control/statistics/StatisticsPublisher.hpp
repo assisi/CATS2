@@ -76,9 +76,9 @@ private:
 
     // TODO : put these data to settings
     //! The receiver address.
-    static constexpr char SubscriberAddress[] = "tcp://127.0.0.1:5559";
+    static constexpr char SubscriberAddress[] = "tcp://*:5559";
     //! The sender address.
-    static constexpr char PublisherAddress[] = "tcp://127.0.0.1:5560";
+    static constexpr char PublisherAddress[] = "tcp://*:5560";
 };
 
 #endif // CATS2_STATISTICS_PUBLISHER_HPP
