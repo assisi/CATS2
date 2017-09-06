@@ -34,6 +34,78 @@
                 <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
                 <wallDistanceThreshold>0.02</wallDistanceThreshold>
             </BMWithWalls>
+            <ZonedBM>
+                <numberOfZones>3</numberOfZones>
+                <zone_1>
+                  <polygons>
+                    <numberOfPolygons>1</numberOfPolygons>
+                    <polygon_1>
+                      -0.33 -0.3 0.04 -0.285 0.035 0.01 -0.06 0.09 -0.35 0.08
+                    </polygon_1>
+                  </polygons>
+                  <kappaFishes>20.0</kappaFishes>
+                  <alphasCenter>55.0</alphasCenter>
+                  <kappaNeutCenter>6.3</kappaNeutCenter>
+                  <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+                  <affinity>0.9 0.9</affinity>
+                  <minSpeed>0</minSpeed>
+                  <maxSpeed>0.20</maxSpeed>
+                  <gammaZone>55.0</gammaZone>
+                  <beta>55.0</beta>
+                  <kappaWalls>20.0</kappaWalls>
+                  <speedHistogram>
+                    0.0304615 0.07993734 0.10186769 0.12054464 0.14286059
+                    0.15312688 0.14098084 0.10748283 0.07632245 0.04641523
+                   </speedHistogram>
+                   <followWalls>0</followWalls>
+                </zone_1>
+                <zone_2>
+                  <polygons>
+                    <numberOfPolygons>1</numberOfPolygons>
+                    <polygon_1>
+                        -0.06 0.09 0.11 0.26 0.2 0.185 0.035 0.01
+                    </polygon_1>
+                  </polygons>
+                  <kappaFishes>20.0</kappaFishes>
+                  <alphasCenter>55.0</alphasCenter>
+                  <kappaNeutCenter>6.3</kappaNeutCenter>
+                  <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+                  <affinity>0.9 0.9</affinity>
+                  <minSpeed>0</minSpeed>
+                  <maxSpeed>0.20</maxSpeed>
+                  <gammaZone>55.0</gammaZone>
+                  <beta>55.0</beta>
+                  <kappaWalls>20.0</kappaWalls>
+                  <speedHistogram>
+                    0.0304615 0.07993734 0.10186769 0.12054464 0.14286059
+                    0.15312688 0.14098084 0.10748283 0.07632245 0.04641523
+                   </speedHistogram>
+                   <followWalls>0</followWalls>
+                </zone_2>
+                <zone_3>
+                  <polygons>
+                    <numberOfPolygons>1</numberOfPolygons>
+                    <polygon_1>
+                      0.2 0.185 0.485 0.195 0.475 0.56 0.11 0.55 0.11 0.26
+                    </polygon_1>
+                  </polygons>
+                  <kappaFishes>20.0</kappaFishes>
+                  <alphasCenter>55.0</alphasCenter>
+                  <kappaNeutCenter>6.3</kappaNeutCenter>
+                  <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+                  <affinity>0.9 0.9</affinity>
+                  <minSpeed>0</minSpeed>
+                  <maxSpeed>0.20</maxSpeed>
+                  <gammaZone>55.0</gammaZone>
+                  <beta>55.0</beta>
+                  <kappaWalls>20.0</kappaWalls>
+                  <speedHistogram>
+                    0.0304615 0.07993734 0.10186769 0.12054464 0.14286059
+                    0.15312688 0.14098084 0.10748283 0.07632245 0.04641523
+                   </speedHistogram>
+                   <followWalls>0</followWalls>
+                </zone_3>
+            </ZonedBM>
             <simulation>
                 <dt>0.2</dt>
             </simulation>
