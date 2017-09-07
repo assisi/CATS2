@@ -28,6 +28,15 @@ private:
     void resetZoneBasedModel();
     //! Sets the model parameters from the settings.
     void updateZoneBasedModelParameters();
+
+    //! Gives the setup's max-x value statistics id.
+    QString maxXStatisticsId() const;
+    //! Gives the setup's max-y value statistics id.
+    QString maxYStatisticsId() const;
+    //! Gives the setup's min-x value statistics id.
+    QString minXStatisticsId() const;
+    //! Gives the setup's min-y value statistics id.
+    QString minYStatisticsId() const;
 };
 
 #endif // CATS2_ZONE_BASED_FISH_MODEL_HPP

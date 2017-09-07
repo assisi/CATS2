@@ -327,7 +327,7 @@ void ControlLoop::requestRobotsLedColors()
 void ControlLoop::registerStatistics() const
 {
     // register the timestamp
-    StatisticsPublisher::get().addStatistics(agentStatisticsTimestamp());
+    StatisticsPublisher::get().addStatistics(agentStatisticsTimestampId());
 
     // register robots
     for (QString id : RobotControlSettings::get().ids()) {
@@ -352,7 +352,7 @@ void ControlLoop::updateStatistics(const QList<AgentDataWorld>& agentsData,
                                    std::chrono::milliseconds timestamp) const
 {
     // update the data timestamp
-    StatisticsPublisher::get().updateStatistics(agentStatisticsTimestamp(),
+    StatisticsPublisher::get().updateStatistics(agentStatisticsTimestampId(),
                                                 timestamp.count());
     int fishInd = 0;
     // update agents positions
@@ -410,7 +410,7 @@ QString ControlLoop::agentStatisticsId(AgentType type, QString agentId, QString 
         return QString("undef-%1-%2").arg(agentId).arg(postfix);
 }
 
-QString ControlLoop::agentStatisticsTimestamp() const
+QString ControlLoop::agentStatisticsTimestampId() const
 {
     return "timestamp";
 }

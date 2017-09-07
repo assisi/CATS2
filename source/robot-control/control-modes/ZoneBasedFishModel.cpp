@@ -5,6 +5,8 @@
 #include "model/model.hpp"
 #include "model/bmWithWalls.hpp"
 
+#include "statistics/StatisticsPublisher.hpp"
+
 #include <QtCore/QDebug>
 #include <QtCore/QtMath>
 
@@ -15,6 +17,17 @@ ZoneBasedFishModel::ZoneBasedFishModel(FishBot* robot) :
     GenericFishModel(robot, ControlModeType::ZONE_BASED_FISH_MODEL)
 {
     resetZoneBasedModel();
+    // register statistics
+    StatisticsPublisher::get().addStatistics(maxXStatisticsId());
+    StatisticsPublisher::get().addStatistics(maxYStatisticsId());
+    StatisticsPublisher::get().addStatistics(minXStatisticsId());
+    StatisticsPublisher::get().addStatistics(minYStatisticsId());
+
+    // update statistics once as they don't change
+    StatisticsPublisher::get().updateStatistics(maxXStatisticsId(), maxX());
+    StatisticsPublisher::get().updateStatistics(maxYStatisticsId(), maxY());
+    StatisticsPublisher::get().updateStatistics(minXStatisticsId(), minX());
+    StatisticsPublisher::get().updateStatistics(minYStatisticsId(), minY());
 }
 
 /*!
@@ -114,4 +127,36 @@ void ZoneBasedFishModel::updateZoneBasedModelParameters()
             bm->reinit();
         }
     }
+}
+
+/*!
+ * Gives the setup's max-x value statistics id.
+ */
+QString ZoneBasedFishModel::maxXStatisticsId() const
+{
+    return QString("setup-max-x");
+}
+
+/*!
+ * Gives the setup's max-y value statistics id.
+ */
+QString ZoneBasedFishModel::maxYStatisticsId() const
+{
+    return QString("setup-max-y");
+}
+
+/*!
+ * Gives the setup's min-x value statistics id.
+ */
+QString ZoneBasedFishModel::minXStatisticsId() const
+{
+    return QString("setup-min-x");
+}
+
+/*!
+ * Gives the setup's min-y value statistics id.
+ */
+QString ZoneBasedFishModel::minYStatisticsId() const
+{
+    return QString("setup-min-y");
 }

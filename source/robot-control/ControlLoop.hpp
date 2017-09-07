@@ -104,7 +104,7 @@ private: // statistics related code
     //! Computes the statistics id.
     QString agentStatisticsId(AgentType type, QString agentId, QString postfix) const;
     //! Gives the timestamp's statistics id.
-    QString agentStatisticsTimestamp() const;
+    QString agentStatisticsTimestampId() const;
 
 private:
     //! An inferface with the robots' Aseba firmware. It's shared by all
