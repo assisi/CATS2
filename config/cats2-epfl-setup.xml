@@ -47,7 +47,6 @@
                   <alphasCenter>55.0</alphasCenter>
                   <kappaNeutCenter>6.3</kappaNeutCenter>
                   <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
-                  <affinity>0.9 0.9</affinity>
                   <minSpeed>0</minSpeed>
                   <maxSpeed>0.20</maxSpeed>
                   <gammaZone>55.0</gammaZone>
@@ -73,7 +72,6 @@
                   <alphasCenter>55.0</alphasCenter>
                   <kappaNeutCenter>6.3</kappaNeutCenter>
                   <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
-                  <affinity>0.9 0.9</affinity>
                   <minSpeed>0</minSpeed>
                   <maxSpeed>0.20</maxSpeed>
                   <gammaZone>55.0</gammaZone>
@@ -99,7 +97,6 @@
                   <alphasCenter>55.0</alphasCenter>
                   <kappaNeutCenter>6.3</kappaNeutCenter>
                   <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
-                  <affinity>0.9 0.9</affinity>
                   <minSpeed>0</minSpeed>
                   <maxSpeed>0.20</maxSpeed>
                   <gammaZone>55.0</gammaZone>
@@ -165,7 +162,7 @@
         </navigation>
         <controllers>
             <controlMap>
-                <controlAreasPath>control-maps/test-control-map.xml</controlAreasPath>
+                <controlAreasPath>control-maps/epfl-two-rooms-control-map.xml</controlAreasPath>
             </controlMap>
             <initiationLeader>
                 <controlAreasPath>control-maps/epfl-two-rooms-control-map.xml</controlAreasPath>
@@ -190,7 +187,7 @@
             <connectionTarget>ser:device=/dev/rfcomm2</connectionTarget>
             <robotControlMaps>
                 <controlMap>
-                    <path>control-maps/test-control-map.xml</path>
+                    <path>control-maps/epfl-two-rooms-control-map.xml</path>
                 </controlMap>
                 <initiationLure>
                     <path>control-maps/epfl-two-rooms-control-map.xml</path>
