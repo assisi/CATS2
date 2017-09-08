@@ -71,13 +71,13 @@ void SettingsInterface::sendMessage(std::string& name, std::string& device,
  * Processes input set messages. Sets the value in the settings corresponding
  * to the path provided.
  */
-void SettingsInterface::onSetRequestReceived(std::string path, double value)
+void SettingsInterface::onSetRequestReceived(std::string path, std::vector<double> values)
 {
     QStringList pathList = QString::fromStdString(path).split("/");
     if (pathList.size() > 0) {
         // NOTE : at the moment only robot's settings are exposed
         if (pathList[0] == "robots") {
-            RobotControlSettings::get().setValueByPath(path, value);
+            RobotControlSettings::get().setValueByPath(path, values);
         }
     }
 }
@@ -93,11 +93,16 @@ void SettingsInterface::onGetRequestReceived(std::string path)
     if (pathList.size() > 0) {
         // NOTE : at the moment only robot's settings are exposed
         if (pathList[0] == "robots") {
-            double value = RobotControlSettings::get().valueByPath(path);
-
-            // FIXME : using std::to_string(value) put comma instead of dot in
-            // decimals
-            std::string data = QString::number(value).toStdString();//std::to_string(value);
+            std::vector<double> values = RobotControlSettings::get().valueByPath(path);
+            QString dataQString;
+            for (const auto& value : values) {
+                // FIXME : using std::to_string(value) put comma instead of dot in
+                // decimals
+                dataQString.append(QString::number(value));
+                dataQString.append(';');
+            }
+            dataQString = dataQString.left(dataQString.length() - 1);
+            std::string data = dataQString.toStdString();
             std::string name = "optimiser";
             std::string device = path;
             std::string command = "set";

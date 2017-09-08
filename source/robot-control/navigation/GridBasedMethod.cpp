@@ -235,3 +235,4 @@ std::vector<GridBasedMethod::Edge> GridBasedMethod::polygonEdges(const WorldPoly
     }
     return edges;
 }
+

@@ -18,11 +18,17 @@ public:
 
 private slots:
     //! Sets the model parameters from the settings.
-    virtual void updateModelParameters() override;
+    virtual void updateModelParameters() override { updateBasicModelParameters(); }
+
+protected:
+    //! Initializes the model based on the setup map and parameters.
+    virtual void resetModel() override { resetBasicModel(); }
 
 private:
-    //! Initializes the model based on the setup map and parameters.
-    virtual void resetModel() override;
+    //! Initializes the basic model.
+    void resetBasicModel();
+    //! Sets the model parameters from the settings.
+    void updateBasicModelParameters();
 };
 
 #endif // CATS2_MODEL_BASED_HPP

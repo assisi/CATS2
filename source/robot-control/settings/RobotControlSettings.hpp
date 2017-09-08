@@ -52,7 +52,7 @@ public:
  * Stores settings of the fish model with walls.
  */
 // TODO : make the class and members private.
-struct FishModelWithWallsSettings{
+struct FishModelWithWallsSettings {
 public:
     //! Constructor.
     explicit FishModelWithWallsSettings() {}
@@ -65,6 +65,41 @@ public:
     float wallDistanceThreshold = 0.02;  //! d
 };
 
+/*!
+ * Stores settings of the zoned fish model.
+ */
+// TODO : make the class and members private.
+struct ZonedFishModelSettings : public BasicFishModelSettings{
+public:
+    //! Constructor.
+    explicit ZonedFishModelSettings() {}
+
+    float gammaZone = 55.0;
+    float beta = 55.0;
+    float kappaWalls = 20.0;
+
+    float minSpeed = 0.0;
+    float maxSpeed = 0.030;
+    std::vector<double> speedHistogram;
+    std::vector<double> zonesAffinity;
+
+    bool followWalls = false;
+
+    QList<WorldPolygon> zone;
+    //! Checks if the point is inside one of the polygons.
+    bool contains(PositionMeters position) const
+    {
+        for (const WorldPolygon& polygon : zone) {
+            if (polygon.containsPoint(position))
+                return true;
+        }
+        return false;
+    }
+};
+
+/*!
+ * All models settings.
+ */
 struct FishModelSettings {
 public:
     //! Constructor.
@@ -79,6 +114,11 @@ public:
 
     BasicFishModelSettings basicFishModelSettings;
     FishModelWithWallsSettings fishModelWithWallsSettings;
+
+    QList<ZonedFishModelSettings> zonedFishModelSettings;
+    //! Gets a path in the configuration file and tells to which zone it belongs
+    //! i.e. it's index in the list.
+    static int indexByPath(std::string path);
 };
 
 /*!
@@ -373,10 +413,10 @@ public:
 
     //! Provides the settings value by its path in the configuration file.
     //! Only numerical values are supported.
-    double valueByPath(std::string path);
+    std::vector<double> valueByPath(std::string path);
     //! Sets the settings value by its path in the configuration file.
     //! Only numerical values are supported.
-    void setValueByPath(std::string path, double value);
+    void setValueByPath(std::string path, std::vector<double> value);
 
 signals:
     //! Informs on the changes in the pid settings.
@@ -440,9 +480,9 @@ private:
     int m_trajectoryUpdateRateHz;
 
     //! Map that stores the paramers getters.
-    std::map<std::string, std::function<double()>> m_parametersGetters;
+    std::map<std::string, std::function<std::vector<double>(std::string)>> m_parametersGetters;
     //! Map that stores the paramers setters.
-    std::map<std::string, std::function<void(double)>> m_parametersSetters;
+    std::map<std::string, std::function<void(std::vector<double>, std::string)>> m_parametersSetters;
 };
 
 #endif // CATS2_ROBOT_CONTROL_SETTINGS_HPP
