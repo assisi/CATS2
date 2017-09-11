@@ -11,7 +11,7 @@ def save(x, y, fileName):
         file.write("x\ty\n")
         # NOTE: add a third zero to be compatible with the trajectory-convertor
         while x and y:
-            file.write("%s\t%s\t0\n" % (x.pop(0), y.pop(0)))
+            file.write("%s\t%s\n" % (x.pop(0), y.pop(0)))
 
 # main() function
 def main():
