@@ -47,10 +47,14 @@ void SetupMap::init(QString setupFilePath)
         qDebug() << "Could not initialize the setup map";
 
     // read the excluded polygons
-    std::vector<std::vector<cv::Point2f>> excludedPolygons;
-    settings.readVariables(QString("excludedPolygons/polygon"), excludedPolygons);
-    if (excludedPolygons.size() > 0) {
-        for (std::vector<cv::Point2f>& excludedPolygon : excludedPolygons) {
+    int numberOfPolygons = 0;
+    settings.readVariable(QString("excludedPolygons/numberOfPolygons"),
+                           numberOfPolygons, numberOfPolygons);
+    for (int polygonIndex = 1; polygonIndex <= numberOfPolygons; ++polygonIndex) {
+        std::vector<cv::Point2f> excludedPolygon;
+        settings.readVariable(QString("excludedPolygons/polygon_%1").arg(polygonIndex),
+                               excludedPolygon);
+        if (excludedPolygon.size() > 0) {
             WorldPolygon excludedWorldPolygon;
             for (cv::Point2f& point : excludedPolygon) {
                 excludedWorldPolygon.append(PositionMeters(point));
