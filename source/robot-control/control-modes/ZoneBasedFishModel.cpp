@@ -52,6 +52,10 @@ void ZoneBasedFishModel::resetZoneBasedModel()
                                    zoneBasedGrid.rows * m_gridSizeMeters};
         // reset the grid values
         const FishModelSettings& fishModelSettings = RobotControlSettings::get().fishModelSettings();
+        if (fishModelSettings.zonedFishModelSettings.size() == 0) {
+            m_sim = nullptr;
+            return;
+        }
         for (int col = 0; col < zoneBasedGrid.cols; ++col)
             for (int row = 0; row < zoneBasedGrid.cols; ++row) {
                 QPoint point(col, row);
