@@ -45,13 +45,13 @@ int main(int argc, char *argv[])
         bool foundSetupType =
                 (CommandLineParser::parseArgument(argc, argv, "-st", setupTypeString) ||
                  CommandLineParser::parseArgument(argc, argv, "--setup-type", setupTypeString));
-        // get the trajectory file
-        QString trajectoryFilePath;
-        bool foundTrajectoryFile =
-                (CommandLineParser::parseArgument(argc, argv, "-t", trajectoryFilePath) ||
-                 CommandLineParser::parseArgument(argc, argv, "--trajectory", trajectoryFilePath));
+        // get the input file
+        QString inputFilePath;
+        bool foundInputFile =
+                (CommandLineParser::parseArgument(argc, argv, "-i", inputFilePath) ||
+                 CommandLineParser::parseArgument(argc, argv, "--input", inputFilePath));
 
-        if (foundSetupType && foundTrajectoryFile)
+        if (foundSetupType && foundInputFile)
         {
             SetupType::Enum setupType = SetupType::fromSettingsString(setupTypeString);
             if (setupType != SetupType::UNDEFINED) {
@@ -64,11 +64,11 @@ int main(int argc, char *argv[])
                 }
 
                 // read the file here
-                QFileInfo inputFileInfo(trajectoryFilePath);
-                QFile inputFile(trajectoryFilePath);
+                QFileInfo inputFileInfo(inputFilePath);
+                QFile inputFile(inputFilePath);
 
                 if (!inputFile.open(QIODevice::ReadOnly)) {
-                    qDebug() << "Can't open input file: " << trajectoryFilePath;
+                    qDebug() << "Can't open input file: " << inputFilePath;
                     return 0;
                 }
 
