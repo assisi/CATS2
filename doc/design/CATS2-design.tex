@@ -24,6 +24,7 @@
 \usepackage{pdfpages}
 \usepackage{afterpage}
 \usepackage{booktabs}
+\usepackage{listings}
 
 \newcommand{\rd}{\Delta^{\frac{1}{2}}}
 \newcommand{\pla}{\phi_{\lambda_1}^t}
@@ -195,7 +196,9 @@ CONS:
 \chapter{CATS2.0 design}\label{chap:cats2}
 
 \section {Requirements}
-We are looking to make a software that would take into account the strong points of existing solutions and would resolve the known limitations.
+Here we outline the main functional and non-functional requirements for the CATS2 software\footnote{This section was done in May, 2016}.
+
+The goal is to deliver a software that would take into account the strong points of existing solutions and would resolve the known limitations.
 
 \begin{table}[h]
 \begin{tabular}{|p{0.25\textwidth}|p{0.75\textwidth}|}
@@ -213,7 +216,7 @@ We are looking to make a software that would take into account the strong points
   & $\bullet$ Set the parameters of the robots \\
 \hline
   \multirow{4}{*}{\parbox{0.25\textwidth}{Multi robot planning and control}} & $\bullet$ Connect automatically to all robots, available on the network, to make the auto discovery of new robots and disconnect robots that are not available anymore \\
-  & $\bullet$ Provide the access to each robot's telemetry and parameters (Aseba Studio like?) \\
+  & $\bullet$ Provide the access to each robot's telemetry and parameters (Aseba Studio like) \\
   & $\bullet$ Reliable obstacle avoidance system, ensure that the robot almost never gets stuck in the local minima, provide manual de-blocking  solutions \\
   & $\bullet$ Easy define behavioural strategies based on the areas of the arena \\
 \hline
@@ -227,16 +230,77 @@ Non-functional requirements:
 \item All used libraries must be open source
 \item  C++11 / Qt as the base technology
 \item  Target systems Linux (minimal), MacOS, Windows
-\item  Strict following to coding conventions (to define)
+\item  Strict following to coding conventions
 \end{itemize}
+
+The following sections present the architecture of the CATS2 software that generally corresponds to the current\footnote{September, 2017} implementation.
+
+\section {The system level design}
+The integration of CATS2 with other modules of the robot-fish interaction framework is shown on Fig. \ref{fig:system-level}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.99\textwidth]{./outline/system-view-edit}
+\caption{Outline of the system level design of CATS2. It receives input streams of one or several cameras, processes them to detect and track robots and animals, stores the resulted trajectories in the log files, control the robots based of the user-defined strategies, and, finally, communicates with the bee setup.}
+\label{fig:system-level}
+\end{figure}
+
+\section {CATS2 architecture}
+Fig. \ref{fig:CATS2-modules} shows the design of the internal structure of CATS2.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.99\textwidth]{./outline/CATS-view-edit}
+\caption{Two principal modules of CATS2 are Tracking and Robot Control.}
+\label{fig:CATS2-modules}
+\end{figure}
+
+\section {Tracking module of CATS2}
+The architecture of the tracking module of CATS2 is presented on Fig. \ref{fig:CATS2-tracking-module}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.99\textwidth]{./outline/tracking-module-edit}
+\caption{The design of the tracking system. Grabber receives the input frames that are time-stamped and transfered via inter-thread queue to Tracker that detects and tracks agents based on the user-defined tracking strategy (in the configuration file). Tracking Data Manager merges together tracking results coming from different sources (cameras), writes the results to log files, and transfers them further to the Robot Control module. The input streams and tracking resutls are visualized by Viewer.}
+\label{fig:CATS2-tracking-module}
+\end{figure}
+
+\section {Robot Control module of CATS2}
+Fig. \ref{fig:CATS2-tracking-module} shows the architecture of the robot control system.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.99\textwidth]{./outline/robot-control-edit}
+\caption{The design of the robot control system. Control Loop executes the current Control Mode that generates the control target (speed or position), and then this control target is converted by Motion Control (or navigation) to the motor commands that are sent to the robot via ASEBA.}
+\label{fig:CATS2-robot-control-module}
+\end{figure}
+
+\section {Status by September, 2017}
+The following functionalities were {\bf not implemented}:
+\begin{itemize}
+\item Robot Control: the control of the fish robot ({\it ribot})
+\item Everywhere: the configuration file is read-only, all the changes in the settings have to be done manually
+\end{itemize}
+
+The following functionalities were {\bf implemented differently}:
+\begin{itemize}
+\item Robot Control: Motion Commands if called {\it navigation}; Motion Safety module is not implemented as a separated unit; control maps are implemented as {\it xml} files and not as grey-scale images. 
+\end{itemize}
+
+The following {\bf new} functionalities were implemented:
+\begin{itemize}
+\item Robot Control: {\it experimental controllers} module that implements experiment specific behaviors combining together various control modes based on the control maps; {\it statistics} module exposes various internal statistics to be available via ZMQ. 
+\item {\it Settings interface} allows to modify various internal settings of CATS2 via ZMQ thus allowing the integration of external intelligent systems.
+\end{itemize}
+
 
 \chapter{Environment}\label{chap:Environment}
 
 \section {Source code management}
-All source code will be managed in a git repository. Software components shall be divided in several git repositories.
+All source code is managed in a git repository. CATS2 can be found here \url{https://github.com/gribovskiy/CATS2}
 
 \section {Code conventions}
-Google code conventions are proposed to be used (https://google.github.io/styleguide/cppguide.html).
+The detailed code conventions can be found in Chapter \ref{chap:code-conventions}.
 
 \section {Target operating system}
 Windows and Ubuntu
@@ -247,8 +311,8 @@ GCC
 \section {Build system}
 CMake
 
-\section {Planning tools}
-taiga.io
+\chapter{Code conventions}\label{chap:code-conventions}
+\include{./code-conventions/conventions}
 
 \end{document}
 
