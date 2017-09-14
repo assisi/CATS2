@@ -1,0 +1,1679 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<!-- Created with Inkscape (http://www.inkscape.org/) -->
+
+<svg
+   xmlns:dc="http://purl.org/dc/elements/1.1/"
+   xmlns:cc="http://creativecommons.org/ns#"
+   xmlns:rdf="http://www.w3.org/1999/02/22-rdf-syntax-ns#"
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   xmlns:sodipodi="http://sodipodi.sourceforge.net/DTD/sodipodi-0.dtd"
+   xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape"
+   width="210mm"
+   height="297mm"
+   viewBox="0 0 744.09448819 1052.3622047"
+   id="svg2"
+   version="1.1"
+   inkscape:version="0.91 r13725"
+   sodipodi:docname="CATS.svg">
+  <defs
+     id="defs4">
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker4615"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path4617" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker12014"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path12016"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker11804"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path11806" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker11446"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path11448"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker10870"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path10872"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker10680"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path10682" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker10512"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path10514"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker10350"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path10352" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker10194"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path10196"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker10030"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path10032" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker9888"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path9890"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker9724"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path9726" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker9586"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path9588"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         inkscape:connector-curvature="0" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker9456"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart">
+      <path
+         transform="scale(0.8) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path9458" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker9320"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lstart">
+      <path
+         transform="scale(0.8) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path9322" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible;"
+       id="marker9208"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path9210" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="marker6185"
+       style="overflow:visible;"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path6187"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible;"
+       id="marker6083"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path6085" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible;"
+       id="marker5309"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path5311" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="marker5115"
+       style="overflow:visible;"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path5117"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible;"
+       id="marker5065"
+       refX="0.0"
+       refY="0.0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         transform="scale(0.8) rotate(180) translate(12.5,0)"
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         id="path5067" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lend"
+       style="overflow:visible;"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path4365"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(0.8) rotate(180) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0.0"
+       refX="0.0"
+       id="Arrow1Lstart"
+       style="overflow:visible"
+       inkscape:isstock="true"
+       inkscape:collect="always">
+      <path
+         id="path4362"
+         d="M 0.0,0.0 L 5.0,-5.0 L -12.5,0.0 L 5.0,5.0 L 0.0,0.0 z "
+         style="fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1;fill:#000000;fill-opacity:1"
+         transform="scale(0.8) translate(12.5,0)" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker6083-4"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path6085-3" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker6083-7"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path6085-7" />
+    </marker>
+    <marker
+       inkscape:isstock="true"
+       style="overflow:visible"
+       id="marker6083-2"
+       refX="0"
+       refY="0"
+       orient="auto"
+       inkscape:stockid="Arrow1Lend"
+       inkscape:collect="always">
+      <path
+         inkscape:connector-curvature="0"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         id="path6085-8" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart-2"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4362-7"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6185-9"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6187-9"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lstart"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="Arrow1Lstart-6"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path4362-9"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(0.8,0,0,0.8,10,0)" />
+    </marker>
+    <marker
+       inkscape:stockid="Arrow1Lend"
+       orient="auto"
+       refY="0"
+       refX="0"
+       id="marker6185-8"
+       style="overflow:visible"
+       inkscape:isstock="true">
+      <path
+         inkscape:connector-curvature="0"
+         id="path6187-4"
+         d="M 0,0 5,-5 -12.5,0 5,5 0,0 Z"
+         style="fill:#000000;fill-opacity:1;fill-rule:evenodd;stroke:#000000;stroke-width:1pt;stroke-opacity:1"
+         transform="matrix(-0.8,0,0,-0.8,-10,0)" />
+    </marker>
+  </defs>
+  <sodipodi:namedview
+     id="base"
+     pagecolor="#ffffff"
+     bordercolor="#666666"
+     borderopacity="1.0"
+     inkscape:pageopacity="0.0"
+     inkscape:pageshadow="2"
+     inkscape:zoom="0.25304618"
+     inkscape:cx="455.46269"
+     inkscape:cy="623.11945"
+     inkscape:document-units="px"
+     inkscape:current-layer="layer1"
+     showgrid="true"
+     inkscape:window-width="638"
+     inkscape:window-height="260"
+     inkscape:window-x="640"
+     inkscape:window-y="276"
+     inkscape:window-maximized="0">
+    <inkscape:grid
+       type="xygrid"
+       id="grid3336" />
+  </sodipodi:namedview>
+  <metadata
+     id="metadata7">
+    <rdf:RDF>
+      <cc:Work
+         rdf:about="">
+        <dc:format>image/svg+xml</dc:format>
+        <dc:type
+           rdf:resource="http://purl.org/dc/dcmitype/StillImage" />
+        <dc:title></dc:title>
+      </cc:Work>
+    </rdf:RDF>
+  </metadata>
+  <g
+     inkscape:label="Layer 1"
+     inkscape:groupmode="layer"
+     id="layer1">
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3366"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.78432601,0,0,0.78432601,145.29279,3.8323615)"><flowRegion
+         id="flowRegion3368"><rect
+           id="rect3370"
+           width="430"
+           height="100"
+           x="30"
+           y="142.3622" /></flowRegion><flowPara
+         id="flowPara3372" /></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3376"
+       style="font-style:normal;font-weight:normal;font-size:40px;line-height:125%;font-family:sans-serif;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.78432601,0,0,0.78432601,145.29279,3.8323615)"><flowRegion
+         id="flowRegion3378"><rect
+           id="rect3380"
+           width="350"
+           height="110"
+           x="40"
+           y="152.3622" /></flowRegion><flowPara
+         id="flowPara3382" /></flowRoot>    <rect
+       style="fill:none;stroke:#ff0000;stroke-width:1.42159581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3518"
+       width="497.6947"
+       height="148.60992"
+       x="146.89757"
+       y="44.090286"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3350"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,533.63719,49.266709)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3352"><rect
+           id="rect3354"
+           width="150"
+           height="50"
+           x="40"
+           y="22.362206"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start" /></flowRegion><flowPara
+         id="flowPara3356">Camera</flowPara></flowRoot>    <text
+       xml:space="preserve"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.21595764px;line-height:125%;font-family:'Abyssinica SIL';-inkscape-font-specification:'Abyssinica SIL, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       x="311.50177"
+       y="80.097748"
+       id="text3384"
+       sodipodi:linespacing="125%"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><tspan
+         sodipodi:role="line"
+         x="311.50177"
+         y="80.097748"
+         id="tspan3388">Video conversion</tspan></text>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3392"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Aerial;-inkscape-font-specification:'Aerial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.78432601,0,0,0.78432601,145.29279,3.8323615)"><flowRegion
+         id="flowRegion3394"><rect
+           id="rect3396"
+           width="170"
+           height="80"
+           x="60"
+           y="182.3622"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Aerial;-inkscape-font-specification:'Aerial, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start" /></flowRegion><flowPara
+         id="flowPara3400" /></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3486"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,316.61909,-73.052911)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3488"><rect
+           id="rect3490"
+           width="240"
+           height="60"
+           x="70"
+           y="872.36218" /></flowRegion><flowPara
+         id="flowPara3492">Medulla</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3494"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,492.51817,-94.521178)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3496"><rect
+           id="rect3498"
+           width="330"
+           height="60"
+           x="40"
+           y="922.36218" /></flowRegion><flowPara
+         id="flowPara3500">Aseba Network</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3502"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,-21.100157,66.678468)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3504"><rect
+           id="rect3506"
+           width="260"
+           height="50"
+           x="300"
+           y="882.36218" /></flowRegion><flowPara
+         id="flowPara3508">FishBot 1</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3520"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#ff0000;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,128.52822,-0.31390005)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3522"><rect
+           id="rect3524"
+           width="200"
+           height="40"
+           x="40"
+           y="72.362206"
+           style="stroke:#ff0000;stroke-opacity:1" /></flowRegion><flowPara
+         id="flowPara3526">Video streaming</flowPara></flowRoot>    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.6651451;stroke-opacity:1"
+       id="rect4334"
+       width="74.571182"
+       height="28.477568"
+       x="550.88171"
+       y="60.71431"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.71079791;stroke-opacity:1"
+       id="rect4336"
+       width="127.94362"
+       height="28.431915"
+       x="300.54132"
+       y="61.884521"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <g
+       id="g4342"
+       transform="matrix(0.71079788,0,0,0.71079788,481.70466,-38.158867)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722">
+      <text
+         sodipodi:linespacing="125%"
+         id="text3402"
+         y="220.54494"
+         x="20.502525"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Aerial;-inkscape-font-specification:'Aerial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         xml:space="preserve"><tspan
+           y="220.54494"
+           x="20.502525"
+           id="tspan3404"
+           sodipodi:role="line">Compress and Save</tspan><tspan
+           id="tspan4328"
+           y="245.54494"
+           x="20.502525"
+           sodipodi:role="line"> video on SSD RAID</tspan></text>
+      <rect
+         y="202.3622"
+         x="10"
+         height="50"
+         width="190"
+         id="rect4338"
+         style="fill:none;stroke:#000000;stroke-opacity:1" />
+    </g>
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3406"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Aerial;-inkscape-font-specification:'Aerial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,109.77326,-63.303802)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3408"><rect
+           id="rect3410"
+           width="158.36539"
+           height="60.406109"
+           x="80"
+           y="232.3622" /></flowRegion><flowPara
+         id="flowPara3412">Publish live</flowPara><flowPara
+         id="flowPara4330">video streaming</flowPara></flowRoot>    <rect
+       style="fill:none;stroke:#000000;stroke-width:0.71079791;stroke-opacity:1"
+       id="rect4340"
+       width="120.83564"
+       height="42.647873"
+       x="157.93423"
+       y="101.37165"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.85486358px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#Arrow1Lend)"
+       d="m 538.98334,76.100464 -102.81288,0"
+       id="path4356"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <rect
+       style="fill:none;stroke:#005400;stroke-width:1.42159581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3518-6"
+       width="248.78027"
+       height="102.89359"
+       x="146.8154"
+       y="199.77385"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3520-9"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#006c00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,128.19989,154.76631)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3522-5"><rect
+           id="rect3524-6"
+           width="200"
+           height="40"
+           x="40"
+           y="72.362206"
+           style="stroke:#006c00;stroke-opacity:1" /></flowRegion><flowPara
+         id="flowPara3526-0">Tracking</flowPara></flowRoot>    <rect
+       style="fill:none;stroke:#000065;stroke-width:1.42159581;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3518-6-8"
+       width="497.32996"
+       height="397.39624"
+       x="146.83818"
+       y="333.1452"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3520-9-7"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#00004d;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,124.75415,287.66387)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3522-5-3"><rect
+           id="rect3524-6-4"
+           width="200"
+           height="40"
+           x="40"
+           y="72.362206"
+           style="stroke:#00004d;stroke-opacity:1" /></flowRegion><flowPara
+         id="flowPara3526-0-1">Control</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4939"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,80.377965,-34.940427)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion4941"><rect
+           id="rect4943"
+           width="170"
+           height="40"
+           x="190"
+           y="562.36218" /></flowRegion><flowPara
+         id="flowPara4945">RobotControl 1</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4939-8"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,201.21361,-34.940427)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion4941-7"><rect
+           id="rect4943-1"
+           width="170"
+           height="40"
+           x="190"
+           y="562.36218" /></flowRegion><flowPara
+         id="flowPara4945-3">RobotControl 2</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot4939-3"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,335.54719,-35.012592)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion4941-6"><rect
+           id="rect4943-4"
+           width="170"
+           height="40"
+           x="190"
+           y="562.36218" /></flowRegion><flowPara
+         id="flowPara4945-5">RobotControl N</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3446"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,147.54611,42.475221)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3448"><rect
+           id="rect3450"
+           width="155"
+           height="25"
+           x="95"
+           y="577.36218" /></flowRegion><flowPara
+         id="flowPara3452">Target Following</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3454"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,157.42371,-9.9253854)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3456"><rect
+           id="rect3458"
+           width="260"
+           height="50"
+           x="80"
+           y="622.36218" /></flowRegion><flowPara
+         id="flowPara3460">Random Walk</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3462"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,174.70125,-13.486598)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3464"><rect
+           id="rect3466"
+           width="260"
+           height="60"
+           x="80"
+           y="682.36218"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start" /></flowRegion><flowPara
+         id="flowPara3468">Fish model driven</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3520-9-7-6"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#00004d;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,186.28737,364.329)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3522-5-3-6"><rect
+           id="rect3524-6-4-9"
+           width="200"
+           height="40"
+           x="40"
+           y="72.362206"
+           style="stroke:#00004d;stroke-opacity:1" /></flowRegion><flowPara
+         id="flowPara3526-0-1-1">Behaviours</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5024"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,39.719073,-42.925179)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion5026"><rect
+           id="rect5028"
+           width="221.39085"
+           height="29.091394"
+           x="270"
+           y="742.36218"
+           style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:17.5px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start" /></flowRegion><flowPara
+         id="flowPara5030">Programmed trajectory</flowPara></flowRoot>    <rect
+       style="fill:none;stroke:#00004d;stroke-width:1.49539816;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect5032"
+       width="411.39191"
+       height="91.894394"
+       x="190.59279"
+       y="414.7832"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker5065)"
+       d="m 400.05301,90.316422 0,35.539888 78.18777,0"
+       id="path5057"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5099"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,141.36588,-17.336451)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion5101"><rect
+           id="rect5103"
+           width="110"
+           height="60"
+           x="380"
+           y="202.3622" /></flowRegion><flowPara
+         id="flowPara5105">High Resolution</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot5099-7"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,27.349554,-11.090818)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion5101-3"><rect
+           id="rect5103-2"
+           width="110"
+           height="60"
+           x="380"
+           y="202.3622" /></flowRegion><flowPara
+         id="flowPara5105-0">Low Resolution</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker5115)"
+       d="m 328.97323,90.316422 0,35.539888 -42.64788,0"
+       id="path5287"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker5309)"
+       d="m 328.97323,90.316422 0,135.051608"
+       id="path5301"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker6083)"
+       d="m 388.68025,386.00834 0,21.32394"
+       id="path6075"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3520-9-7-6-0"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#00004d;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,406.44048,364.329)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3522-5-3-6-4"><rect
+           id="rect3524-6-4-9-9"
+           width="200"
+           height="40"
+           x="40"
+           y="72.362206"
+           style="stroke:#00004d;stroke-opacity:1" /></flowRegion><flowPara
+         id="flowPara3526-0-1-1-0">Movement Patterns</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3454-7"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,378.00023,-6.3786097)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3456-3"><rect
+           id="rect3458-3"
+           width="260"
+           height="50"
+           x="80"
+           y="622.36218" /></flowRegion><flowPara
+         id="flowPara3460-7">Constant Linear Speed</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker6083-4)"
+       d="m 260.73663,386.00834 0,21.32394"
+       id="path6075-2"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker6083-7)"
+       d="m 516.62387,386.00834 0,21.32394"
+       id="path6075-7"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot6763"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,107.4389,-20.825499)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion6765"><rect
+           id="rect6767"
+           width="140"
+           height="40"
+           x="460"
+           y="672.36218" /></flowRegion><flowPara
+         id="flowPara6769">Fish Behaviour</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot6771"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,108.62588,-20.825499)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion6773"><rect
+           id="rect6775"
+           width="234"
+           height="30.000023"
+           x="460"
+           y="702.36218" /></flowRegion><flowPara
+         id="flowPara6777">Adaptive Fish Behaviour</flowPara></flowRoot>    <image
+       y="627.67963"
+       x="182.54887"
+       id="image6979"
+       xlink:href="data:image/png;base64,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 "
+       style="image-rendering:optimizeSpeed"
+       preserveAspectRatio="none"
+       height="66.104202"
+       width="75.344574"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3520-9-7-9"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#00004d;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,133.44248,479.59373)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3522-5-3-66"><rect
+           id="rect3524-6-4-4"
+           width="229.08627"
+           height="23.975359"
+           x="40"
+           y="72.362206"
+           style="stroke:#00004d;stroke-opacity:1" /></flowRegion><flowPara
+         id="flowPara3526-0-1-3">Low-level Robots Control</flowPara></flowRoot>    <rect
+       style="fill:none;stroke:#00004d;stroke-width:2.1323936;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect5032-5"
+       width="483.44012"
+       height="198.89359"
+       x="154.36589"
+       y="521.2511"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.07834816px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker6083-2)"
+       d="m 389.75727,493.27388 0,49.07871"
+       id="path6075-3"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3486-5"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.00899049,0.71074103,-0.71074103,0.00899049,1033.7124,449.82249)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3488-4"><rect
+           id="rect3490-3"
+           width="240"
+           height="60"
+           x="70"
+           y="872.36218" /></flowRegion><flowPara
+         id="flowPara3492-9">D-Bus</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3486-2"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,411.96704,-564.93949)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3488-0"><rect
+           id="rect3490-6"
+           width="240"
+           height="60"
+           x="70"
+           y="872.36218" /></flowRegion><flowPara
+         id="flowPara3492-2">Ethernet</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       d="m 388.68025,563.70782 0,21.32394 -220.34735,0 440.69469,0"
+       id="path7542"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.74246728px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#Arrow1Lstart);marker-end:url(#marker6185)"
+       d="m 216.65991,586.16966 0,40.71647"
+       id="path7544"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <image
+       y="597.75848"
+       x="209.55917"
+       id="image7566"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAdCAIAAAA7LeshAAAAA3NCSVQICAjb4U/gAAAEtElEQVRI iZ2VW2xURRjHv5k55+w52722pa3dLu1iL7ReIioN1Ri5t4AxqQgETdXEaIyJvhh5MhiffDJGwwuR mBiERLyEkFhMKEFFoFJoy9beSy+LZelu2W673cvZPTOfDwcr2+6WxP/TmZkzv/n+38x8QxARVsjg Yn5Rj8b0xWQmY/ATJ05OTk5+fPijAlV22S0uuypLdOUsACArcUndmJiOnu8KdHRN9Y3NzkZTBheM Ebdda/AVbnnau6vJV+11WVX5wbh0hl+4Hvj8ZPcl/3QiZUiMUkLMIUQwOJdl9mTdmkNtjS1NPkWm 5N/RHDhEvNB164Mvfx2YiBBCKAFKiaZIAiCRzBAChBAhkHP0lBQcObSteVMlo1nErBSE5hKfHv9z NBAlAJQAABCA55/y7t1cXeRUDS4AgBBgDIKz8cNHL02H4yLbXBbu9G9j/pEwF0gpMddEhBK39dWW +jdeeKRAUzgX5J6gf/zuj+eHUzrPizvXOZVIcQBYih8BAPChEtuB7XWvNNdJjHKBJk8IPHtlSk8b eXGDkxGBSIiZdcERTXexeFqW2Utbalq31ACgaZBR2j8+m+FZZqX7GwvxtLk/jJJCh7aYzOgZzhid uZsYmorYrfLrexrmF1PnrgZMAwvxNKySO3NZzoXP43j/wIZ922qLnZoQmDH4X6Ph9ovjmkV688XH KsvsXAjTxDJJyzsACIHFREZRpJe31lpVqdilCUSbVbFZFasqh+ciSZ2TldPy4SgloUji1Lnh1/Y0 tDzjcxUoisyam6oAoHtw5uszfbPRJKW5gTmjI1xgz3BIILbtqt/9rK/YpdmsSsfVwPH2gd6RECEk Hy73TaaUIED3UOh8VyA4m7Bpyt35VPvl8WtDM6uw8uIQERArSmw1XrejQEkbQlOldR5XaaEVIUcF Ws2seYs9JfaDO+u2bVyrKmw6tCgx2rq5mlFyqmM4GtOX3fwH4Jw29eDO9S1NVZ39Qf9Y2FfuujEa ctnVtt31KPD4LwNJndNcxBxmOUdvqb3eV3jheuDY6b6RW1EAHJyI/NAxnEhlDjav95Y6OM9tOUd0 ksRGAnOfHOuMLqRiiTQjBBAKnWqRS7Nplp//uBkILjBGEGFlfFk4zSJFYzoAZgw+dXseCEiMIqKm ybuafG6H2tkX/OK7noRuMEoQ0apKy5BZZqsrnEvfjBHzPHCBD3uczz3hmZhe+Ozba9GYzigBAIFY 43Wz7GxltbY3VlpkighkqaoBAAAiXO67feT77sDMgizdK79CYPOmSlWR8uJaN1c3rCuiBIT4L9ME yBX/7aM/+XtHw5JECSGIKATWeF37ttdZLCwvbm2Z4739G6rKHQKRCwQASuDGaOib9oGLvdNm1EKg YeAal/Zh28Z1HqdEswjLX7JoLHXm95tfnfb3joRTac4YsVokIJDShRDIhZAlur6y8O3Wx/fvqHXb 1dVeMlOR+WTPSKijK9DpD479HZ2LpbhARomzwOIrdzY+Wrajce3G+rJitxVWKAcOAPSMEQzHb83E wtFkUjfaz569Ewy++85bRU6totReUWJbtgNLyt1rkaWqcmdV+b1zc6e/fTA+t3drbc6f71fuivK/ 9Q+9DTlg0e7dhgAAAABJRU5ErkJggg== "
+       style="image-rendering:optimizeSpeed"
+       preserveAspectRatio="none"
+       height="15.705168"
+       width="14.080497"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3502-5"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,150.91293,65.967694)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3504-6"><rect
+           id="rect3506-2"
+           width="260"
+           height="50"
+           x="300"
+           y="882.36218" /></flowRegion><flowPara
+         id="flowPara3508-3">FishBot 2</flowPara></flowRoot>    <image
+       y="626.96881"
+       x="354.56195"
+       id="image6979-2"
+       xlink:href="data:image/png;base64,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 "
+       style="image-rendering:optimizeSpeed"
+       preserveAspectRatio="none"
+       height="66.104202"
+       width="75.344574"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.74278378;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-start:url(#marker9320);marker-end:url(#marker9208)"
+       d="m 388.673,585.45889 0,40.71646"
+       id="path7544-4"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <image
+       y="597.04773"
+       x="381.57227"
+       id="image7566-7"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAdCAIAAAA7LeshAAAAA3NCSVQICAjb4U/gAAAEtElEQVRI iZ2VW2xURRjHv5k55+w52722pa3dLu1iL7ReIioN1Ri5t4AxqQgETdXEaIyJvhh5MhiffDJGwwuR mBiERLyEkFhMKEFFoFJoy9beSy+LZelu2W673cvZPTOfDwcr2+6WxP/TmZkzv/n+38x8QxARVsjg Yn5Rj8b0xWQmY/ATJ05OTk5+fPijAlV22S0uuypLdOUsACArcUndmJiOnu8KdHRN9Y3NzkZTBheM Ebdda/AVbnnau6vJV+11WVX5wbh0hl+4Hvj8ZPcl/3QiZUiMUkLMIUQwOJdl9mTdmkNtjS1NPkWm 5N/RHDhEvNB164Mvfx2YiBBCKAFKiaZIAiCRzBAChBAhkHP0lBQcObSteVMlo1nErBSE5hKfHv9z NBAlAJQAABCA55/y7t1cXeRUDS4AgBBgDIKz8cNHL02H4yLbXBbu9G9j/pEwF0gpMddEhBK39dWW +jdeeKRAUzgX5J6gf/zuj+eHUzrPizvXOZVIcQBYih8BAPChEtuB7XWvNNdJjHKBJk8IPHtlSk8b eXGDkxGBSIiZdcERTXexeFqW2Utbalq31ACgaZBR2j8+m+FZZqX7GwvxtLk/jJJCh7aYzOgZzhid uZsYmorYrfLrexrmF1PnrgZMAwvxNKySO3NZzoXP43j/wIZ922qLnZoQmDH4X6Ph9ovjmkV688XH KsvsXAjTxDJJyzsACIHFREZRpJe31lpVqdilCUSbVbFZFasqh+ciSZ2TldPy4SgloUji1Lnh1/Y0 tDzjcxUoisyam6oAoHtw5uszfbPRJKW5gTmjI1xgz3BIILbtqt/9rK/YpdmsSsfVwPH2gd6RECEk Hy73TaaUIED3UOh8VyA4m7Bpyt35VPvl8WtDM6uw8uIQERArSmw1XrejQEkbQlOldR5XaaEVIUcF Ws2seYs9JfaDO+u2bVyrKmw6tCgx2rq5mlFyqmM4GtOX3fwH4Jw29eDO9S1NVZ39Qf9Y2FfuujEa ctnVtt31KPD4LwNJndNcxBxmOUdvqb3eV3jheuDY6b6RW1EAHJyI/NAxnEhlDjav95Y6OM9tOUd0 ksRGAnOfHOuMLqRiiTQjBBAKnWqRS7Nplp//uBkILjBGEGFlfFk4zSJFYzoAZgw+dXseCEiMIqKm ybuafG6H2tkX/OK7noRuMEoQ0apKy5BZZqsrnEvfjBHzPHCBD3uczz3hmZhe+Ozba9GYzigBAIFY 43Wz7GxltbY3VlpkighkqaoBAAAiXO67feT77sDMgizdK79CYPOmSlWR8uJaN1c3rCuiBIT4L9ME yBX/7aM/+XtHw5JECSGIKATWeF37ttdZLCwvbm2Z4739G6rKHQKRCwQASuDGaOib9oGLvdNm1EKg YeAal/Zh28Z1HqdEswjLX7JoLHXm95tfnfb3joRTac4YsVokIJDShRDIhZAlur6y8O3Wx/fvqHXb 1dVeMlOR+WTPSKijK9DpD479HZ2LpbhARomzwOIrdzY+Wrajce3G+rJitxVWKAcOAPSMEQzHb83E wtFkUjfaz569Ewy++85bRU6totReUWJbtgNLyt1rkaWqcmdV+b1zc6e/fTA+t3drbc6f71fuivK/ 9Q+9DTlg0e7dhgAAAABJRU5ErkJggg== "
+       style="image-rendering:optimizeSpeed"
+       preserveAspectRatio="none"
+       height="15.705168"
+       width="14.080497"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3502-3"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:14.21595764px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3504-4"><rect
+           id="rect3506-3"
+           width="184.80745"
+           height="35.539894"
+           x="540.56561"
+           y="692.43805" /></flowRegion><flowPara
+         id="flowPara3508-5">FishBot N</flowPara></flowRoot>    <image
+       y="626.258"
+       x="530.97528"
+       id="image6979-29"
+       xlink:href="data:image/png;base64,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 "
+       style="image-rendering:optimizeSpeed"
+       preserveAspectRatio="none"
+       height="66.104202"
+       width="75.344574"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.74246728px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-start:url(#marker9456);marker-end:url(#marker9586)"
+       d="m 565.08634,584.74807 0,40.71646"
+       id="path7544-2"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <image
+       y="596.33685"
+       x="557.9856"
+       id="image7566-6"
+       xlink:href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAdCAIAAAA7LeshAAAAA3NCSVQICAjb4U/gAAAEtElEQVRI iZ2VW2xURRjHv5k55+w52722pa3dLu1iL7ReIioN1Ri5t4AxqQgETdXEaIyJvhh5MhiffDJGwwuR mBiERLyEkFhMKEFFoFJoy9beSy+LZelu2W673cvZPTOfDwcr2+6WxP/TmZkzv/n+38x8QxARVsjg Yn5Rj8b0xWQmY/ATJ05OTk5+fPijAlV22S0uuypLdOUsACArcUndmJiOnu8KdHRN9Y3NzkZTBheM Ebdda/AVbnnau6vJV+11WVX5wbh0hl+4Hvj8ZPcl/3QiZUiMUkLMIUQwOJdl9mTdmkNtjS1NPkWm 5N/RHDhEvNB164Mvfx2YiBBCKAFKiaZIAiCRzBAChBAhkHP0lBQcObSteVMlo1nErBSE5hKfHv9z NBAlAJQAABCA55/y7t1cXeRUDS4AgBBgDIKz8cNHL02H4yLbXBbu9G9j/pEwF0gpMddEhBK39dWW +jdeeKRAUzgX5J6gf/zuj+eHUzrPizvXOZVIcQBYih8BAPChEtuB7XWvNNdJjHKBJk8IPHtlSk8b eXGDkxGBSIiZdcERTXexeFqW2Utbalq31ACgaZBR2j8+m+FZZqX7GwvxtLk/jJJCh7aYzOgZzhid uZsYmorYrfLrexrmF1PnrgZMAwvxNKySO3NZzoXP43j/wIZ922qLnZoQmDH4X6Ph9ovjmkV688XH KsvsXAjTxDJJyzsACIHFREZRpJe31lpVqdilCUSbVbFZFasqh+ciSZ2TldPy4SgloUji1Lnh1/Y0 tDzjcxUoisyam6oAoHtw5uszfbPRJKW5gTmjI1xgz3BIILbtqt/9rK/YpdmsSsfVwPH2gd6RECEk Hy73TaaUIED3UOh8VyA4m7Bpyt35VPvl8WtDM6uw8uIQERArSmw1XrejQEkbQlOldR5XaaEVIUcF Ws2seYs9JfaDO+u2bVyrKmw6tCgx2rq5mlFyqmM4GtOX3fwH4Jw29eDO9S1NVZ39Qf9Y2FfuujEa ctnVtt31KPD4LwNJndNcxBxmOUdvqb3eV3jheuDY6b6RW1EAHJyI/NAxnEhlDjav95Y6OM9tOUd0 ksRGAnOfHOuMLqRiiTQjBBAKnWqRS7Nplp//uBkILjBGEGFlfFk4zSJFYzoAZgw+dXseCEiMIqKm ybuafG6H2tkX/OK7noRuMEoQ0apKy5BZZqsrnEvfjBHzPHCBD3uczz3hmZhe+Ozba9GYzigBAIFY 43Wz7GxltbY3VlpkighkqaoBAAAiXO67feT77sDMgizdK79CYPOmSlWR8uJaN1c3rCuiBIT4L9ME yBX/7aM/+XtHw5JECSGIKATWeF37ttdZLCwvbm2Z4739G6rKHQKRCwQASuDGaOib9oGLvdNm1EKg YeAal/Zh28Z1HqdEswjLX7JoLHXm95tfnfb3joRTac4YsVokIJDShRDIhZAlur6y8O3Wx/fvqHXb 1dVeMlOR+WTPSKijK9DpD479HZ2LpbhARomzwOIrdzY+Wrajce3G+rJitxVWKAcOAPSMEQzHb83E wtFkUjfaz569Ewy++85bRU6totReUWJbtgNLyt1rkaWqcmdV+b1zc6e/fTA+t3drbc6f71fuivK/ 9Q+9DTlg0e7dhgAAAABJRU5ErkJggg== "
+       style="image-rendering:optimizeSpeed"
+       preserveAspectRatio="none"
+       height="15.705168"
+       width="14.080497"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <g
+       id="g4636"
+       transform="matrix(0.71079788,0,0,0.71079788,132.72535,7.6064168)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722">
+      <flowRoot
+         transform="translate(5.038345,14.179083)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Aerial;-inkscape-font-specification:'Aerial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot3414"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3416"><rect
+             y="292.36221"
+             x="80"
+             height="70"
+             width="310"
+             id="rect3418" /></flowRegion><flowPara
+           id="flowPara3420">Background Subtraction</flowPara></flowRoot>      <circle
+         r="5"
+         cy="317.36221"
+         cx="71"
+         id="path9086"
+         style="fill:#000000;fill-opacity:1;stroke:#00004d;stroke-opacity:1" />
+    </g>
+    <g
+       id="g4629"
+       transform="matrix(0.71079788,0,0,0.71079788,143.49196,7.6064168)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722">
+      <flowRoot
+         transform="translate(3.865078,-52.575085)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot3422"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3424"><rect
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start"
+             y="382.36221"
+             x="100"
+             height="100"
+             width="270"
+             id="rect3426" /></flowRegion><flowPara
+           id="flowPara3428">Corner detection</flowPara></flowRoot>      <circle
+         r="5"
+         cy="342.31146"
+         cx="86.253807"
+         id="path9086-1"
+         style="fill:#000000;fill-opacity:1;stroke:#00004d;stroke-opacity:1" />
+    </g>
+    <g
+       id="g4615"
+       transform="matrix(0.71079788,0,0,0.71079788,137.0578,7.6064168)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722">
+      <flowRoot
+         transform="translate(-35.939082,-143.03556)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot3430"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3432"><rect
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start"
+             y="492.36221"
+             x="90"
+             height="49.695419"
+             width="278.88834"
+             id="rect3434" /></flowRegion><flowPara
+           id="flowPara3436">Separate Robots from Fishes</flowPara></flowRoot>      <circle
+         r="5"
+         cy="361.40283"
+         cx="41.203049"
+         id="path9086-7"
+         style="fill:#000000;fill-opacity:1;stroke:#00004d;stroke-opacity:1" />
+    </g>
+    <g
+       id="g4622"
+       transform="matrix(0.71079788,0,0,0.71079788,134.36678,7.6064168)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722">
+      <flowRoot
+         transform="translate(-1.593896,-169.36044)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot3438"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3440"><rect
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start"
+             y="542.36218"
+             x="90"
+             height="60"
+             width="280"
+             id="rect3442" /></flowRegion><flowPara
+           id="flowPara3444">Identification of robots</flowPara></flowRoot>      <circle
+         r="5"
+         cy="387.36221"
+         cx="79"
+         id="path9086-8"
+         style="fill:#000000;fill-opacity:1;stroke:#00004d;stroke-opacity:1" />
+    </g>
+    <rect
+       style="fill:none;stroke:#000000;stroke-width:1.40685952;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect3518-6-3"
+       width="243.61443"
+       height="102.90833"
+       x="400.47272"
+       y="199.99744"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot3520-9-3"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:#006c00;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,383.28615,157.84042)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion3522-5-9"><rect
+           id="rect3524-6-1"
+           width="200"
+           height="40"
+           x="40"
+           y="72.362206"
+           style="stroke:#006c00;stroke-opacity:1" /></flowRegion><flowPara
+         id="flowPara3526-0-2">GUI</flowPara></flowRoot>    <g
+       id="g4643"
+       transform="matrix(0.71079788,0,0,0.71079788,147.43951,7.6064168)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722">
+      <flowRoot
+         transform="translate(373.91146,14.503956)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Aerial;-inkscape-font-specification:'Aerial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot3414-1"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3416-6"><rect
+             y="292.36221"
+             x="80"
+             height="70"
+             width="310"
+             id="rect3418-6" /></flowRegion><flowPara
+           id="flowPara3420-4">Show camera image</flowPara></flowRoot>      <circle
+         r="5"
+         cy="317.6871"
+         cx="439.87311"
+         id="path9086-3"
+         style="fill:#000000;fill-opacity:1;stroke:#00004d;stroke-opacity:1" />
+    </g>
+    <g
+       id="g4650"
+       transform="matrix(0.71079788,0,0,0.71079788,108.25244,7.6064168)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722">
+      <flowRoot
+         transform="translate(372.7382,-52.250204)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot3422-9"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3424-5"><rect
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start"
+             y="382.36221"
+             x="100"
+             height="100"
+             width="270"
+             id="rect3426-2" /></flowRegion><flowPara
+           id="flowPara3428-3">Show fishes/robots positions</flowPara></flowRoot>      <circle
+         r="5"
+         cy="342.63635"
+         cx="455.12692"
+         id="path9086-1-8"
+         style="fill:#000000;fill-opacity:1;stroke:#00004d;stroke-opacity:1" />
+    </g>
+    <g
+       id="g4657"
+       transform="matrix(0.71079788,0,0,0.71079788,134.85233,7.6064168)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722">
+      <flowRoot
+         transform="translate(332.93404,-142.71069)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot3430-6"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3432-8"><rect
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start"
+             y="492.36221"
+             x="90"
+             height="49.695419"
+             width="278.88834"
+             id="rect3434-4" /></flowRegion><flowPara
+           id="flowPara3436-0">Allow to select robot behaviour</flowPara></flowRoot>      <circle
+         r="5"
+         cy="361.72772"
+         cx="410.07617"
+         id="path9086-7-4"
+         style="fill:#000000;fill-opacity:1;stroke:#00004d;stroke-opacity:1" />
+    </g>
+    <g
+       id="g4664"
+       transform="matrix(0.71079788,0,0,0.71079788,126.22296,7.6064168)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722">
+      <flowRoot
+         transform="translate(367.27922,-169.03557)"
+         style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+         id="flowRoot3438-1"
+         xml:space="preserve"><flowRegion
+           id="flowRegion3440-2"><rect
+             style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;writing-mode:lr-tb;text-anchor:start"
+             y="542.36218"
+             x="90"
+             height="60"
+             width="280"
+             id="rect3442-7" /></flowRegion><flowPara
+           id="flowPara3444-2">Show states of the robots</flowPara></flowRoot>      <circle
+         r="5"
+         cy="387.6871"
+         cx="447.87311"
+         id="path9086-8-2"
+         style="fill:#000000;fill-opacity:1;stroke:#00004d;stroke-opacity:1" />
+    </g>
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker9724)"
+       d="m 328.97323,172.76898 85.29574,35.53989"
+       id="path9716"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker9888)"
+       d="m 260.73663,300.7126 0,56.86383"
+       id="path9878"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker10194)"
+       d="m 260.73663,300.7126 113.72766,56.86383"
+       id="path10172"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker10030)"
+       d="m 260.73663,300.7126 241.67128,56.86383"
+       id="path10174"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker10350)"
+       d="m 516.62387,300.7126 0,56.86383"
+       id="path10342"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker10512)"
+       d="M 516.62387,300.7126 395.78823,357.57643"
+       id="path10504"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.71079791px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1;marker-end:url(#marker10680)"
+       d="M 516.62387,300.7126 274.95258,357.57643"
+       id="path10672"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot10846"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,174.01929,9.0280107)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion10848"><rect
+           id="rect10850"
+           width="150"
+           height="30"
+           x="20"
+           y="422.36221" /></flowRegion><flowPara
+         id="flowPara10852">Positions</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot10854"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,127.10662,1.920032)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion10856"><rect
+           id="rect10858"
+           width="180"
+           height="30"
+           x="570"
+           y="432.36221" /></flowRegion><flowPara
+         id="flowPara10860">Commands</flowPara></flowRoot>    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.42159581;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker10870)"
+       d="m 367.35631,258.06472 35.5399,0"
+       id="path10862"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot11395"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,149.85215,7.6064168)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion11397"><rect
+           id="rect11399"
+           width="150"
+           height="40"
+           x="-170"
+           y="422.36221" /></flowRegion><flowPara
+         id="flowPara11401">HEAF</flowPara></flowRoot>    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.0661968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect11139-3"
+       width="74.831306"
+       height="20.265837"
+       x="12.399827"
+       y="306.65378"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:1.0661968;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker11446)"
+       d="m 168.25292,300.5074 0,14.51425 -68.892114,0"
+       id="path11438"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot11776"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,132.79301,7.6064168)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion11778"><rect
+           id="rect11780"
+           width="140"
+           height="40"
+           x="-160"
+           y="132.3622" /></flowRegion><flowPara
+         id="flowPara11782">Local Network</flowPara></flowRoot>    <flowRoot
+       xml:space="preserve"
+       id="flowRoot11784"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:20px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.71079788,0,0,0.71079788,132.79301,7.6064168)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion11786"><rect
+           id="rect11788"
+           width="140"
+           height="40"
+           x="-160"
+           y="182.3622" /></flowRegion><flowPara
+         id="flowPara11790">Internet</flowPara></flowRoot>    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.0661968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect11792"
+       width="63.971809"
+       height="21.323936"
+       x="11.957369"
+       y="137.2291"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.0661968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect11794"
+       width="106.61968"
+       height="21.323936"
+       x="11.957369"
+       y="101.68919"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.92403722;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker11804)"
+       d="m 161.22492,123.01313 -42.64787,-7.10798"
+       id="path11796"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.92403722;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker12014)"
+       d="M 161.22492,130.12111 83.037157,151.44504"
+       id="path12006"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <path
+       style="fill:none;fill-rule:evenodd;stroke:#000000;stroke-width:0.9062531;stroke-linecap:butt;stroke-linejoin:miter;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1;marker-end:url(#marker4615)"
+       d="m 621.90435,124.08698 31.71885,0"
+       id="path4607"
+       inkscape:connector-curvature="0"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+    <flowRoot
+       xml:space="preserve"
+       id="flowRoot11395-1"
+       style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-size:15.68652058px;line-height:125%;font-family:Arial;-inkscape-font-specification:'Arial, Normal';text-align:start;letter-spacing:0px;word-spacing:0px;writing-mode:lr-tb;text-anchor:start;fill:#000000;fill-opacity:1;stroke:none;stroke-width:1px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+       transform="matrix(0.90625311,0,0,0.90625311,648.75717,112.88998)"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722"><flowRegion
+         id="flowRegion11397-4"><rect
+           id="rect11399-3"
+           width="117.6489"
+           height="31.373041"
+           x="18.923836"
+           y="1.8757613" /></flowRegion><flowPara
+         id="flowPara11401-8">idTracker</flowPara></flowRoot>    <rect
+       style="fill:none;fill-opacity:1;stroke:#000000;stroke-width:1.0661968;stroke-miterlimit:4;stroke-dasharray:none;stroke-opacity:1"
+       id="rect11139-3-9"
+       width="74.831306"
+       height="20.265837"
+       x="658.35284"
+       y="113.42308"
+       inkscape:export-filename="/tmp/CATS.png"
+       inkscape:export-xdpi="399.9722"
+       inkscape:export-ydpi="399.9722" />
+  </g>
+</svg>

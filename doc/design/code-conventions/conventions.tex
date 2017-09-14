@@ -1,0 +1,666 @@
+\lstset{language=C++} 
+
+\section{Sources}\label{sec:sources}
+This is Coding Style: not mandatory, but very useful and pretty to read.
+
+\begin{itemize}
+\item  \url{https://wiki.qt.io/Qt_Coding_Style}
+\item  \url{https://wiki.qt.io/Coding_Conventions}
+\item \url{https://community.kde.org/Policies/Kdepim_Coding_Style}
+\item \url{https://wiki.qt.io/API_Design_Principles}
+\item \url{https://wiki.qt.io/New_Signal_Slot_Syntax}
+\item \url{https://github.com/isocpp/CppCoreGuidelines/blob/master/CppCoreGuidelines.md}
+\end{itemize}
+
+% ============================================================================================================================================
+\clearpage
+\newpage
+
+\section{C++ features}\label{sec:cpp_features}
+
+% === Subsection ====
+\subsection{Exceptions}
+\begin{itemize}
+\item Don't use exceptions
+\end{itemize}
+
+% === Subsection ====
+\subsection{Casting}
+\begin{itemize}
+\item If possible, don't use rtti (Run-Time Type Information; that is, the typeinfo struct, the dynamic\_cast or the typeid operators, including throwing exceptions). Use qobject\_cast for QObjects.
+\item Avoid C casts, prefer C++ casts (static\_cast, const\_cast, reinterpret\_cast)\footnote{Both reinterpret\_cast and C-style casts are dangerous, but at least reinterpret\_cast won't remove the const modifier}
+\item Use the constructor to cast simple types: int(myFloat) instead of (int)myFloat\footnote{When refactoring code, the compiler will instantly let you know if the cast would become dangerous.}
+\end{itemize}
+
+% === Subsection ====
+\subsection{Templates}
+\begin{itemize}
+\item Use templates wisely, not just because you can.
+\end{itemize}
+
+% === Subsection ====
+\subsection{Including headers}
+\begin{itemize}
+\item In source files, include specialized headers first, then generic headers. Separate the categories with empty lines.
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ #include <qstring.h> // Qt class
+ 
+ #include <new> // STL stuff
+ 
+ #include <limits.h> // system stuff
+ \end{lstlisting}
+% === END(Example) ====
+\item If you need to include qplatformdefs.h, always include it as the first header file.
+\end{itemize}
+
+% === Subsection ====
+\subsection{Operators}
+\begin{itemize}
+\item The binary operators = (assignment), [] (array subscription),  $\rightarrow$ (member access), as well as the n-ary () (function call) operator, must always be implemented as member functions, because the syntax of the language requires them to. A binary operator that treats both of its arguments equally should not be a member. Because, in addition to the reasons mentioned in the stack overflow answer \footnote{\url{http://stackoverflow.com/questions/4421706/operator-overloading/4421729\#4421729}}, the arguments are not equal when the operator is a member. Example with QLineF which unfortunately has its operator== as a member:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+QLineF lineF;
+QLine lineN;
+ 
+if (lineF == lineN) // Ok,  lineN is implicitly converted to QLineF
+if (lineN == lineF) // Error: QLineF cannot be converted implicitly to QLine, and the LHS is a member so no conversion applies
+ \end{lstlisting}
+% === END(Example) ====
+\end{itemize}
+If the operator== was outside of the class, conversion rules would apply equally for both sides.
+
+% === Subsection ====
+\subsection{Functions/methods}
+\begin{itemize}
+\item A function should perform a single logical operation. Keep functions short and simple.
+\item If a function is very small and time-critical, declare it inline.
+\item  Where there is a choice, prefer default arguments over overloading.
+\end{itemize}
+
+% === Subsection ====
+\subsection{unsigned int vs. size\_t}
+Use size\_t for sizes and indices. The size\_t type is the unsigned integer type that is the result of the sizeof operator (and the offsetof operator), so it is guaranteed to be big enough to contain the size of the biggest object your system can handle\footnote{http://stackoverflow.com/questions/131803/unsigned-int-vs-size-t}.
+
+
+% === Subsection ====
+\subsection{Conventions in Qt source code}
+\begin{itemize}
+\item Every QObject subclass must have a Q\_OBJECT macro, even if it doesn't have signals or slots, otherwise qobject\_cast will fail.
+\item In public header files, always use this form to include Qt headers: \#include <QtCore/qwhatever.h>. The library prefix is neccessary for Mac OS X frameworks and is very convenient for non-qmake projects.
+\item Use new signal slot syntax : 
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+connect(sender, &Sender::valueChanged, receiver, &Receiver::updateValue );
+ \end{lstlisting}
+% === END(Example) ====
+The new syntax can even connect to functions, not just QObjects:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+connect(sender, &Sender::valueChanged, someFunction);
+
+connect(sender, &Sender::valueChanged, [=](const QString &newValue) { receiver->updateValue("senderValue", newValue); } );
+ \end{lstlisting}
+% === END(Example) ====
+
+\end{itemize}
+
+% === Subsection ====
+\subsection{Compiler/Platform specific issues}
+\begin{itemize}
+\item Be extremely careful when using the questionmark operator. If the returned types aren't identical, some compilers generate code that crashes at runtime (you won't even get a compiler warning).
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ QString s;
+ return condition ? s : "nothing"; // crash at runtime - QString vs. const char *
+ \end{lstlisting}
+% === END(Example) ====
+\item Be extremely careful about alignment. Whenever a pointer is cast such that the required alignment of the target is increased, the resulting code might crash at runtime on some architectures. For example, if a const char * is cast to an const int *, it'll crash on machines where integers have to be aligned at two- or four-byte boundaries.
+\item Use a union to force the compiler to align variables correctly. In the example below, you can be sure that all instances of AlignHelper are aligned at integer-boundaries.
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+union AlignHelper {
+     char c;
+     int i;
+ };
+ \end{lstlisting}
+% === END(Example) ====
+\end{itemize}
+
+\clearpage
+\newpage
+
+% ============================================================================================================================================
+\section{C++11 features}\label{sec:cpp11_features}
+
+% === Subsection ====
+\subsection{auto Keyword}
+Optionally, you can use the auto keyword in the following cases: 
+\begin{itemize}
+\item When it avoids repetition of a type in the same statement.
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+auto something = new MyCustomType;
+auto keyEvent = static_cast<QKeyEvent *>(event);
+auto myList = QStringList() << QLatin1String("FooThing") << QLatin1String("BarThing");
+ \end{lstlisting}
+% === END(Example) ====
+\item When assigning iterator types.
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+auto it = myList.const_iterator();
+ \end{lstlisting}
+% === END(Example) ====
+\end{itemize}
+
+If using auto could make the code less readable, do not use auto; the code is read much more often than written.
+
+% === Subsection ====
+\subsection{nullptr}
+In C++ code, use nullptr for pointers. 
+
+% === Subsection ====
+\subsection{override and final}
+\begin{itemize}
+ \item Use override that specifies that a virtual function overrides another virtual function. 
+ \item Use final that specifies that a virtual function cannot be overridden in a derived class or that a class cannot be inherited from. 
+\end{itemize}
+
+% === Subsection ====
+\subsection{Objects lifetime management}
+\begin{itemize}
+ \item Where possible provide a parent object to the objects of classes inheriting QObject, the parent object will take care for the clean up.
+ \item Use Qt's smart pointers to manage the pointers. 
+\end{itemize} 
+  
+% === Subsection ====
+\subsection{Scoped enums}
+Use scoped enums instead of C++98-style enums.
+
+
+
+\clearpage
+\newpage
+
+% ============================================================================================================================================
+% === Chapter ====
+\section{Coding style}\label{sec:code_conventions}
+\subsection{Indentation}
+\begin{itemize}
+\item No tabs, 4 Spaces instead of one tab
+\item Unix-style linebreaks ('\textbackslash n'), not Windows-style ('\textbackslash r\textbackslash n').
+\end{itemize}
+
+
+% === Subsection ====
+\subsection{Declaring variables}
+
+\begin{itemize}
+\item  Declare each variable on a separate line
+\item  Avoid short or meaningless names
+\item  Single character variable names are only okay for counters and temporaries, where the purpose of the variable is obvious
+\item  Wait when declaring a variable until it is needed
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+// Wrong
+ int a, b;
+ char *c, *d;
+
+ // Correct
+ int height;
+ int width;
+ char *nameOfThis;
+ char *nameOfThat;
+ \end{lstlisting}
+% === END(Example) ====
+\item  Variables and functions start with a lower-case letter. Each consecutive word in a variable's name starts with an upper-case letter.
+\item  Class members start with {\bf m\_}\footnote{This seems to be inconsistent with the variables naming conventions, to replace my a simple {\bf m}?}. 
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ class TableInfo {
+  ...
+ private:
+  string m_tableName;  // OK - starts with m_
+};
+ \end{lstlisting}
+% === END(Example) ====
+\item  Data members of structs should be named like ordinary non-member variables, without {m\_} before them.
+\item  Avoid abbreviations
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ // Wrong
+ short Cntr;
+ char ITEM_DELIM = ' ';
+
+ // Correct
+ short counter;
+ char itemDelimiter = ' ';
+ \end{lstlisting}
+% === END(Example) ====
+\item  Classes always start with an upper-case letter. 
+\item  Acronyms are camel-cased (e.g. QXmlStreamReader, not QXMLStreamReader).
+\end{itemize}
+
+% ==============
+% === Subsection ====
+\subsection{Whitespace}
+\begin{itemize}
+\item Use blank lines to group statements together where suited
+\item Always use only one blank line
+\item Always use a single space after a keyword and before a curly brace:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ // Wrong
+ if(foo){
+ }
+
+ // Correct
+ if (foo) {
+ }
+ \end{lstlisting}
+% === END(Example) ====
+\item For pointers or references, always use a single space between the type and '*' or '\&', but no space between the '*' or '\&' and the variable name:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ char *x;
+ const QString &myString;
+ const char * const y = "hello";
+ \end{lstlisting}
+% === END(Example) ====
+\item Surround binary operators with spaces
+\item No space after a cast
+\item Avoid C-style casts when possible
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ // Wrong
+ char* blockOfMemory = (char* ) malloc(data.size());
+
+ // Correct
+ char *blockOfMemory = reinterpret_cast<char *>(malloc(data.size()));
+ \end{lstlisting}
+% === END(Example) ====
+\item Do not put multiple statements on one line
+\item By extension, use a new line for the body of a control flow statement:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ // Wrong
+ if (foo) bar();
+
+ // Correct
+ if (foo)
+     bar();
+ \end{lstlisting}
+% === END(Example) ====
+\item Use a space after the name of the class
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+class DbException : public Akonadi::Exception
+{
+  ...
+};
+ \end{lstlisting}
+% === END(Example) ====
+\end{itemize}
+
+% ==============
+% === Subsection ====
+\subsection{Braces}
+\begin{itemize}
+\item Use attached braces: The opening brace goes on the same line as the start of the statement. If the closing brace is followed by another keyword, it goes into the same line as well:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ // Wrong
+ if (codec)
+ {
+ }
+ else
+ {
+ }
+ 
+ // Correct
+ if (codec) {
+ } else {
+ }
+ \end{lstlisting}
+% === END(Example) ====
+\item Exception: Function implementations and class declarations always have the left brace on the start of a line:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ static void foo(int g)
+ {
+     qDebug("foo: %i", g);
+ }
+ 
+ class Moo
+ {
+ };
+ \end{lstlisting}
+% === END(Example) ====
+\item Use curly braces only when the body of a conditional statement contains more than one line:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ // Wrong
+ if (address.isEmpty()) {
+     return false;
+ }
+ 
+ for (int i = 0; i < 10; +''i) {
+     qDebug("%i", i);
+ }
+ 
+ // Correct
+ if (address.isEmpty())
+     return false;
+ 
+ for (int i = 0; i < 10;i)
+     qDebug("%i", i);
+ \end{lstlisting}
+% === END(Example) ====
+\item Exception 1: Use braces also if the parent statement covers several lines / wraps:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ // Correct
+ if (address.isEmpty() || !isValid()
+     || !codec) {
+     return false;
+ }
+  \end{lstlisting}
+% === END(Example) ====
+\item Exception 2: Brace symmetry: Use braces also in if-then-else blocks where either the if-code or the else-code covers several lines:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+// Wrong
+ if (address.isEmpty())
+     qDebug("empty!");
+ else {
+     qDebug("%s", qPrintable(address));
+     it;
+ }
+ 
+ // Correct
+ if (address.isEmpty()) {
+     qDebug("empty!");
+ } else {
+     qDebug("%s", qPrintable(address));
+     it;
+ }
+ 
+ // Wrong
+ if (a)
+     ...
+ else
+     if (b)
+        ...
+ 
+ // Correct
+ if (a) {
+     ...
+ } else {
+     if (b)
+         ...
+ }
+ \end{lstlisting}
+% === END(Example) ====
+\item Use curly braces when the body of a conditional statement is empty
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ // Wrong
+ while (a);
+ 
+ // Correct
+ while (a) {}
+ \end{lstlisting}
+% === END(Example) ====
+\end{itemize}
+
+% ==============
+% === Subsection ====
+\subsection{Parentheses}
+\begin{itemize}
+\item  Use parentheses to group expressions:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ // Wrong
+ if (a && b || c)
+ 
+ // Correct
+ if ((a && b) || c)
+ 
+ // Wrong
+ a + b & c
+ 
+ // Correct
+ (a + b) & c
+ \end{lstlisting}
+% === END(Example) ====
+\end{itemize}
+
+
+% ==============
+% === Subsection ====
+\subsection{Switch statements}
+\begin{itemize}
+\item  The case labels are in the same column as the switch
+\item Every case must have a break (or return) statement at the end or a comment to indicate that there's intentionally no break, unless another case follows immediately.
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+switch (myEnum) {
+ case Value1:
+   doSomething();
+   break;
+ case Value2:
+ case Value3:
+   doSomethingElse();
+   // fall through
+ default:
+   defaultHandling();
+   break;
+ }
+  \end{lstlisting}
+% === END(Example) ====
+\end{itemize}
+
+
+% ==============
+% === Subsection ====
+\subsection{Jump statements (break, continue, return, and goto)}
+\begin{itemize}
+\item  Do not put 'else' after jump statements:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ // Wrong
+ if (thisOrThat)
+     return;
+ else
+     somethingElse();
+ 
+ // Correct
+ if (thisOrThat)
+     return;
+ somethingElse();
+ \end{lstlisting}
+% === END(Example) ====
+Exception: If the code is inherently symmetrical, use of 'else' is allowed to visualize that symmetry
+\item When testing a pointer, use (!myPtr) or (myPtr); don't use myPtr != nullptr or myPtr == nullptr.
+\item 
+\end{itemize}
+
+% ==============
+% === Subsection ====
+\subsection{Line breaks}
+\begin{itemize}
+\item  Keep lines shorter than 100 characters; wrap if necessary
+\item  Comment/apidoc lines should be kept below 80 columns
+\item  Commas go at the end of wrapped lines; operators start at the beginning of the new lines. An operator at the end of the line is easy to miss if the editor is too narrow.
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ // Wrong
+ if (longExpression +
+     otherLongExpression +
+     otherOtherLongExpression) {
+ }
+ 
+ // Correct
+ if (longExpression
+     + otherLongExpression
+     + otherOtherLongExpression) {
+ }
+ \end{lstlisting}
+% === END(Example) ====
+\item Each member initialization of a method in separate line
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+class myClass
+{
+    // some lines
+public:
+    myClass(int r, int b, int i, int j)
+        : r(0)
+        , b(i)
+        , i(5)
+        , j(13)
+{
+    // more lines
+}
+};
+ \end{lstlisting}
+% === END(Example) ====
+\end{itemize}
+
+\clearpage
+\newpage
+
+% ============================================================================================================================================
+\section{Design principles}\label{sec:design}
+% === Subsection ====
+\subsection{Pointers vs. References}
+Most C++ books recommend references whenever possible, according to the general perception that references are "safer and nicer" than pointers. In contrast, Qt Software tends to prefer pointers because they make the user code more readable:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ color.getHsv(&h, &s, &v);
+ color.getHsv(h, s, v);
+ \end{lstlisting}
+% === END(Example) ====
+Only the first line makes it clear that there's a high probability that h, s, and v will be modified by the function call.
+
+% === Subsection ====
+\subsection{Passing by const-ref vs. Passing by value}
+\begin{itemize}
+\item If the type is bigger than 16 bytes, pass by const-ref.
+\item If the type has a non-trivial copy-constructor or a non-trivial destructor, pass by const-ref to avoid executing these methods.
+\item All other types should usually be passed by value.
+\end{itemize}
+
+
+% === Subsection ====
+\subsection{Ownership}
+We try to get rid of the manual memory management. For this reason
+\begin{itemize}
+\item In the GUI classes we use the Qt mechanism of ownership.
+\item In data classes, handler classes\footnote{The handler classes make a link between the data classes and GUI.} and other classes inheriting QObject we use the Qt's smart pointers, that are provided QObject::deleteLater as destruction mechanism.
+\item In all other cases we use smart pointers or references. 
+
+\end{itemize}
+
+
+\clearpage
+\newpage
+
+% ============================================================================================================================================
+\section{General Naming Rules}\label{sec:naming_rules}
+% === Subsection ====
+\subsection{Naming Enum Types and Values}
+When declaring enums, we must keep in mind that in C++ (unlike in Java or C\#), the enum values are used without the type:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ namespace Qt
+ {
+ enum Corner { TopLeft, BottomRight, ... };
+ enum CaseSensitivity { Insensitive, Sensitive };
+ ...
+ };
+ 
+ tabWidget->setCornerWidget(widget, Qt::TopLeft);
+ str.indexOf("$(QTDIR)", Qt::Insensitive);
+ \end{lstlisting}
+% === END(Example) ====
+
+In the last line, what does Insensitive mean? One guideline for naming enum types is to repeat at least one element of the enum type name in each of the enum values:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+ namespace Qt
+ {
+ enum Corner { TopLeftCorner, BottomRightCorner, ... };
+ enum CaseSensitivity { CaseInsensitive,
+ CaseSensitive };
+ ...
+ };
+ 
+ tabWidget->setCornerWidget(widget, Qt::TopLeftCorner);
+ str.indexOf("$(QTDIR)", Qt::CaseInsensitive);
+ \end{lstlisting}
+% === END(Example) ====
+
+% === Subsection ====
+\subsection{Naming Boolean Getters, Setters, and Properties}
+\begin{itemize}
+\item Adjectives are prefixed with is-. Examples: isChecked(), isDown(), isEmpty(), isMovingEnabled(), 
+\item However, adjectives applying to a plural noun have no prefix: scrollBarsEnabled(), not areScrollBarsEnabled()
+\item Verbs have no prefix and don't use the third person (-s): acceptDrops(), not acceptsDrops()
+\item The getter for the class' member "\_foobar", would be called "foobar()" (not "getFoobar()")
+\item Nouns generally have no prefix:  autoCompletion(), not isAutoCompletion(); sometimes, having no prefix is misleading, in which case we prefix with is-:
+isOpenGLAvailable(), not openGL()
+\end{itemize}
+
+The name of the setter is derived from that of the getter by removing any is prefix and putting a set at the front of the name; for example, setDown() and setScrollBarsEnabled(). The name of the property is the same as the getter, but without the is prefix.
+
+% === Subsection ====
+\subsection{Naming files}
+Like in Boost we use .h/.c for C files and .hpp/.cpp for the C++ files.
+
+\clearpage
+\newpage
+% ============================================================================================================================================
+\section{Recommended compiler flags}\label{sec:compiler_flags}
+-std=c++11 -Wall -Wextra -Wcast-align -Wcast-qual -Wdisabled-optimization -Wformat=2 -Wlogical-op -Wmissing-declarations -Wmissing-include-dirs -Wnoexcept -Woverloaded-virtual -Wredundant-decls -Wstrict-null-sentinel -Wstrict-overflow=5 -Wswitch-default -Wno-unused-parameter -Wold-style-cast -Wnull-dereference -Wsuggest-override -Wsuggest-final-methods -Wfloat-equal -Wundef -Wshadow
+
+In debug mode we activate the AddressSanitizer fill the following flags : -fsanitize=address -fsanitize=thread -fsanitize=undefined
+
+\clearpage
+\newpage
+% ============================================================================================================================================
+\section{Artistic Style (astyle) automatic code formatting}\label{sec:astyle}
+You can use astyle (>=1.23) to format code or to test if you have followed this document. Run the following command:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+astyle --indent=spaces=4 --brackets=linux \
+       --indent-labels --pad=oper --unpad=paren \
+       --one-line=keep-statements --convert-tabs \
+       --indent-preprocessor \
+       `find -type f -name '*.cpp'-or -name '*.hpp'`
+ \end{lstlisting}
+% === END(Example) ====
+
+With astyle (>=2.01) you need to run the following command:
+% === START(Example) ====
+\begin{lstlisting}[breaklines]
+astyle --indent=spaces=4 --brackets=linux \
+       --indent-labels --pad-oper --unpad-paren --pad-header \
+       --keep-one-line-statements --convert-tabs \
+       --indent-preprocessor \
+       `find -type f -name '*.cpp' -or -name '*.hpp'`
+ \end{lstlisting}
+% === END(Example) ====
+
+Note: With more recent astyle --brackets has become --style, so change --brackets=linux to --style=linux.
+
+\clearpage
+\newpage
+% ============================================================================================================================================
+\section{Git commit messages}\label{sec:versioning}
+We suggest to use the template provided here: 
+\begin{itemize}
+\item  \url{http://codeinthehole.com/writing/a-useful-template-for-commit-messages/}
+\item  \url{http://chris.beams.io/posts/git-commit/}
+\end{itemize}
+
