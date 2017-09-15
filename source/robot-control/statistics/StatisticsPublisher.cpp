@@ -37,7 +37,7 @@ StatisticsPublisher::StatisticsPublisher() :
 
     // start the timer to update statistics
     // start the control timer
-    int stepMsec = 1000;
+    int stepMsec = 300;
     connect(&m_updateTimer, &QTimer::timeout, [=](){ publishStatistics(); });
     m_updateTimer.start(stepMsec);
 
