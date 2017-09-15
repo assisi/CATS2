@@ -1,8 +1,15 @@
 import zmq
 import threading
 import time
+import copy
 
-from settings_interface import Request
+
+class Request:
+    """Set/get request for CATS2 settings variable."""
+
+    def __init__(self, requestType = '', requestData = ''):
+        self.requestType = requestType        
+        self.requestData = requestData
 
 class CatsStatisticsInterface:
     """Provides the read access to CATS2 statistics."""
@@ -13,12 +20,14 @@ class CatsStatisticsInterface:
         self.lock = threading.Lock()
 
         self.value_by_path = dict()
+        self.hist_values_by_path = []
+        self.initial_time_stamp = None
 
         # Create and connect sockets
         self.context = zmq.Context(2)
 
         self.subscriber = self.context.socket(zmq.SUB)
-        self.subscriber.setsockopt(zmq.SUBSCRIBE, '')
+        self.subscriber.setsockopt(zmq.SUBSCRIBE, b'')
         # Connects to the address to listen to CATS
         self.subscriber.connect("tcp://%s:5560" % hostname)
         print('Statistics subscriber connected!')
@@ -45,20 +54,26 @@ class CatsStatisticsInterface:
             try:
                 [name, device, command, data] = self.subscriber.recv_multipart(flags=zmq.NOBLOCK)
                 if (command == 'update'):
-                    print('Received statistics from cats: ' + name + ';' + device + ';' + command + ';' + data)
+                    #print('Received statistics from cats: ' + name + ';' + device + ';' + command + ';' + data)
                     statistics = data.split(';')
                     self.lock.acquire()
                     for statistics_pair in statistics:
                         id_value = statistics_pair.split(':')
                         if len(id_value) == 2:
                             self.value_by_path[id_value[0]] = id_value[1]
+                    if not self.initial_time_stamp:
+                        self.initial_time_stamp = float(self.value_by_path['timestamp'])
+                    t = (float(self.value_by_path['timestamp']) - self.initial_time_stamp) / 1000.
+                    self.value_by_path['time'] = t
+                    #print('Received statistics from cats: ', self.value_by_path)
+                    self.hist_values_by_path.append(copy.deepcopy(self.value_by_path))
                     self.lock.release()
                 elif command == 'statistics':
                     print('Received statistics list from cats: ' + data)
                     self.lock.acquire()
                     self.available_statistics = data
                     self.lock.release()
-            except zmq.ZMQError, e:
+            except zmq.ZMQError as e:
                 time.sleep(0.1)
                 continue
 
@@ -104,6 +119,20 @@ class CatsStatisticsInterface:
         self.posted_requests.add(request)
         # print('Post request: ' + request.requestType + ';' + request.requestData)
         self.lock.release()
+
+    def get_hist_size(self):
+        """ Return size of history. """
+        self.lock.acquire()
+        res = len(self.hist_values_by_path)
+        self.lock.release()
+        return res
+
+    def get_hist_values(self, start, size):
+        """ Return list of all statistics, for timesteps 'start' to 'start+size'. """
+        self.lock.acquire()
+        hist = copy.deepcopy(self.hist_values_by_path)[start:start+size]
+        self.lock.release()
+        return hist
 
     def get_value(self, id):
         """Returns the statistics value."""
