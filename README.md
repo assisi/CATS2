@@ -29,9 +29,21 @@ CATS2 depends on the following packages
 
 ## Compile CATS2 under Ubuntu 14.04
 
-### Install SDL2, Boost, ZeroMQ, gstreamer-0.10
+### Install SDL2
+    sudo apt-get install libsdl2-2.0-0 libsdl2-dbg libsdl2-dev 
 
-### Install gcc4.9
+### Install Boost
+    sudo apt-get install libboost-dev
+
+### Install ZeroMQ
+Check here 
+http://zeromq.org/intro:get-the-software and here
+https://gist.github.com/cdjhlee/b8e3c927a01b0948b42d
+for more details
+
+### Install gstreamer-0.10
+
+### Install gcc4.9 or newer 
 
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test
     sudo apt-get update
@@ -40,7 +52,10 @@ CATS2 depends on the following packages
 Setup the switch between the new gcc4.9 and the previous version installed if
 necessary (https://askubuntu.com/questions/26498/choose-gcc-and-g-version)
 
-### Compile CMake
+### Install Qt5.6 or newer 
+https://info.qt.io/download-qt-for-application-development – choose the Open source package option, need to be registered with Qt
+
+### Compile CMake or newer 
 
     sudo apt install ncurses* (required by cmake to create ccmake)
     wget https://cmake.org/files/v3.8/cmake-3.8.0.tar.gz
@@ -50,7 +65,12 @@ necessary (https://askubuntu.com/questions/26498/choose-gcc-and-g-version)
     make -j24
     make install
 
-### Compile OpenCV
+### Install gstreamer-0.10 and qt-gstreamer-0.10.3 
+Use this link https://gstreamer.freedesktop.org/src/qt-gstreamer/
+
+When running cmake add -DQT_VERSION=5
+
+### Compile OpenCV with dependecies
 
     git clone https://github.com/opencv/opencv_contrib.git
     git clone https://github.com/opencv/opencv.git
@@ -60,6 +80,8 @@ necessary (https://askubuntu.com/questions/26498/choose-gcc-and-g-version)
     cmake .. -DOPENCV_EXTRA_MODULES_PATH="path-to-opencv-contrib"
     make -j24
     make install
+
+### Install or compile from sources dashel, enki and aseba
 
 ### Compile CATS2
 
