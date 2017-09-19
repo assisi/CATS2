@@ -34,7 +34,8 @@ public slots:
     void selectRobot(QString name);
     //! Receives the resutls from the tracking system and transfers it
     //! further to the robots.
-    void onTrackingResultsReceived(QList<AgentDataWorld> agentsData);
+    void onTrackingResultsReceived(QList<AgentDataWorld> agentsData,
+                                   std::chrono::milliseconds timestamp);
     //! The target position received from the viewer; it's set as a target
     //! to the selected robots.
     void goToPosition(PositionMeters position);
@@ -90,17 +91,20 @@ private:
 private: // statistics related code
     //! Registers the statistics data available at the control loop level at the
     //! statistics module.
-    void registerStatistics();
+    void registerStatistics() const;
     //! Updates the statistics.
-    void updateStatistics(const QList<AgentDataWorld>& agentsData);
+    void updateStatistics(const QList<AgentDataWorld>& agentsData,
+                          std::chrono::milliseconds timestamp) const;
     //! Computes the statistics id for the position x.
-    QString agentStatisticsPoxitionXId(AgentType type, QString agentId);
+    QString agentStatisticsPoxitionXId(AgentType type, QString agentId) const;
     //! Computes the statistics id for the position y.
-    QString agentStatisticsPoxitionYId(AgentType type, QString agentId);
+    QString agentStatisticsPoxitionYId(AgentType type, QString agentId) const;
     //! Computes the statistics id for the orientation.
-    QString agentStatisticsDirectionId(AgentType type, QString agentId);
+    QString agentStatisticsDirectionId(AgentType type, QString agentId) const;
     //! Computes the statistics id.
-    QString agentStatisticsId(AgentType type, QString agentId, QString postfix);
+    QString agentStatisticsId(AgentType type, QString agentId, QString postfix) const;
+    //! Gives the timestamp's statistics id.
+    QString agentStatisticsTimestampId() const;
 
 private:
     //! An inferface with the robots' Aseba firmware. It's shared by all

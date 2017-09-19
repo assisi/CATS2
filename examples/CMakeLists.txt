@@ -9,3 +9,5 @@ add_subdirectory(path-planning-viewer)
 add_subdirectory(inter-species-data-receiver)
 add_subdirectory(inter-species-data-sender)
 add_subdirectory(simple-settings-interface)
+add_subdirectory(coordinates-convertor)
+

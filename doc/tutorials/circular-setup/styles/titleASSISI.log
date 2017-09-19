@@ -1,0 +1,40 @@
+This is pdfTeX, Version 3.1415926-2.5-1.40.14 (MiKTeX 2.9 64-bit) (preloaded format=pdflatex 2016.4.12)  12 APR 2016 16:51
+entering extended mode
+**titleASSISI.tex
+(C:\ASSISI\repo\software\CATS\doc\CATS2\styles\titleASSISI.tex
+LaTeX2e <2015/10/01> patch level 2
+Babel <3.9n> and hyphenation patterns for 69 languages loaded.
+
+! LaTeX Error: Missing \begin{document}.
+
+See the LaTeX manual or LaTeX Companion for explanation.
+Type  H <return>  for immediate help.
+ ...                                              
+                                                  
+l.3   \begin{center}
+                    
+? 
+
+Overfull \hbox (20.0pt too wide) in paragraph at lines 3--3
+[] 
+ []
+
+! Undefined control sequence.
+l.4   {\bf
+           \LARGE SEVENTH FRAMEWORK PROGRAMME}\\
+? 
+! Emergency stop.
+l.4   {\bf
+           \LARGE SEVENTH FRAMEWORK PROGRAMME}\\
+End of file on the terminal!
+
+ 
+Here is how much of TeX's memory you used:
+ 7 strings out of 493643
+ 245 string characters out of 3134185
+ 52604 words of memory out of 3000000
+ 3487 multiletter control sequences out of 15000+200000
+ 3640 words of font info for 14 fonts, out of 3000000 for 9000
+ 1025 hyphenation exceptions out of 8191
+ 9i,1n,4p,63b,59s stack positions out of 5000i,500n,10000p,200000b,50000s
+!  ==> Fatal error occurred, no output PDF file produced!

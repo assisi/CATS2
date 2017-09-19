@@ -101,7 +101,7 @@ void StatisticsPublisher::publishStatistics()
     for (auto& id : m_statisticsToPost) {
         message.append(id);
         message.append(":");
-        message.append(QString::number(m_statistics[id]));
+        message.append(QString::number(m_statistics[id], 'f', 3));
         message.append(";");
     }
     // remove last ";"

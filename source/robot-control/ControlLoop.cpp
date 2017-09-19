@@ -209,7 +209,8 @@ void ControlLoop::setController(ExperimentControllerType::Enum controllerType)
  * Receives the resutls from the tracking system and transfers it further to
  * the robots.
  */
-void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
+void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData,
+                                            std::chrono::milliseconds timestamp)
 {
     // the data of robots
     QList<AgentDataWorld> robotsData;
@@ -240,7 +241,7 @@ void ControlLoop::onTrackingResultsReceived(QList<AgentDataWorld> agentsData)
 
     // update statistics if necessary
     if (CommandLineParameters::get().publishRobotsStatistics()) {
-        updateStatistics(agentsData);
+        updateStatistics(agentsData, timestamp);
     }
 }
 
@@ -268,85 +269,93 @@ void ControlLoop::selectRobot(QString name)
  * The target position received from the viewer; it's set as a target
  * to the selected robots.
  */
- void ControlLoop::goToPosition(PositionMeters position)
- {
-     if (m_selectedRobot) {
-         m_selectedRobot->goToPosition(position);
-     }
- }
+void ControlLoop::goToPosition(PositionMeters position)
+{
+    if (m_selectedRobot) {
+        m_selectedRobot->goToPosition(position);
+    }
+}
 
- /*!
+/*!
   * Asks the robots to send their navigation data (trajectories, targets, etc).
   */
- void ControlLoop::sendNavigationData(bool sendData)
- {
-     m_sendNavigationData = sendData;
-     if (m_sendNavigationData) {
-         for(auto& robot : m_robots) {
-             robot->requestCurrentTarget();
-             robot->requestTrajectory();
-         }
-     }
- }
+void ControlLoop::sendNavigationData(bool sendData)
+{
+    m_sendNavigationData = sendData;
+    if (m_sendNavigationData) {
+        for(auto& robot : m_robots) {
+            robot->requestCurrentTarget();
+            robot->requestTrajectory();
+        }
+    }
+}
 
- /*!
+/*!
   * Asks to send the control areas for the selected robot.
   */
- void ControlLoop::sendControlAreas(bool sendAreas)
- {
-     m_sendControlAreas = sendAreas;
-     if (m_sendControlAreas && m_selectedRobot) {
-         m_selectedRobot->requestControlAreasPolygons();
-     }
- }
+void ControlLoop::sendControlAreas(bool sendAreas)
+{
+    m_sendControlAreas = sendAreas;
+    if (m_sendControlAreas && m_selectedRobot) {
+        m_selectedRobot->requestControlAreasPolygons();
+    }
+}
 
- /*!
+/*!
   * Asks to send the current robot id.
   */
- void ControlLoop::requestSelectedRobot()
- {
-     if (m_selectedRobot)
+void ControlLoop::requestSelectedRobot()
+{
+    if (m_selectedRobot)
         emit notifySelectedRobotChanged(m_selectedRobot->id());
- }
+}
 
- /*!
+/*!
   * Asks to send the colors of all robots.
   */
- void ControlLoop::requestRobotsLedColors()
- {
-     for(auto& robot : m_robots) {
-         robot->requestLedColor();
-     }
- }
+void ControlLoop::requestRobotsLedColors()
+{
+    for(auto& robot : m_robots) {
+        robot->requestLedColor();
+    }
+}
 
- /*!
+/*!
   * Registers the statistics data available at the control loop level at the
   * statistics module.
   */
- void ControlLoop::registerStatistics()
- {
-     // register robots
-     for (QString id : RobotControlSettings::get().ids()) {
-         StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionXId(AgentType::CASU, id));
-         StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionYId(AgentType::CASU, id));
-         StatisticsPublisher::get().addStatistics(agentStatisticsDirectionId(AgentType::CASU, id));
-     }
+void ControlLoop::registerStatistics() const
+{
+    // register the timestamp
+    StatisticsPublisher::get().addStatistics(agentStatisticsTimestampId());
 
-     // register fish
-     for (int ind = 0; ind < RobotControlSettings::get().numberOfAnimals(); ++ind) {
-         QString id = QString::number(ind);
-         StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionXId(AgentType::FISH, id));
-         StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionYId(AgentType::FISH, id));
-         StatisticsPublisher::get().addStatistics(agentStatisticsDirectionId(AgentType::FISH, id));
-     }
- }
+    // register robots
+    for (QString id : RobotControlSettings::get().ids()) {
+        StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionXId(AgentType::CASU, id));
+        StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionYId(AgentType::CASU, id));
+        StatisticsPublisher::get().addStatistics(agentStatisticsDirectionId(AgentType::CASU, id));
+    }
 
- /*!
+    // register fish
+    for (int ind = 0; ind < RobotControlSettings::get().numberOfAnimals(); ++ind) {
+        QString id = QString::number(ind);
+        StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionXId(AgentType::FISH, id));
+        StatisticsPublisher::get().addStatistics(agentStatisticsPoxitionYId(AgentType::FISH, id));
+        StatisticsPublisher::get().addStatistics(agentStatisticsDirectionId(AgentType::FISH, id));
+    }
+}
+
+/*!
   * Updates the statistics.
   */
- void ControlLoop::updateStatistics(const QList<AgentDataWorld>& agentsData)
- {
+void ControlLoop::updateStatistics(const QList<AgentDataWorld>& agentsData,
+                                   std::chrono::milliseconds timestamp) const
+{
+    // update the data timestamp
+    StatisticsPublisher::get().updateStatistics(agentStatisticsTimestampId(),
+                                                timestamp.count());
     int fishInd = 0;
+    // update agents positions
     for (const AgentDataWorld& agentData : agentsData) {
         QString id;
         if (agentData.type() == AgentType::CASU) {
@@ -362,41 +371,46 @@ void ControlLoop::selectRobot(QString name)
         StatisticsPublisher::get().updateStatistics(agentStatisticsDirectionId(agentData.type(), id),
                                                     agentData.state().orientation().angleRad());
     }
- }
+}
 
- /*!
+/*!
   * Computes the statistics id for the position x.
   */
- QString ControlLoop::agentStatisticsPoxitionXId(AgentType type, QString agentId)
- {
+QString ControlLoop::agentStatisticsPoxitionXId(AgentType type, QString agentId) const
+{
     return agentStatisticsId(type, agentId, "x");
- }
+}
 
- /*!
+/*!
   * Computes the statistics id for the position y.
   */
- QString ControlLoop::agentStatisticsPoxitionYId(AgentType type, QString agentId)
- {
-     return agentStatisticsId(type, agentId, "y");
- }
+QString ControlLoop::agentStatisticsPoxitionYId(AgentType type, QString agentId) const
+{
+    return agentStatisticsId(type, agentId, "y");
+}
 
- /*!
+/*!
   * Computes the statistics id for the orientation.
   */
- QString ControlLoop::agentStatisticsDirectionId(AgentType type, QString agentId)
- {
-     return agentStatisticsId(type, agentId, "direction");
- }
+QString ControlLoop::agentStatisticsDirectionId(AgentType type, QString agentId) const
+{
+    return agentStatisticsId(type, agentId, "direction");
+}
 
- /*!
+/*!
   * Computes the statistics id.
   */
- QString ControlLoop::agentStatisticsId(AgentType type, QString agentId, QString postfix)
- {
-     if (type == AgentType::CASU)
-         return QString("robot-%1-%2").arg(agentId).arg(postfix);
-     else if (type == AgentType::FISH)
-         return QString("fish-%1-%2").arg(agentId).arg(postfix);
-     else
-         return QString("undef-%1-%2").arg(agentId).arg(postfix);
- }
+QString ControlLoop::agentStatisticsId(AgentType type, QString agentId, QString postfix) const
+{
+    if (type == AgentType::CASU)
+        return QString("robot-%1-%2").arg(agentId).arg(postfix);
+    else if (type == AgentType::FISH)
+        return QString("fish-%1-%2").arg(agentId).arg(postfix);
+    else
+        return QString("undef-%1-%2").arg(agentId).arg(postfix);
+}
+
+QString ControlLoop::agentStatisticsTimestampId() const
+{
+    return "timestamp";
+}

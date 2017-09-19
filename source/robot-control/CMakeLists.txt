@@ -21,6 +21,8 @@ makeLink(dependencies/fish-model/random.cpp model/random.cpp)
 makeLink(dependencies/fish-model/random.h model/random.h)
 makeLink(dependencies/fish-model/zones.hpp model/zones.hpp)
 makeLink(dependencies/fish-model/zones.cpp model/zones.cpp)
+makeLink(dependencies/fish-model/bmWithWalls.hpp model/bmWithWalls.hpp)
+makeLink(dependencies/fish-model/bmWithWalls.cpp model/bmWithWalls.cpp)
 
 set(srcs
     settings/RobotControlSettings.cpp
@@ -35,7 +37,10 @@ set(srcs
     control-modes/Idle.cpp
     control-modes/GoStraight.cpp
     control-modes/GoToPosition.cpp
+    control-modes/GenericFishModel.cpp
     control-modes/ModelBased.cpp
+    control-modes/FishModelWithWalls.cpp
+    control-modes/ZoneBasedFishModel.cpp
     control-modes/Manual.cpp
     control-modes/ControlMode.cpp
     control-modes/Trajectory.cpp
@@ -63,6 +68,7 @@ set(srcs
     model/bm.cpp
     model/random.cpp
     model/zones.cpp
+    model/bmWithWalls.cpp
     navigation/Navigation.cpp
     navigation/DijkstraPathPlanner.cpp
     navigation/PathPlanner.cpp

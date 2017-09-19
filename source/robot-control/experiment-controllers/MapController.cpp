@@ -48,7 +48,7 @@ ExperimentController::ControlData MapController::step()
 
         // if we are happen to be in the fish model control mode when we need
         // to limit the model to the current area
-        if ((controlData.controlMode == ControlModeType::MODEL_BASED) &&
+        if ((controlData.controlMode == ControlModeType::FISH_MODEL) &&
                 m_robotAreaChanged)
         {
             controlData.data =

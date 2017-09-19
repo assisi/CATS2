@@ -32,3 +32,5 @@ install(FILES settings/CalibrationSettings.hpp settings/CommandLineParser.hpp
         settings/CommandLineParameters.hpp
         DESTINATION include/common/settings)
 
+# tests
+add_subdirectory(tests)

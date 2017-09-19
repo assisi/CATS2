@@ -7,6 +7,9 @@
 #include "control-modes/Idle.hpp"
 #include "control-modes/Manual.hpp"
 #include "control-modes/ModelBased.hpp"
+#include "control-modes/GenericFishModel.hpp"
+#include "control-modes/FishModelWithWalls.hpp"
+#include "control-modes/ZoneBasedFishModel.hpp"
 #include "control-modes/Trajectory.hpp"
 #include "control-modes/FollowGroup.hpp"
 #include "FishBot.hpp"
@@ -30,8 +33,12 @@ ControlModeStateMachine::ControlModeStateMachine(FishBot* robot, QObject *parent
                           ControlModePtr(new GoStraight(m_robot)));
     m_controlModes.insert(ControlModeType::GO_TO_POSITION,
                           ControlModePtr(new GoToPosition(m_robot)));
-    m_controlModes.insert(ControlModeType::MODEL_BASED,
+    m_controlModes.insert(ControlModeType::FISH_MODEL,
                           ControlModePtr(new ModelBased(m_robot)));
+    m_controlModes.insert(ControlModeType::FISH_MODEL_WITH_WALLS,
+                          ControlModePtr(new FishModelWithWalls(m_robot)));
+    m_controlModes.insert(ControlModeType::ZONE_BASED_FISH_MODEL,
+                          ControlModePtr(new ZoneBasedFishModel(m_robot)));
     m_controlModes.insert(ControlModeType::TRAJECTORY,
                           ControlModePtr(new Trajectory(m_robot)));
     m_controlModes.insert(ControlModeType::FOLLOW_GROUP,
@@ -124,11 +131,13 @@ void ControlModeStateMachine::setTargetPosition(PositionMeters position)
 /*!
  * Sets the parameters of the fish model.
  */
-void ControlModeStateMachine::setModelParameters(ModelParameters parameters)
+void ControlModeStateMachine::setModelParameters(ControlModeType::Enum type,
+                                                 ModelParameters parameters)
 {
-    if (m_controlModes.contains(ControlModeType::MODEL_BASED)) {
-        ControlMode* mode = m_controlModes[ControlModeType::MODEL_BASED].data();
-        dynamic_cast<ModelBased*>(mode)->setParameters(parameters);
+    if (m_controlModes.contains(type)) {
+        GenericFishModel* mode = dynamic_cast<GenericFishModel*>(m_controlModes[type].data());
+        if (mode)
+            mode->setParameters(parameters);
     }
 }
 
@@ -136,23 +145,33 @@ void ControlModeStateMachine::setModelParameters(ModelParameters parameters)
  * Limits the arena matrix of the model-based control mode by a mask. The mask
  * is defined by a set of polygons and is labeled with an id.
  */
-void ControlModeStateMachine::limitModelArea(QString maskId,
+void ControlModeStateMachine::limitModelArea(ControlModeType::Enum type,
+                                             QString maskId,
                                              QList<WorldPolygon> allowedArea)
 {
-    if (m_controlModes.contains(ControlModeType::MODEL_BASED)) {
-        ControlMode* mode = m_controlModes[ControlModeType::MODEL_BASED].data();
-        dynamic_cast<ModelBased*>(mode)->setAreaMask(maskId, allowedArea);
+    if (m_controlModes.contains(type)) {
+        GenericFishModel* mode = dynamic_cast<GenericFishModel*>(m_controlModes[type].data());
+        if (mode)
+            mode->setAreaMask(maskId, allowedArea);
+            // FIXME : we might need to reset the model after applying the mask,
+            // but since the cv::Mat setup grid is directly used by the Arena
+            // and cv::Mat is a smart pointer hence all changes will be present
+            // in the simulator right away
     }
 }
 
 /*! Removes the applied limitations on the model area. After this the model
  * will be applied on the whole setup.
  */
-void ControlModeStateMachine::releaseModelArea()
+void ControlModeStateMachine::releaseModelArea(ControlModeType::Enum type)
 {
-    if (m_controlModes.contains(ControlModeType::MODEL_BASED)) {
-        ControlMode* mode = m_controlModes[ControlModeType::MODEL_BASED].data();
-        dynamic_cast<ModelBased*>(mode)->clearAreaMask();
+    for (int type = ControlModeType::FISH_MODEL;
+         type <= ControlModeType::FISH_MODEL_WITH_WALLS;
+         ++type)
+    {
+        GenericFishModel* mode = dynamic_cast<GenericFishModel*>(m_controlModes[static_cast<ControlModeType::Enum>(type)].data());
+        if (mode)
+            mode->clearAreaMask();
     }
 }
 
