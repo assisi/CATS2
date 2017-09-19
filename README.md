@@ -41,8 +41,6 @@ http://zeromq.org/intro:get-the-software and here
 https://gist.github.com/cdjhlee/b8e3c927a01b0948b42d
 for more details
 
-### Install gstreamer-0.10
-
 ### Install gcc4.9 or newer 
 
     sudo add-apt-repository ppa:ubuntu-toolchain-r/test
@@ -53,7 +51,7 @@ Setup the switch between the new gcc4.9 and the previous version installed if
 necessary (https://askubuntu.com/questions/26498/choose-gcc-and-g-version)
 
 ### Install Qt5.6 or newer 
-https://info.qt.io/download-qt-for-application-development – choose the Open source package option, need to be registered with Qt
+Can be downloaded here https://info.qt.io/download-qt-for-application-development but the registration with Qt is needed
 
 ### Compile CMake or newer 
 
@@ -66,9 +64,8 @@ https://info.qt.io/download-qt-for-application-development – choose the Open s
     make install
 
 ### Install gstreamer-0.10 and qt-gstreamer-0.10.3 
-Use this link https://gstreamer.freedesktop.org/src/qt-gstreamer/
-
-When running cmake add -DQT_VERSION=5
+Use this link https://gstreamer.freedesktop.org/src/qt-gstreamer/ to download the qt-gstreamer-0.10.3 source files. 
+When running cmake add -DQT_VERSION=5 flag
 
 ### Compile OpenCV with dependecies
 
