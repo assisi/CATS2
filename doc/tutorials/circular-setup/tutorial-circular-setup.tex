@@ -78,7 +78,7 @@ Open the {\it circular-setup-map-generator.py} file from the {\it scripts/circul
 
 Run the script, it will generate files {\it innerCircle.txt} and {\it outerCircle.txt} in the {\it results} folder. Now these files need to be converted to the world coordinates. To do this use {\it cooridinates-convertor} application from the CATS2 examples. It takes the following parameters: 
 \begin{itemize}
-\item {\it -c  <path-to-the-configuration-file>}: used to look for the camera calibration file;
+\item {\it -c  <path-to-the-configuration-file>}: the configuration file stores the path to the camera calibration file;
 \item {\it -wh 1/0}: defines if the first line in the file is the header and needs to be skipped;
 \item {\it -st mainCamera/cameraBelow}: is the setup type for the view used to get the dimensions of the circular setup;
 \item {\it -i <input-text-file-to-convert>}: the path to the input file
@@ -89,7 +89,7 @@ Pass each of two text files to {\it cooridinates-convertor}, it will generate {\
 \section{Define the setup map file}
 The {\it xml} file with the setup map is to be copied to the {\it config/setup} folder. In the CATS2 configuration file the setup map is defined under {\it experiment/setupMapPath}. Once set it will be automatically shown in CATS2. As an example of the setup map have a look on the {\it epfl-circular.xml}. It's recommended to place the print screen with the setup to  {\it config/setup} folder, with the same name as the setup map file, e.g. {\it epfl-circular.png}
 
-Make a new setup file in {\it config/setup} folder. Copy the polygon from {\it innerCircleWorld.xml} file to the {\it polygon} section of the setup file, and the polygon from the {\it outerCircleWorld.xml} file to the {\it excluded polygons} section. 
+Make a new setup file in {\it config/setup} folder. Copy the polygon from {\it outerCircleWorld.xml} file to the {\it polygon} section of the setup file, and the polygon from the {\it innerCircleWorld.xml} file to the {\it excluded polygons} section.  
 
 \begin{figure}[ht]
 \centering

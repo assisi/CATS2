@@ -10,7 +10,8 @@ set(hdrs
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 add_library(hub SHARED ${srcs} ${hdrs})
 target_link_libraries(hub common
-                      Qt5::Core Qt5::Widgets)
+                        Qt5::Core Qt5::Widgets
+                        -fsanitize=address)
 
 install(TARGETS hub DESTINATION .)
 install(FILES

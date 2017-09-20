@@ -106,7 +106,7 @@ void FishBotLedsTracking::doTracking(const TimestampedFrame& frame)
         // submit the debug image
         if (m_enqueueDebugFrames) {
             for (auto& agent: m_agents) {
-                cv::circle(m_blurredImage,
+                cv::circle(m_maskedImage,
                            cv::Point(agent.state().position().x(),
                                      agent.state().position().y()),
                            2, cv::Scalar(255, 255, 255));
