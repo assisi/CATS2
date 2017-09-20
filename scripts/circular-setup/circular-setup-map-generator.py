@@ -16,9 +16,9 @@ def save(x, y, fileName):
 # main() function
 def main():
     angleInterval = 5
-    internalRadiusPx = 88
-    externalRadiusPx = 132
-    xCenterPx = 266
+    internalRadiusPx = 96
+    externalRadiusPx = 135
+    xCenterPx = 265
     yCenterPx = 245
     anglesRad = [math.radians(angleDeg) for angleDeg in range(0, 361, angleInterval)]
     xNormalized = [math.cos(angleRad) for angleRad in anglesRad]
