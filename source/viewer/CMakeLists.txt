@@ -23,7 +23,7 @@ qt5_add_resources(resources icons.qrc)
 
 include_directories(${CMAKE_SOURCE_DIR}/source/common)
 add_library(viewer SHARED ${srcs} ${hdrs} ${uis_hdrs} ${resources})
-target_link_libraries(viewer common Qt5::Core Qt5::Widgets ${OpenCV_LIBS})
+target_link_libraries(viewer common Qt5::Core Qt5::Widgets ${OpenCV_LIBS} -fsanitize=address)
 
 install(TARGETS viewer DESTINATION .)
 install(FILES

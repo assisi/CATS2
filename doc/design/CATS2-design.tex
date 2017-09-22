@@ -1,0 +1,318 @@
+% !TEX TS-program = pdflatexmk
+\documentclass{styles/assisi}
+\DeclareRobustCommand{\DelivNumber}{CATS2.0 architecture}
+\DeclareRobustCommand{\DelivName}{\today}
+\DeclareRobustCommand{\DelivStatus}{Confidential}
+\DeclareRobustCommand{\DelivRevision}{0.1}
+\DeclareRobustCommand{\DeliveryDate}{}
+\DeclareRobustCommand{\DelivPartnersOwning}{\bf EPFL}
+\DeclareRobustCommand{\DelivPartnersContributing}{\bf PARIS7}
+\DeclareRobustCommand{\DelivPartnersContributingNextLine}{}
+\DeclareRobustCommand{\DelivDue}{M6}
+\DeclareRobustCommand{\DelivAbstract}{This report summarises ongoing work in ASSISI regarding the development of CASUs and the VRRI-System.}
+
+%----------------------------------------------------------------------------------------------
+\makeindex
+
+\usepackage{epsfig,subfigure,float,pseudocode,multirow,footmisc,rotating}
+\usepackage{graphicx}        % standard LaTeX graphics tool
+\usepackage{amsmath, amssymb, subfigure}
+\usepackage{multirow, rotating}
+\usepackage[ruled,lined,commentsnumbered]{algorithm2e}
+\usepackage[colorlinks=false, urlcolor=blue, pdfborder={0 0 0}]{hyperref}
+%\usepackage{algorithm2e}
+\usepackage{pdfpages}
+\usepackage{afterpage}
+\usepackage{booktabs}
+\usepackage{listings}
+
+\newcommand{\rd}{\Delta^{\frac{1}{2}}}
+\newcommand{\pla}{\phi_{\lambda_1}^t}
+\newcommand{\plb}{\phi_{\lambda_2}^t}
+\newcommand{\ie}{i.\,e.,\ }
+\newcommand{\Ie}{I.\,e.,\ }
+\newcommand{\eg}{e.\,g.,\ }
+\newcommand{\Eg}{E.\,g.,\ }
+\newcommand{\assisi}{ASSISI$|_{bf}$ }
+\setcounter{tocdepth}{3}
+
+% TODO command
+\newcommand{\todo}[1]{\par\noindent{\raggedright\textsc{\color{red}#1}%
+    \par\marginpar{{\Large\color{red}$\star$}}}}
+
+\begin{document}
+\input{styles/titleASSISI}
+
+\chapter{Introduction}\label{chap:intro}
+\section{Tracking}
+It has been always acknowledged in the life sciences that the problem of laborious and monotonous data analysis should be addressed by automation. By replacing a human observer with an intelligent system, we can avoid the variability in the human observation due to its intrinsic subjectivity. But, to be efficient, such systems have to be able to monitor continuous visual, acoustic and other displays to estimate various characteristics of animals and to detect behavioural events and patterns.
+
+Animal behaviour is essentially related to movement; that is why a video recording becomes an irreplaceable tool for ethological research and documentation. The traditional way to analyze experimental video in ethology has always been through a manual marking of the positions of the animals on a video recording and a tagging of their behaviour, frame by frame at a given timescale. It is a tedious process that requires constant concentration, so a software that can automate or, at least, semiautomate it is highly welcomed.
+
+\section{Robotic control}
+In the robot-animal experimentation a robot might function autonomously relying only on its on-board sensors and computational resources. Alternatively the robot's control system might receive input information about robot's own state and states of other agents from the external sensors. Also the control system itself can be split on several levels of hierarchy, some running on-board and others on the external CPU controlling one or several robots (Fig. \ref{fig:overview}).
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{./figs/overview.png}
+\caption{The general overview of the animal-robot experimentation's monitoring and control system}
+\label{fig:overview}
+\end{figure}
+
+\section{Retrospective}
+A short overview of what was done for the automatization of the animal-robot experimentation in EPFL's Mobots group in collaboration with the University of Brussels and later with the University Paris 7.
+
+\subsection{Chicken-robot project}
+\subsubsection{Tracking}
+We used two different approaches to track chicks : one solution for a real-time tracking and another for an off-line data analysis. For real-time tracking we used the SwisTrack software. Estimated robot position and orientation, chick positions and group parameters are transferred to the robot control system through the wireless radio connection.
+
+\subsubsection{Control}
+To build the control system of the PoulBot we used a behaviour based approach. Behaviour-Based systems work well in dynamic environments, in cases when fast reaction and high adaptability are important. These characteristics make the behaviour based approach a natural choice when designing a control system for a robot that interacts with animals. The control system of our robot is a hierarchical behaviour based controller. The robot is equipped with a set of primitive behaviours tightly bonded with the sensors and actuators of the robot. Each primitive behaviour serves to achieve a particular goal or to perform a specific activity. Examples of primitive behaviours are "wall-following", "emit-sound", "wall-avoidance", "goal-chasing", etc. These behaviours are executed on the microcontrollers of modules of PoulBot. The primitive behaviours are combined together to form higher level composite behaviours for specific experiments. The robot is provided with information about its position and positions of chicks by the external vision system through the wireless connection. Composite behaviours can run on the robot main board, or on the experimental PC (for debug and demonstration reasons).
+
+\subsubsection{GUI}
+The experimental PC runs a GUI interface of the PoulBot control system that allows the user to activate a specific behaviour and to specify its parameters (e.g., velocity, sensors thresholds, etc.). It also provides the user with the information on the status of the robot, such as battery charge level and current executed behaviour (Fig. \ref{fig:poulbot_control}, Fig. \ref{fig:poulbot_control_gui_settings}).
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{./figs/poulbot_control_gui.png}
+\caption{The graphical user interface of the PoulBot control system. On the left side is the virtual view of the experimental arena that receives data on robot's and chicks' positions from the external vision system, while on the right side is the list of connected robots and the control elements of the selected robot that allow the user to activate a specific  behaviour and to specify its parameters}
+\label{fig:poulbot_control}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.65\textwidth]{./figs/poulbot_control_gui_settings.png}
+\caption{The graphical user interface provides an access to parameters of robots behaviours such as speed, thresholds for different sensors, etc.; the parameters are logically grouped in several tabs.}
+\label{fig:poulbot_control_gui_settings}
+\end{figure}
+
+\subsubsection{Monitoring}
+To avoid bias in the behaviour of the animals, nobody is allowed to be in the experimental room while the experiments are running. To remotely observe a situation on the arena, we developed a lightweight and simple multi-platform remote viewer that connects to the SwisTrack through TCP/IP and provides a 3D representation of the arena. The data stream is coded by using the NMEA 0183 protocol; since only coordinates are transferred, the load on the network is considerably lower than if we would transfer a video stream. An additional
+plug-in to this viewer was developed that automatically analyses the experimental situation to detect abnormal situations.
+
+\subsubsection{OS}
+All software was written in C++, relied on Qt for the user interface. It could run under Windows only due as the camera driver was available for Windows only.
+
+\subsubsection{Software analysis}
+
+PROS:
+\begin{itemize}
+  \item Several robots of various types (marXbot or ePuck) could be connected each one with its own controller
+  \item Modularity of the solution
+  \item Safety module
+\end{itemize}
+
+CONS:
+\begin{itemize}
+  \item External tracker was used, hence it was not possible to integrate the tracking and robotic control in a single application
+\end{itemize}
+
+
+\subsection{ASSISI project}
+The Control And Tracking Software (CATS) was developed to track the positions of the agents, and to control the fish-CASUs. CATS is able to track the positions of both fishes and fish-CASUs in real-time. It is also able to differentiate a fish from a fish-CASU. Robot control makes use of the tracked positions of the fish-CASUs. 
+
+\section{CATS}
+The Control and Tracking Software (CATS) is designed to track the positions of the agents (fish and robots), and to control the fish-CASUs. Each robot can be controlled to display a collection of implemented behaviours. CATS's architecture was designed to be modular. It is composed of four parts, described in Fig. \ref{fig:CATS}. The first part manages the video stream from the camera of the experimental setup. The second part tracks the positions of fish and fish-CASUs. A Graphical User Interface (GUI) is provided to allow the experimenters to see the video stream, and to change the behaviour of the robots. The Control part contains implementations of the various behaviours and movement patterns of the fish-CASUs, and low-level methods to communicate with the fish-CASUs. Additionally, the system is designed to be easily integrable with analytical frameworks, like HEAF. It can be configured using the same configuration files as HEAF.
+
+\afterpage{
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.8\textwidth]{./figs/CATS.pdf}
+\caption{Overview of the Control And Tracking Software (CATS), used to save videos of the experiments, track in real-time the positions of the fishes and of the robots, and control robot behaviour. The video stream from the camera is compressed and saved on disk in high resolution (2040x2040 pixels). It is also converted to a lower resolution (500x500 pixels) and published on the internet (streamyfish.com). The tracking of the fishes and robots is performed in real-time on the low-resolution video stream. The software provides a GUI that displays the video stream with tracking information. Robot control makes use of the tracked positions of the robots. Several kind of robots behaviours and movement patterns are available, and can be selected by the user in the GUI. Low-level control of the robots is achieved by using the ASEBA system. }
+\label{fig:CATS}
+\end{figure}
+\clearpage
+}
+
+To access the camera the library {\it aravis} is used. All video stream operations are handled using the GStreamer library. The video stream from the camera is split in two different streams: one in high-resolution (2040x2040 pixels, grayscale), the other in a lower-resolution (500x500). The video is saved on disk in high-resolution. The tracking part uses only the low-resolution video stream to track the positions of the agents. The low-resolution video stream is also forwarded to a dedicated server, to be accessible from the internet (streamyfish.com). We tuned the parameters of the GStreamer media components to have a very low latency. On our setup, frames from the camera can be converted and sent to the tracking system in approximately 40ms.
+
+The modular event-based architecture for the mobile robots library (ASEBA) has been used to individually control the FishBots in real-time and reprogram them during an experiment
+without flashing the microcontrollers' firmware. The control of FishBots' motion is done through events that are sent from CATS and that contain the parameters for the locomotion.
+
+The behaviours are implemented onboard each FishBot or at the level of CATS. Thanks to the event-based protocol, FishBots are able to emit events in case of obstacle presence or powering issues, and the control application can then modify the behaviour of the robots to overcome these types of situations. For the RiBots, a Raspberry PI, on which LIRC library is run, is connected to the same network as the main computer, and RC5 signals are generated on an output pin connected to an IR emitter. The IR signal is broadcast over the whole aquarium and received by all the RiBots.
+
+CATS provides a Graphical User Interface (GUI). It allows the experimenter to assess the progress of an experiment, visualise the tracked positions of the agents and control the fish-CASUs.
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{./figs/GUI-desc}
+\caption{Graphical Interface of CATS during a typical experiment. The video stream from the camera is displayed on the visualisation area, at the center panel. Colored disks are placed
+on the detected positions of the fish and robots: the tracking system detect the centroids of each agent, and the position of the head of the fish or lures. Big circles of colors are used to represent the positions of the robots. The user can choose current the behaviour and movement pattern of each robot using the controls on the left and right of the visualisation area.}
+\label{fig:GUI-desc}
+\end{figure}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.75\textwidth]{./figs/ControlArchitecture}
+\caption{Architecture of the Fish-CASU vision-based closed-loop control. The high-level control-software tracks each RiBot and fish using frames grabbed by a camera. The same software
+is used to control the FishBots' motion as well as RiBots' body movements. For the FishBots, the desired speed of each wheel is sent through a serial connection using Medulla integrated with D-Bus on the ASEBA network, in which all the FishBots are connected and can receive or emit events. For the RiBots, the communication is only one way, where the IR RC5 signal is broadcast to control stepper motors that drive the caudal peduncles.}
+\label{fig:ControlArchitecture}
+\end{figure}
+
+Different types of behaviours and locomotion patterns were implemented in CATS that the user can either select on a configuration file, or adapt during an ongoing experiment.
+The locomotion patterns define how the robot moves while executing selection behaviour.
+The following behaviours were implemented:
+\begin{itemize}
+  \item Local obstacle avoidance
+  \item Random walk
+  \item Target following : Preprogrammed trajectory or Fish model driven
+\end{itemize}
+
+The following motion patterns were implemented:
+\begin{itemize}
+  \item Constant linear speed
+  \item Fish-like patterns
+  \item Adaptive fish-like patterns
+\end{itemize}
+
+\subsubsection{OS}
+All software was written in C++, relied on ICL library for the user interface. It runs under Ubuntu only. 
+
+\subsubsection{Software analysis}
+PROS:
+\begin{itemize}
+  \item Real-time tracker tightly integrated with the robotic control system 
+  \item Use of the configuration files to have presets for several experiments
+  \item On-line access to the running experiments
+\end{itemize}
+
+CONS:
+\begin{itemize}
+  \item Modularity issues : currently one peace
+  \item Flexibility issues : for instance it is not possible to {\it easily} replace one tracking method by another
+  \item Scalability issues with the robot's control : not possible to make experiments with tens of robots
+  \item The GUI is based on the ICL library that limits drastically its modifications
+  \item Poorly commented code
+  \item General code quality
+      \begin{itemize}
+        \item{Memory leaks : variables created but never released}
+        \item{unclear (missing?) code conventions}
+        \item{some methods are really big, and might be cut in smaller methods (CATApp::robotControl) }
+      \end{itemize}
+  \item One need to launch {\it asebaswitch} and {\it GStreamer} in addition to CATS to run experiments.
+\end{itemize}
+
+
+\chapter{CATS2.0 design}\label{chap:cats2}
+
+\section {Requirements}
+Here we outline the main functional and non-functional requirements for the CATS2 software\footnote{This section was done in May, 2016}.
+
+The goal is to deliver a software that would take into account the strong points of existing solutions and would resolve the known limitations.
+
+\begin{table}[h]
+\begin{tabular}{|p{0.25\textwidth}|p{0.75\textwidth}|}
+  \hline
+  \multicolumn{2}{|c|}{Functional requirements} \\
+  \hline
+  \multirow{5}{*}{Tracking} & $\bullet$ Possibility to switch between different tracking methods, to add new ones \\
+  & $\bullet$ Support of the various cameras (USB video class cameras, Basler cameras is a minimum requirement) \\
+  & $\bullet$ Possibility to receive the input video stream from several cameras in the same time \\
+& $\bullet$ Write positions of fishes and robots to output files \\
+&  $\bullet$ Send positions of fishes and robots to HEAF \\
+\hline
+  \multirow{3}{*}{Flexible GUI} & $\bullet$ Show the video streams \\
+  & $\bullet$ Show the positions of fishes and robots above the video stream \\
+  & $\bullet$ Set the parameters of the robots \\
+\hline
+  \multirow{4}{*}{\parbox{0.25\textwidth}{Multi robot planning and control}} & $\bullet$ Connect automatically to all robots, available on the network, to make the auto discovery of new robots and disconnect robots that are not available anymore \\
+  & $\bullet$ Provide the access to each robot's telemetry and parameters (Aseba Studio like) \\
+  & $\bullet$ Reliable obstacle avoidance system, ensure that the robot almost never gets stuck in the local minima, provide manual de-blocking  solutions \\
+  & $\bullet$ Easy define behavioural strategies based on the areas of the arena \\
+\hline
+Logging & $\bullet$ Logging system to monitor the software functioning \\
+\hline
+\end{tabular}
+\end{table}
+
+Non-functional requirements:
+\begin{itemize}
+\item All used libraries must be open source
+\item  C++11 / Qt as the base technology
+\item  Target systems Linux (minimal), MacOS, Windows
+\item  Strict following to coding conventions
+\end{itemize}
+
+The following sections present the architecture of the CATS2 software that generally corresponds to the current\footnote{September, 2017} implementation.
+
+\section {The system level design}
+The integration of CATS2 with other modules of the robot-fish interaction framework is shown on Fig. \ref{fig:system-level}
+
+\begin{figure}[ht]
+\centering
+\includegraphics[width=0.99\textwidth]{./outline/system-view-edit}
+\caption{Outline of the system level design of CATS2. It receives input streams of one or several cameras, processes them to detect and track robots and animals, stores the resulted trajectories in the log files, control the robots based of the user-defined strategies, and, finally, communicates with the bee setup.}
+\label{fig:system-level}
+\end{figure}
+
+\section {CATS2 architecture}
+Fig. \ref{fig:CATS2-modules} shows the design of the internal structure of CATS2.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.99\textwidth]{./outline/CATS-view-edit}
+\caption{Two principal modules of CATS2 are Tracking and Robot Control.}
+\label{fig:CATS2-modules}
+\end{figure}
+
+\section {Tracking module of CATS2}
+The architecture of the tracking module of CATS2 is presented on Fig. \ref{fig:CATS2-tracking-module}.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.99\textwidth]{./outline/tracking-module-edit}
+\caption{The design of the tracking system. Grabber receives the input frames that are time-stamped and transfered via inter-thread queue to Tracker that detects and tracks agents based on the user-defined tracking strategy (in the configuration file). Tracking Data Manager merges together tracking results coming from different sources (cameras), writes the results to log files, and transfers them further to the Robot Control module. The input streams and tracking resutls are visualized by Viewer.}
+\label{fig:CATS2-tracking-module}
+\end{figure}
+
+\section {Robot Control module of CATS2}
+Fig. \ref{fig:CATS2-tracking-module} shows the architecture of the robot control system.
+
+\begin{figure}[h]
+\centering
+\includegraphics[width=0.99\textwidth]{./outline/robot-control-edit}
+\caption{The design of the robot control system. Control Loop executes the current Control Mode that generates the control target (speed or position), and then this control target is converted by Motion Control (or navigation) to the motor commands that are sent to the robot via ASEBA.}
+\label{fig:CATS2-robot-control-module}
+\end{figure}
+
+\section {Status by September, 2017}
+The following functionalities were {\bf not implemented}:
+\begin{itemize}
+\item Robot Control: the control of the fish robot ({\it ribot})
+\item Everywhere: the configuration file is read-only, all the changes in the settings have to be done manually
+\end{itemize}
+
+The following functionalities were {\bf implemented differently}:
+\begin{itemize}
+\item Robot Control: Motion Commands if called {\it navigation}; Motion Safety module is not implemented as a separated unit; control maps are implemented as {\it xml} files and not as grey-scale images. 
+\end{itemize}
+
+The following {\bf new} functionalities were implemented:
+\begin{itemize}
+\item Robot Control: {\it experimental controllers} module that implements experiment specific behaviors combining together various control modes based on the control maps; {\it statistics} module exposes various internal statistics to be available via ZMQ. 
+\item {\it Settings interface} allows to modify various internal settings of CATS2 via ZMQ thus allowing the integration of external intelligent systems.
+\end{itemize}
+
+
+\chapter{Environment}\label{chap:Environment}
+
+\section {Source code management}
+All source code is managed in a git repository. CATS2 can be found here \url{https://github.com/gribovskiy/CATS2}
+
+\section {Code conventions}
+The detailed code conventions can be found in Chapter \ref{chap:code-conventions}.
+
+\section {Target operating system}
+Windows and Ubuntu
+
+\section {Compiler}
+GCC
+
+\section {Build system}
+CMake
+
+\chapter{Code conventions}\label{chap:code-conventions}
+\include{./code-conventions/conventions}
+
+\end{document}
+

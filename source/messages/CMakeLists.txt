@@ -12,7 +12,7 @@ set(hdrs
 file(GLOB messages_source_files "msg/*.h" "msg/*.cc")
 
 add_library(messages SHARED ${messages_source_files} ${srcs} ${hdrs})
-target_link_libraries(messages Qt5::Core ${PROTOBUF_LIBRARIES})
+target_link_libraries(messages Qt5::Core ${PROTOBUF_LIBRARIES} -fsanitize=address)
 
 # set specific compile flags for this project, because otherwise the protobuf generated files trigger to many warnings
 set_target_properties(messages PROPERTIES COMPILE_FLAGS "-Wno-suggest-override -Wno-float-equal -Wno-undef")

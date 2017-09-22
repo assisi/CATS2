@@ -95,6 +95,10 @@ void StreamReceiver::process()
         // start the pipeline
         m_pipeline->setState(QGst::StatePlaying);
     }
+    catch (const QGlib::Error & error) {
+        qCritical() << "Failed to launch the pipeline:" << error;
+        return;
+    }
     catch (...) {
         qDebug() << "Exception while launching the pipeline, stopped";
         return;
@@ -106,7 +110,18 @@ void StreamReceiver::process()
  */
 void StreamReceiver::stop()
 {
-    m_pipeline->setState(QGst::StateNull);
+    qDebug() << "Stopping the pipeline";
+    try {
+        m_pipeline->setState(QGst::StateNull);
+    }
+    catch (const QGlib::Error & error) {
+        qCritical() << "Failed to stop the pipeline:" << error;
+        return;
+    }
+    catch (...) {
+        qDebug() << "Exception while stopping the pipeline";
+        return;
+    }
 }
 
 /*!
@@ -114,12 +129,23 @@ void StreamReceiver::stop()
  */
 void StreamReceiver::restart()
 {
-    QGst::SeekEventPtr event = QGst::SeekEvent::create(1.0, QGst::FormatTime,
-                                                       QGst::SeekFlagFlush,
-                                                       QGst::SeekTypeSet, 0.,
-                                                       QGst::SeekTypeNone,
-                                                       QGst::ClockTime::None);
-    m_pipeline->sendEvent(event);
+    qDebug() << "Restarting the pipeline";
+    try {
+        QGst::SeekEventPtr event = QGst::SeekEvent::create(1.0, QGst::FormatTime,
+                                                           QGst::SeekFlagFlush,
+                                                           QGst::SeekTypeSet, 0.,
+                                                           QGst::SeekTypeNone,
+                                                           QGst::ClockTime::None);
+        m_pipeline->sendEvent(event);
+    }
+    catch (const QGlib::Error & error) {
+        qCritical() << "Failed to restart the pipeline:" << error;
+        return;
+    }
+    catch (...) {
+        qDebug() << "Exception while restarting the pipeline";
+        return;
+    }
 }
 
 /*!

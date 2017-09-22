@@ -75,7 +75,25 @@ In this tutorial we will show how to properly setup the zone-based model in the 
 Carefully install the experimental setup, it should not be moved later. 
 
 \section{Define the setup map file}
-The {\it xml} file with the setup map is to be put to {\it config/setup} folder. In the CATS2 configuration file the setup map is defined under {\it experiment/setupMapPath}. Once set it will be automatically shown in CATS2. As an example of the setup map have a look on the {\it epfl-two-rooms.xml}. It's recommended to place the print screen with the setup to  {\it config/setup} folder, with the same name as the setup map file, e.g. {\it epfl-two-rooms.png}
+The {\it xml} file with the setup map is to be copied into the {\it config/setup} folder. As an example of the setup map have a look on the {\it epfl-two-rooms.xml}. It's recommended to place the print screen with the setup into  {\it config/setup} folder, with the same name as the setup map file, e.g. {\it epfl-two-rooms.png}. The polygon defining the setup is a sequence of pairs {\it x y} specifying polygon vertices in the contre-clock-wise order in {\bf world coordinates} (listing \ref{lst:setup-map-file}). 
+
+\begin{lstlisting}[caption={Setup map example from {\it epfl-two-rooms.xml}},label={lst:setup-map-file},language=xml]
+<polygon>
+   -0.34 -0.26 -0.30 -0.295
+   0.005 -0.285 0.04 -0.24
+   0.035 0.01 0.2 0.185
+   0.45 0.195 0.485 0.23
+   0.475 0.52 0.435 0.56
+   0.145 0.55 0.11 0.50
+   0.11 0.26 -0.06 0.09
+   -0.325 0.08 -0.35 0.05
+</polygon>
+<excludedPolygons>
+</excludedPolygons>
+\end{lstlisting}
+
+In the CATS2 configuration file the setup map is defined under {\it experiment/setupMapPath}. 
+Once set it will be automatically shown in CATS2. 
 
 \begin{figure}[ht]
 \centering
@@ -91,7 +109,7 @@ At the moment there is no way to visualize the zones defined in the model, and t
 If the zones structure is complicated then print the setup print screen and manually draw the zones on it with the color pens or pencils, it will make the further work simpler.
 
 \subsection{Create the control map}
-The control map files are stored in the {\it config/control-maps} folder. For the reference check {\it epfl-two-rooms-control-map.xml}. One section of the configuration fild is shown on \ref{lst:control-map}. Here we use the control map only to visualize the zones, hence the {\it id}, {\it type}, {\it controlMode} and {\it motionPattern} parameters are not important\footnote{Just note the at the moment only two types are supported: {\it room} and {\it corridor}, they are hard-coded in CATS2 that is not optimal}. One only need to set {\it polygons} and {\it color}.
+The control map files are stored in the {\it config/control-maps} folder. For the reference check {\it epfl-two-rooms-control-map.xml}. One section of the configuration file is shown on \ref{lst:control-map}. Here we use the control map only to visualize the zones, hence the {\it id}, {\it type}, {\it controlMode} and {\it motionPattern} parameters are not important\footnote{Just note the at the moment only two types are supported: {\it room} and {\it corridor}, they are hard-coded in CATS2 that is not optimal}. One only need to set {\it polygons} and {\it color}.
 
 \begin{lstlisting}[caption={Control map area example},label={lst:control-map},language=xml]
 <area_1>
