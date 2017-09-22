@@ -242,11 +242,18 @@ void FishBotLedsTracking::detectLeds(size_t robotIndex)
          // set the position
         robot.mutableState()->setPosition(agentPosition);
     } else if (contours.size() == 1){
+        /*
         // if only one blob is detected, then we take its position as the robot's position
         agentPosition = cv::Point2f(contourCenter(contours[0]));
         robot.mutableState()->setPosition(agentPosition);
         // but we cann't determine the orientation
         robot.mutableState()->invalidateOrientation();
+        */
+        // NOTE: sometimes only one LED was detected and then later both LEDs and
+        // this resulted in a wrong orientation that perturbed the motion control
+        // of the robot. Hence the solution is to alwasy request the detection of
+        // both LEDs
+        robot.mutableState()->invalidateState();
     } else {
         // TODO : add a Kalman here to avoid loosing the robot when sometimes
         // it's hidden by other objects on the arena.
