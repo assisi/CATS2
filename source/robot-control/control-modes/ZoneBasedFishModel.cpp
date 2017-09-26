@@ -94,6 +94,7 @@ void ZoneBasedFishModel::resetZoneBasedModel()
  */
 void ZoneBasedFishModel::updateZoneBasedModelParameters()
 {
+	m_parameters.ignoreRobot = true;
     const FishModelSettings& fishModelSettings = RobotControlSettings::get().fishModelSettings();
     m_sim->dt = fishModelSettings.agentParameters.dt;
     std::vector<GridBasedMethod::Edge> wallsCoordinates = setupWalls();
