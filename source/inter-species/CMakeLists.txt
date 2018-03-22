@@ -27,7 +27,8 @@ include_directories(SYSTEM ${CMAKE_SOURCE_DIR}/source/messages)
 
 add_library(inter-species SHARED ${inter-species_source_files} ${srcs} ${hdrs})
 target_link_libraries(inter-species common messages Qt5::Core ${ZeroMQ_LIBRARY}
-                        ${PROTOBUF_LIBRARIES} -fsanitize=address)
+                        ${PROTOBUF_LIBRARIES} )
+                        #-fsanitize=address)
 
 #install(TARGETS inter-species DESTINATION .)
 #install(FILES

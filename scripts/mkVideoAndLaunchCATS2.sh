@@ -69,7 +69,7 @@ pid1=$!
 #gdb --args ./CATS -i v4l 1 -l $config -o ${trajectoryPath} -C "${commandToLaunchAfterExpe}"
 #gdb --args ./CATS -i v4l 1 -l $config -o ${trajectoryPath} -C "${commandToLaunchAfterExpe}" &
 #pid2=$!
-../build/source/cats/cats -mc v4l 1 -bc v4l 4 -sri 0 -c $config # TODO
+../build/source/cats/cats -mc v4l 1 -bc v4l 4 -sri 1 -c $config # TODO
 
 #sleep 5
 #watch -n 120 "./scripts/launchStreamingHEAF.sh ${defaultBasePath} ${plotBasePath} ${scriptsBasePath} ${config} ${trajectoryPath} ${trajectoryFilename} > logStreamingHEAF" > /dev/null &

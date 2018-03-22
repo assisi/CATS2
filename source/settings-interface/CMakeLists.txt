@@ -20,5 +20,6 @@ add_library(settings-interface SHARED ${srcs} ${hdrs})
 target_link_libraries(settings-interface common grabber tracker viewer hub
                         messages inter-species robot-control
                         Qt5::Core Qt5::Widgets Qt5::Gui Qt5::DBus
-                        ${PROTOBUF_LIBRARIES} -fsanitize=address)
+                        ${PROTOBUF_LIBRARIES})
+                        #-fsanitize=address)
 

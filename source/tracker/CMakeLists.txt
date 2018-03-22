@@ -46,7 +46,8 @@ include_directories(${CMAKE_SOURCE_DIR}/source/viewer)
 include_directories(${CMAKE_SOURCE_DIR}/source/hub)
 add_library(tracker SHARED ${srcs} ${hdrs} ${uis_hdrs} ${resources})
 target_link_libraries(tracker grabber common viewer hub
-                      Qt5::Core Qt5::Widgets ${OpenCV_LIBS} -fsanitize=address) # ${LIBTSAI_LIBRARY})
+                      Qt5::Core Qt5::Widgets ${OpenCV_LIBS})
+                      #-fsanitize=address) # ${LIBTSAI_LIBRARY})
 
 install(TARGETS tracker DESTINATION .)
 install(FILES
