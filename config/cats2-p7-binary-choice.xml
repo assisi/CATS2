@@ -72,7 +72,7 @@
                 <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
-                <kp>3</kp> <!-- Vitesse angulaire  -->
+                <kp>4</kp> <!-- Vitesse angulaire  -->
                 <ki>0.05</ki>
                 <kd>0.00</kd>
                 <kpDist>200</kpDist> <!-- Vitesse en fontion de la distance de la cible   -->
@@ -170,9 +170,9 @@
     </setups>
     <interSpecies>
         <!-- where we send data -->
-        <publisherAddress>tcp://143.50.158.98:5556</publisherAddress>
+        <publisherAddress>tcp://172.27.34.3:5555</publisherAddress>
         <!-- from where we get data -->
-        <subscriberAddresses>tcp://143.50.158.98:5555</subscriberAddresses>
+        <subscriberAddresses>tcp://172.27.34.3:5556</subscriberAddresses>
         <!-- local addresses
             <publisherAddress>tcp://127.0.0.1:5555</publisherAddress>
             <subscriberAddresses>tcp://127.0.0.1:5556</subscriberAddresses>
