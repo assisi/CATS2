@@ -10,7 +10,8 @@
 */
 Subscriber::Subscriber(zmq::context_t& context,
                        QStringList subscriberAddresses):
-    GenericSubscriber(context, subscriberAddresses)
+    //GenericSubscriber(context, subscriberAddresses)
+    GenericSubscriber(context, subscriberAddresses, true) // XXX Does not work with "connect", use "bind" instead
 {
 
 }

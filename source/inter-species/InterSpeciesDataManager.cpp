@@ -15,7 +15,8 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
     m_publisher(m_context, ZMQ_PUB)
 {
     try {
-        m_publisher.connect(publisherAddress.toStdString().data());
+        //m_publisher.connect(publisherAddress.toStdString().data());
+        m_publisher.bind(publisherAddress.toStdString().data()); // XXX does not work with connect -- use "bind" instead !
         qDebug() << QString("Publisher is connected to %1").arg(publisherAddress);
     } catch (const zmq::error_t& e) {
         qDebug() <<  QString("Exception while connecting to %1").arg(publisherAddress)

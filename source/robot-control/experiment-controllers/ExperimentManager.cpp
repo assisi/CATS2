@@ -43,7 +43,7 @@ ExperimentManager::ExperimentManager(FishBot* robot) :
 
     // connect experiment specific signals
     for (int controllerTypeInd = ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER;
-         controllerTypeInd <= ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW;
+         controllerTypeInd <= ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW_MODEL;
          controllerTypeInd++)
     {
         ExperimentControllerType::Enum controllerType = static_cast<ExperimentControllerType::Enum>(controllerTypeInd);
@@ -129,6 +129,17 @@ void ExperimentManager::setCircularSetupTurningDirection(QString message)
                 && (turningDirection == TurningDirection::COUNTER_CLOCK_WISE))
         {
             setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW);
+        };
+
+        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW_MODEL)
+                && (turningDirection == TurningDirection::CLOCK_WISE))
+        {
+            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW_MODEL);
+        };
+        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW_MODEL)
+                && (turningDirection == TurningDirection::COUNTER_CLOCK_WISE))
+        {
+            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW_MODEL);
         };
     } else {
         qDebug() << "Can't set the turning direction for the message" << message;

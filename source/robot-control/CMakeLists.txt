@@ -62,6 +62,7 @@ set(srcs
     experiment-controllers/CircularSetupController.cpp
     experiment-controllers/CircularSetupFollowerController.cpp
     experiment-controllers/CircularSetupLeaderController.cpp
+	experiment-controllers/CircularSetupLeaderWithModelController.cpp
     model/model.cpp
     model/zones.cpp
     model/factory.cpp

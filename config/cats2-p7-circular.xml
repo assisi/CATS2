@@ -1,0 +1,182 @@
+<?xml version="1.0"?>
+<opencv_storage>
+    <experiment>
+        <type>Interspecies</type>
+        <name>Circular</name>
+        <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
+        <agents>
+            <numberOfAnimals>4</numberOfAnimals>
+        </agents>
+        <setupMapPath>setup/paris-circular.xml</setupMapPath>
+    </experiment>
+    <robots>
+        <numberOfRobots>2</numberOfRobots>
+        <controlFrequencyHz>10</controlFrequencyHz>
+        <fishModel>
+            <agent>
+                <length>0.02</length>
+                <width>0.02</width>
+                <height>0.01</height>
+                <fov>169</fov>
+                <meanSpeed>-2.65</meanSpeed>
+                <varSpeed>0.51</varSpeed>
+            </agent>
+            <BM>
+                <kappaFishes>20.0</kappaFishes>
+                <alphasCenter>55.0</alphasCenter>
+                <kappaNeutCenter>6.3</kappaNeutCenter>
+                <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+            </BM>
+            <BMWithWalls>
+                <kappaFishes>10.0</kappaFishes>
+                <alpha>25.0</alpha>
+                <kappaNeutCenter>6.3</kappaNeutCenter>
+                <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+                <wallDistanceThreshold>0.02</wallDistanceThreshold>
+            </BMWithWalls>
+            <simulation>
+                <dt>0.3</dt>
+            </simulation>
+        </fishModel>
+        <pathPlanning>
+            <gridSizeM>0.01</gridSizeM>
+        </pathPlanning>
+        <obstacleAvoidance>
+            <potentialField>
+                <influenceDistanceArenaM>0.04</influenceDistanceArenaM>
+                <influenceStrengthArena>20</influenceStrengthArena>
+                <influenceDistanceRobotsM>0.05</influenceDistanceRobotsM>
+                <influenceStrengthRobots>200</influenceStrengthRobots>
+                <influenceDistanceTargetM>0.05</influenceDistanceTargetM>
+                <influenceStrengthTarget>400</influenceStrengthTarget>
+                <maxForce>1000</maxForce>
+                <maxAngleDeg>60</maxAngleDeg>
+                <obstacleAvoidanceAreaDiameterM>0.15</obstacleAvoidanceAreaDiameterM>
+            </potentialField>
+        </obstacleAvoidance>
+        <!-- Specific settings for every control mode (e.g to use path planning or obstacle avoidance). -->
+        <controlModes>
+            <!-- TODO : to implement -->
+            <trajectory>
+                <points>trajectories/fish-two-rooms-small.xml</points>
+                <loopTrajectory>1</loopTrajectory>
+                <providePointsOnTimer>1</providePointsOnTimer>
+                <updateRateHz>15</updateRateHz>
+            </trajectory>
+        </controlModes>
+        <!-- Navigation settings. -->
+        <navigation>
+            <fishMotionPatternFrequencyDivider>10</fishMotionPatternFrequencyDivider>
+            <fishMotionPattern>
+                <distanceCm>25</distanceCm>
+                <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
+            </fishMotionPattern>
+            <pid>
+                <kp>4</kp> <!-- Vitesse angulaire  -->
+                <ki>0.05</ki>
+                <kd>0.00</kd>
+                <kpDist>200</kpDist> <!-- Vitesse en fontion de la distance de la cible   -->
+                <kiDist>1.00</kiDist>
+                <kdDist>2.00</kdDist>
+            </pid>
+            <defaultLinearSpeedCmSec>17</defaultLinearSpeedCmSec>
+            <needOrientationToNavigate>0</needOrientationToNavigate>
+        </navigation>
+        <!-- Controllers settings. Controller is available only if its settings are provided -->
+        <controllers>
+            <controlMap>
+                <controlAreasPath>control-maps/paris-four-sectors-control-map.xml</controlAreasPath>
+            </controlMap>
+            <circularSetup>
+                <controlAreasPath>control-maps/paris-four-sectors-control-map.xml</controlAreasPath>
+                <targetPositionRadius>0.25</targetPositionRadius>
+                <targetDeltaAngleDeg>18.</targetDeltaAngleDeg>
+            </circularSetup>
+        </controllers>
+        <fishBot_3>
+            <id>D</id>
+            <ledColor>
+                <r>189</r>
+                <g>79</g>
+                <b>87</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm3</connectionTarget>
+        </fishBot_3>
+        <fishBot_2>
+            <id>E</id>
+            <ledColor>
+                <r>101</r>
+                <g>175</g>
+                <b>72</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm4</connectionTarget>
+        </fishBot_2>
+        <fishBot_1>
+            <id>A</id>
+            <ledColor>
+                <r>91</r>
+                <g>130</g>
+                <b>199</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm0</connectionTarget>
+        </fishBot_1>
+    </robots>
+    <setups>
+        <mainCamera>
+            <!--
+                TODO : consider adding here the camera type or id to compare with the
+                value in the calibration file.
+            -->
+            <imageSize>
+                <width>512</width>
+                <height>512</height>
+            </imageSize>
+            <cameraCalibrationFile>camera-calibration/paris-fishtrack-1/cats2-paris-fishtrack-1-main-camera-basler-v3.xml</cameraCalibrationFile>
+            <tracking>
+                <trackingMethod>blobDetector</trackingMethod>
+                <numberOfAgents>7</numberOfAgents>
+                <blobDetector>
+                    <minBlobSizePx>3</minBlobSizePx>
+                    <qualityLevel>0.01</qualityLevel>
+                    <minDistance>5.0</minDistance>
+                    <blockSize>5</blockSize>
+                    <useHarrisDetector>1</useHarrisDetector>
+                    <k>0.04</k>
+            </blobDetector>
+            </tracking>
+        </mainCamera>
+        <cameraBelow>
+            <imageSize>
+                <width>640</width>
+                <height>480</height>
+            </imageSize>
+            <cameraCalibrationFile>camera-calibration/paris-fishtrack-1/cats2-paris-fishtrack-1-180-angle-below-camera-v3.xml</cameraCalibrationFile>
+            <tracking>
+                <trackingMethod>fishBotLedsTracking</trackingMethod>
+                <maskFile>bottom-camera-mask.png</maskFile>
+                <fishBotLedsTracking>
+                    <fishBot_D>
+                        <threshold>50</threshold>
+                    </fishBot_D>
+                    <fishBot_A>
+                        <threshold>30</threshold>
+                    </fishBot_A>
+                    <fishBot_E>
+                        <threshold>30</threshold>
+                    </fishBot_E>
+                </fishBotLedsTracking>
+            </tracking>
+        </cameraBelow>
+    </setups>
+    <interSpecies>
+        <!-- where we send data -->
+		<!-- <publisherAddress>tcp://172.27.34.3:5555</publisherAddress> -->
+        <!-- from where we get data -->
+		<!-- <subscriberAddresses>tcp://172.27.34.3:5556</subscriberAddresses> -->
+        <!-- local addresses -->
+		<publisherAddress>tcp://127.0.0.1:5555</publisherAddress>
+		<subscriberAddresses>tcp://127.0.0.1:5556</subscriberAddresses>
+
+    </interSpecies>
+</opencv_storage>
+
