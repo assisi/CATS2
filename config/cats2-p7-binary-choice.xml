@@ -10,7 +10,7 @@
         <setupMapPath>setup/paris-circular.xml</setupMapPath>
     </experiment>
     <robots>
-        <numberOfRobots>1</numberOfRobots>
+        <numberOfRobots>0</numberOfRobots>
         <controlFrequencyHz>10</controlFrequencyHz>
         <fishModel>
             <agent>
