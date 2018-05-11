@@ -61,6 +61,7 @@ set(srcs
     experiment-controllers/DominatingSetController.cpp
     experiment-controllers/CircularSetupController.cpp
     experiment-controllers/CircularSetupFollowerController.cpp
+	experiment-controllers/CircularSetupFollowerWithModelController.cpp
     experiment-controllers/CircularSetupLeaderController.cpp
 	experiment-controllers/CircularSetupLeaderWithModelController.cpp
     model/model.cpp

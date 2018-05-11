@@ -18,6 +18,7 @@ public:
         CIRCULAR_SETUP_FOLLOWER,
         CIRCULAR_SETUP_LEADER_CW,
         CIRCULAR_SETUP_LEADER_CCW,
+        CIRCULAR_SETUP_FOLLOWER_MODEL,
         CIRCULAR_SETUP_LEADER_CW_MODEL,
         CIRCULAR_SETUP_LEADER_CCW_MODEL,
         UNDEFINED
@@ -43,6 +44,7 @@ public:
         case CIRCULAR_SETUP_FOLLOWER:
         case CIRCULAR_SETUP_LEADER_CW:
         case CIRCULAR_SETUP_LEADER_CCW:
+        case CIRCULAR_SETUP_FOLLOWER_MODEL:
         case CIRCULAR_SETUP_LEADER_CW_MODEL:
         case CIRCULAR_SETUP_LEADER_CCW_MODEL:
             string = "circularSetup";
@@ -79,6 +81,9 @@ public:
             break;
         case CIRCULAR_SETUP_LEADER_CCW:
             string = "Circular setup leader (CCW)";
+            break;
+        case CIRCULAR_SETUP_FOLLOWER_MODEL:
+            string = "Circular setup follower with model";
             break;
         case CIRCULAR_SETUP_LEADER_CW_MODEL:
             string = "Circular setup leader with model (CW)";
