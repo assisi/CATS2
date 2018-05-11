@@ -8,6 +8,7 @@
 #include "experiment-controllers/InitiationLureController.hpp"
 #include "experiment-controllers/DominatingSetController.hpp"
 #include "experiment-controllers/CircularSetupFollowerController.hpp"
+#include "experiment-controllers/CircularSetupFollowerWithModelController.hpp"
 #include "experiment-controllers/CircularSetupLeaderController.hpp"
 #include "experiment-controllers/CircularSetupLeaderWithModelController.hpp"
 #include "settings/MapControllerSettings.hpp"
@@ -50,6 +51,8 @@ public:
                 return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings, TurningDirection::CLOCK_WISE), &QObject::deleteLater);
             case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW:
                 return ExperimentControllerPtr(new CircularSetupLeaderController(robot, settings, TurningDirection::COUNTER_CLOCK_WISE), &QObject::deleteLater);
+            case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER_MODEL:
+                return ExperimentControllerPtr(new CircularSetupFollowerWithModelController(robot, settings), &QObject::deleteLater);
             case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW_MODEL:
                 return ExperimentControllerPtr(new CircularSetupLeaderWithModelController(robot, settings, TurningDirection::CLOCK_WISE), &QObject::deleteLater);
             case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW_MODEL:
@@ -79,6 +82,7 @@ public:
         case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER:
         case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW:
         case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW:
+        case ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER_MODEL:
         case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW_MODEL:
         case ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW_MODEL:
             // NOTE: two controllers share the same settings
