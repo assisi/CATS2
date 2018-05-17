@@ -5,12 +5,12 @@
         <name>Circular</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>4</numberOfAnimals>
+            <numberOfAnimals>5</numberOfAnimals>
         </agents>
         <setupMapPath>setup/paris-circular.xml</setupMapPath>
     </experiment>
     <robots>
-        <numberOfRobots>2</numberOfRobots>
+        <numberOfRobots>1</numberOfRobots>
         <controlFrequencyHz>10</controlFrequencyHz>
         <fishModel>
             <agent>
@@ -252,8 +252,8 @@
         <!-- from where we get data -->
 		<!-- <subscriberAddresses>tcp://172.27.34.3:5556</subscriberAddresses> -->
         <!-- local addresses -->
-		<publisherAddress>tcp://fishtrack:5555</publisherAddress>
-		<subscriberAddresses>tcp://fishtrack:5556</subscriberAddresses>
+		<publisherAddress>tcp://172.27.34.7:5556</publisherAddress>
+		<subscriberAddresses>tcp://143.50.158.98:5555</subscriberAddresses>
 
     </interSpecies>
 </opencv_storage>
