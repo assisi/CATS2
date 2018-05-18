@@ -55,6 +55,26 @@ CircularSetupController::CircularSetupController(FishBot* robot,
 
     // connect the timer to the print method
     connect(&m_statisticsPrintTimer, &QTimer::timeout, [=](){ printStatistics(); });
+
+    // connect the timer to the statistics publisher method
+    connect(&m_statisticsPublisherTimer, &QTimer::timeout, [=](){
+        double fishClockWisePercent = 100 * static_cast<double>(m_fishClockWiseCounter) /
+                static_cast<double>(m_allMeasurementsCounter);
+        double fishCounterClockWisePercent = 100 *
+                static_cast<double>(m_allMeasurementsCounter -
+                                    m_fishClockWiseCounter -
+                                    m_fishUndefCounter) /
+                static_cast<double>(m_allMeasurementsCounter);
+
+        double robotClockWisePercent = 100 * static_cast<double>(m_robotClockWiseCounter) /
+                static_cast<double>(m_allMeasurementsCounter);
+        double robotCounterClockWisePercent = 100 *
+                static_cast<double>(m_allMeasurementsCounter -
+                                    m_robotClockWiseCounter -
+                                    m_robotUndefCounter) /
+                static_cast<double>(m_allMeasurementsCounter);
+		emit notifyStatisticsAvailable(fishClockWisePercent, fishCounterClockWisePercent, robotClockWisePercent, robotCounterClockWisePercent);
+	});
 }
 
 /*!
@@ -63,6 +83,7 @@ CircularSetupController::CircularSetupController(FishBot* robot,
 CircularSetupController::~CircularSetupController()
 {
     m_statisticsPrintTimer.stop();
+    m_statisticsPublisherTimer.stop();
     bool finalCall = true;
     printStatistics(finalCall);
 }
@@ -173,6 +194,10 @@ void CircularSetupController::start()
     // start the timer to print the circular setup statistics
     int stepMsec = 60000; // 1 minute
     m_statisticsPrintTimer.start(stepMsec);
+
+    // TODO add a configuration parameter to set this
+    int stepPublisherMsec = 1000; // 1 second
+    m_statisticsPublisherTimer.start(stepMsec);
 }
 
 /*!
@@ -182,6 +207,7 @@ void CircularSetupController::finish()
 {
     printStatistics();
     m_statisticsPrintTimer.stop();
+    m_statisticsPublisherTimer.stop();
 }
 
 /*!

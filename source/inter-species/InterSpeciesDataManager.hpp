@@ -36,9 +36,16 @@ public slots:
     void publishAgentData(QList<AgentDataImage> agentDataList);
     //! Triggered when new data on the fish group and robot rotation direction
     //! arrive from the circular experiment.
-    void publishCicrularExperimentData(QString agentId,
+    void publishCircularExperimentData(QString agentId,
                                        QString fishTurningDirection,
                                        QString robotTurningDirection);
+
+    //! Triggered when statistics about the circular experiment are to be published.
+    void publishCircularExperimentStatistics(QString agentId,
+                                             double fishClockWisePercent,
+                                             double fishCounterClockWisePercent,
+                                             double robotClockWisePercent,
+                                             double robotCounterClockWisePercent);
 
 private:
     //! Publishes the message.

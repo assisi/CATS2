@@ -30,23 +30,40 @@ Subscriber::~Subscriber()
 void Subscriber::processMessage(std::string name, std::string device,
                                 std::string command, std::string data)
 {
-    // at the moment we manage the binary-choice message only
-    if (QString(command.data()).toLower().contains("casu")) {
-        if (QString(device.data()).toLower().contains("message")) {
-            m_beeDensities[QString(command.data()).toLower()] =
-                    QString(data.data()).toDouble();
+//    // at the moment we manage the binary-choice message only
+//    if (QString(command.data()).toLower().contains("casu")) {
+//        if (QString(device.data()).toLower().contains("message")) {
+//            m_beeDensities[QString(command.data()).toLower()] =
+//                    QString(data.data()).toDouble();
+//
+//            // by agreement when we get the data from the second casu we decide
+//            // on the turning direction
+//            if (QString(command.data()).toLower().contains("002")) {
+//                QString message;
+//                if (m_beeDensities["casu-001"] < m_beeDensities["casu-002"])
+//                    message = "CW";
+//                else
+//                    message = "CCW";
+//                emit notifyBeeSetCircularSetupTurningDirection(message);
+//            }
+//        }
+//    }
 
-            // by agreement when we get the data from the second casu we decide
-            // on the turning direction
-            if (QString(command.data()).toLower().contains("002")) {
-                QString message;
-                if (m_beeDensities["casu-001"] < m_beeDensities["casu-002"])
-                    message = "CW";
-                else
-                    message = "CCW";
-                emit notifyBeeSetCircularSetupTurningDirection(message);
-            }
+
+//    if (QString(device.data()).toLower() == "proberq") {
+//        if (QString(data.data()).toLower().contains("confidence")) {
+//            QStringList splitted = QString(data.data()).split(":");
+//            float confidence = splitted.value(splitted.length() - 1).toFloat();
+//            if (confidence < 0.0)
+//                confidence = 0.0;
+//            else if (confidence > 1.0)
+//                confidence = 1.0;
+//        }
+//    }
+
+
+        if (QString(device.data()).toLower().contains("behaviour")) {
+            emit notifyBeeSetCircularSetupTurningDirection(QString(data.data()));
         }
-    }
 
 }

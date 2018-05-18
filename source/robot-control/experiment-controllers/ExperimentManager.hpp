@@ -55,6 +55,12 @@ signals: // experiment specific
     //! directions in the circular setup experiment.
     void notifyCircularSetupTurningDirections(QString fishTurningDirection,
                                               QString robotTurningDirection);
+    //! Informs the interspecies-module on the fish and robots statistics
+    //! in the circular setup experiment.
+    void notifyCircularSetupStatistics(double fishClockWisePercent,
+                                       double fishCounterClockWisePercent,
+                                       double robotClockWisePercent,
+                                       double robotCounterClockWisePercent);
 
 private:
     //! The list of experiment controllers available to this manager.

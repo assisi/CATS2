@@ -7,6 +7,7 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QThread>
+#include <string>
 
 InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
                                                  QStringList subscriberAddresses) :
@@ -106,7 +107,7 @@ std::string InterSpeciesDataManager::agentTypeToString(AgentType agentType)
  * Triggered when new data on the fish group and robot rotation direction
  * arrive from the circular experiment.
  */
-void InterSpeciesDataManager::publishCicrularExperimentData(QString agentId,
+void InterSpeciesDataManager::publishCircularExperimentData(QString agentId,
                                                             QString fishTurningDirection,
                                                             QString robotTurningDirection)
 {
@@ -125,3 +126,30 @@ void InterSpeciesDataManager::publishCicrularExperimentData(QString agentId,
     name = "casu-002";
     publishMessage(name, device, command, message);
 }
+
+
+void InterSpeciesDataManager::publishCircularExperimentStatistics(QString agentId,
+                                                                  double fishClockWisePercent,
+                                                                  double fishCounterClockWisePercent,
+                                                                  double robotClockWisePercent,
+                                                                  double robotCounterClockWisePercent)
+{
+    std::string message;
+    message.append("fishClockWisePercent:");
+    message.append(std::to_string(fishClockWisePercent));
+    message.append(";");
+    message.append("fishCounterClockWisePercent:");
+    message.append(std::to_string(fishCounterClockWisePercent));
+    message.append(";");
+    message.append("robotClockWisePercent:");
+    message.append(std::to_string(robotClockWisePercent));
+    message.append(";");
+    message.append("robotCounterClockWisePercent:");
+    message.append(std::to_string(robotCounterClockWisePercent));
+
+    std::string name = "";
+    std::string messageType = "Statistics";
+    std::string sender = "setup-1"; // TODO
+    publishMessage(name, messageType, sender, message);
+}
+

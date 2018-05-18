@@ -95,10 +95,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // connecting to inter-species
     if (CommandLineParameters::get().useInterSpacesModule()) {
+        //connect(m_robotsHandler->contolLoop().data(),
+        //        &ControlLoop::notifyCircularSetupTurningDirections,
+        //        m_interSpeciesDataManager.data(),
+        //        &InterSpeciesDataManager::publishCircularExperimentData);
         connect(m_robotsHandler->contolLoop().data(),
-                &ControlLoop::notifyCircularSetupTurningDirections,
+                &ControlLoop::notifyCircularSetupStatistics,
                 m_interSpeciesDataManager.data(),
-                &InterSpeciesDataManager::publishCicrularExperimentData);
+                &InterSpeciesDataManager::publishCircularExperimentStatistics);
         connect(m_interSpeciesDataManager.data(),
                 &InterSpeciesDataManager::notifyBeesSetCircularSetupTurningDirection,
                 m_robotsHandler->contolLoop().data(),

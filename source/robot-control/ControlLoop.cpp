@@ -87,6 +87,9 @@ ControlLoop::ControlLoop() :
         // passes further the data from the circular experiment
         connect(m_robots.last().data(), &FishBot::notifyCircularSetupTurningDirections,
                 this, &ControlLoop::notifyCircularSetupTurningDirections);
+        // passes further the statistics from the circular experiment
+        connect(m_robots.last().data(), &FishBot::notifyCircularSetupStatistics,
+                this, &ControlLoop::notifyCircularSetupStatistics);
     }
 
     // conect the robots

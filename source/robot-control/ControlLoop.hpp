@@ -79,6 +79,12 @@ signals:
     void notifyCircularSetupTurningDirections(QString agentId,
                                               QString fishTurningDirection,
                                               QString robotTurningDirection);
+    //! Sends the statistics from the circular experiment.
+    void notifyCircularSetupStatistics(QString agentId,
+                                       double fishClockWisePercent,
+                                       double fishCounterClockWisePercent,
+                                       double robotClockWisePercent,
+                                       double robotCounterClockWisePercent);
 
 private:
     //! Loads and initializes the robots' firmware scripts for the shared
