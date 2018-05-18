@@ -153,8 +153,14 @@ if __name__ == '__main__':
 
                 # emit the mssage
                 print "{}s elapsed. \t".format(t_next_msg),
-                disp_and_send(msg_emitter, casu_linknames[0], sender=sender,
-                              msg=msg, ty=msg_type, verb=True)
+                #disp_and_send(msg_emitter, casu_linknames[0], sender=sender,
+                #              msg=msg, ty=msg_type, verb=True)
+                #disp_and_send(msg_emitter, casu_linknames[1], sender=sender,
+                #              msg=msg, ty=msg_type, verb=True)
+                disp_and_send(msg_emitter, casu_linknames[0], sender=msg_type,
+                              msg=str(np.random.random()), ty=sender, verb=True)
+                disp_and_send(msg_emitter, casu_linknames[1], sender=msg_type,
+                              msg=str(np.random.random()), ty=sender, verb=True)
                 i += 1
 
 

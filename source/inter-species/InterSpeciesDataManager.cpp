@@ -7,7 +7,6 @@
 
 #include <QtCore/QDebug>
 #include <QtCore/QThread>
-#include <string>
 
 InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
                                                  QStringList subscriberAddresses) :
@@ -136,16 +135,16 @@ void InterSpeciesDataManager::publishCircularExperimentStatistics(QString agentI
 {
     std::string message;
     message.append("fishClockWisePercent:");
-    message.append(std::to_string(fishClockWisePercent));
+    message.append(QString::number(fishClockWisePercent).toStdString());
     message.append(";");
     message.append("fishCounterClockWisePercent:");
-    message.append(std::to_string(fishCounterClockWisePercent));
+    message.append(QString::number(fishCounterClockWisePercent).toStdString());
     message.append(";");
     message.append("robotClockWisePercent:");
-    message.append(std::to_string(robotClockWisePercent));
+    message.append(QString::number(robotClockWisePercent).toStdString());
     message.append(";");
     message.append("robotCounterClockWisePercent:");
-    message.append(std::to_string(robotCounterClockWisePercent));
+    message.append(QString::number(robotCounterClockWisePercent).toStdString());
 
     std::string name = "";
     std::string messageType = "Statistics";

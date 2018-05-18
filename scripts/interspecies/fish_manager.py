@@ -163,8 +163,8 @@ class InterspeciesManager(object):
         assert (confidence >= 0. and confidence <= 1.)
 
         # Determine trial duration from the confidence level
-        trial_duration = 4 * 60 # XXX Force trials to last 4 minutes
-        #trial_duration = 10 # XXX Force trials to last 4 minutes
+        #trial_duration = 4 * 60 # XXX Force trials to last 4 minutes
+        trial_duration = 30 # XXX Force trials to last 4 minutes
 
         print("Initiating a new probing trial on setup-%i for %i sec with a confidence of %f" % (setup_id + 1, trial_duration, confidence))
 
