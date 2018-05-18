@@ -58,22 +58,22 @@ CircularSetupController::CircularSetupController(FishBot* robot,
 
     // connect the timer to the statistics publisher method
     connect(&m_statisticsPublisherTimer, &QTimer::timeout, [=](){
-        double fishClockWisePercent = 100 * static_cast<double>(m_fishClockWiseCounter) /
+        double fishClockWisePercent = 1 * static_cast<double>(m_fishClockWiseCounter) /
                 static_cast<double>(m_allMeasurementsCounter);
-        double fishCounterClockWisePercent = 100 *
+        double fishCounterClockWisePercent = 1 *
                 static_cast<double>(m_allMeasurementsCounter -
                                     m_fishClockWiseCounter -
                                     m_fishUndefCounter) /
                 static_cast<double>(m_allMeasurementsCounter);
 
-        double robotClockWisePercent = 100 * static_cast<double>(m_robotClockWiseCounter) /
+        double robotClockWisePercent = 1 * static_cast<double>(m_robotClockWiseCounter) /
                 static_cast<double>(m_allMeasurementsCounter);
-        double robotCounterClockWisePercent = 100 *
+        double robotCounterClockWisePercent = 1 *
                 static_cast<double>(m_allMeasurementsCounter -
                                     m_robotClockWiseCounter -
                                     m_robotUndefCounter) /
                 static_cast<double>(m_allMeasurementsCounter);
-		emit notifyStatisticsAvailable(fishClockWisePercent, fishCounterClockWisePercent, robotClockWisePercent, robotCounterClockWisePercent);
+                emit notifyStatisticsAvailable(fishClockWisePercent, fishCounterClockWisePercent, robotClockWisePercent, robotCounterClockWisePercent);
 	});
 }
 
@@ -172,6 +172,14 @@ PositionMeters CircularSetupController::computeTargetPosition()
  */
 bool CircularSetupController::updateTargetTurningDirection(TurningDirection::Enum turningDirection)
 {
+    // TODO put elsewhere, do it only if a parameter enables it
+    // Reset statistics
+    m_robotClockWiseCounter = 0;
+    m_robotUndefCounter = 0;
+    m_fishClockWiseCounter = 0;
+    m_fishUndefCounter = 0;
+    m_allMeasurementsCounter = 0;
+
     if (m_targetTurningDirection != turningDirection) {
         qDebug() << QString("%1 turning direction changed from %2 to %3")
                     .arg(m_robot->name())
