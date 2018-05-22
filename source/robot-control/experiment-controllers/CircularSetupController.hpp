@@ -73,6 +73,11 @@ signals:
     void notifyTurningDirections(QString fishTurningDirection,
                                  QString robotTurningDirection);
 
+    void notifyStatisticsAvailable(double fishClockWisePercent,
+                                   double fishCounterClockWisePercent,
+                                   double robotClockWisePercent,
+                                   double robotCounterClockWisePercent);
+
 protected:
     //! Calculates the turning directions of the fish group.
     void computeFishTurningDirection();
@@ -125,6 +130,9 @@ protected:
 private:
     //! The timer to print the experiment statistics every minute.
     QTimer m_statisticsPrintTimer;
+
+    //! The timer to publish statistics
+    QTimer m_statisticsPublisherTimer;
 };
 
 #endif // CATS2_CIRCULAR_SETUP_CONTROLLER_HPP

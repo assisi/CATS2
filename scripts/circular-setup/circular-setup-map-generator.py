@@ -18,8 +18,8 @@ def main():
     angleInterval = 5
     internalRadiusPx = 96
     externalRadiusPx = 135
-    xCenterPx = 265
-    yCenterPx = 245
+    xCenterPx = 251
+    yCenterPx = 257
     anglesRad = [math.radians(angleDeg) for angleDeg in range(0, 361, angleInterval)]
     xNormalized = [math.cos(angleRad) for angleRad in anglesRad]
     yNormalized = [math.sin(angleRad) for angleRad in anglesRad]
@@ -37,7 +37,7 @@ def main():
     externalCircleX.append(externalCircleX[-1])
     internalCircleY.append(internalCircleY[-1])
     externalCircleY.append(externalCircleY[-1])
-    sectorsNumber = 4
+    sectorsNumber = 8
     roomX = []
     roomY = []
     sectorLength = int(math.ceil(360 / (angleInterval * sectorsNumber)))

@@ -29,6 +29,8 @@ public:
 signals:
     //! Notifies on the turning direction deduced from the bee setup bees (CW/CCW).
     void notifyBeesSetCircularSetupTurningDirection(QString message);
+    //! Notifies that the robot must update its target position
+    void notifyRobotTargetPositionUpdated(QString message);
 
 public slots:
     //! Triggered when new agent data is to be published.
@@ -36,9 +38,20 @@ public slots:
     void publishAgentData(QList<AgentDataImage> agentDataList);
     //! Triggered when new data on the fish group and robot rotation direction
     //! arrive from the circular experiment.
-    void publishCicrularExperimentData(QString agentId,
+    void publishCircularExperimentData(QString agentId,
                                        QString fishTurningDirection,
                                        QString robotTurningDirection);
+
+    //! Triggered when statistics about the circular experiment are to be published.
+    void publishCircularExperimentStatistics(QString agentId,
+                                             double fishClockWisePercent,
+                                             double fishCounterClockWisePercent,
+                                             double robotClockWisePercent,
+                                             double robotCounterClockWisePercent);
+
+    //! Triggered when robot target position is changed
+    void publishRobotTargetPosition(QString agentId,
+                                    PositionMeters position);
 
 private:
     //! Publishes the message.

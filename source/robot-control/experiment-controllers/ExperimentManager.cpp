@@ -55,6 +55,11 @@ ExperimentManager::ExperimentManager(FishBot* robot) :
                         &CircularSetupController::notifyTurningDirections,
                         this,
                         &ExperimentManager::notifyCircularSetupTurningDirections);
+
+                connect(controller,
+                        &CircularSetupController::notifyStatisticsAvailable,
+                        this,
+                        &ExperimentManager::notifyCircularSetupStatistics);
             }
         }
     }
@@ -119,29 +124,42 @@ void ExperimentManager::setCircularSetupTurningDirection(QString message)
 {
     qDebug() << QString("Set the turning direction %1").arg(message);
     TurningDirection::Enum turningDirection = TurningDirection::fromString(message.toUpper());
-    if (turningDirection != TurningDirection::UNDEFINED) {
-        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW)
-                && (turningDirection == TurningDirection::CLOCK_WISE))
-        {
-            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW);
-        };
-        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW)
-                && (turningDirection == TurningDirection::COUNTER_CLOCK_WISE))
-        {
-            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW);
-        };
+//    if (turningDirection != TurningDirection::UNDEFINED) {
+//        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW)
+//                && (turningDirection == TurningDirection::CLOCK_WISE))
+//        {
+//            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW);
+//        };
+//        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW)
+//                && (turningDirection == TurningDirection::COUNTER_CLOCK_WISE))
+//        {
+//            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW);
+//        };
+//
+//        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW_MODEL)
+//                && (turningDirection == TurningDirection::CLOCK_WISE))
+//        {
+//            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW_MODEL);
+//        };
+//        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW_MODEL)
+//                && (turningDirection == TurningDirection::COUNTER_CLOCK_WISE))
+//        {
+//            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW_MODEL);
+//        };
+//    } else {
+//        qDebug() << "Can't set the turning direction for the message" << message;
+//    }
 
-        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW_MODEL)
-                && (turningDirection == TurningDirection::CLOCK_WISE))
-        {
-            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW_MODEL);
-        };
-        if ((m_currentController == ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW_MODEL)
-                && (turningDirection == TurningDirection::COUNTER_CLOCK_WISE))
-        {
-            setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW_MODEL);
-        };
-    } else {
-        qDebug() << "Can't set the turning direction for the message" << message;
+
+    switch (turningDirection) {
+    case TurningDirection::CLOCK_WISE:
+        setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CW_MODEL);
+        break;
+    case TurningDirection::COUNTER_CLOCK_WISE:
+        setController(ExperimentControllerType::CIRCULAR_SETUP_LEADER_CCW_MODEL);
+        break;
+    default:
+        setController(ExperimentControllerType::CIRCULAR_SETUP_FOLLOWER_MODEL);
+        break;
     }
 }

@@ -153,6 +153,13 @@ signals: // control states
                                                     QString fishTurningDirection,
                                                     QString robotTurningDirection);
 
+    //! Sends the statistics from the circular experiment.
+    void notifyCircularSetupStatistics(QString agentId,
+                                       double fishClockWisePercent,
+                                       double fishCounterClockWisePercent,
+                                       double robotClockWisePercent,
+                                       double robotCounterClockWisePercent);
+
     //! Informs that the robot's control mode was modified.
     void notifyControlModeChanged(ControlModeType::Enum type);
     //! Sends out the current control mode status.

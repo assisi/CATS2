@@ -69,6 +69,15 @@ FishBot::FishBot(QString id) :
                                                           fishTurningDirection,
                                                           robotTurningDirection);
             });
+    connect(&m_experimentManager, &ExperimentManager::notifyCircularSetupStatistics,
+            [=](double fishClockWisePercent, double fishCounterClockWisePercent, double robotClockWisePercent, double robotCounterClockWisePercent)
+            {
+                emit notifyCircularSetupStatistics(m_id,
+                                                   fishClockWisePercent,
+                                                   fishCounterClockWisePercent,
+                                                   robotClockWisePercent,
+                                                   robotCounterClockWisePercent);
+            });
 
     // control modes
     connect(&m_controlStateMachine, &ControlModeStateMachine::notifyControlModeChanged,

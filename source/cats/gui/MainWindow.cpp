@@ -23,6 +23,7 @@
 #include <QtGui/QtGui>
 #include <QtCore/QTimer>
 #include <QtWidgets/QStatusBar>
+#include <string>
 
 static DebugLogger logger;
 void messageOutput(QtMsgType type,
@@ -95,14 +96,41 @@ MainWindow::MainWindow(QWidget *parent) :
 
     // connecting to inter-species
     if (CommandLineParameters::get().useInterSpacesModule()) {
+        //connect(m_robotsHandler->contolLoop().data(),
+        //        &ControlLoop::notifyCircularSetupTurningDirections,
+        //        m_interSpeciesDataManager.data(),
+        //        &InterSpeciesDataManager::publishCircularExperimentData);
         connect(m_robotsHandler->contolLoop().data(),
-                &ControlLoop::notifyCircularSetupTurningDirections,
+                &ControlLoop::notifyCircularSetupStatistics,
                 m_interSpeciesDataManager.data(),
-                &InterSpeciesDataManager::publishCicrularExperimentData);
+                &InterSpeciesDataManager::publishCircularExperimentStatistics);
         connect(m_interSpeciesDataManager.data(),
                 &InterSpeciesDataManager::notifyBeesSetCircularSetupTurningDirection,
                 m_robotsHandler->contolLoop().data(),
                 &ControlLoop::setCircularSetupTurningDirection);
+        connect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifyRobotTargetPositionChanged,
+                m_interSpeciesDataManager.data(),
+                &InterSpeciesDataManager::publishRobotTargetPosition);
+
+        connect(m_interSpeciesDataManager.data(),
+                &InterSpeciesDataManager::notifyRobotTargetPositionUpdated,
+                [=](QString message) {
+            double x = 0;
+            double y = 0;
+            QStringList splitted = message.split(";");
+            for(auto& str : splitted) {
+                if(str.size() == 0)
+                    continue;
+                QStringList splitted2 = str.split(":");
+                if(splitted2[0] == "x")
+                    x = std::stod(splitted2[1].toStdString());
+                if(splitted2[0] == "y")
+                    y = std::stod(splitted2[1].toStdString());
+            }
+            PositionMeters position(x, y);
+            m_robotsHandler->contolLoop()->goToPosition(position);
+        });
     }
 
     // show the window maximazed

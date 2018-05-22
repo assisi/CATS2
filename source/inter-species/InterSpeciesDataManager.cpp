@@ -32,6 +32,8 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
     connect(thread, &QThread::finished, thread, &QThread::deleteLater);
     connect(m_subscriber.data(), &Subscriber::notifyBeeSetCircularSetupTurningDirection,
             this, &InterSpeciesDataManager::notifyBeesSetCircularSetupTurningDirection);
+    connect(m_subscriber.data(), &Subscriber::notifyReceptionOfUpdateRobotTargetPositionMessage,
+            this, &InterSpeciesDataManager::notifyRobotTargetPositionUpdated);
     thread->start();
 }
 
@@ -106,7 +108,7 @@ std::string InterSpeciesDataManager::agentTypeToString(AgentType agentType)
  * Triggered when new data on the fish group and robot rotation direction
  * arrive from the circular experiment.
  */
-void InterSpeciesDataManager::publishCicrularExperimentData(QString agentId,
+void InterSpeciesDataManager::publishCircularExperimentData(QString agentId,
                                                             QString fishTurningDirection,
                                                             QString robotTurningDirection)
 {
@@ -125,3 +127,49 @@ void InterSpeciesDataManager::publishCicrularExperimentData(QString agentId,
     name = "casu-002";
     publishMessage(name, device, command, message);
 }
+
+
+void InterSpeciesDataManager::publishCircularExperimentStatistics(QString agentId,
+                                                                  double fishClockWisePercent,
+                                                                  double fishCounterClockWisePercent,
+                                                                  double robotClockWisePercent,
+                                                                  double robotCounterClockWisePercent)
+{
+    std::string message;
+    message.append("fishClockWisePercent:");
+    message.append(QString::number(fishClockWisePercent).toStdString());
+    message.append(";");
+    message.append("fishCounterClockWisePercent:");
+    message.append(QString::number(fishCounterClockWisePercent).toStdString());
+    message.append(";");
+    message.append("robotClockWisePercent:");
+    message.append(QString::number(robotClockWisePercent).toStdString());
+    message.append(";");
+    message.append("robotCounterClockWisePercent:");
+    message.append(QString::number(robotCounterClockWisePercent).toStdString());
+    message.append(";");
+
+    std::string name = "";
+    std::string messageType = "Statistics";
+    std::string sender = "setup-1"; // TODO
+    publishMessage(name, messageType, sender, message);
+}
+
+
+void InterSpeciesDataManager::publishRobotTargetPosition(QString agentId,
+                                                         PositionMeters position)
+{
+    std::string message;
+    message.append("x:");
+    message.append(QString::number(position.x()).toStdString());
+    message.append(";");
+    message.append("y:");
+    message.append(QString::number(position.y()).toStdString());
+    message.append(";");
+
+    std::string name = "";
+    std::string messageType = "RobotTargetPositionChanged";
+    std::string sender = agentId.toStdString(); // TODO
+    publishMessage(name, messageType, sender, message);
+}
+

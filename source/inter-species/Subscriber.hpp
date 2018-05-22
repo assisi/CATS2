@@ -21,6 +21,8 @@ public:
 signals:
     //! Notifies on the turning direction deduced from the bee setup bees (CW/CCW).
     void notifyBeeSetCircularSetupTurningDirection(QString message);
+    //! Notifies the reception of a command to change robot target position.
+    void notifyReceptionOfUpdateRobotTargetPositionMessage(QString message);
 
 protected:
     //! Processes the input message.
