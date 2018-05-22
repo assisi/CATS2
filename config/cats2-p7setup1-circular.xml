@@ -150,7 +150,7 @@
                 <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
-                <kp>4</kp> <!-- Vitesse angulaire  -->
+                <kp>3.5</kp> <!-- Vitesse angulaire  -->
                 <ki>0.05</ki>
                 <kd>0.00</kd>
                 <kpDist>200</kpDist> <!-- Vitesse en fontion de la distance de la cible   -->
@@ -167,7 +167,7 @@
             </controlMap>
             <circularSetup>
                 <controlAreasPath>control-maps/paris-four-sectors-control-map.xml</controlAreasPath>
-                <targetPositionRadius>0.25</targetPositionRadius>
+                <targetPositionRadius>0.24</targetPositionRadius>
                 <targetDeltaAngleDeg>18.</targetDeltaAngleDeg>
             </circularSetup>
         </controllers>
@@ -252,8 +252,10 @@
         <!-- from where we get data -->
 		<!-- <subscriberAddresses>tcp://172.27.34.3:5556</subscriberAddresses> -->
         <!-- local addresses -->
-		<publisherAddress>tcp://172.27.34.7:5556</publisherAddress>
+
+		<publisherAddress>tcp://127.0.0.1:5556</publisherAddress>
 		<subscriberAddresses>tcp://143.50.158.98:5555</subscriberAddresses>
+		<!-- <subscriberAddresses>tcp://10.42.1.94:5555</subscriberAddresses> -->
 
     </interSpecies>
 </opencv_storage>
