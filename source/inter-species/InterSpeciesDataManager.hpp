@@ -29,6 +29,8 @@ public:
 signals:
     //! Notifies on the turning direction deduced from the bee setup bees (CW/CCW).
     void notifyBeesSetCircularSetupTurningDirection(QString message);
+    //! Notifies that the robot must update its target position
+    void notifyRobotTargetPositionUpdated(QString message);
 
 public slots:
     //! Triggered when new agent data is to be published.
@@ -46,6 +48,10 @@ public slots:
                                              double fishCounterClockWisePercent,
                                              double robotClockWisePercent,
                                              double robotCounterClockWisePercent);
+
+    //! Triggered when robot target position is changed
+    void publishRobotTargetPosition(QString agentId,
+                                    PositionMeters position);
 
 private:
     //! Publishes the message.

@@ -23,6 +23,7 @@
 #include <QtGui/QtGui>
 #include <QtCore/QTimer>
 #include <QtWidgets/QStatusBar>
+#include <string>
 
 static DebugLogger logger;
 void messageOutput(QtMsgType type,
@@ -107,6 +108,29 @@ MainWindow::MainWindow(QWidget *parent) :
                 &InterSpeciesDataManager::notifyBeesSetCircularSetupTurningDirection,
                 m_robotsHandler->contolLoop().data(),
                 &ControlLoop::setCircularSetupTurningDirection);
+        connect(m_robotsHandler->contolLoop().data(),
+                &ControlLoop::notifyRobotTargetPositionChanged,
+                m_interSpeciesDataManager.data(),
+                &InterSpeciesDataManager::publishRobotTargetPosition);
+
+        connect(m_interSpeciesDataManager.data(),
+                &InterSpeciesDataManager::notifyRobotTargetPositionUpdated,
+                [=](QString message) {
+            double x = 0;
+            double y = 0;
+            QStringList splitted = message.data().split(";");
+            for(auto& str : splitted) {
+                if(str.size() == 0)
+                    continue;
+                QStringList splitted2 = str.data().split(":");
+                if(splitted2[0] == "x")
+                    x = std::stod(splitted2[1]);
+                if(splitted2[0] == "y")
+                    y = std::stod(splitted2[1]);
+            }
+            PositionMeters position(x, y);
+            m_robotsHandler->contolLoop->goToPosition(position);
+        });
     }
 
     // show the window maximazed
