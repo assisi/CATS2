@@ -118,18 +118,18 @@ MainWindow::MainWindow(QWidget *parent) :
                 [=](QString message) {
             double x = 0;
             double y = 0;
-            QStringList splitted = message.data().split(";");
+            QStringList splitted = message.split(";");
             for(auto& str : splitted) {
                 if(str.size() == 0)
                     continue;
-                QStringList splitted2 = str.data().split(":");
+                QStringList splitted2 = str.split(":");
                 if(splitted2[0] == "x")
-                    x = std::stod(splitted2[1]);
+                    x = std::stod(splitted2[1].toStdString());
                 if(splitted2[0] == "y")
-                    y = std::stod(splitted2[1]);
+                    y = std::stod(splitted2[1].toStdString());
             }
             PositionMeters position(x, y);
-            m_robotsHandler->contolLoop->goToPosition(position);
+            m_robotsHandler->contolLoop()->goToPosition(position);
         });
     }
 

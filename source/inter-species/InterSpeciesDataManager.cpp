@@ -169,7 +169,7 @@ void InterSpeciesDataManager::publishRobotTargetPosition(QString agentId,
 
     std::string name = "";
     std::string messageType = "RobotTargetPositionChanged";
-    std::string sender = agentId; // TODO
+    std::string sender = agentId.toStdString(); // TODO
     publishMessage(name, messageType, sender, message);
 }
 
