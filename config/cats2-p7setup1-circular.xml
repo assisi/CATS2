@@ -253,9 +253,16 @@
 		<!-- <subscriberAddresses>tcp://172.27.34.3:5556</subscriberAddresses> -->
         <!-- local addresses -->
 
+		<!-- <subscriberAddresses>tcp://10.42.1.94:5555</subscriberAddresses> -->
+
+		<!-- ADDRESSES TEST WORKSHOP MAY2018 -->
+		<!--
 		<publisherAddress>tcp://127.0.0.1:5556</publisherAddress>
 		<subscriberAddresses>tcp://143.50.158.98:5555</subscriberAddresses>
-		<!-- <subscriberAddresses>tcp://10.42.1.94:5555</subscriberAddresses> -->
+		-->
+
+		<subscriberAddresses>tcp://172.27.34.3:5556</subscriberAddresses>
+		<publisherAddress>tcp://172.27.34.7:5555</publisherAddress>
 
     </interSpecies>
 </opencv_storage>
