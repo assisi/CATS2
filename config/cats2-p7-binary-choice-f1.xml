@@ -1,0 +1,260 @@
+<?xml version="1.0"?>
+<opencv_storage>
+    <experiment>
+        <type>Interspecies</type>
+        <name>Binary-choice</name>
+        <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
+        <agents>
+            <numberOfAnimals>5</numberOfAnimals>
+        </agents>
+        <setupMapPath>setup/paris-circular.xml</setupMapPath>
+    </experiment>
+    <robots>
+        <numberOfRobots>1</numberOfRobots>
+        <controlFrequencyHz>10</controlFrequencyHz>
+        <fishModel>
+            <agent>
+                <length>0.02</length>
+                <width>0.02</width>
+                <height>0.01</height>
+                <fov>169</fov>
+                <meanSpeed>-2.65</meanSpeed>
+                <varSpeed>0.51</varSpeed>
+            </agent>
+            <BM>
+                <kappaFishes>20.0</kappaFishes>
+                <alphasCenter>55.0</alphasCenter>
+                <kappaNeutCenter>6.3</kappaNeutCenter>
+                <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+            </BM>
+            <BMWithWalls>
+                <kappaFishes>10.0</kappaFishes>
+                <alpha>25.0</alpha>
+                <kappaNeutCenter>6.3</kappaNeutCenter>
+                <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+                <wallDistanceThreshold>0.02</wallDistanceThreshold>
+            </BMWithWalls>
+            <ZonedBM>
+                <numberOfZones>3</numberOfZones>
+                <zone_1> <!-- Corridor -->
+                  <polygons>
+                    <numberOfPolygons>1</numberOfPolygons>
+                    <polygon_1>
+                      0.108 0.481 0.139 0.470 0.442 0.152 0.453 0.121 0.414 0.081 0.383 0.092 0.075 0.409 0.064 0.437
+                    </polygon_1>
+                  </polygons>
+                  <kappaFishes>19.97</kappaFishes>
+                  <alphasCenter>49.11</alphasCenter>
+                  <kappaNeutCenter>1.3</kappaNeutCenter>
+                  <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+                  <minSpeed>0</minSpeed>
+                  <maxSpeed>0.20</maxSpeed>
+                  <gammaZone>55.0</gammaZone>
+                  <beta>55.0</beta>
+                  <kappaWalls>20.0</kappaWalls>
+                  <speedHistogram>
+                    0.0304615 0.07993734 0.10186769 0.12054464 0.14286059 0.15312688 0.14098084 0.10748283 0.07632245 0.04641523
+                   </speedHistogram>
+                   <zonesAffinity>
+                    0.88439782 0.99330759 0.07004122 0.01663702 0.08520822
+                   </zonesAffinity>
+                   <followWalls>1</followWalls>
+                </zone_1>
+                <zone_2> <!-- Room Down -->
+                  <polygons>
+                    <numberOfPolygons>1</numberOfPolygons>
+                    <polygon_1>
+                        0.689 -0.143 0.427 -0.133 0.414 0.081 0.453 0.121 0.684 0.120
+                    </polygon_1>
+                  </polygons>
+                  <kappaFishes>19.97</kappaFishes>
+                  <alphasCenter>49.11</alphasCenter>
+                  <kappaNeutCenter>16.22</kappaNeutCenter>
+                  <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+                  <minSpeed>0</minSpeed>
+                  <maxSpeed>0.20</maxSpeed>
+                  <gammaZone>55.0</gammaZone>
+                  <beta>55.0</beta>
+                  <kappaWalls>20.0</kappaWalls>
+                  <speedHistogram>
+                    0.02276516 0.09278528 0.16815177 0.19097442 0.18189135 0.13670595 0.10106352 0.05881 0.03190572 0.01494682
+                   </speedHistogram>
+                   <zonesAffinity>
+                    0.10844928 0.96854988 0.07004122 0.77765308 0.08520822
+                   </zonesAffinity>
+                   <followWalls>0</followWalls>
+                </zone_2>
+                <zone_3> <!-- Room up -->
+                  <polygons>
+                    <numberOfPolygons>1</numberOfPolygons>
+                    <polygon_1>
+                      -0.148 0.695 0.098 0.695 0.108 0.481 0.064 0.437 -0.148 0.447
+                    </polygon_1>
+                  </polygons>
+                  <kappaFishes>22.47</kappaFishes>
+                  <alphasCenter>44.39</alphasCenter>
+                  <kappaNeutCenter>26.67</kappaNeutCenter>
+                  <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+                  <minSpeed>0</minSpeed>
+                  <maxSpeed>0.20</maxSpeed>
+                  <gammaZone>55.0</gammaZone>
+                  <beta>55.0</beta>
+                  <kappaWalls>20.0</kappaWalls>
+                  <speedHistogram>
+                    0.02834487 0.10491745 0.16764306 0.18285106 0.17604592 0.14894372 0.10225457 0.05355346 0.02585952 0.00958637
+                   </speedHistogram>
+                   <zonesAffinity>
+                    0.14619926 0.96854988 0.07004122 0.08520822 0.99379137
+                   </zonesAffinity>
+                   <followWalls>0</followWalls>
+                </zone_3>
+            </ZonedBM>
+            <simulation>
+                <dt>1</dt>
+            </simulation>
+        </fishModel>
+        <pathPlanning>
+            <gridSizeM>0.01</gridSizeM>
+        </pathPlanning>
+        <obstacleAvoidance>
+            <potentialField>
+                <influenceDistanceArenaM>0.04</influenceDistanceArenaM>
+                <influenceStrengthArena>20</influenceStrengthArena>
+                <influenceDistanceRobotsM>0.05</influenceDistanceRobotsM>
+                <influenceStrengthRobots>200</influenceStrengthRobots>
+                <influenceDistanceTargetM>0.05</influenceDistanceTargetM>
+                <influenceStrengthTarget>400</influenceStrengthTarget>
+                <maxForce>1000</maxForce>
+                <maxAngleDeg>60</maxAngleDeg>
+                <obstacleAvoidanceAreaDiameterM>0.15</obstacleAvoidanceAreaDiameterM>
+            </potentialField>
+        </obstacleAvoidance>
+        <!-- Specific settings for every control mode (e.g to use path planning or obstacle avoidance). -->
+        <controlModes>
+            <!-- TODO : to implement -->
+            <trajectory>
+                <points>trajectories/fish-two-rooms-small.xml</points>
+                <loopTrajectory>1</loopTrajectory>
+                <providePointsOnTimer>1</providePointsOnTimer>
+                <updateRateHz>15</updateRateHz>
+            </trajectory>
+        </controlModes>
+        <!-- Navigation settings. -->
+        <navigation>
+            <fishMotionPatternFrequencyDivider>10</fishMotionPatternFrequencyDivider>
+            <fishMotionPattern>
+                <distanceCm>25</distanceCm>
+                <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
+            </fishMotionPattern>
+            <pid>
+                <kp>4</kp> <!-- Vitesse angulaire  -->
+                <ki>0.05</ki>
+                <kd>0.00</kd>
+                <kpDist>200</kpDist> <!-- Vitesse en fontion de la distance de la cible   -->
+                <kiDist>1.00</kiDist>
+                <kdDist>2.00</kdDist>
+            </pid>
+            <defaultLinearSpeedCmSec>17</defaultLinearSpeedCmSec>
+            <needOrientationToNavigate>0</needOrientationToNavigate>
+        </navigation>
+        <!-- Controllers settings. Controller is available only if its settings are provided -->
+        <controllers>
+            <controlMap>
+                <controlAreasPath>control-maps/paris-four-sectors-control-map.xml</controlAreasPath>
+            </controlMap>
+            <circularSetup>
+                <controlAreasPath>control-maps/paris-four-sectors-control-map.xml</controlAreasPath>
+                <targetPositionRadius>0.25</targetPositionRadius>
+                <targetDeltaAngleDeg>18.</targetDeltaAngleDeg>
+            </circularSetup>
+        </controllers>
+        <fishBot_3>
+            <id>D</id>
+            <ledColor>
+                <r>189</r>
+                <g>79</g>
+                <b>87</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm3</connectionTarget>
+        </fishBot_3>
+        <fishBot_1>
+            <id>E</id>
+            <ledColor>
+                <r>101</r>
+                <g>175</g>
+                <b>72</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm4</connectionTarget>
+        </fishBot_1>
+        <fishBot_2>
+            <id>A</id>
+            <ledColor>
+                <r>91</r>
+                <g>130</g>
+                <b>199</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm0</connectionTarget>
+        </fishBot_2>
+    </robots>
+    <setups>
+        <mainCamera>
+            <!--
+                TODO : consider adding here the camera type or id to compare with the
+                value in the calibration file.
+            -->
+            <imageSize>
+                <width>512</width>
+                <height>512</height>
+            </imageSize>
+            <cameraCalibrationFile>camera-calibration/paris-setup-180/cats2-paris-main-camera-basler.xml</cameraCalibrationFile>
+            <tracking>
+                <trackingMethod>blobDetector</trackingMethod>
+                <numberOfAgents>7</numberOfAgents>
+                <blobDetector>
+                    <minBlobSizePx>3</minBlobSizePx>
+                    <qualityLevel>0.01</qualityLevel>
+                    <minDistance>5.0</minDistance>
+                    <blockSize>5</blockSize>
+                    <useHarrisDetector>1</useHarrisDetector>
+                    <k>0.04</k>
+            </blobDetector>
+            </tracking>
+        </mainCamera>
+        <cameraBelow>
+            <imageSize>
+                <width>640</width>
+                <height>480</height>
+            </imageSize>
+            <cameraCalibrationFile>camera-calibration/paris-setup-180/cats2-paris-180-angle-below-camera.xml</cameraCalibrationFile>
+            <tracking>
+                <trackingMethod>fishBotLedsTracking</trackingMethod>
+                <maskFile>bottom-camera-mask.png</maskFile>
+                <fishBotLedsTracking>
+                    <fishBot_D>
+                        <threshold>50</threshold>
+                    </fishBot_D>
+                    <fishBot_A>
+                        <threshold>30</threshold>
+                    </fishBot_A>
+                    <fishBot_E>
+                        <threshold>30</threshold>
+                    </fishBot_E>
+                </fishBotLedsTracking>
+            </tracking>
+        </cameraBelow>
+    </setups>
+    <interSpecies>
+        <!-- where we send data -->
+        <!--
+        <publisherAddress>tcp://143.50.158.98:5556</publisherAddress> -->
+        <publisherAddress>tcp://172.27.34.7:5556</publisherAddress>
+        <!-- from where we get data -->
+        <!-- <subscriberAddresses>tcp://143.50.158.98:5555</subscriberAddresses> -->
+        <subscriberAddresses>tcp://172.27.34.7:5555</subscriberAddresses>
+        <!-- local addresses
+            <publisherAddress>tcp://127.0.0.1:5555</publisherAddress>
+            <subscriberAddresses>tcp://127.0.0.1:5556</subscriberAddresses>
+        -->
+    </interSpecies>
+</opencv_storage>
+
