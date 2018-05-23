@@ -13,6 +13,7 @@ public:
         IDLE,
         MANUAL,
         GO_TO_POSITION,
+        GO_TO_POSITION_NETWORK,
         GO_STRAIGHT,
         FISH_MODEL,
         FISH_MODEL_WITH_WALLS,
@@ -31,6 +32,8 @@ public:
             return MANUAL;
         else if (modeName.toLower() == "gotoposition")
             return GO_TO_POSITION;
+        else if (modeName.toLower() == "gotopositionnetwork")
+            return GO_TO_POSITION_NETWORK;
         else if (modeName.toLower() == "gostraight")
             return GO_STRAIGHT;
         else if (modeName.toLower() == "fishmodel")
@@ -57,6 +60,9 @@ public:
             break;
         case GO_TO_POSITION:
             string = "Go to position";
+            break;
+        case GO_TO_POSITION_NETWORK:
+            string = "Go to position (network)";
             break;
         case GO_STRAIGHT:
             string = "Go straight";

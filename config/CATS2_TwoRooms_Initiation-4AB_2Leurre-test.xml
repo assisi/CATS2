@@ -1,17 +1,17 @@
 <?xml version="1.0"?>
 <opencv_storage>
     <experiment>
-        <type>Interspecies</type>
-        <name>Circular</name>
+        <type>Test</type>
+        <name>Orientation</name>
         <!-- TODO : try to minimize the redundancy of the information on the quantity of agents. -->
         <agents>
-            <numberOfAnimals>5</numberOfAnimals>
+            <numberOfAnimals>4</numberOfAnimals>
         </agents>
-        <setupMapPath>setup/paris-circular.xml</setupMapPath>
+        <setupMapPath>setup/paris-two-roomsMZ.xml</setupMapPath>
     </experiment>
     <robots>
-        <numberOfRobots>1</numberOfRobots>
-        <controlFrequencyHz>10</controlFrequencyHz>
+        <numberOfRobots>2</numberOfRobots>
+        <controlFrequencyHz>10.0</controlFrequencyHz>
         <fishModel>
             <agent>
                 <length>0.02</length>
@@ -35,17 +35,17 @@
                 <wallDistanceThreshold>0.02</wallDistanceThreshold>
             </BMWithWalls>
             <ZonedBM>
-                <numberOfZones>3</numberOfZones>
-                <zone_1>
+                <numberOfZones>5</numberOfZones>
+                <zone_1> <!-- Corridor -->
                   <polygons>
                     <numberOfPolygons>1</numberOfPolygons>
                     <polygon_1>
-                      -0.33 -0.3 0.04 -0.285 0.035 0.01 -0.06 0.09 -0.35 0.08
+                      0.108 0.481 0.139 0.470 0.442 0.152 0.453 0.121 0.414 0.081 0.383 0.092 0.075 0.409 0.064 0.437
                     </polygon_1>
                   </polygons>
-                  <kappaFishes>20.0</kappaFishes>
-                  <alphasCenter>55.0</alphasCenter>
-                  <kappaNeutCenter>6.3</kappaNeutCenter>
+                  <kappaFishes>19.97</kappaFishes>
+                  <alphasCenter>49.11</alphasCenter>
+                  <kappaNeutCenter>1.3</kappaNeutCenter>
                   <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
                   <minSpeed>0</minSpeed>
                   <maxSpeed>0.20</maxSpeed>
@@ -53,24 +53,23 @@
                   <beta>55.0</beta>
                   <kappaWalls>20.0</kappaWalls>
                   <speedHistogram>
-                    0.0304615 0.07993734 0.10186769 0.12054464 0.14286059
-                    0.15312688 0.14098084 0.10748283 0.07632245 0.04641523
+                    0.0304615 0.07993734 0.10186769 0.12054464 0.14286059 0.15312688 0.14098084 0.10748283 0.07632245 0.04641523
                    </speedHistogram>
                    <zonesAffinity>
                     0.88439782 0.99330759 0.07004122 0.01663702 0.08520822
                    </zonesAffinity>
-                   <followWalls>0</followWalls>
+                   <followWalls>1</followWalls>
                 </zone_1>
-                <zone_2>
+                <zone_2> <!-- Room Down -->
                   <polygons>
                     <numberOfPolygons>1</numberOfPolygons>
                     <polygon_1>
-                        -0.06 0.09 0.11 0.26 0.2 0.185 0.035 0.01
+                        0.689 -0.143 0.427 -0.133 0.414 0.081 0.453 0.121 0.684 0.120
                     </polygon_1>
                   </polygons>
-                  <kappaFishes>20.0</kappaFishes>
-                  <alphasCenter>55.0</alphasCenter>
-                  <kappaNeutCenter>6.3</kappaNeutCenter>
+                  <kappaFishes>19.97</kappaFishes>
+                  <alphasCenter>49.11</alphasCenter>
+                  <kappaNeutCenter>16.22</kappaNeutCenter>
                   <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
                   <minSpeed>0</minSpeed>
                   <maxSpeed>0.20</maxSpeed>
@@ -78,24 +77,23 @@
                   <beta>55.0</beta>
                   <kappaWalls>20.0</kappaWalls>
                   <speedHistogram>
-                    0.0304615 0.07993734 0.10186769 0.12054464 0.14286059
-                    0.15312688 0.14098084 0.10748283 0.07632245 0.04641523
+                    0.02276516 0.09278528 0.16815177 0.19097442 0.18189135 0.13670595 0.10106352 0.05881 0.03190572 0.01494682
                    </speedHistogram>
                    <zonesAffinity>
-                    0.88439782 0.99330759 0.07004122 0.01663702 0.08520822
+                    0.10844928 0.96854988 0.07004122 0.77765308 0.08520822
                    </zonesAffinity>
                    <followWalls>0</followWalls>
                 </zone_2>
-                <zone_3>
+                <zone_3> <!-- Room up -->
                   <polygons>
                     <numberOfPolygons>1</numberOfPolygons>
                     <polygon_1>
-                      0.2 0.185 0.485 0.195 0.475 0.56 0.11 0.55 0.11 0.26
+                      -0.148 0.695 0.098 0.695 0.108 0.481 0.064 0.437 -0.148 0.447
                     </polygon_1>
                   </polygons>
-                  <kappaFishes>20.0</kappaFishes>
-                  <alphasCenter>55.0</alphasCenter>
-                  <kappaNeutCenter>6.3</kappaNeutCenter>
+                  <kappaFishes>22.47</kappaFishes>
+                  <alphasCenter>44.39</alphasCenter>
+                  <kappaNeutCenter>26.67</kappaNeutCenter>
                   <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
                   <minSpeed>0</minSpeed>
                   <maxSpeed>0.20</maxSpeed>
@@ -103,17 +101,64 @@
                   <beta>55.0</beta>
                   <kappaWalls>20.0</kappaWalls>
                   <speedHistogram>
-                    0.0304615 0.07993734 0.10186769 0.12054464 0.14286059
-                    0.15312688 0.14098084 0.10748283 0.07632245 0.04641523
+                    0.02834487 0.10491745 0.16764306 0.18285106 0.17604592 0.14894372 0.10225457 0.05355346 0.02585952 0.00958637
                    </speedHistogram>
                    <zonesAffinity>
-                    0.88439782 0.99330759 0.07004122 0.01663702 0.08520822
+                    0.14619926 0.96854988 0.07004122 0.08520822 0.99379137
                    </zonesAffinity>
                    <followWalls>0</followWalls>
                 </zone_3>
+				<zone_4> <!-- Wall Down -->
+                  <polygons>
+                    <numberOfPolygons>1</numberOfPolygons>
+                    <polygon_1>
+                      0.710 -0.165 0.396 -0.164 0.383 0.092 0.414 0.081 0.427 -0.133 0.679 -0.133 0.674 0.110 0.453 0.121 0.442 0.152 0.705 0.141
+                    </polygon_1>
+                  </polygons>
+                  <kappaFishes>8.99</kappaFishes>
+                  <alphasCenter>42.73</alphasCenter>
+                  <kappaNeutCenter>9.84</kappaNeutCenter>
+                  <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+                  <minSpeed>0</minSpeed>
+                  <maxSpeed>0.20</maxSpeed>
+                  <gammaZone>55.0</gammaZone>
+                  <beta>55.0</beta>
+                  <kappaWalls>20.0</kappaWalls>
+                  <speedHistogram>
+                    0.04810033 0.13980081 0.17786795 0.17989672 0.15912947 0.12113611 0.08011804 0.04758392 0.02788639 0.01848027
+                   </speedHistogram>
+                   <zonesAffinity>
+                    0.9234174 0.02888792 0.32496295 0.49465561 0.99379137
+                   </zonesAffinity>
+                   <followWalls>1</followWalls>
+                </zone_4>
+				<zone_5> <!-- Wall up -->
+                  <polygons>
+                    <numberOfPolygons>1</numberOfPolygons>
+                    <polygon_1>
+                      -0.179 0.721 0.129 0.726 0.139 0.470 0.108 0.481 0.098 0.695 -0.148 0.695 -0.148 0.447 0.064 0.437 0.075 0.409 -0.185 0.416
+                    </polygon_1>
+                  </polygons>
+                  <kappaFishes>29.42</kappaFishes>
+                  <alphasCenter>18.78</alphasCenter>
+                  <kappaNeutCenter>20.83</kappaNeutCenter>
+                  <repulsionFromAgentsAtDist>0.02</repulsionFromAgentsAtDist>
+                  <minSpeed>0</minSpeed>
+                  <maxSpeed>0.20</maxSpeed>
+                  <gammaZone>55.0</gammaZone>
+                  <beta>55.0</beta>
+                  <kappaWalls>20.0</kappaWalls>
+                  <speedHistogram>
+                    0.05988912 0.14521016 0.18034425 0.1737687 0.15442883 0.11961707 0.07813306 0.04635121 0.02688241 0.01537519
+                   </speedHistogram>
+                   <zonesAffinity>
+                    0.99153215 0.02888792 0.115074 0.49465561 0.83885327
+                   </zonesAffinity>
+                   <followWalls>1</followWalls>
+                </zone_5>
             </ZonedBM>
             <simulation>
-                <dt>0.3</dt>
+                <dt>0.33</dt>
             </simulation>
         </fishModel>
         <pathPlanning>
@@ -150,54 +195,60 @@
                 <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
-                <kp>3.5</kp> <!-- Vitesse angulaire  -->
+                <kp>3.00</kp>
                 <ki>0.05</ki>
-                <kd>0.00</kd>
-                <kpDist>200</kpDist> <!-- Vitesse en fontion de la distance de la cible   -->
-                <kiDist>1.00</kiDist>
-                <kdDist>2.00</kdDist>
+                <kd>0.00</kd>                
+                <kpDist>200.0</kpDist>
+                <kiDist>1.0</kiDist>
+                <kdDist>2.0</kdDist>
             </pid>
-            <defaultLinearSpeedCmSec>17</defaultLinearSpeedCmSec>
-            <needOrientationToNavigate>0</needOrientationToNavigate>
+            <defaultLinearSpeedCmSec>16</defaultLinearSpeedCmSec>
+            <needOrientationToNavigate>1</needOrientationToNavigate>
         </navigation>
-        <!-- Controllers settings. Controller is available only if its settings are provided -->
         <controllers>
             <controlMap>
-                <controlAreasPath>control-maps/paris-four-sectors-control-map.xml</controlAreasPath>
+                <controlAreasPath>control-maps/paris-two-rooms-control-mapv4.xml</controlAreasPath>
             </controlMap>
-            <circularSetup>
-                <controlAreasPath>control-maps/paris-four-sectors-control-map.xml</controlAreasPath>
-                <targetPositionRadius>0.24</targetPositionRadius>
-                <targetDeltaAngleDeg>18.</targetDeltaAngleDeg>
-            </circularSetup>
+            <initiationLeader>
+                <controlAreasPath>control-maps/paris-two-rooms-control-mapv2-leader.xml</controlAreasPath>
+                <fishFollowCheckTimeOutSec>10</fishFollowCheckTimeOutSec>
+                <maximalFishNumberAllowedToStay>1</maximalFishNumberAllowedToStay>
+                <departureWhenInGroup>
+                    <fishNumberAround>1</fishNumberAround>
+                    <groupRadius>0.10</groupRadius>
+                </departureWhenInGroup>
+            </initiationLeader>
+            <initiationLure>
+                <controlAreasPath>control-maps/paris-two-rooms-control-mapv2-leader.xml</controlAreasPath>
+            </initiationLure>
         </controllers>
-        <fishBot_3>
-            <id>D</id>
-            <ledColor>
-                <r>189</r>
-                <g>79</g>
-                <b>87</b>
-            </ledColor>
-            <connectionTarget>ser:device=/dev/rfcomm3</connectionTarget>
-        </fishBot_3>
         <fishBot_2>
             <id>E</id>
             <ledColor>
-                <r>101</r>
-                <g>175</g>
-                <b>72</b>
+                <r>181</r>
+                <g>255</g>
+                <b>166</b>
             </ledColor>
             <connectionTarget>ser:device=/dev/rfcomm4</connectionTarget>
         </fishBot_2>
         <fishBot_1>
+            <id>F</id>
+            <ledColor>
+                <r>90</r>
+                <g>150</g>
+                <b>200</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm5</connectionTarget>
+        </fishBot_1>
+        <fishBot_3>
             <id>A</id>
             <ledColor>
-                <r>91</r>
-                <g>130</g>
-                <b>199</b>
+                <r>90</r>
+                <g>150</g>
+                <b>200</b>
             </ledColor>
-            <connectionTarget>ser:device=/dev/rfcomm0</connectionTarget>
-        </fishBot_1>
+            <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
+        </fishBot_3>
     </robots>
     <setups>
         <mainCamera>
@@ -209,15 +260,15 @@
                 <width>512</width>
                 <height>512</height>
             </imageSize>
-            <cameraCalibrationFile>camera-calibration/paris-fishtrack-1/cats2-paris-fishtrack-1-main-camera-basler-v3.xml</cameraCalibrationFile>
+            <cameraCalibrationFile>camera-calibration/paris-setup-180/cats2-paris-main-camera-basler.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>blobDetector</trackingMethod>
-                <numberOfAgents>7</numberOfAgents>
+                <numberOfAgents>6</numberOfAgents>
                 <blobDetector>
                     <minBlobSizePx>3</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
                     <minDistance>5.0</minDistance>
-                    <blockSize>5</blockSize>
+                    <blockSize>3</blockSize>
                     <useHarrisDetector>1</useHarrisDetector>
                     <k>0.04</k>
             </blobDetector>
@@ -228,17 +279,17 @@
                 <width>640</width>
                 <height>480</height>
             </imageSize>
-            <cameraCalibrationFile>camera-calibration/paris-fishtrack-1/cats2-paris-fishtrack-1-180-angle-below-camera-v3.xml</cameraCalibrationFile>
+            <cameraCalibrationFile>camera-calibration/paris-setup-180/cats2-paris-180-angle-below-camera.xml</cameraCalibrationFile>
             <tracking>
                 <trackingMethod>fishBotLedsTracking</trackingMethod>
                 <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
-                    <fishBot_D>
-                        <threshold>50</threshold>
-                    </fishBot_D>
                     <fishBot_A>
-                        <threshold>30</threshold>
+                        <threshold>20</threshold>
                     </fishBot_A>
+                    <fishBot_F>
+                        <threshold>20</threshold>
+                    </fishBot_F>
                     <fishBot_E>
                         <threshold>30</threshold>
                     </fishBot_E>
@@ -247,23 +298,8 @@
         </cameraBelow>
     </setups>
     <interSpecies>
-        <!-- where we send data -->
-		<!-- <publisherAddress>tcp://172.27.34.3:5555</publisherAddress> -->
-        <!-- from where we get data -->
-		<!-- <subscriberAddresses>tcp://172.27.34.3:5556</subscriberAddresses> -->
-        <!-- local addresses -->
-
-		<!-- <subscriberAddresses>tcp://10.42.1.94:5555</subscriberAddresses> -->
-
-		<!-- ADDRESSES TEST WORKSHOP MAY2018 -->
-		<!--
-		<publisherAddress>tcp://127.0.0.1:5556</publisherAddress>
-		<subscriberAddresses>tcp://143.50.158.98:5555</subscriberAddresses>
-		-->
-
-		<subscriberAddresses>tcp://172.27.34.3:5556</subscriberAddresses>
-		<publisherAddress>tcp://172.27.34.7:5555</publisherAddress>
-
+        <publisherAddress>tcp://127.0.0.1:50001</publisherAddress>
+        <subscriberAddresses>tcp://127.0.0.1:50002;tcp://127.0.0.1:50003</subscriberAddresses>
     </interSpecies>
 </opencv_storage>
 

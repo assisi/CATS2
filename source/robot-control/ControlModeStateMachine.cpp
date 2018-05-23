@@ -33,6 +33,8 @@ ControlModeStateMachine::ControlModeStateMachine(FishBot* robot, QObject *parent
                           ControlModePtr(new GoStraight(m_robot)));
     m_controlModes.insert(ControlModeType::GO_TO_POSITION,
                           ControlModePtr(new GoToPosition(m_robot)));
+    m_controlModes.insert(ControlModeType::GO_TO_POSITION_NETWORK,
+                          ControlModePtr(new GoToPosition(m_robot)));
     m_controlModes.insert(ControlModeType::FISH_MODEL,
                           ControlModePtr(new ModelBased(m_robot)));
     m_controlModes.insert(ControlModeType::FISH_MODEL_WITH_WALLS,
@@ -126,6 +128,8 @@ void ControlModeStateMachine::setTargetPosition(PositionMeters position)
 {
     if (m_controlModes.contains(ControlModeType::GO_TO_POSITION))
         dynamic_cast<GoToPosition*>(m_controlModes[ControlModeType::GO_TO_POSITION].data())->setTargetPosition(position);
+    if (m_controlModes.contains(ControlModeType::GO_TO_POSITION_NETWORK))
+        dynamic_cast<GoToPosition*>(m_controlModes[ControlModeType::GO_TO_POSITION_NETWORK].data())->setTargetPosition(position);
 }
 
 /*!

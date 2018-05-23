@@ -38,7 +38,7 @@ public slots:
                                    std::chrono::milliseconds timestamp);
     //! The target position received from the viewer; it's set as a target
     //! to the selected robots.
-    void goToPosition(PositionMeters position);
+    void goToPosition(PositionMeters position, bool fromNetwork = false);
     //! Asks the robots to send their navigation data (trajectories, targets, etc).
     void sendNavigationData(bool sendData);
     //! Asks to send the control areas for the selected robot.
