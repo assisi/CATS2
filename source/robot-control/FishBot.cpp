@@ -344,10 +344,16 @@ void FishBot::setFishStates(QList<StateWorld> fishStates)
  * The target position received from the viewer; it's transfered further
  * to the state machine.
  */
-void FishBot::goToPosition(PositionMeters position)
+void FishBot::goToPosition(PositionMeters position, bool fromNetwork)
 {
-    if (m_controlStateMachine.currentControlMode() == ControlModeType::GO_TO_POSITION) {
-        m_controlStateMachine.setTargetPosition(position);
+    if (fromNetwork) {
+        if (m_controlStateMachine.currentControlMode() == ControlModeType::GO_TO_POSITION_NETWORK) {
+            m_controlStateMachine.setTargetPosition(position);
+        }
+    } else {
+        if (m_controlStateMachine.currentControlMode() == ControlModeType::GO_TO_POSITION) {
+            m_controlStateMachine.setTargetPosition(position);
+        }
     }
 }
 
@@ -458,7 +464,15 @@ void FishBot::stepExperimentManager()
             {
                 if (controlData.data.canConvert<PositionMeters>()) {
                     PositionMeters targetPosition(controlData.data.value<PositionMeters>());
-                    goToPosition(targetPosition);
+                    goToPosition(targetPosition, false);
+                }
+                break;
+            }
+            case ControlModeType::GO_TO_POSITION_NETWORK:
+            {
+                if (controlData.data.canConvert<PositionMeters>()) {
+                    PositionMeters targetPosition(controlData.data.value<PositionMeters>());
+                    goToPosition(targetPosition, true);
                 }
                 break;
             }

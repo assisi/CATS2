@@ -272,10 +272,16 @@ void ControlLoop::selectRobot(QString name)
  * The target position received from the viewer; it's set as a target
  * to the selected robots.
  */
-void ControlLoop::goToPosition(PositionMeters position)
+void ControlLoop::goToPosition(PositionMeters position, bool fromNetwork)
 {
-    if (m_selectedRobot) {
-        m_selectedRobot->goToPosition(position);
+    if (fromNetwork) {
+        for (auto& robot: m_robots) {
+            robot->goToPosition(position, fromNetwork);
+        }
+    } else {
+        if (m_selectedRobot) {
+            m_selectedRobot->goToPosition(position, fromNetwork);
+        }
     }
 }
 

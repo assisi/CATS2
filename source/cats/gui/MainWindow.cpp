@@ -124,12 +124,12 @@ MainWindow::MainWindow(QWidget *parent) :
                     continue;
                 QStringList splitted2 = str.split(":");
                 if(splitted2[0] == "x")
-                    x = std::stod(splitted2[1].toStdString());
+                    x = splitted2[1].toDouble();
                 if(splitted2[0] == "y")
-                    y = std::stod(splitted2[1].toStdString());
+                    y = splitted2[1].toDouble();
             }
             PositionMeters position(x, y);
-            m_robotsHandler->contolLoop()->goToPosition(position);
+            m_robotsHandler->contolLoop()->goToPosition(position, true);
         });
     }
 
@@ -279,7 +279,7 @@ void MainWindow::connectPrimaryView()
                 [=](Qt::MouseButton button, PositionMeters worldPosition)
         {
             if (button == Qt::RightButton)
-                m_robotsHandler->contolLoop().data()->goToPosition(worldPosition);
+                m_robotsHandler->contolLoop().data()->goToPosition(worldPosition, false);
         });
         connect(m_robotsHandler->contolLoop().data(),
                 &ControlLoop::notifyRobotControlAreasPolygons,

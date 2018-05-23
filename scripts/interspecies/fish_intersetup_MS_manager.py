@@ -6,13 +6,18 @@ import threading
 import numpy as np
 
 
+_setup1_center = [0.325, 0.301]
+_setup2_center = [0.268537, 0.266008]
+
 
 class IntersetupMSManager(object):
     """ Intersetup manager, to manage several CATS instances in Master-Slave mode """
 
-    def __init__(self, master_cats_interface, slave_cats_interface, period = 0.1):
+    def __init__(self, master_cats_interface, slave_cats_interface, master_center, slave_center, period = 0.3):
         self.master_cats_interface = master_cats_interface
         self.slave_cats_interface = slave_cats_interface
+        self.master_center = master_center
+        self.slave_center = slave_center
         self.period = period
 
         # Create and start threads
@@ -30,18 +35,18 @@ class IntersetupMSManager(object):
 
 
     def _manage_interspecies(self):
-        while not self._stop_threads:
+        while not self._stop:
             try:
                 last_behaviour = self.master_cats_interface.get_last_history()
                 if last_behaviour != None:
-                    x = last_behaviour['x']
-                    y = last_behaviour['y']
+                    x = float(last_behaviour['x']) - self.master_center[0] + self.slave_center[0]
+                    y = float(last_behaviour['y']) - self.master_center[1] + self.slave_center[1]
                     self.slave_cats_interface.set_robot_target_position([x, y])
             except zmq.ZMQError as e:
                 time.sleep(0.1)
                 continue
             for elapsed_time in range(int(self.period / 0.10)):
-                if not self._stop_threads:
+                if not self._stop:
                     time.sleep(0.1)
 
 
@@ -91,17 +96,20 @@ class RobotTargetCatsInterface:
     def get_history(self, index = None):
         if index:
             self._history_lock.acquire()
-            result = self._fish_history[index]
+            result = self._history[index]
             self._history_lock.release()
         else:
             self._history_lock.acquire()
-            result = self._fish_history
+            result = self._history
             self._history_lock.release()
         return result
 
     def get_last_history(self):
         self._history_lock.acquire()
-        result = self._history[self._last_history_index]
+        if len(self._history):
+            result = self._history[self._last_history_index]
+        else:
+            result = None
         self._history_lock.release()
         return result
 
@@ -113,8 +121,9 @@ class RobotTargetCatsInterface:
             name = b''
             message_type = b'RobotTargetPositionChanged'
             sender = b'FishManager'
-            data = bytes("x:%d;y:%d;" % (robot_target_position[0], robot_target_position[1]), "ascii")
+            data = bytes("x:%f;y:%f;" % (float(robot_target_position[0]), float(robot_target_position[1])), "ascii")
             self.publisher.send_multipart([name, message_type, sender, data])
+            print("@\tfrom:%s\tname:%s device:%s command:%s data:%s" % (self.publisher_addr, name, message_type, sender, data))
         except zmq.ZMQError as e:
             pass # TODO
 
@@ -136,9 +145,10 @@ class RobotTargetCatsInterface:
                     data_dict = {}
                     for entry in data_list:
                         entry_split = entry.split(':')
-                        data_dict[entry_split[0].lower()] = entry_split[1]
-                self._history[self._incoming_thread_elapsed_time] = data_dict
-                self._last_history_index = self._incoming_thread_elapsed_time
+                        if len(entry_split) >= 2:
+                            data_dict[entry_split[0].lower()] = entry_split[1]
+                    self._history[self._incoming_thread_elapsed_time] = data_dict
+                    self._last_history_index = self._incoming_thread_elapsed_time
                 self._history_lock.release()
             except zmq.ZMQError as e:
                 time.sleep(0.1)
@@ -173,7 +183,7 @@ if __name__ == '__main__':
     cats_interface2 = RobotTargetCatsInterface("setup-2", args.intersetupSubscriberAddr2, args.intersetupPublisherAddr2, [0.0, 0.0])
 
     # Launch manager thread
-    manager = IntersetupMSManager(cats_interface1, cats_interface2)
+    manager = IntersetupMSManager(cats_interface1, cats_interface2, _setup1_center, _setup2_center)
 
 
     cmd = 'a'

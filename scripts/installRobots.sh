@@ -15,7 +15,7 @@ if [ "$(hostname)" = "fishtrack" ]; then
 	sudo rfcomm -i 5C:F3:70:77:1A:80 bind 9 10:00:E8:6C:F0:45 # J (PARIS)
 
 elif [ "$(hostname)" = "fishtrack2" ]; then
-	sudo rfcomm -i 00:02:72:AF:00:35 bind 0 10:00:E8:6C:F0:54 # A (PARIS)
+	sudo rfcomm -i 00:15:83:EF:00:30 bind 0 10:00:E8:6C:F0:54 # A (PARIS)
 	sudo rfcomm -i 00:02:72:AF:00:35 bind 1 10:00:E8:6C:F0:69 # B (EPFL)
 	sudo rfcomm -i 00:02:72:CB:AA:F0 bind 2 10:00:E8:6C:F0:5B # C (EPFL)
 	sudo rfcomm -i 00:15:83:EF:00:2F bind 3 10:00:E8:6C:F0:5E # D (PARIS)

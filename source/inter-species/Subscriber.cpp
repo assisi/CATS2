@@ -65,7 +65,7 @@ void Subscriber::processMessage(std::string name, std::string device,
         if (QString(device.data()).toLower() == "behaviour") {
             // SetBehaviour packets
             emit notifyBeeSetCircularSetupTurningDirection(QString(data.data()));
-        } else if (QString(device.data()).toLower() == "target") {
+        } else if (QString(device.data()).toLower() == "robottargetpositionchanged") {
             // Set robot target position packets
             emit notifyReceptionOfUpdateRobotTargetPositionMessage(QString(data.data()));
         }

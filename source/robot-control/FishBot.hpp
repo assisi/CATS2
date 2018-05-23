@@ -113,7 +113,7 @@ public:
 public:
     //! The target position received from the viewer; it's transfered further
     //! to the state machine.
-    void goToPosition(PositionMeters position);
+    void goToPosition(PositionMeters position, bool fromNetwork = false);
 
 public:
     //! Sets the robot's state.
