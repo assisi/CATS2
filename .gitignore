@@ -1,0 +1,25 @@
+
+*~
+archive/
+
+CMakeLists.txt.user
+build/
+debug/
+results/
+
+# Configs
+config/setup/innerCircleWorld.xml
+config/setup/outerCircleWorld.xml
+
+# Python
+*.pyc
+
+# LATEX
+*.aux
+*.idx
+doc/**/*.log
+*.out
+*toc
+doc/**/*.pdf
+
+
