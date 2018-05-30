@@ -44,6 +44,8 @@ void GenericFishModel::start()
     m_targetUpdateTimer.reset();
     // compute the first target position
     m_targetPosition = computeTargetPosition();
+
+    m_parameters.ignoreRobot = true; // TODO : better move this to GUI instead and do not reset it here
 }
 
 /*!
