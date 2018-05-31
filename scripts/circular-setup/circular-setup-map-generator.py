@@ -18,8 +18,8 @@ def main():
     angleInterval = 5
     internalRadiusPx = 96
     externalRadiusPx = 135
-    xCenterPx = 251
-    yCenterPx = 257
+    xCenterPx = 255 #251
+    yCenterPx = 242 #257
     anglesRad = [math.radians(angleDeg) for angleDeg in range(0, 361, angleInterval)]
     xNormalized = [math.cos(angleRad) for angleRad in anglesRad]
     yNormalized = [math.sin(angleRad) for angleRad in anglesRad]
