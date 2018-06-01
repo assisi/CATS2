@@ -11,6 +11,7 @@
 #include <QtCore/QObject>
 #include <QtCore/QSharedPointer>
 
+
 /*!
  * Gets messages via qt signals and sends them through zmq.
  * TODO : to add the reception part
@@ -46,10 +47,10 @@ public slots:
     void publishCircularExperimentStatistics(QString agentId,
                                              double fishClockWisePercent,
                                              double fishCounterClockWisePercent,
-                                             TurningDirection::Enum fishTurningDirection,
+                                             QString fishTurningDirection,
                                              double robotClockWisePercent,
                                              double robotCounterClockWisePercent,
-                                             TurningDirection::Enum robotTurningDirection);
+                                             QString robotTurningDirection);
 
     //! Triggered when robot target position is changed
     void publishRobotTargetPosition(QString agentId,

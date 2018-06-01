@@ -163,10 +163,10 @@
         <!-- Controllers settings. Controller is available only if its settings are provided -->
         <controllers>
             <controlMap>
-                <controlAreasPath>control-maps/paris-8-sectors-control-map-setup1.xml</controlAreasPath>
+                <controlAreasPath>control-maps/paris-four-sectors-control-map.xml</controlAreasPath>
             </controlMap>
             <circularSetup>
-                <controlAreasPath>control-maps/paris-8-sectors-control-map-setup1.xml</controlAreasPath>
+                <controlAreasPath>control-maps/paris-four-sectors-control-map.xml</controlAreasPath>
                 <targetPositionRadius>0.24</targetPositionRadius>
                 <targetDeltaAngleDeg>18.</targetDeltaAngleDeg>
             </circularSetup>

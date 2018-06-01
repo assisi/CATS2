@@ -157,10 +157,10 @@ signals: // control states
     void notifyCircularSetupStatistics(QString agentId,
                                        double fishClockWisePercent,
                                        double fishCounterClockWisePercent,
-                                       TurningDirection::Enum fishTurningDirection,
+                                       QString fishTurningDirection,
                                        double robotClockWisePercent,
                                        double robotCounterClockWisePercent,
-                                       TurningDirection::Enum robotTurningDirection);
+                                       QString robotTurningDirection);
 
     //! Informs that the robot's control mode was modified.
     void notifyControlModeChanged(ControlModeType::Enum type);

@@ -74,7 +74,7 @@ CircularSetupController::CircularSetupController(FishBot* robot,
                                     m_robotClockWiseCounter -
                                     m_robotUndefCounter) /
                 static_cast<double>(m_allMeasurementsCounter);
-        emit notifyStatisticsAvailable(fishClockWisePercent, fishCounterClockWisePercent, m_fishGroupTurningDirection, robotClockWisePercent, robotCounterClockWisePercent, m_targetTurningDirection);
+        emit notifyStatisticsAvailable(fishClockWisePercent, fishCounterClockWisePercent, TurningDirection::toString(m_fishGroupTurningDirection), robotClockWisePercent, robotCounterClockWisePercent, TurningDirection::toString(m_targetTurningDirection));
 	});
 }
 

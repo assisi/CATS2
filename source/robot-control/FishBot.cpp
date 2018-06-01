@@ -70,7 +70,7 @@ FishBot::FishBot(QString id) :
                                                           robotTurningDirection);
             });
     connect(&m_experimentManager, &ExperimentManager::notifyCircularSetupStatistics,
-            [=](double fishClockWisePercent, double fishCounterClockWisePercent, TurningDirection::Enum fishTurningDirection, double robotClockWisePercent, double robotCounterClockWisePercent, TurningDirection::Enum robotTurningDirection)
+            [=](double fishClockWisePercent, double fishCounterClockWisePercent, QString fishTurningDirection, double robotClockWisePercent, double robotCounterClockWisePercent, QString robotTurningDirection)
             {
                 emit notifyCircularSetupStatistics(m_id,
                                                    fishClockWisePercent,
