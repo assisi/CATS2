@@ -41,7 +41,8 @@ class IntersetupMSManager(object):
             try:
                 last_history = self.master_cats_interface.get_last_history()
                 if last_history != None:
-                    behaviour = last_history['robotTurningDirection']
+                    #print("DEBUG!!!", last_history)
+                    behaviour = last_history['robotturningdirection']
                     if behaviour != None and behaviour != self.last_behaviour:
                         self.slave_cats_interface.set_robot_behaviour(behaviour)
                         self.last_behaviour = behaviour
@@ -125,7 +126,7 @@ class RobotTargetCatsInterface:
             name = bytes(self.instance_name, 'ascii')
             message_type = b'behaviour'
             sender = b'FishManager'
-            if behaviour == "CW":
+            if behaviour == "CW" or behaviour == " CW":
                 data = b'CW'
             elif behaviour == "CCW":
                 data = b'CCW'
@@ -148,7 +149,7 @@ class RobotTargetCatsInterface:
             try:
                 [name, message_type, sender, data] = self.subscriber.recv_multipart(flags=zmq.NOBLOCK)
                 self._incoming_thread_elapsed_time = int(time.time() - self._incoming_thread_starting_time)
-                print("#%d\tfrom:%s\tname:%s device:%s command:%s data:%s" % (self._incoming_thread_elapsed_time, self.subscriber_addr, name, message_type, sender, data))
+                #print("#%d\tfrom:%s\tname:%s device:%s command:%s data:%s" % (self._incoming_thread_elapsed_time, self.subscriber_addr, name, message_type, sender, data))
 
                 # Save packet in history
                 self._history_lock.acquire()
@@ -158,8 +159,8 @@ class RobotTargetCatsInterface:
                     data_dict = {}
                     for entry in data_list:
                         entry_split = entry.split(':')
-                        print("DEBUG!!!", entry_split)
-                        data_dict[entry_split[0].lower()] = entry_split[1]
+                        if len(entry):
+                            data_dict[entry_split[0].lower()] = entry_split[1]
                     self._history[self._incoming_thread_elapsed_time] = data_dict
                     self._last_history_index = self._incoming_thread_elapsed_time
                 self._history_lock.release()
