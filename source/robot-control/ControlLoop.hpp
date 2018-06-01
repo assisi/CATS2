@@ -83,8 +83,10 @@ signals:
     void notifyCircularSetupStatistics(QString agentId,
                                        double fishClockWisePercent,
                                        double fishCounterClockWisePercent,
+                                       QString fishTurningDirection,
                                        double robotClockWisePercent,
-                                       double robotCounterClockWisePercent);
+                                       double robotCounterClockWisePercent,
+                                       QString robotTurningDirection);
 
 private:
     //! Loads and initializes the robots' firmware scripts for the shared

@@ -37,7 +37,7 @@ def main():
     externalCircleX.append(externalCircleX[-1])
     internalCircleY.append(internalCircleY[-1])
     externalCircleY.append(externalCircleY[-1])
-    sectorsNumber = 8
+    sectorsNumber = 4
     roomX = []
     roomY = []
     sectorLength = int(math.ceil(360 / (angleInterval * sectorsNumber)))

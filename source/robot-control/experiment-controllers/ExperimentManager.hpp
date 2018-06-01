@@ -59,8 +59,10 @@ signals: // experiment specific
     //! in the circular setup experiment.
     void notifyCircularSetupStatistics(double fishClockWisePercent,
                                        double fishCounterClockWisePercent,
+                                       QString fishTurningDirection,
                                        double robotClockWisePercent,
-                                       double robotCounterClockWisePercent);
+                                       double robotCounterClockWisePercent,
+                                       QString robotTurningDirection);
 
 private:
     //! The list of experiment controllers available to this manager.

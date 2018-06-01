@@ -58,7 +58,7 @@ CircularSetupController::CircularSetupController(FishBot* robot,
 
     // connect the timer to the statistics publisher method
     connect(&m_statisticsPublisherTimer, &QTimer::timeout, [=](){
-		qDebug() << "Statistics Timer Ticks";
+        qDebug() << "Statistics Timer Ticks";
         double fishClockWisePercent = 1 * static_cast<double>(m_fishClockWiseCounter) /
                 static_cast<double>(m_allMeasurementsCounter);
         double fishCounterClockWisePercent = 1 *
@@ -74,7 +74,7 @@ CircularSetupController::CircularSetupController(FishBot* robot,
                                     m_robotClockWiseCounter -
                                     m_robotUndefCounter) /
                 static_cast<double>(m_allMeasurementsCounter);
-		emit notifyStatisticsAvailable(fishClockWisePercent, fishCounterClockWisePercent, robotClockWisePercent, robotCounterClockWisePercent);
+        emit notifyStatisticsAvailable(fishClockWisePercent, fishCounterClockWisePercent, TurningDirection::toString(m_fishGroupTurningDirection), robotClockWisePercent, robotCounterClockWisePercent, TurningDirection::toString(m_targetTurningDirection));
 	});
 }
 

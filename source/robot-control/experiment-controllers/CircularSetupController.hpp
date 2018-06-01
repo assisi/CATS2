@@ -75,8 +75,10 @@ signals:
 
     void notifyStatisticsAvailable(double fishClockWisePercent,
                                    double fishCounterClockWisePercent,
+                                   QString fishTurningDirection,
                                    double robotClockWisePercent,
-                                   double robotCounterClockWisePercent);
+                                   double robotCounterClockWisePercent,
+                                   QString robotTurningDirection);
 
 protected:
     //! Calculates the turning directions of the fish group.

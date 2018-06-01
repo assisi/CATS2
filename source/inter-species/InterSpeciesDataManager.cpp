@@ -132,8 +132,10 @@ void InterSpeciesDataManager::publishCircularExperimentData(QString agentId,
 void InterSpeciesDataManager::publishCircularExperimentStatistics(QString agentId,
                                                                   double fishClockWisePercent,
                                                                   double fishCounterClockWisePercent,
+                                                                  QString fishTurningDirection,
                                                                   double robotClockWisePercent,
-                                                                  double robotCounterClockWisePercent)
+                                                                  double robotCounterClockWisePercent,
+                                                                  QString robotTurningDirection)
 {
     std::string message;
     message.append("fishClockWisePercent:");
@@ -142,11 +144,19 @@ void InterSpeciesDataManager::publishCircularExperimentStatistics(QString agentI
     message.append("fishCounterClockWisePercent:");
     message.append(QString::number(fishCounterClockWisePercent).toStdString());
     message.append(";");
+    message.append("fishTurningDirection");
+    //message.append(TurningDirection::toString(fishTurningDirection).toStdString());
+    message.append(fishTurningDirection.toStdString());
+    message.append(";");
     message.append("robotClockWisePercent:");
     message.append(QString::number(robotClockWisePercent).toStdString());
     message.append(";");
     message.append("robotCounterClockWisePercent:");
     message.append(QString::number(robotCounterClockWisePercent).toStdString());
+    message.append(";");
+    message.append("robotTurningDirection");
+    //message.append(TurningDirection::toString(robotTurningDirection).toStdString());
+    message.append(robotTurningDirection.toStdString());
     message.append(";");
 
     std::string name = "";
