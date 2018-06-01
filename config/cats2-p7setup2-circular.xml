@@ -150,7 +150,7 @@
                 <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
-                <kp>3</kp> <!-- Vitesse angulaire  -->
+                <kp>4</kp> <!-- Vitesse angulaire  -->
                 <ki>0.05</ki>
                 <kd>0.00</kd>
                 <kpDist>200</kpDist> <!-- Vitesse en fontion de la distance de la cible   -->
