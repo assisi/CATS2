@@ -144,7 +144,7 @@ void InterSpeciesDataManager::publishCircularExperimentStatistics(QString agentI
     message.append("fishCounterClockWisePercent:");
     message.append(QString::number(fishCounterClockWisePercent).toStdString());
     message.append(";");
-    message.append("fishTurningDirection");
+    message.append("fishTurningDirection:");
     //message.append(TurningDirection::toString(fishTurningDirection).toStdString());
     message.append(fishTurningDirection.toStdString());
     message.append(";");
@@ -154,7 +154,7 @@ void InterSpeciesDataManager::publishCircularExperimentStatistics(QString agentI
     message.append("robotCounterClockWisePercent:");
     message.append(QString::number(robotCounterClockWisePercent).toStdString());
     message.append(";");
-    message.append("robotTurningDirection");
+    message.append("robotTurningDirection:");
     //message.append(TurningDirection::toString(robotTurningDirection).toStdString());
     message.append(robotTurningDirection.toStdString());
     message.append(";");

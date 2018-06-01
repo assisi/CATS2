@@ -158,6 +158,7 @@ class RobotTargetCatsInterface:
                     data_dict = {}
                     for entry in data_list:
                         entry_split = entry.split(':')
+                        print("DEBUG!!!", entry_split)
                         data_dict[entry_split[0].lower()] = entry_split[1]
                     self._history[self._incoming_thread_elapsed_time] = data_dict
                     self._last_history_index = self._incoming_thread_elapsed_time
