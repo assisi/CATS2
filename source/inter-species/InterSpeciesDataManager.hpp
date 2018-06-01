@@ -46,8 +46,10 @@ public slots:
     void publishCircularExperimentStatistics(QString agentId,
                                              double fishClockWisePercent,
                                              double fishCounterClockWisePercent,
+                                             TurningDirection::Enum fishTurningDirection,
                                              double robotClockWisePercent,
-                                             double robotCounterClockWisePercent);
+                                             double robotCounterClockWisePercent,
+                                             TurningDirection::Enum robotTurningDirection);
 
     //! Triggered when robot target position is changed
     void publishRobotTargetPosition(QString agentId,

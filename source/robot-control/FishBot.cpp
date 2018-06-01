@@ -70,13 +70,15 @@ FishBot::FishBot(QString id) :
                                                           robotTurningDirection);
             });
     connect(&m_experimentManager, &ExperimentManager::notifyCircularSetupStatistics,
-            [=](double fishClockWisePercent, double fishCounterClockWisePercent, double robotClockWisePercent, double robotCounterClockWisePercent)
+            [=](double fishClockWisePercent, double fishCounterClockWisePercent, TurningDirection::Enum fishTurningDirection, double robotClockWisePercent, double robotCounterClockWisePercent, TurningDirection::Enum robotTurningDirection)
             {
                 emit notifyCircularSetupStatistics(m_id,
                                                    fishClockWisePercent,
                                                    fishCounterClockWisePercent,
+                                                   fishTurningDirection,
                                                    robotClockWisePercent,
-                                                   robotCounterClockWisePercent);
+                                                   robotCounterClockWisePercent,
+                                                   robotTurningDirection);
             });
 
     // control modes
