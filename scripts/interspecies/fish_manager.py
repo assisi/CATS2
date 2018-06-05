@@ -5,11 +5,19 @@ import time
 import threading
 import numpy as np
 #from subprocess import Popen
-#import os
+import os
+import sys
 #import shutil
 
 
 _referenceClockwiseFrequencies = np.array([0.54221289054743016, 0.52835117979620538, 0.52208400620158846, 0.57521062264859135, 0.50908453160904876, 0.50638694999787903, 0.49528456227357132])
+
+_referenceModulatedClockwiseFrequencies = np.array([0.50204807811659569, 0.54202494383763267, 0.60291051956382291, 0.77506372940684087, 0.59165256627185558, 0.58573393753034475, 0.63525429066288774, 0.49027599860253873])
+
+
+def _print(param):
+    print(param)
+    sys.stdout.flush()
 
 
 ## TODO
@@ -57,12 +65,12 @@ class InterspeciesManager(object):
         #self.subscriber.setsockopt(zmq.RCVTIMEO, 1000)
         self.subscriber.setsockopt(zmq.SUBSCRIBE, b'')
         self.subscriber.connect(self.interspecies_interface_subscriber_addr)
-        print("Successfully connected Interspecies subscriber to address: '%s'" % self.interspecies_interface_subscriber_addr)
+        _print("Successfully connected Interspecies subscriber to address: '%s'" % self.interspecies_interface_subscriber_addr)
 
         # Create and connect publisher
         self.publisher = self.context.socket(zmq.PUB)
         self.publisher.bind(self.interspecies_interface_publisher_addr)
-        print("Successfully connected Interspecies publisher to address: '%s'" % self.interspecies_interface_publisher_addr)
+        _print("Successfully connected Interspecies publisher to address: '%s'" % self.interspecies_interface_publisher_addr)
 
         # Create and start threads
         self.incoming_thread = threading.Thread(target = self._receive_data)
@@ -77,10 +85,10 @@ class InterspeciesManager(object):
         self._stop = True
         #while self.outgoing_thread.isAlive():
         #    time.sleep(0.1)
-        #print('Interspecies subscriber thread finished')
+        #_print('Interspecies subscriber thread finished')
         while self.incoming_thread.isAlive():
             time.sleep(0.1)
-        print('Interspecies receiving thread finished')
+        _print('Interspecies receiving thread finished')
 
 #    def set_behaviour(self, behaviour):
 #        self._current_behaviour_lock.acquire()
@@ -128,7 +136,9 @@ class InterspeciesManager(object):
             try:
                 [name, message_type, sender, data] = self.subscriber.recv_multipart(flags=zmq.NOBLOCK)
                 self._incoming_thread_elapsed_time = int(time.time() - self._incoming_thread_starting_time)
-                print("#%d\tfrom:%s\tname:%s device:%s command:%s data:%s" % (self._incoming_thread_elapsed_time, self.interspecies_interface_subscriber_addr, name, message_type, sender, data))
+
+                if message_type.decode('ascii').lower() != "statistics" and message_type.decode('ascii').lower() != "robottargetpositionchanged":
+                    _print("#%d\tfrom:%s\tname:%s device:%s command:%s data:%s" % (self._incoming_thread_elapsed_time, self.interspecies_interface_subscriber_addr, name, message_type, sender, data))
 
                 # Save packet in history
                 self._history_lock.acquire()
@@ -141,8 +151,8 @@ class InterspeciesManager(object):
                             continue
                         entry_split = entry.split(':')
                         data_dict[entry_split[0].lower()] = entry_split[1]
-                self._history[self._incoming_thread_elapsed_time] = data_dict
-                self._last_history_index = self._incoming_thread_elapsed_time
+                    self._history[self._incoming_thread_elapsed_time] = data_dict
+                    self._last_history_index = self._incoming_thread_elapsed_time
                 self._history_lock.release()
 
                 # Handle probe Requests
@@ -159,17 +169,19 @@ class InterspeciesManager(object):
     # TODO put in a separate ProbingRequest class
     def initiate_probing_trial(self, setup_id, confidence):
         """ Initiate a probing trial using the setup_id CATS instance """
-        assert (setup_id >= 0 and setup_id < len(self.cats_interfaces))
+        #assert (setup_id >= 0 and setup_id < len(self.cats_interfaces)) # XXX
         assert (confidence >= 0. and confidence <= 1.)
+        setup_id = 0 # XXX
 
         # Determine trial duration from the confidence level
         #trial_duration = 4 * 60 # XXX Force trials to last 4 minutes
-        trial_duration = 30 # XXX Force trials to last 4 minutes
+        trial_duration = self.publishing_period # XXX Force trials to last 4 minutes
 
-        print("Initiating a new probing trial on setup-%i for %i sec with a confidence of %f" % (setup_id + 1, trial_duration, confidence))
+        _print("Initiating a new probing trial on setup-%i for %i sec with a confidence of %f" % (setup_id + 1, trial_duration, confidence))
 
         # Send new behaviour to the CATS instance
-        self.cats_interfaces[setup_id].set_robot_behaviour("CW")
+        #self.cats_interfaces[setup_id].set_robot_behaviour("CW")
+        self.cats_interfaces[setup_id].switch_robot_behaviour()
 
         # Wait for the trial to be completed
         time.sleep(trial_duration)
@@ -179,7 +191,7 @@ class InterspeciesManager(object):
 
         # Compute a modulation score
         statistics = self.cats_interfaces[setup_id].get_last_history()
-        #print("DEBUG1: ", statistics)
+        #_print("DEBUG1: ", statistics)
         fishClockWiseFrequency = float(statistics['fishclockwisepercent'])
         modulation_score = abs(fishClockWiseFrequency - np.mean(_referenceClockwiseFrequencies)) # TODO more adequate scheme
         if modulation_score > 0.05: # TODO more adequate scheme
@@ -187,7 +199,7 @@ class InterspeciesManager(object):
         else:
             surprise = 0
 
-        print("Trial completed with a modulation score of: %f and a surprise of: %i" % (modulation_score, surprise))
+        _print("Trial completed with a modulation score of: %f and a surprise of: %i" % (modulation_score, surprise))
 
         # Send a response to the Interspecies interface
         response_name = bytes("FishManager", 'ascii')
@@ -197,10 +209,10 @@ class InterspeciesManager(object):
         try:
             self.publisher.send_multipart([response_name, response_message_type, response_sender, response_data])
         except zmq.ZMQError as e:
-            print("DEBUG1:", e)
+            _print("DEBUG1:", e)
             #pass # TODO
 
-        print("Successfully sent probe response")
+        _print("Successfully sent probe response")
 
 
 
@@ -226,6 +238,7 @@ class CatsIntersetupInterface:
         self.publisher_addr = publisher_addr
         self.publishing_period = publishing_period
         self._robot_behaviour = robot_behaviour
+        self._last_directional_robot_behaviour = robot_behaviour
         self._robot_behaviour_lock = threading.Lock()
         self._raw_history = {}
         self._history = {}
@@ -238,12 +251,12 @@ class CatsIntersetupInterface:
         #self.subscriber.setsockopt(zmq.RCVTIMEO, 1000)
         self.subscriber.setsockopt(zmq.SUBSCRIBE, b'')
         self.subscriber.connect(self.subscriber_addr)
-        print("Successfully connected CATS instance subscriber to address: '%s'" % self.subscriber_addr)
+        _print("Successfully connected CATS instance subscriber to address: '%s'" % self.subscriber_addr)
 
         # Create and connect publisher
         self.publisher = self.context.socket(zmq.PUB)
         self.publisher.bind(self.publisher_addr)
-        print("Successfully connected CATS instance publisher to address: '%s'" % self.publisher_addr)
+        _print("Successfully connected CATS instance publisher to address: '%s'" % self.publisher_addr)
 
         # Create and start threads
         self.incoming_thread = threading.Thread(target = self._receive_data)
@@ -284,7 +297,20 @@ class CatsIntersetupInterface:
     def set_robot_behaviour(self, robot_behaviour):
         self._robot_behaviour_lock.acquire()
         self._robot_behaviour = robot_behaviour
+        if robot_behaviour == "CW" or robot_behaviour == "CCW":
+            self._last_directional_robot_behaviour = robot_behaviour
         self._robot_behaviour_lock.release()
+
+
+    def switch_robot_behaviour(self):
+        self._robot_behaviour_lock.acquire()
+        last_behaviour = self._last_directional_robot_behaviour
+        self._robot_behaviour_lock.release()
+        if last_behaviour == "CW":
+            self.set_robot_behaviour("CCW")
+        elif last_behaviour == "CCW":
+            self.set_robot_behaviour("CW")
+
 
 
     def _receive_data(self):
@@ -294,7 +320,9 @@ class CatsIntersetupInterface:
             try:
                 [name, message_type, sender, data] = self.subscriber.recv_multipart(flags=zmq.NOBLOCK)
                 self._incoming_thread_elapsed_time = int(time.time() - self._incoming_thread_starting_time)
-                print("#%d\tfrom:%s\tname:%s device:%s command:%s data:%s" % (self._incoming_thread_elapsed_time, self.subscriber_addr, name, message_type, sender, data))
+
+                if message_type.decode('ascii').lower() != "statistics" and message_type.decode('ascii').lower() != "robottargetpositionchanged":
+                    _print("#%d\tfrom:%s\tname:%s device:%s command:%s data:%s" % (self._incoming_thread_elapsed_time, self.subscriber_addr, name, message_type, sender, data))
 
                 # Save packet in history
                 self._history_lock.acquire()
@@ -304,9 +332,10 @@ class CatsIntersetupInterface:
                     data_dict = {}
                     for entry in data_list:
                         entry_split = entry.split(':')
-                        data_dict[entry_split[0].lower()] = entry_split[1]
-                self._history[self._incoming_thread_elapsed_time] = data_dict
-                self._last_history_index = self._incoming_thread_elapsed_time
+                        if len(entry_split) > 1:
+                            data_dict[entry_split[0].lower()] = entry_split[1]
+                    self._history[self._incoming_thread_elapsed_time] = data_dict
+                    self._last_history_index = self._incoming_thread_elapsed_time
                 self._history_lock.release()
 
                 #self._history_lock.acquire()
@@ -328,7 +357,7 @@ class CatsIntersetupInterface:
                 #self._history_lock.release()
 
                 #if (sender == 'update'):
-                #    #print('Received statistics from cats: ' + name + ';' + message_type + ';' + sender + ';' + data)
+                #    #_print('Received statistics from cats: ' + name + ';' + message_type + ';' + sender + ';' + data)
                 #    statistics = data.split(';')
                 #    self.lock.acquire()
                 #    for statistics_pair in statistics:
@@ -339,11 +368,11 @@ class CatsIntersetupInterface:
                 #        self.initial_time_stamp = float(self.value_by_path['timestamp'])
                 #    t = (float(self.value_by_path['timestamp']) - self.initial_time_stamp) / 1000.
                 #    self.value_by_path['time'] = t
-                #    #print('Received statistics from cats: ', self.value_by_path)
+                #    #_print('Received statistics from cats: ', self.value_by_path)
                 #    self.hist_values_by_path.append(copy.deepcopy(self.value_by_path))
                 #    self.lock.release()
                 #elif sender == 'statistics':
-                #    print('Received statistics list from cats: ' + data)
+                #    _print('Received statistics list from cats: ' + data)
                 #    self.lock.acquire()
                 #    self.available_statistics = data
                 #    self.lock.release()
@@ -385,10 +414,10 @@ class CatsIntersetupInterface:
         self._stop = True
         while self.outgoing_thread.isAlive():
             time.sleep(0.1)
-        print('Intersetup CATS instance subscriber thread finished')
+        _print('Intersetup CATS instance subscriber thread finished')
         while self.incoming_thread.isAlive():
             time.sleep(0.1)
-        print('Intersetup CATS instance receiving thread finished')
+        _print('Intersetup CATS instance receiving thread finished')
 
 
 
@@ -407,6 +436,10 @@ if __name__ == '__main__':
                         help="address to listen for messages of the Interspecies interface.")
     parser.add_argument('--interspeciesInterfacePublisherAddr', type=str, default='tcp://127.0.0.1:5556',
                         help="address to send messages to the Interspecies interface.")
+    parser.add_argument('--trialDuration', type=int, default=30,
+                        help="Duration of each trial")
+#    parser.add_argument('--logFile', type=str, default="logs/log.log",
+#                        help="Logging file")
     args = parser.parse_args()
 
 
@@ -417,7 +450,7 @@ if __name__ == '__main__':
 
     # Launch manager thread
     #manager = InterspeciesManager([cats_interface1, cats_interface2], args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, 30.0)
-    manager = InterspeciesManager([cats_interface1], args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, 30.0)
+    manager = InterspeciesManager([cats_interface1], args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, args.trialDuration)
 
     # Launch statistics threads
     # TODO
