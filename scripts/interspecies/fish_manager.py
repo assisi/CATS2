@@ -27,8 +27,6 @@ def _likelihood_ratio(l1, l2):
     else:
         return(2*(l2-l1))
 
-def _compute_modulation_score(val):
-
 
 class InterspeciesManager(object):
     """ Interspecies manager, to bridge the Interspecies interface to CATS instances """
