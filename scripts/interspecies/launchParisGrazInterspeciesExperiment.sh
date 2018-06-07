@@ -4,7 +4,9 @@
 # June 2018 Workshop, with ISI on graz workstation
 setup1SubAddr=tcp://127.0.0.1:5545
 setup1PubAddr=tcp://127.0.0.1:5546
-ISISubAddr=tcp://143.50.158.98:5555
+#ISISubAddr=tcp://143.50.158.98:5555
+ISISubAddr=tcp://10.42.1.157:5555
+
 ISIPubAddr=tcp://127.0.0.1:5556
 trialDuration=120
 

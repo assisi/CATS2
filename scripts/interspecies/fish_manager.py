@@ -71,9 +71,9 @@ class InterspeciesManager(object):
         #self.outgoing_thread.start()
 
     def _initGMM(self):
-        self._gmmRef = sklearn.mixture.GMM()
-        self._rRef = self._gmmRef.fit(_referenceModulatedClockwiseFrequencies[:, np.newaxis])
-        self._gmmMod = sklearn.mixture.GMM()
+        self._gmmRef = sklearn.mixture.GaussianMixture()
+        self._rRef = self._gmmRef.fit(_referenceClockwiseFrequencies[:, np.newaxis])
+        self._gmmMod = sklearn.mixture.GaussianMixture()
         self._rMod = self._gmmMod.fit(_modulatedClockwiseFrequencies[:, np.newaxis])
 
     def computeModulationScore(self, fishFrequency):
@@ -81,7 +81,7 @@ class InterspeciesManager(object):
         scoreMod = self._rMod.score(fishFrequency)
         lr = _likelihood_ratio(scoreRef, scoreMod)
         surprise = scoreMod > scoreRef
-        return modulation_score, surprise
+        return lr, surprise
 
     def stop_all(self):
         """Stops all threads."""
