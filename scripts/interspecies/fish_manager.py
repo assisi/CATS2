@@ -10,6 +10,7 @@ import sys
 #import shutil
 
 import sklearn.mixture
+import scipy.stats
 
 
 _referenceClockwiseFrequencies = np.array([0.54221289054743016, 0.52835117979620538, 0.52208400620158846, 0.57521062264859135, 0.50908453160904876, 0.50638694999787903, 0.49528456227357132])
@@ -69,6 +70,7 @@ class InterspeciesManager(object):
         self._stop = False
         self.incoming_thread.start()
         #self.outgoing_thread.start()
+        #self.initiate_probing_trial("setup-2", 0.50)
 
     def _initGMM(self):
         self._gmmRef = sklearn.mixture.GaussianMixture()
@@ -81,7 +83,8 @@ class InterspeciesManager(object):
         scoreMod = self._rMod.score(fishFrequency)
         lr = _likelihood_ratio(scoreRef, scoreMod)
         surprise = scoreMod > scoreRef
-        return lr, surprise
+        p = scipy.stats.chi2.sf(lr, 1)
+        return p, surprise
 
     def stop_all(self):
         """Stops all threads."""
