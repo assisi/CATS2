@@ -20,24 +20,6 @@ def _print(param):
     sys.stdout.flush()
 
 
-## TODO
-#class Behaviour(object):
-#    """ TODO """
-#    def __init__(self):
-#        pass # TODO
-#    def infer_next_behaviour(self, current_state):
-#        pass # TODO
-#
-#
-## TODO
-#class ConstantBehaviour(Behaviour):
-#    """ TODO """
-#    def __init__(self, robot_behaviour_type):
-#        super().__init__()
-#        self.robot_behaviour_type = robot_behaviour_type
-#    def infer_next_behaviour(self, current_state):
-#        return self.robot_behaviour_type
-
 
 class InterspeciesManager(object):
     """ Interspecies manager, to bridge the Interspecies interface to CATS instances """
@@ -56,7 +38,7 @@ class InterspeciesManager(object):
         self._last_history_index = None
 
         # Reset the behaviour to SI in all cats instances
-        for instance in self.cats_interfaces:
+        for instance in self.cats_interfaces.values():
             instance.set_robot_behaviour("SI")
 
         # Create and connect subscriber
@@ -137,8 +119,8 @@ class InterspeciesManager(object):
                 [name, message_type, sender, data] = self.subscriber.recv_multipart(flags=zmq.NOBLOCK)
                 self._incoming_thread_elapsed_time = int(time.time() - self._incoming_thread_starting_time)
 
-                if message_type.decode('ascii').lower() != "statistics" and message_type.decode('ascii').lower() != "robottargetpositionchanged":
-                    _print("#%d\tfrom:%s\tname:%s device:%s command:%s data:%s" % (self._incoming_thread_elapsed_time, self.interspecies_interface_subscriber_addr, name, message_type, sender, data))
+                #if message_type.decode('ascii').lower() != "statistics" and message_type.decode('ascii').lower() != "robottargetpositionchanged":
+                _print("#%d\tfrom:%s\tname:%s device:%s command:%s data:%s" % (self._incoming_thread_elapsed_time, self.interspecies_interface_subscriber_addr, name, message_type, sender, data))
 
                 # Save packet in history
                 self._history_lock.acquire()
@@ -158,43 +140,60 @@ class InterspeciesManager(object):
                 # Handle probe Requests
                 if message_type.decode('ascii').lower() == "proberq":
                     setup_name = name.decode('ascii').lower()
-                    setup_id = int(setup_name.split('-')[1]) - 1
+                    #setup_id = int(setup_name.split('-')[1]) - 1
                     confidence = float(data_dict['confidence'])
-                    self.initiate_probing_trial(setup_id, confidence)
+                    #self.initiate_probing_trial(setup_id, confidence)
+                    self.initiate_probing_trial(setup_name, confidence)
             except zmq.ZMQError as e:
                 time.sleep(0.1)
                 continue
 
 
     # TODO put in a separate ProbingRequest class
-    def initiate_probing_trial(self, setup_id, confidence):
-        """ Initiate a probing trial using the setup_id CATS instance """
-        #assert (setup_id >= 0 and setup_id < len(self.cats_interfaces)) # XXX
+    #def initiate_probing_trial(self, setup_id, confidence):
+    def initiate_probing_trial(self, setup_name, confidence):
+        """ Initiate a probing trial using the setup_name CATS instance """
         assert (confidence >= 0. and confidence <= 1.)
-        setup_id = 0 # XXX
+        #if (setup_id < 0 and setup_id >= len(self.cats_interfaces)):
+        #print("Warning: setup id '%s' does not exists. Using 'setup-1' instead" % (setup_id + 1))
+        #setup_id = 0 # XXX
+
+        # Verify if setup exists
+        if not self.cats_interfaces.get(setup_name):
+            _print("Warning: received a Probe request but setup '%s' does not exists ! Sending a FailedProbe message..." % (setup_name))
+            # Send a response to the Interspecies interface
+            response_name = bytes("FishManager", 'ascii')
+            response_message_type = bytes("FailedProbe", 'ascii')
+            response_sender = bytes(setup_name, 'ascii')
+            response_data = bytes("", 'ascii')
+            try:
+                self.publisher.send_multipart([response_name, response_message_type, response_sender, response_data])
+            except zmq.ZMQError as e:
+                _print("DEBUG1:", e)
+            return
 
         # Determine trial duration from the confidence level
         #trial_duration = 4 * 60 # XXX Force trials to last 4 minutes
         trial_duration = self.publishing_period # XXX Force trials to last 4 minutes
 
-        _print("Initiating a new probing trial on setup-%i for %i sec with a confidence of %f" % (setup_id + 1, trial_duration, confidence))
+        _print("Initiating a new probing trial on '%s' for %i sec with a confidence of %f" % (setup_name, trial_duration, confidence))
 
         # Send new behaviour to the CATS instance
         #self.cats_interfaces[setup_id].set_robot_behaviour("CW")
-        self.cats_interfaces[setup_id].switch_robot_behaviour()
+        self.cats_interfaces[setup_name].switch_robot_behaviour()
 
         # Wait for the trial to be completed
         time.sleep(trial_duration)
 
         # Reset robot behaviour to Social Integration through the CATS instance
-        self.cats_interfaces[setup_id].set_robot_behaviour("SI")
+        self.cats_interfaces[setup_name].set_robot_behaviour("SI")
 
         # Compute a modulation score
-        statistics = self.cats_interfaces[setup_id].get_last_history()
+        statistics = self.cats_interfaces[setup_name].get_last_history()
         #_print("DEBUG1: ", statistics)
         fishClockWiseFrequency = float(statistics['fishclockwisepercent'])
         modulation_score = abs(fishClockWiseFrequency - np.mean(_referenceClockwiseFrequencies)) # TODO more adequate scheme
-        if modulation_score > 0.05: # TODO more adequate scheme
+        if modulation_score > 0.10: # TODO more adequate scheme
             surprise = 1
         else:
             surprise = 0
@@ -204,27 +203,16 @@ class InterspeciesManager(object):
         # Send a response to the Interspecies interface
         response_name = bytes("FishManager", 'ascii')
         response_message_type = bytes("ProbeDone", 'ascii')
-        response_sender = bytes("setup-%i" % (setup_id + 1), 'ascii')
+        #response_sender = bytes("setup-%i" % (setup_id + 1), 'ascii')
+        #response_sender = bytes("setup-%i" % (setup_id + 2), 'ascii') # XXX 
+        response_sender = bytes(setup_name, 'ascii')
         response_data = bytes("Score:%f;Modulated:%i;Duration:%i;" % (modulation_score, surprise, trial_duration), 'ascii')
         try:
             self.publisher.send_multipart([response_name, response_message_type, response_sender, response_data])
         except zmq.ZMQError as e:
             _print("DEBUG1:", e)
-            #pass # TODO
 
-        _print("Successfully sent probe response")
-
-
-
-
-#    def _send_data(self):
-#        """ Forward data to the Interspecies interface """
-#        while not self._stop:
-#            try:
-#                pass # TODO
-#            except zmq.ZMQError as e:
-#                continue
-#            time.sleep(self.publishing_period)
+        _print("Successfully sent probe response: to:%s\tname:%s device:%s command:%s data:%s" % (self.interspecies_interface_publisher_addr, response_name, response_message_type, response_sender, response_data))
 
 
 
@@ -445,12 +433,13 @@ if __name__ == '__main__':
 
     # TODO specify parameters through command line options
     # Connect to CATS instances
-    cats_interface1 = CatsIntersetupInterface("setup-1", args.intersetupSubscriberAddr1, args.intersetupPublisherAddr1, 1.0, "CW")
+    cats_interface1 = CatsIntersetupInterface("setup-2", args.intersetupSubscriberAddr1, args.intersetupPublisherAddr1, 1.0, "CW")
     #cats_interface2 = CatsIntersetupInterface("setup-2", args.intersetupSubscriberAddr2, args.intersetupPublisherAddr2, 1.0, "CW")
 
     # Launch manager thread
     #manager = InterspeciesManager([cats_interface1, cats_interface2], args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, 30.0)
-    manager = InterspeciesManager([cats_interface1], args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, args.trialDuration)
+    #manager = InterspeciesManager([cats_interface1], args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, args.trialDuration)
+    manager = InterspeciesManager({"setup-2": cats_interface1}, args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, args.trialDuration)
 
     # Launch statistics threads
     # TODO
