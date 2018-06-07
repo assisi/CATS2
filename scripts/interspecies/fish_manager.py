@@ -9,16 +9,25 @@ import os
 import sys
 #import shutil
 
+import sklearn.mixture
+
 
 _referenceClockwiseFrequencies = np.array([0.54221289054743016, 0.52835117979620538, 0.52208400620158846, 0.57521062264859135, 0.50908453160904876, 0.50638694999787903, 0.49528456227357132])
-
-_referenceModulatedClockwiseFrequencies = np.array([0.50204807811659569, 0.54202494383763267, 0.60291051956382291, 0.77506372940684087, 0.59165256627185558, 0.58573393753034475, 0.63525429066288774, 0.49027599860253873])
+_modulatedClockwiseFrequencies = np.array([0.50204807811659569, 0.54202494383763267, 0.60291051956382291, 0.77506372940684087, 0.59165256627185558, 0.58573393753034475, 0.63525429066288774, 0.49027599860253873])
 
 
 def _print(param):
     print(param)
     sys.stdout.flush()
 
+
+def _likelihood_ratio(l1, l2):
+    if l1 > l2:
+        return(2*(l1-l2))
+    else:
+        return(2*(l2-l1))
+
+def _compute_modulation_score(val):
 
 
 class InterspeciesManager(object):
@@ -41,6 +50,8 @@ class InterspeciesManager(object):
         for instance in self.cats_interfaces.values():
             instance.set_robot_behaviour("SI")
 
+        self._initGMM()
+
         # Create and connect subscriber
         self.context = zmq.Context(2)
         self.subscriber = self.context.socket(zmq.SUB)
@@ -61,6 +72,18 @@ class InterspeciesManager(object):
         self.incoming_thread.start()
         #self.outgoing_thread.start()
 
+    def _initGMM(self):
+        self._gmmRef = sklearn.mixture.GMM()
+        self._rRef = self._gmmRef.fit(_referenceModulatedClockwiseFrequencies[:, np.newaxis])
+        self._gmmMod = sklearn.mixture.GMM()
+        self._rMod = self._gmmMod.fit(_modulatedClockwiseFrequencies[:, np.newaxis])
+
+    def computeModulationScore(self, fishFrequency):
+        scoreRef = self._rRef.score(fishFrequency)
+        scoreMod = self._rMod.score(fishFrequency)
+        lr = _likelihood_ratio(scoreRef, scoreMod)
+        surprise = scoreMod > scoreRef
+        return modulation_score, surprise
 
     def stop_all(self):
         """Stops all threads."""
@@ -180,7 +203,7 @@ class InterspeciesManager(object):
 
         # Send new behaviour to the CATS instance
         #self.cats_interfaces[setup_id].set_robot_behaviour("CW")
-        self.cats_interfaces[setup_name].switch_robot_behaviour()
+        robot_behaviour = self.cats_interfaces[setup_name].switch_robot_behaviour()
 
         # Wait for the trial to be completed
         time.sleep(trial_duration)
@@ -192,11 +215,23 @@ class InterspeciesManager(object):
         statistics = self.cats_interfaces[setup_name].get_last_history()
         #_print("DEBUG1: ", statistics)
         fishClockWiseFrequency = float(statistics['fishclockwisepercent'])
-        modulation_score = abs(fishClockWiseFrequency - np.mean(_referenceClockwiseFrequencies)) # TODO more adequate scheme
-        if modulation_score > 0.10: # TODO more adequate scheme
-            surprise = 1
+        #if robot_behaviour == "CW":
+        #    modulation_score = abs(fishClockWiseFrequency - np.mean(_referenceClockwiseFrequencies)) # TODO more adequate scheme
+        #elif robot_behaviour == "CCW":
+        #    modulation_score = abs(1.0 - fishClockWiseFrequency - np.mean(1.0 - _referenceClockwiseFrequencies)) # TODO more adequate scheme
+        #else:
+        #    modulation_score = 0.0
+        #if modulation_score > 0.10: # TODO more adequate scheme
+        #    surprise = 1
+        #else:
+        #    surprise = 0
+        if robot_behaviour == "CW":
+            modulation_score, surprise = self.computeModulationScore(fishClockWiseFrequency)
+        elif robot_behaviour == "CCW":
+            modulation_score, surprise = self.computeModulationScore(1 - fishClockWiseFrequency)
         else:
-            surprise = 0
+            modulation_score, surprise = 0.0, 0.0
+
 
         _print("Trial completed with a modulation score of: %f and a surprise of: %i" % (modulation_score, surprise))
 
@@ -289,6 +324,12 @@ class CatsIntersetupInterface:
             self._last_directional_robot_behaviour = robot_behaviour
         self._robot_behaviour_lock.release()
 
+    def get_robot_behaviour(self):
+        self._robot_behaviour_lock.acquire()
+        robot_behaviour = self._robot_behaviour
+        self._robot_behaviour_lock.release()
+        return robot_behaviour
+
 
     def switch_robot_behaviour(self):
         self._robot_behaviour_lock.acquire()
@@ -298,6 +339,7 @@ class CatsIntersetupInterface:
             self.set_robot_behaviour("CCW")
         elif last_behaviour == "CCW":
             self.set_robot_behaviour("CW")
+        return self.get_robot_behaviour()
 
 
 
