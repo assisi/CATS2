@@ -29,6 +29,78 @@ def _likelihood_ratio(l1, l2):
         return(2*(l2-l1))
 
 
+
+class ProbeRequest(object):
+    def __init__(self, manager, setup_name, confidence):
+        self.manager = manager
+        self.setup_name = setup_name
+        self.confidence = confidence
+        assert (self.confidence >= 0. and self.confidence <= 1.)
+
+        self._stop = False
+        self.initiated = False
+        self.finished = False
+        self.failed = False
+        self.modulation_score = None
+        self.surprise = None
+
+    def start(self):
+        self._thread = threading.Thread(target = self._probe_ctrl)
+        self._thread.start()
+
+    def _probe_ctrl(self):
+        """ Initiate a probing trial using the setup_name CATS instance """
+
+        # Verify if setup exists
+        if not self.manager.cats_interfaces.get(self.setup_name):
+            _print("Warning: received a Probe request but setup '%s' does not exist ! Sending a FailedProbe message..." % (self.setup_name))
+            self.failed = True
+            # Send a response to the Interspecies interface
+            self.manager.send_message_to_ISI("FishManager", "FailedProbe", self.setup_name, "Setup '%s' does not exist" % (self.setup_name))
+            return
+
+        # Determine trial duration from the confidence level
+        trial_duration = self.manager.publishing_period # XXX Force trials to last 2 minutes
+
+        _print("Initiating a new probing trial on '%s' for %i sec with a confidence of %f" % (self.setup_name, trial_duration, self.confidence))
+
+        # Send new behaviour to the CATS instance
+        #self.manager.cats_interfaces[setup_id].set_robot_behaviour("CW")
+        robot_behaviour = self.manager.cats_interfaces[self.setup_name].switch_robot_behaviour()
+        self.initiated = True
+
+        # XXX Take into accoung _stop
+        # Wait for the trial to be completed
+        time.sleep(trial_duration)
+
+        # Reset robot behaviour to Social Integration through the CATS instance
+        self.manager.cats_interfaces[self.setup_name].set_robot_behaviour("SI")
+
+        statistics = self.manager.cats_interfaces[self.setup_name].get_last_history()
+        if statistics:
+            # Compute a modulation score
+            fishClockWiseFrequency = float(statistics['fishclockwisepercent'])
+            if robot_behaviour == "CW":
+                self.modulation_score, self.surprise = self.manager.computeModulationScore(fishClockWiseFrequency)
+            elif robot_behaviour == "CCW":
+                self.modulation_score, self.surprise = self.manager.computeModulationScore(1 - fishClockWiseFrequency)
+            else:
+                self.modulation_score, self.surprise = 0.0, 0.0
+            _print("Trial completed on '%s' with a modulation score of: %f and a surprise of: %i" % (self.setup_name, self.modulation_score, self.surprise))
+            response_name, response_message_type, response_sender = "FishManager", "ProbeDone", self.setup_name
+            response_data = "Score:%f;Modulated:%i;Duration:%i;" % (self.modulation_score, self.surprise, trial_duration)
+            self.manager.send_message_to_ISI(response_name, response_message_type, response_sender, response_data)
+            _print("Successfully sent probe response: to:%s\tname:%s device:%s command:%s data:%s" % (self.manager.interspecies_interface_publisher_addr, response_name, response_message_type, response_sender, response_data))
+
+        else:
+            _print("Trial failed on '%s': no answer received from CATS after %i seconds..." % (self.setup_name, trial_duration))
+            self.manager.send_message_to_ISI("FishManager", "FailedProbe", self.setup_name, "Setup '%s' did not respond" % (self.setup_name))
+            self.failed = True
+
+        self.finished = True
+
+
+
 class InterspeciesManager(object):
     """ Interspecies manager, to bridge the Interspecies interface to CATS instances """
 
@@ -44,6 +116,7 @@ class InterspeciesManager(object):
         self._history = {}
         self._history_lock = threading.Lock()
         self._last_history_index = None
+        self._probe_requests = []
 
         # Reset the behaviour to SI in all cats instances
         for instance in self.cats_interfaces.values():
@@ -70,7 +143,11 @@ class InterspeciesManager(object):
         self._stop = False
         self.incoming_thread.start()
         #self.outgoing_thread.start()
+
+        ## XXX DEBUG
         #self.initiate_probing_trial("setup-2", 0.50)
+        #self.initiate_probing_trial("setup-1", 0.50)
+        #self.initiate_probing_trial("setup-3", 0.50)
 
     def _initGMM(self):
         self._gmmRef = sklearn.mixture.GaussianMixture()
@@ -86,6 +163,7 @@ class InterspeciesManager(object):
         p = scipy.stats.chi2.sf(lr, 1)
         return p, surprise
 
+
     def stop_all(self):
         """Stops all threads."""
         self._stop = True
@@ -96,21 +174,6 @@ class InterspeciesManager(object):
             time.sleep(0.1)
         _print('Interspecies receiving thread finished')
 
-#    def set_behaviour(self, behaviour):
-#        self._current_behaviour_lock.acquire()
-#        self._current_behaviour = behaviour
-#        self._current_behaviour_lock.release()
-
-#    def _manage_interspecies(self):
-#        while not self._stop_threads:
-#            try:
-#                pass # TODO
-#            except zmq.ZMQError as e:
-#                time.sleep(0.1)
-#                continue
-#            for elapsed_time in range(int(self.period)):
-#                if not self._stop_threads:
-#                    time.sleep(1.0)
 
     def get_raw_history(self, index = None):
         if index:
@@ -133,6 +196,17 @@ class InterspeciesManager(object):
             result = self._fish_history
             self._history_lock.release()
         return result
+
+    def send_message_to_ISI(self, name, message_type, sender, data = ""):
+        response_name = bytes(name, 'ascii')
+        response_message_type = bytes(message_type, 'ascii')
+        response_sender = bytes(sender, 'ascii')
+        response_data = bytes(data, 'ascii')
+        try:
+            self.publisher.send_multipart([response_name, response_message_type, response_sender, response_data])
+        except zmq.ZMQError as e:
+            _print("Error while sending message to ISI: ", e)
+
 
 
     def _receive_data(self):
@@ -173,82 +247,68 @@ class InterspeciesManager(object):
                 continue
 
 
-    # TODO put in a separate ProbingRequest class
-    #def initiate_probing_trial(self, setup_id, confidence):
     def initiate_probing_trial(self, setup_name, confidence):
         """ Initiate a probing trial using the setup_name CATS instance """
-        assert (confidence >= 0. and confidence <= 1.)
-        #if (setup_id < 0 and setup_id >= len(self.cats_interfaces)):
-        #print("Warning: setup id '%s' does not exists. Using 'setup-1' instead" % (setup_id + 1))
-        #setup_id = 0 # XXX
 
-        # Verify if setup exists
-        if not self.cats_interfaces.get(setup_name):
-            _print("Warning: received a Probe request but setup '%s' does not exists ! Sending a FailedProbe message..." % (setup_name))
-            # Send a response to the Interspecies interface
-            response_name = bytes("FishManager", 'ascii')
-            response_message_type = bytes("FailedProbe", 'ascii')
-            response_sender = bytes(setup_name, 'ascii')
-            response_data = bytes("", 'ascii')
-            try:
-                self.publisher.send_multipart([response_name, response_message_type, response_sender, response_data])
-            except zmq.ZMQError as e:
-                _print("DEBUG1:", e)
-            return
+        probe_request = ProbeRequest(self, setup_name, confidence)
+        self._probe_requests.append(probe_request)
+        probe_request.start()
 
-        # Determine trial duration from the confidence level
-        #trial_duration = 4 * 60 # XXX Force trials to last 4 minutes
-        trial_duration = self.publishing_period # XXX Force trials to last 4 minutes
-
-        _print("Initiating a new probing trial on '%s' for %i sec with a confidence of %f" % (setup_name, trial_duration, confidence))
-
-        # Send new behaviour to the CATS instance
-        #self.cats_interfaces[setup_id].set_robot_behaviour("CW")
-        robot_behaviour = self.cats_interfaces[setup_name].switch_robot_behaviour()
-
-        # Wait for the trial to be completed
-        time.sleep(trial_duration)
-
-        # Reset robot behaviour to Social Integration through the CATS instance
-        self.cats_interfaces[setup_name].set_robot_behaviour("SI")
-
-        # Compute a modulation score
-        statistics = self.cats_interfaces[setup_name].get_last_history()
-        #_print("DEBUG1: ", statistics)
-        fishClockWiseFrequency = float(statistics['fishclockwisepercent'])
-        #if robot_behaviour == "CW":
-        #    modulation_score = abs(fishClockWiseFrequency - np.mean(_referenceClockwiseFrequencies)) # TODO more adequate scheme
-        #elif robot_behaviour == "CCW":
-        #    modulation_score = abs(1.0 - fishClockWiseFrequency - np.mean(1.0 - _referenceClockwiseFrequencies)) # TODO more adequate scheme
-        #else:
-        #    modulation_score = 0.0
-        #if modulation_score > 0.10: # TODO more adequate scheme
-        #    surprise = 1
-        #else:
-        #    surprise = 0
-        if robot_behaviour == "CW":
-            modulation_score, surprise = self.computeModulationScore(fishClockWiseFrequency)
-        elif robot_behaviour == "CCW":
-            modulation_score, surprise = self.computeModulationScore(1 - fishClockWiseFrequency)
-        else:
-            modulation_score, surprise = 0.0, 0.0
-
-
-        _print("Trial completed with a modulation score of: %f and a surprise of: %i" % (modulation_score, surprise))
-
-        # Send a response to the Interspecies interface
-        response_name = bytes("FishManager", 'ascii')
-        response_message_type = bytes("ProbeDone", 'ascii')
-        #response_sender = bytes("setup-%i" % (setup_id + 1), 'ascii')
-        #response_sender = bytes("setup-%i" % (setup_id + 2), 'ascii') # XXX 
-        response_sender = bytes(setup_name, 'ascii')
-        response_data = bytes("Score:%f;Modulated:%i;Duration:%i;" % (modulation_score, surprise, trial_duration), 'ascii')
-        try:
-            self.publisher.send_multipart([response_name, response_message_type, response_sender, response_data])
-        except zmq.ZMQError as e:
-            _print("DEBUG1:", e)
-
-        _print("Successfully sent probe response: to:%s\tname:%s device:%s command:%s data:%s" % (self.interspecies_interface_publisher_addr, response_name, response_message_type, response_sender, response_data))
+#        assert (confidence >= 0. and confidence <= 1.)
+#
+#        # Verify if setup exists
+#        if not self.cats_interfaces.get(setup_name):
+#            _print("Warning: received a Probe request but setup '%s' does not exists ! Sending a FailedProbe message..." % (setup_name))
+#            # Send a response to the Interspecies interface
+#            response_name = bytes("FishManager", 'ascii')
+#            response_message_type = bytes("FailedProbe", 'ascii')
+#            response_sender = bytes(setup_name, 'ascii')
+#            response_data = bytes("", 'ascii')
+#            try:
+#                self.publisher.send_multipart([response_name, response_message_type, response_sender, response_data])
+#            except zmq.ZMQError as e:
+#                _print("DEBUG1:", e)
+#            return
+#
+#        # Determine trial duration from the confidence level
+#        trial_duration = self.publishing_period # XXX Force trials to last 4 minutes
+#
+#        _print("Initiating a new probing trial on '%s' for %i sec with a confidence of %f" % (setup_name, trial_duration, confidence))
+#
+#        # Send new behaviour to the CATS instance
+#        #self.cats_interfaces[setup_id].set_robot_behaviour("CW")
+#        robot_behaviour = self.cats_interfaces[setup_name].switch_robot_behaviour()
+#
+#        # Wait for the trial to be completed
+#        time.sleep(trial_duration)
+#
+#        # Reset robot behaviour to Social Integration through the CATS instance
+#        self.cats_interfaces[setup_name].set_robot_behaviour("SI")
+#
+#        # Compute a modulation score
+#        statistics = self.cats_interfaces[setup_name].get_last_history()
+#        fishClockWiseFrequency = float(statistics['fishclockwisepercent'])
+#        if robot_behaviour == "CW":
+#            modulation_score, surprise = self.computeModulationScore(fishClockWiseFrequency)
+#        elif robot_behaviour == "CCW":
+#            modulation_score, surprise = self.computeModulationScore(1 - fishClockWiseFrequency)
+#        else:
+#            modulation_score, surprise = 0.0, 0.0
+#
+#
+#        _print("Trial completed with a modulation score of: %f and a surprise of: %i" % (modulation_score, surprise))
+#
+#        # Send a response to the Interspecies interface
+#        response_name = bytes("FishManager", 'ascii')
+#        response_message_type = bytes("ProbeDone", 'ascii')
+#        response_sender = bytes(setup_name, 'ascii')
+#        response_data = bytes("Score:%f;Modulated:%i;Duration:%i;" % (modulation_score, surprise, trial_duration), 'ascii')
+#        try:
+#            self.publisher.send_multipart([response_name, response_message_type, response_sender, response_data])
+#        except zmq.ZMQError as e:
+#            _print("DEBUG1:", e)
+#
+#        _print("Successfully sent probe response: to:%s\tname:%s device:%s command:%s data:%s" % (self.interspecies_interface_publisher_addr, response_name, response_message_type, response_sender, response_data))
 
 
 
@@ -312,6 +372,8 @@ class CatsIntersetupInterface:
         return result
 
     def get_last_history(self):
+        if not self._last_history_index:
+            return None
         self._history_lock.acquire()
         result = self._history[self._last_history_index]
         self._history_lock.release()
@@ -474,27 +536,23 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
 
-    # TODO specify parameters through command line options
     # Connect to CATS instances
-    cats_interface1 = CatsIntersetupInterface("setup-2", args.intersetupSubscriberAddr1, args.intersetupPublisherAddr1, 1.0, "CW")
-    #cats_interface2 = CatsIntersetupInterface("setup-2", args.intersetupSubscriberAddr2, args.intersetupPublisherAddr2, 1.0, "CW")
+    cats_interface1 = CatsIntersetupInterface("setup-1", args.intersetupSubscriberAddr1, args.intersetupPublisherAddr1, 1.0, "SI")
+    cats_interface2 = CatsIntersetupInterface("setup-2", args.intersetupSubscriberAddr2, args.intersetupPublisherAddr2, 1.0, "SI")
 
     # Launch manager thread
     #manager = InterspeciesManager([cats_interface1, cats_interface2], args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, 30.0)
     #manager = InterspeciesManager([cats_interface1], args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, args.trialDuration)
-    manager = InterspeciesManager({"setup-2": cats_interface1}, args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, args.trialDuration)
-
-    # Launch statistics threads
-    # TODO
+    manager = InterspeciesManager({"setup-1": cats_interface1, "setup-2": cats_interface2}, args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, args.trialDuration)
 
 
     cmd = 'a'
     while cmd != 'q':
-        cmd = input('To stop the program press q<Enter>')
+        cmd = input("To stop the program press q<Enter>\n")
 
     manager.stop_all()
     cats_interface1.stop_all()
-    #cats_interface2.stop_all()
+    cats_interface2.stop_all()
 
 
 # MODELINE	"{{{1

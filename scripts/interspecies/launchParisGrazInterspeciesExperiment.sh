@@ -2,8 +2,10 @@
 
 
 # June 2018 Workshop, with ISI on graz workstation
-setup1SubAddr=tcp://127.0.0.1:5545
-setup1PubAddr=tcp://127.0.0.1:5546
+setup1SubAddr=tcp://172.27.34.7:5535
+setup1PubAddr=tcp://127.0.0.1:5536
+setup2SubAddr=tcp://127.0.0.1:5545
+setup2PubAddr=tcp://127.0.0.1:5546
 ISISubAddr=tcp://143.50.158.98:5555
 #ISISubAddr=tcp://10.42.1.157:5555
 
@@ -43,7 +45,7 @@ autossh -M 0 -N -R 5556:localhost:5556 -o "GatewayPorts yes" -o "ServerAliveInte
 pidSSH=$!
 
 # Launch Fish Manager
-./fish_manager.py --intersetupSubscriberAddr1 $setup1SubAddr --intersetupPublisherAddr1 $setup1PubAddr --interspeciesInterfaceSubscriberAddr $ISISubAddr --interspeciesInterfacePublisherAddr $ISIPubAddr --trialDuration $trialDuration  2>&1 | tee $logDirectory/fish_manager-$currentDate.log #&
+./fish_manager.py --intersetupSubscriberAddr1 $setup1SubAddr --intersetupPublisherAddr1 $setup1PubAddr --intersetupSubscriberAddr2 $setup2SubAddr --intersetupPublisherAddr2 $setup2PubAddr --interspeciesInterfaceSubscriberAddr $ISISubAddr --interspeciesInterfacePublisherAddr $ISIPubAddr --trialDuration $trialDuration  2>&1 | tee $logDirectory/fish_manager-$currentDate.log #&
 #pidFM=$!
 #
 #wait $pidSSH
