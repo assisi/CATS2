@@ -150,7 +150,7 @@
                 <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
-                <kp>4</kp> <!-- Vitesse angulaire  -->
+                <kp>3.5</kp> <!-- Vitesse angulaire  -->
                 <ki>0.05</ki>
                 <kd>0.00</kd>
                 <kpDist>200</kpDist> <!-- Vitesse en fontion de la distance de la cible   -->
@@ -163,10 +163,10 @@
         <!-- Controllers settings. Controller is available only if its settings are provided -->
         <controllers>
             <controlMap>
-                <controlAreasPath>control-maps/paris-8-sectors-control-map-setup2.xml</controlAreasPath>
+                <controlAreasPath>control-maps/paris-four-sectors-control-map-setup2.xml</controlAreasPath>
             </controlMap>
             <circularSetup>
-                <controlAreasPath>control-maps/paris-8-sectors-control-map-setup2.xml</controlAreasPath>
+                <controlAreasPath>control-maps/paris-four-sectors-control-map-setup2.xml</controlAreasPath>
                 <targetPositionRadius>0.25</targetPositionRadius>
                 <targetDeltaAngleDeg>18.</targetDeltaAngleDeg>
             </circularSetup>
