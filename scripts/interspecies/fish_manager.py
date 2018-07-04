@@ -117,6 +117,7 @@ class InterspeciesManager(object):
         self._history_lock = threading.Lock()
         self._last_history_index = None
         self._probe_requests = []
+        self._isi_publisher_lock = threading.Lock()
 
         # Reset the behaviour to SI in all cats instances
         for instance in self.cats_interfaces.values():
@@ -202,10 +203,12 @@ class InterspeciesManager(object):
         response_message_type = bytes(message_type, 'ascii')
         response_sender = bytes(sender, 'ascii')
         response_data = bytes(data, 'ascii')
+        self._isi_publisher_lock.acquire()
         try:
             self.publisher.send_multipart([response_name, response_message_type, response_sender, response_data])
         except zmq.ZMQError as e:
             _print("Error while sending message to ISI: ", e)
+        self._isi_publisher_lock.release()
 
 
 
@@ -401,6 +404,8 @@ class CatsIntersetupInterface:
         if last_behaviour == "CW":
             self.set_robot_behaviour("CCW")
         elif last_behaviour == "CCW":
+            self.set_robot_behaviour("CW")
+        else:
             self.set_robot_behaviour("CW")
         return self.get_robot_behaviour()
 

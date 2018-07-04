@@ -3,15 +3,15 @@
 
 # June 2018 Workshop, with ISI on graz workstation
 setup1SubAddr=tcp://172.27.34.7:5535
-setup1PubAddr=tcp://127.0.0.1:5536
+setup1PubAddr=tcp://172.27.34.3:5536
 setup2SubAddr=tcp://127.0.0.1:5545
 setup2PubAddr=tcp://127.0.0.1:5546
-ISISubAddr=tcp://143.50.158.98:5555
-#ISISubAddr=tcp://10.42.1.157:5555
+ISISubAddr=tcp://143.50.158.98:5555 # GRATZ Workstation
+#ISISubAddr=tcp://10.42.1.157:5555    # Rob's laptop
 
 ISIPubAddr=tcp://127.0.0.1:5556
 #ISIPubAddr=tcp://172.27.34.3:5556
-trialDuration=120
+trialDuration=120 #120
 
 # June 2018 Workshop, with ISI on Rob's computer on ip 10.42.1.157:5565
 #setup1SubAddr=tcp://127.0.0.1:5545
