@@ -112,7 +112,7 @@ class InterspeciesManager(object):
         #self._managing_thread = threading.Thread(target = self._manage_interspecies)
         #self._current_behaviour = Behaviour()
         #self._current_behaviour_lock = threading.Lock()
-        self._raw_history = {}*
+        self._raw_history = {}
         self._history = {}
         self._history_lock = threading.Lock()
         self._last_history_index = None
@@ -352,10 +352,11 @@ class CatsIntersetupInterface:
         self.incoming_thread = threading.Thread(target = self._receive_data)
         self.outgoing_thread = threading.Thread(target = self._send_data)
         self._stop = False
+        self._is_paused = False
         self.incoming_thread.start()
         self.outgoing_thread.start()
 
-        self._is_paused = False
+        
 
 
     def pause(self):

@@ -45,7 +45,7 @@ autossh -M 0 -N -R 5556:localhost:5556 -o "GatewayPorts yes" -o "ServerAliveInte
 pidSSH=$!
 
 # Launch Fish Manager
-./fish_manager.py --intersetupSubscriberAddr1 $setup1SubAddr --intersetupPublisherAddr1 $setup1PubAddr --intersetupSubscriberAddr2 $setup2SubAddr --intersetupPublisherAddr2 $setup2PubAddr --interspeciesInterfaceSubscriberAddr $ISISubAddr --interspeciesInterfacePublisherAddr $ISIPubAddr --trialDuration $trialDuration  2>&1 | tee $logDirectory/fish_manager-$currentDate.log #&
+./fish_manager_2Rooms.py --intersetupSubscriberAddr1 $setup1SubAddr --intersetupPublisherAddr1 $setup1PubAddr --intersetupSubscriberAddr2 $setup2SubAddr --intersetupPublisherAddr2 $setup2PubAddr --interspeciesInterfaceSubscriberAddr $ISISubAddr --interspeciesInterfacePublisherAddr $ISIPubAddr --trialDuration $trialDuration  2>&1 | tee $logDirectory/fish_manager-$currentDate.log #&
 #pidFM=$!
 #
 #wait $pidSSH

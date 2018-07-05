@@ -86,8 +86,7 @@ class ProbeRequest(object):
             
             self.surpriseR1 = self.manager.computeModulationScore(fishTimeR1)
             self.surpriseR2 = self.manager.computeModulationScore(fishTimeR2)
-            else:
-                self.surpriseR1, self.surpriseR2 = 0.0, 0.0
+
             _print("Trial completed on '%s' with a surprise in Room 1 of: %i and a surprise in Room 2 of: %i" % (self.setup_name, self.surpriseR1, self.surpriseR2))
             response_name, response_message_type, response_sender = "FishManager", "ProbeDone", self.setup_name
             response_data = "surpriseR1:%f;surpriseR2:%i;Duration:%i;" % (self.surpriseR1, self.surpriseR2, trial_duration)
@@ -114,7 +113,7 @@ class InterspeciesManager(object):
         #self._managing_thread = threading.Thread(target = self._manage_interspecies)
         #self._current_behaviour = Behaviour()
         #self._current_behaviour_lock = threading.Lock()
-        self._raw_history = {}*
+        self._raw_history = {}
         self._history = {}
         self._history_lock = threading.Lock()
         self._last_history_index = None
@@ -355,10 +354,11 @@ class CatsIntersetupInterface:
         self.incoming_thread = threading.Thread(target = self._receive_data)
         self.outgoing_thread = threading.Thread(target = self._send_data)
         self._stop = False
+        self._is_paused = False
         self.incoming_thread.start()
         self.outgoing_thread.start()
 
-        self._is_paused = False
+        
 
 
     def pause(self):
