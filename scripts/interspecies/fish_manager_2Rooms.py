@@ -84,13 +84,13 @@ class ProbeRequest(object):
             fishTimeR1 = float(statistics['fishTimeR1']) # XXX Adapt CATS2 
             fishTimeR2 = float(statistics['fishTimeR2'])
             
-            self.surpriseR1 = self.manager.computeModulationScore(fishClockWiseFrequency)
-            self.surpriseR2 = self.manager.computeModulationScore(1 - fishClockWiseFrequency)
+            self.surpriseR1 = self.manager.computeModulationScore(fishTimeR1)
+            self.surpriseR2 = self.manager.computeModulationScore(fishTimeR2)
             else:
-                self.modulation_score, self.surprise = 0.0, 0.0
-            _print("Trial completed on '%s' with a modulation score of: %f and a surprise of: %i" % (self.setup_name, self.modulation_score, self.surprise))
+                self.surpriseR1, self.surpriseR2 = 0.0, 0.0
+            _print("Trial completed on '%s' with a surprise in Room 1 of: %i and a surprise in Room 2 of: %i" % (self.setup_name, self.surpriseR1, self.surpriseR2))
             response_name, response_message_type, response_sender = "FishManager", "ProbeDone", self.setup_name
-            response_data = "Score:%f;Modulated:%i;Duration:%i;" % (self.modulation_score, self.surprise, trial_duration)
+            response_data = "surpriseR1:%f;surpriseR2:%i;Duration:%i;" % (self.surpriseR1, self.surpriseR2, trial_duration)
             self.manager.send_message_to_ISI(response_name, response_message_type, response_sender, response_data)
             _print("Successfully sent probe response: to:%s\tname:%s device:%s command:%s data:%s" % (self.manager.interspecies_interface_publisher_addr, response_name, response_message_type, response_sender, response_data))
 
