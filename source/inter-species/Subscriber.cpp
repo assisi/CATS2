@@ -68,6 +68,9 @@ void Subscriber::processMessage(std::string name, std::string device,
         } else if (QString(device.data()).toLower() == "robottargetpositionchanged") {
             // Set robot target position packets
             emit notifyReceptionOfUpdateRobotTargetPositionMessage(QString(data.data()));
-        }
+		} else if (QString(device.data()).toLower() == "behaviour2R") {
+			emit notifyInterspecies2RoomsModeChange(QString(data.data()));
+		}
+
 
 }

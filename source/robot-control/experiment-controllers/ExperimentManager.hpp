@@ -33,6 +33,8 @@ public:
 
     //! Sets the circular setup robot turning direction (CW/CCW).
     void setCircularSetupTurningDirection(QString message);
+    //! Sets preferedAreaId
+    void setInitiationLurePreferedAreaId(Qstring preferedAreaId);
 
 public slots:
     //! Sets the requested controller.

@@ -51,6 +51,8 @@ public:
     virtual ControlData step();
     //! Called when the controller is disactivated. Makes a cleanup if necessary.
     virtual void finish() {}
+    //! Sets prefered area id
+    void setPreferedAreaId(QString preferedAreaId) { m_preferedAreaId = preferedAreaId; }
 
 public slots:
     //! Requests to sends the map areas' polygons.

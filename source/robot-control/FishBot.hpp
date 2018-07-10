@@ -70,6 +70,8 @@ public:
     //! Passes further to the experiments manager the message from the bee setup
     //! (CW/CCW).
     void setCircularSetupTurningDirection(QString message);
+    //! Sets preferedAreaId
+    void setInitiationLurePreferedAreaId(Qstring preferedAreaId);
 
     //! Returns the supported control modes.
     QList<ControlModeType::Enum> supportedControlModes() const;

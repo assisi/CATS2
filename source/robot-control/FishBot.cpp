@@ -702,6 +702,14 @@ void FishBot::setCircularSetupTurningDirection(QString message)
 }
 
 /*!
+ * Sets preferedAreaId
+ */
+void FishBot::setInitiationLurePreferedAreaId(Qstring preferedAreaId)
+{
+    m_experimentManager.setInitiationLurePreferedAreaId(preferedAreaId);
+}
+
+/*!
  * Computes and updates statistics.
  */
 void FishBot::computeStatistics()

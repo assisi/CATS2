@@ -57,6 +57,8 @@ public slots:
 public slots: // interspecies
     //! Passes further to the robot the message from the bee setup (CW/CCW).
     void setCircularSetupTurningDirection(QString message);
+    //! Change robot mode in 2Rooms Inter-species experiments
+    void changeInterspecies2RoomsMode(int robotId, QString targetMode);
 
 signals:
     //! Sends the control map areas' polygons of the robot.
