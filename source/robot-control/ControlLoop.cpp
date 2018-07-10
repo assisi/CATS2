@@ -150,6 +150,33 @@ void ControlLoop::setCircularSetupTurningDirection(QString message)
     }
 }
 
+
+/*!
+ * Change robot mode in 2Rooms Inter-species experiments
+ */
+void ControlLoop::changeInterspecies2RoomsMode(int robotId, QString targetMode)
+{
+    if (robotId >= m_robots.size()) {
+        qDebug() << "changeInterspecies2RoomsMode: invalid robotId '" << robotId << "'";
+        return;
+    }
+    auto& robot = m_robots[robotId];
+    if (targetMode == "None") {
+        robot->setController(ExperimentControllerType::NONE);
+        robot->setControlMode(ControlModeType::IDLE);
+    } else if (targetMode == "Model") {
+        robot->setController(ExperimentControllerType::NONE);
+        robot->setControlMode(ControlModeType::ZONE_BASED_FISH_MODEL);
+    } else {
+        robot->setControlMode(ControlModeType::IDLE);
+        robot->setInitiationLurePreferedAreaId(targetMode);
+        robot->setController(ExperimentControllerType::INITIATION_LURE);
+    }
+}
+
+
+
+
 /*!
  * Reconnect the robot's to the aseba interface.
  */

@@ -112,6 +112,27 @@ MainWindow::MainWindow(QWidget *parent) :
                 &ControlLoop::notifyRobotTargetPositionChanged,
                 m_interSpeciesDataManager.data(),
                 &InterSpeciesDataManager::publishRobotTargetPosition);
+        //connect(m_interSpeciesDataManager.data(),
+        //        &InterSpeciesDataManager::notifyInterspecies2RoomsModeChange,
+        //        m_robotsHandler->contolLoop().data(),
+        //        &ControlLoop::changeInterspecies2RoomsMode);
+        connect(m_interSpeciesDataManager.data(),
+                &InterSpeciesDataManager::notifyInterspecies2RoomsModeChange,
+                [=](QString message) {
+            int robotId = -1;
+            QString targetMode = "None";
+            QStringList splitted = message.split(";");
+            for(auto& str : splitted) {
+                if(str.size() == 0)
+                    continue;
+                QStringList splitted2 = str.split(":");
+                if(splitted2[0] == "robot")
+                    robotId = splitted2[1].toInt();
+                if(splitted2[0] == "target")
+                    targetMode = splitted2[1];
+            }
+            m_robotsHandler->contolLoop()->changeInterspecies2RoomsMode(robotId, targetMode);
+        });
 
         connect(m_interSpeciesDataManager.data(),
                 &InterSpeciesDataManager::notifyRobotTargetPositionUpdated,

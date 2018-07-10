@@ -23,6 +23,8 @@ signals:
     void notifyBeeSetCircularSetupTurningDirection(QString message);
     //! Notifies the reception of a command to change robot target position.
     void notifyReceptionOfUpdateRobotTargetPositionMessage(QString message);
+    //! Notifies the reception of a command to change robot mode in 2Rooms Inter-species experiments
+    void notifyInterspecies2RoomsModeChange(QString message);
 
 protected:
     //! Processes the input message.

@@ -32,6 +32,8 @@ signals:
     void notifyBeesSetCircularSetupTurningDirection(QString message);
     //! Notifies that the robot must update its target position
     void notifyRobotTargetPositionUpdated(QString message);
+    //! Notifies the reception of a command to change robot mode in 2Rooms Inter-species experiments
+    void notifyInterspecies2RoomsModeChange(QString message);
 
 public slots:
     //! Triggered when new agent data is to be published.

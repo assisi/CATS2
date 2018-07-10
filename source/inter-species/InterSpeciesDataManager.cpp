@@ -34,6 +34,9 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
             this, &InterSpeciesDataManager::notifyBeesSetCircularSetupTurningDirection);
     connect(m_subscriber.data(), &Subscriber::notifyReceptionOfUpdateRobotTargetPositionMessage,
             this, &InterSpeciesDataManager::notifyRobotTargetPositionUpdated);
+    connect(m_subscriber.data(), &Subscriber::notifyInterspecies2RoomsModeChange,
+            this, &InterSpeciesDataManager::notifyInterspecies2RoomsModeChange);
+
     thread->start();
 }
 
