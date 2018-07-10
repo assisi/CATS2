@@ -12,6 +12,8 @@ import sys
 import sklearn.mixture
 import scipy.stats
 
+import subprocess as sp
+import analysefile as expy
 
 _referenceClockwiseFrequencies = np.array([0.54221289054743016, 0.52835117979620538, 0.52208400620158846, 0.57521062264859135, 0.50908453160904876, 0.50638694999787903, 0.49528456227357132])
 _modulatedClockwiseFrequencies = np.array([0.50204807811659569, 0.54202494383763267, 0.60291051956382291, 0.77506372940684087, 0.59165256627185558, 0.58573393753034475, 0.63525429066288774, 0.49027599860253873])
@@ -73,16 +75,26 @@ class ProbeRequest(object):
 
         # XXX Take into accoung _stop
         # Wait for the trial to be completed
+
+        fileposit = "~/Dropbox/HEAF/data/Test/Orientation/" # XXX Should find that from CATS2
+        
+        namefile = sp.getoutput("./namelstfile.sh " + fileposit)
+
+        line0 = sp.getoutput("./nblstfile.sh " + fileposit)
+        
+
         time.sleep(trial_duration)
+
+        lineF = sp.getoutput("./nblstfile.sh "+fileposit)
 
         # Reset robot behaviour to Social Integration through the CATS instance
         self.manager.cats_interfaces[self.setup_name].set_robot_behaviour("Fishmodel")
 
-        statistics = self.manager.cats_interfaces[self.setup_name].get_last_history()
-        if statistics:
+        try:
             # Compute a modulation score
-            fishTimeR1 = float(statistics['fishTimeR1']) # XXX Adapt CATS2 
-            fishTimeR2 = float(statistics['fishTimeR2'])
+            formattxt = expy.Formattxt(line0, lineF, namefile, fileposit, 4, 2, 2, 3, "-0.236,-0.259,0.806,0.807", 1, 15, 1)
+            fishTimeR1, fishTimeR2 = expy.analyse_room(namefile, fileposit, 4, 2, 3, 15, '2RColorLargeIR2.png')
+            a = 42/0
             
             self.surpriseR1 = self.manager.computeModulationScore(fishTimeR1)
             self.surpriseR2 = self.manager.computeModulationScore(fishTimeR2)
@@ -93,7 +105,7 @@ class ProbeRequest(object):
             self.manager.send_message_to_ISI(response_name, response_message_type, response_sender, response_data)
             _print("Successfully sent probe response: to:%s\tname:%s device:%s command:%s data:%s" % (self.manager.interspecies_interface_publisher_addr, response_name, response_message_type, response_sender, response_data))
 
-        else:
+        except:
             _print("Trial failed on '%s': no answer received from CATS after %i seconds..." % (self.setup_name, trial_duration))
             self.manager.send_message_to_ISI("FishManager", "FailedProbe", self.setup_name, "Setup '%s' did not respond" % (self.setup_name))
             self.failed = True
@@ -209,10 +221,12 @@ class InterspeciesManager(object):
         response_message_type = bytes(message_type, 'ascii')
         response_sender = bytes(sender, 'ascii')
         response_data = bytes(data, 'ascii')
+        self._isi_publisher_lock.acquire()
         try:
             self.publisher.send_multipart([response_name, response_message_type, response_sender, response_data])
         except zmq.ZMQError as e:
             _print("Error while sending message to ISI: ", e)
+        self._isi_publisher_lock.release()
 
 
 

@@ -208,10 +208,12 @@ class InterspeciesManager(object):
         response_message_type = bytes(message_type, 'ascii')
         response_sender = bytes(sender, 'ascii')
         response_data = bytes(data, 'ascii')
+        self._isi_publisher_lock.acquire()
         try:
             self.publisher.send_multipart([response_name, response_message_type, response_sender, response_data])
         except zmq.ZMQError as e:
             _print("Error while sending message to ISI: ", e)
+        self._isi_publisher_lock.release()
 
 
 
