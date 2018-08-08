@@ -22,8 +22,8 @@ class Formattxt:
         self.ncolumn = ncolumn
         self.moveXY = moveXY
         self.interpol = interpol
-        self.line0 = line0
-        self.lineF = lineF
+        self.line0 = int(line0)
+        self.lineF = int(lineF)
         self.fps = fps
         self.scale = scale
         if not os.path.exists(self.directory + '/formatedCATS2'):
@@ -67,23 +67,24 @@ class Formattxt:
         if self.interpol:
             interval = brut_data[-1,0] - brut_data[0,0]
             print("interval : ",interval)
-
+            #print(brut_data)
             newdata = np.zeros((int(interval * self.fps) , int((self.nfish + self.nrobot) * self.ncolumn)))
             for i in range(0, (self.nfish + self.nrobot)):
                 for j in range(0, self.ncolumn):
                     fj = scipy.interpolate.interp1d(brut_data[:,0], position_data[:,i*self.ncolumn+j], 'slinear', bounds_error = False)#,fill_value="extrapolate")
                     newdata[:,i*self.ncolumn+j] = fj(np.linspace(0, interval, interval * self.fps))
 
-            position_data = np.copy(newdata)
-
+            #position_data = np.copy(newdata)
+        print(position_data.shape)
 
 
 
         ncolexit = self.ncolumn
 
         
-        data = np.ndarray(shape = ( int(interval * self.fps ), int(ncolexit * (self.nfish + self.nrobot) + 1)) )
-        data[:,0] = np.linspace(0, interval, interval * self.fps )
+        #data = np.ndarray(shape = ( int(interval * self.fps ), int(ncolexit * (self.nfish + self.nrobot) + 1)) )
+        data = np.ndarray(shape = (position_data.shape[0], int(ncolexit * (self.nfish + self.nrobot) + 1)) )
+        data[:,0] = np.linspace(0, position_data.shape[0] / self.fps, position_data.shape[0] )
 
         if self.interpol:
             data[:,1:data.shape[1]] = position_data/ self.scale
@@ -178,6 +179,8 @@ def analyse_room(fichier, directory, nfish, nrobot, ncolumn, fps, picmaze):
     SumRoomAllFTarget = np.sum(PosR[:, nrobot:(nfish + nrobot)] == 1) / float(np.sum(~np.isnan(PosR[:, nrobot:(nfish + nrobot)])))
 
     SumRoomAllFOther = np.sum(PosR[:, nrobot:(nfish + nrobot)] == 2)  / float(np.sum(~np.isnan(PosR[:, nrobot:(nfish + nrobot)])))
+
+    print("SumRoomAllFTarget : ",SumRoomAllFTarget,"SumRoomAllFOther : ",SumRoomAllFOther)
     
 
     return(SumRoomAllFTarget,SumRoomAllFOther)
@@ -203,6 +206,6 @@ if __name__ == '__main__':
 
     args = parser.parse_args()
 
-formattxt = Formattxt( args.line0, args.lineF, args.filename, args.directory, args.nfish, args.nrobot, args.firstcolumn, args.ncolumn, args.moveXY, args.interpol, args.fps, args.scale)
-fishTimeR1, fishTimeR2 = analyse_room(args.filename, args.directory, args.nfish, args.nrobot, args.ncolumn, args.fps, args.picmaze)
-print(fishTimeR1, fishTimeR2)
+    formattxt = Formattxt( args.line0, args.lineF, args.filename, args.directory, args.nfish, args.nrobot, args.firstcolumn, args.ncolumn, args.moveXY, args.interpol, args.fps, args.scale)
+    fishTimeR1, fishTimeR2 = analyse_room(args.filename, args.directory, args.nfish, args.nrobot, args.ncolumn, args.fps, args.picmaze)
+    print(fishTimeR1, fishTimeR2)

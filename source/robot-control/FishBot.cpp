@@ -704,7 +704,7 @@ void FishBot::setCircularSetupTurningDirection(QString message)
 /*!
  * Sets preferedAreaId
  */
-void FishBot::setInitiationLurePreferedAreaId(Qstring preferedAreaId)
+void FishBot::setInitiationLurePreferedAreaId(QString preferedAreaId)
 {
     m_experimentManager.setInitiationLurePreferedAreaId(preferedAreaId);
 }

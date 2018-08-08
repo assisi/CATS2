@@ -164,7 +164,7 @@ void ExperimentManager::setCircularSetupTurningDirection(QString message)
     }
 }
 
-void ExperimentManager::setInitiationLurePreferedAreaId(Qstring preferedAreaId) {
+void ExperimentManager::setInitiationLurePreferedAreaId(QString preferedAreaId) {
     m_controllers[ExperimentControllerType::INITIATION_LURE]->setPreferedAreaId(preferedAreaId);
 }
 

@@ -71,7 +71,7 @@ public:
     //! (CW/CCW).
     void setCircularSetupTurningDirection(QString message);
     //! Sets preferedAreaId
-    void setInitiationLurePreferedAreaId(Qstring preferedAreaId);
+    void setInitiationLurePreferedAreaId(QString preferedAreaId);
 
     //! Returns the supported control modes.
     QList<ControlModeType::Enum> supportedControlModes() const;

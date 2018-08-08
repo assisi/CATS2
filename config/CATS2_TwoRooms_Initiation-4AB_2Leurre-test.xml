@@ -195,15 +195,15 @@
                 <speedCmSec>14</speedCmSec> <!--Speed fish behaviour -->
             </fishMotionPattern>
             <pid>
-                <kp>3.00</kp>
+                <kp>3.20</kp>
                 <ki>0.05</ki>
                 <kd>0.00</kd>                
-                <kpDist>200.0</kpDist>
+                <kpDist>300.0</kpDist>
                 <kiDist>1.0</kiDist>
                 <kdDist>2.0</kdDist>
             </pid>
             <defaultLinearSpeedCmSec>16</defaultLinearSpeedCmSec>
-            <needOrientationToNavigate>1</needOrientationToNavigate>
+            <needOrientationToNavigate>0</needOrientationToNavigate>
         </navigation>
         <controllers>
             <controlMap>
@@ -232,6 +232,15 @@
             <connectionTarget>ser:device=/dev/rfcomm4</connectionTarget>
         </fishBot_2>
         <fishBot_1>
+            <id>D</id>
+            <ledColor>
+                <r>90</r>
+                <g>150</g>
+                <b>200</b>
+            </ledColor>
+            <connectionTarget>ser:device=/dev/rfcomm3</connectionTarget>
+        </fishBot_1>
+        <fishBot_3>
             <id>F</id>
             <ledColor>
                 <r>90</r>
@@ -239,15 +248,6 @@
                 <b>200</b>
             </ledColor>
             <connectionTarget>ser:device=/dev/rfcomm5</connectionTarget>
-        </fishBot_1>
-        <fishBot_3>
-            <id>A</id>
-            <ledColor>
-                <r>90</r>
-                <g>150</g>
-                <b>200</b>
-            </ledColor>
-            <connectionTarget>ser:device=/dev/rfcomm1</connectionTarget>
         </fishBot_3>
     </robots>
     <setups>
@@ -284,9 +284,9 @@
                 <trackingMethod>fishBotLedsTracking</trackingMethod>
                 <maskFile>bottom-camera-mask.png</maskFile>
                 <fishBotLedsTracking>
-                    <fishBot_A>
+                    <fishBot_D>
                         <threshold>20</threshold>
-                    </fishBot_A>
+                    </fishBot_D>
                     <fishBot_F>
                         <threshold>20</threshold>
                     </fishBot_F>
@@ -298,8 +298,16 @@
         </cameraBelow>
     </setups>
     <interSpecies>
-        <publisherAddress>tcp://127.0.0.1:50001</publisherAddress>
-        <subscriberAddresses>tcp://127.0.0.1:50002;tcp://127.0.0.1:50003</subscriberAddresses>
+        <!-- where we send data -->
+		<!-- <publisherAddress>tcp://172.27.34.3:5555</publisherAddress> -->
+        <!-- from where we get data -->
+		<!-- <subscriberAddresses>tcp://172.27.34.3:5556</subscriberAddresses> -->
+        <!-- local addresses -->
+		<publisherAddress>tcp://127.0.0.1:5545</publisherAddress>
+		<!-- <subscriberAddresses>tcp://172.27.34.144:5556</subscriberAddresses> -->
+		<!-- <subscriberAddresses>tcp://10.42.0.241:5546</subscriberAddresses> -->
+		<subscriberAddresses>tcp://127.0.0.1:5546</subscriberAddresses>
+
     </interSpecies>
 </opencv_storage>
 

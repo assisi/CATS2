@@ -15,9 +15,9 @@ import scipy.stats
 import subprocess as sp
 import analysefile as expy
 
-_referenceClockwiseFrequencies = np.array([0.54221289054743016, 0.52835117979620538, 0.52208400620158846, 0.57521062264859135, 0.50908453160904876, 0.50638694999787903, 0.49528456227357132])
-_modulatedClockwiseFrequencies = np.array([0.50204807811659569, 0.54202494383763267, 0.60291051956382291, 0.77506372940684087, 0.59165256627185558, 0.58573393753034475, 0.63525429066288774, 0.49027599860253873])
-
+_referenceClockwiseFrequencies = np.array([ 0.39125588,  0.38665612,  0.50301408,  0.38235883,  0.33175489,  0.38040053,  0.42198476,  0.40090216])
+_modulatedClockwiseFrequencies = np.array([ 0.44234102,  0.49914967,  0.56311632,  0.5016692 ,  0.42253943,  0.68714759,  0.39319622,  0.32605848,  0.3493445 ,  0.46392696])
+_nrobot = 2
 
 def _print(param):
     print(param)
@@ -33,11 +33,11 @@ def _likelihood_ratio(l1, l2):
 
 
 class ProbeRequest(object):
-    def __init__(self, manager, setup_name, state, confidence):
+    def __init__(self, manager, setup_name, attraction_l, attraction_r):
         self.manager = manager
         self.setup_name = setup_name
-        self.state = state
-        self.confidence = confidence
+        self.attraction_l = attraction_l
+        self.attraction_r = attraction_r
         #assert (self.confidence >= 0. and self.confidence <= 1.)
 
         self._stop = False
@@ -66,17 +66,30 @@ class ProbeRequest(object):
         # Determine trial duration from the confidence level
         trial_duration = self.manager.publishing_period # XXX Force trials to last 2 minutes
 
-        _print("Initiating a new probing trial on '%s' for %i sec in mode '%s' with a confidence of %f" % (self.setup_name, trial_duration, self.state, self.confidence))
+        #_print("Initiating a new probing trial on '%s' for %i sec in mode '%s' with a confidence of %f" % (self.setup_name, trial_duration, self.attraction_l, self.attraction_r))
 
         # Send new behaviour to the CATS instance
         #self.manager.cats_interfaces[setup_id].set_robot_behaviour("CW")
-        robot_behaviour = self.manager.cats_interfaces[self.setup_name].switch_robot_behaviour(self.state)
+        threshold = 0.5
+        state = None
+        if abs(self.attraction_l- self.attraction_r) < threshold:
+            state = 3
+        elif self.attraction_l < self.attraction_r - threshold:
+            state = 2
+        elif self.attraction_l - threshold > self.attraction_r :
+            state = 1
+
+        _print("Initiating a new probing trial on '%s' for %i sec in mode '%s'." % (self.setup_name, trial_duration, state))
+
+
+        robot_behaviour = self.manager.cats_interfaces[self.setup_name].switch_robot_behaviour(state)
+        _print('Youhou : %s' % robot_behaviour)
         self.initiated = True
 
         # XXX Take into accoung _stop
         # Wait for the trial to be completed
 
-        fileposit = "~/Dropbox/HEAF/data/Test/Orientation/" # XXX Should find that from CATS2
+        fileposit = "/home/assisi/Dropbox/HEAF/data/Test/Orientation/" # XXX Should find that from CATS2
         
         namefile = sp.getoutput("./namelstfile.sh " + fileposit)
 
@@ -84,29 +97,40 @@ class ProbeRequest(object):
         
 
         time.sleep(trial_duration)
-
+        _print("This is the END")
         lineF = sp.getoutput("./nblstfile.sh "+fileposit)
 
         # Reset robot behaviour to Social Integration through the CATS instance
         self.manager.cats_interfaces[self.setup_name].set_robot_behaviour("Fishmodel")
-
+        _print((line0, lineF, namefile, fileposit))
         try:
             # Compute a modulation score
-            formattxt = expy.Formattxt(line0, lineF, namefile, fileposit, 4, 2, 2, 3, "-0.236,-0.259,0.806,0.807", 1, 15, 1)
-            fishTimeR1, fishTimeR2 = expy.analyse_room(namefile, fileposit, 4, 2, 3, 15, '2RColorLargeIR2.png')
-            a = 42/0
+            formattxt = expy.Formattxt(line0, lineF, namefile, fileposit, 3, _nrobot, 2, 3, "-0.236,-0.259,0.806,0.807", 1, 15, 1)
+            fishTimeR1, fishTimeR2 = expy.analyse_room(namefile, fileposit, 3, _nrobot, 3, 15, '2RColorLargeIR2.png')
             
             self.surpriseR1 = self.manager.computeModulationScore(fishTimeR1)
             self.surpriseR2 = self.manager.computeModulationScore(fishTimeR2)
-
+            _print((self.surpriseR1, self.surpriseR2))
             _print("Trial completed on '%s' with a surprise in Room 1 of: %i and a surprise in Room 2 of: %i" % (self.setup_name, self.surpriseR1, self.surpriseR2))
             response_name, response_message_type, response_sender = "FishManager", "ProbeDone", self.setup_name
-            response_data = "surpriseR1:%f;surpriseR2:%i;Duration:%i;" % (self.surpriseR1, self.surpriseR2, trial_duration)
+
+            Modulation = None
+            _print(self.surpriseR1 == self.surpriseR2)
+            if self.surpriseR1 + self.surpriseR2 > 0:
+                if fishTimeR1 > fishTimeR2:
+                    Modulation = "L"
+                elif fishTimeR1 < fishTimeR2:
+                    Modulation = "R"
+            elif self.surpriseR1 + self.surpriseR2 == False:
+                Modulation = "N"
+
+            response_data = "Modulated:%s;Duration:%i;" % (Modulation, trial_duration)
             self.manager.send_message_to_ISI(response_name, response_message_type, response_sender, response_data)
             _print("Successfully sent probe response: to:%s\tname:%s device:%s command:%s data:%s" % (self.manager.interspecies_interface_publisher_addr, response_name, response_message_type, response_sender, response_data))
 
-        except:
+        except Exception as e:
             _print("Trial failed on '%s': no answer received from CATS after %i seconds..." % (self.setup_name, trial_duration))
+            _print(e)
             self.manager.send_message_to_ISI("FishManager", "FailedProbe", self.setup_name, "Setup '%s' did not respond" % (self.setup_name))
             self.failed = True
 
@@ -130,6 +154,7 @@ class InterspeciesManager(object):
         self._history_lock = threading.Lock()
         self._last_history_index = None
         self._probe_requests = []
+        self._isi_publisher_lock = threading.Lock()
 
         # Reset the behaviour to SI in all cats instances
         for instance in self.cats_interfaces.values():
@@ -158,7 +183,7 @@ class InterspeciesManager(object):
         #self.outgoing_thread.start()
 
         ## XXX DEBUG
-        #self.initiate_probing_trial("setup-2", 0.50)
+        #self.initiate_probing_trial("setup-2", 1 ,0.50)
         #self.initiate_probing_trial("setup-1", 0.50)
         #self.initiate_probing_trial("setup-3", 0.50)
 
@@ -174,7 +199,7 @@ class InterspeciesManager(object):
         lr = _likelihood_ratio(scoreRef, scoreMod)
         surprise = scoreMod > scoreRef
         p = scipy.stats.chi2.sf(lr, 1)
-        return p, surprise
+        return surprise
 
     def pause(self):
         for instance in self.cats_interfaces.values():
@@ -260,19 +285,19 @@ class InterspeciesManager(object):
                 if message_type.decode('ascii').lower() == "proberq":
                     setup_name = name.decode('ascii').lower()
                     #setup_id = int(setup_name.split('-')[1]) - 1
-                    state = float(data_dict['etattemp'])             # XXX Verifier avec Rob
-                    confidence = float(data_dict['confidence'])         # XXX Verifier avec Rob
+                    attraction_l = float(data_dict['attraction_l'])             # XXX Verifier avec Rob
+                    attraction_r = float(data_dict['attraction_r'])         # XXX Verifier avec Rob
                     #self.initiate_probing_trial(setup_id, confidence)
-                    self.initiate_probing_trial(setup_name, state, confidence)
+                    self.initiate_probing_trial(setup_name, attraction_l, attraction_r)
             except zmq.ZMQError as e:
                 time.sleep(0.1)
                 continue
 
 
-    def initiate_probing_trial(self, setup_name, state, confidence):
+    def initiate_probing_trial(self, setup_name, attraction_l, attraction_r):
         """ Initiate a probing trial using the setup_name CATS instance """
 
-        probe_request = ProbeRequest(self, setup_name, state, confidence)
+        probe_request = ProbeRequest(self, setup_name, attraction_l, attraction_r)
         self._probe_requests.append(probe_request)
         probe_request.start()
 
@@ -344,12 +369,12 @@ class CatsIntersetupInterface:
         self.publisher_addr = publisher_addr
         self.publishing_period = publishing_period
         self._robot_behaviour = robot_behaviour
-        self._last_directional_robot_behaviour = robot_behaviour
         self._robot_behaviour_lock = threading.Lock()
         self._raw_history = {}
         self._history = {}
         self._history_lock = threading.Lock()
         self._last_history_index = None
+        self._rooms_name = ["top","bottom"]
 
         # Create and connect subscriber
         self.context = zmq.Context(2)
@@ -357,12 +382,12 @@ class CatsIntersetupInterface:
         #self.subscriber.setsockopt(zmq.RCVTIMEO, 1000)
         self.subscriber.setsockopt(zmq.SUBSCRIBE, b'')
         self.subscriber.connect(self.subscriber_addr)
-        _print("Successfully connected CATS instance subscriber to address: '%s'" % self.subscriber_addr)
+        _print("Successfully connected CATS instance '%s' subscriber to address: '%s'" % (self.instance_name, self.subscriber_addr))
 
         # Create and connect publisher
         self.publisher = self.context.socket(zmq.PUB)
         self.publisher.bind(self.publisher_addr)
-        _print("Successfully connected CATS instance publisher to address: '%s'" % self.publisher_addr)
+        _print("Successfully connected CATS instance '%s' publisher to address: '%s'" % (self.instance_name, self.subscriber_addr))
 
         # Create and start threads
         self.incoming_thread = threading.Thread(target = self._receive_data)
@@ -414,8 +439,6 @@ class CatsIntersetupInterface:
     def set_robot_behaviour(self, robot_behaviour):
         self._robot_behaviour_lock.acquire()
         self._robot_behaviour = robot_behaviour
-        if robot_behaviour == "CW" or robot_behaviour == "CCW":
-            self._last_directional_robot_behaviour = robot_behaviour
         self._robot_behaviour_lock.release()
 
     def get_robot_behaviour(self):
@@ -429,11 +452,13 @@ class CatsIntersetupInterface:
         # self._robot_behaviour_lock.acquire()
         # last_behaviour = self._last_directional_robot_behaviour
         # self._robot_behaviour_lock.release()
-        if state == "1":
+        _print("state and type of state : %s, %s" % (state, type(state)))
+        state = int(state)
+        if state == 1:
             self.set_robot_behaviour("Allin1")
-        elif state == "2":
+        elif state == 2:
             self.set_robot_behaviour("Allin2")
-        elif state == "3":
+        elif state == 3:
             self.set_robot_behaviour("Split")
         return self.get_robot_behaviour()
 
@@ -509,30 +534,39 @@ class CatsIntersetupInterface:
 
     def _send_data(self):
         """ Forward data to a CATS instance """
+        robot_behaviour_prev = None
+
         while not self._stop:
             try:
                 if not self._is_paused:
                     self._robot_behaviour_lock.acquire()
                     robot_behaviour = self._robot_behaviour
                     self._robot_behaviour_lock.release()
-
-                    enableMsgPublishing = True
-                    name = bytes(self.instance_name, 'ascii')
-                    message_type = b'behaviour'
-                    sender = b'FishManager'
-                    if robot_behaviour == "Allin1":
-                        data = b'Allin1'
-                    elif robot_behaviour == "Allin2":
-                        data = b'Allin2'
-                    elif robot_behaviour == "Split":
-                        data = b'Split'
-                    elif robot_behaviour == "Fishmodel":
-                        data = b'Fishmodel'
-                    else:
-                        data = b''
-                        enableMsgPublishing = False
-                    if enableMsgPublishing:
-                        self.publisher.send_multipart([name, message_type, sender, data])
+                    
+                    if robot_behaviour_prev != robot_behaviour:
+                        enableMsgPublishing = True
+                        name = bytes(self.instance_name, 'ascii')
+                        message_type = b'behaviour2r'
+                        sender = b'FishManager'
+                        _print(self.instance_name+robot_behaviour)
+                        for i in range(0,_nrobot):
+                            if robot_behaviour == "Allin1":
+                                data = 'robot:%i;target:%s' % (i,self._rooms_name[0])
+                            elif robot_behaviour == "Allin2":
+                                data = 'robot:%i;target:%s' % (i,self._rooms_name[1])
+                            elif robot_behaviour == "Split":
+                                data = 'robot:%i;target:%s' % (i,self._rooms_name[i])
+                            elif robot_behaviour == "Fishmodel":
+                                data = 'robot:%i;target:%s' % (i,'Model')
+                            else:
+                                data = ''
+                                enableMsgPublishing = False
+                            if enableMsgPublishing:
+                                data = bytes(data, 'utf-8')
+                                self.publisher.send_multipart([name, message_type, sender, data])
+                    robot_behaviour_prev = robot_behaviour
+                else:
+                    robot_behaviour_prev = None
             except zmq.ZMQError as e:
                 continue
             time.sleep(self.publishing_period)
@@ -573,8 +607,8 @@ if __name__ == '__main__':
 
 
     # Connect to CATS instances
-    cats_interface1 = CatsIntersetupInterface("setup-1", args.intersetupSubscriberAddr1, args.intersetupPublisherAddr1, 1.0, "Fishmodel")
-    cats_interface2 = CatsIntersetupInterface("setup-2", args.intersetupSubscriberAddr2, args.intersetupPublisherAddr2, 1.0, "Fishmodel")
+    cats_interface1 = CatsIntersetupInterface("setup-1", args.intersetupSubscriberAddr1, args.intersetupPublisherAddr1, 1.0, "")
+    cats_interface2 = CatsIntersetupInterface("setup-2", args.intersetupSubscriberAddr2, args.intersetupPublisherAddr2, 1.0, "")
 
     # Launch manager thread
     #manager = InterspeciesManager([cats_interface1, cats_interface2], args.interspeciesInterfaceSubscriberAddr, args.interspeciesInterfacePublisherAddr, 30.0)
@@ -587,6 +621,12 @@ if __name__ == '__main__':
         cmd = input("To stop the program press q<Enter>\n")
         if cmd == 'p':
             manager.pause()
+        elif cmd == 't1':
+            manager.initiate_probing_trial("setup-2", 1 ,-1)        
+        elif cmd == 't2':
+            manager.initiate_probing_trial("setup-2", 0 ,1)
+        elif cmd == 't3':
+            manager.initiate_probing_trial("setup-2", -0.5 ,0)
 
     manager.stop_all()
     cats_interface1.stop_all()
