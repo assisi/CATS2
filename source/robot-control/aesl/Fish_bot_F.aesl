@@ -64,7 +64,7 @@ var IDControl=0
 
 # Variables used for obstacle avoidance
 var ObstacleAvoidance=1 #0=no obstacle avoidance 1=braitenberg  2=turn to avoid
-var ThreshSensor=18
+var ThreshSensor=20
 
 # Variables used for turn to avoid
 var SpeedAvoid=5
@@ -73,7 +73,7 @@ var TimeAvoid=6000
 var TimeAvoidBack=2000
 
 # Variables used for braitenberg
-var coeffAvoid=180
+var coeffAvoid=80
 var threshback=500 #hack pour reculer
 
 #Variables used for Fish Behavior

@@ -88,7 +88,7 @@
                   <polygons>
                     <numberOfPolygons>1</numberOfPolygons>
                     <polygon_1>
-                      -0.148 0.695 0.098 0.695 0.108 0.481 0.064 0.437 -0.148 0.447
+                      -0.126 0.695 0.098 0.695 0.108 0.481 0.064 0.437 -0.148 0.447
                     </polygon_1>
                   </polygons>
                   <kappaFishes>22.47</kappaFishes>
@@ -136,7 +136,7 @@
                   <polygons>
                     <numberOfPolygons>1</numberOfPolygons>
                     <polygon_1>
-                      -0.179 0.721 0.129 0.726 0.139 0.470 0.108 0.481 0.098 0.695 -0.148 0.695 -0.148 0.447 0.064 0.437 0.075 0.409 -0.185 0.416
+                      -0.157 0.721 0.129 0.726 0.139 0.470 0.108 0.481 0.098 0.695 -0.126 0.695 -0.148 0.447 0.064 0.437 0.075 0.409 -0.185 0.416
                     </polygon_1>
                   </polygons>
                   <kappaFishes>29.42</kappaFishes>
@@ -223,15 +223,15 @@
             </initiationLure>
         </controllers>
         <fishBot_2>
-            <id>E</id>
+            <id>A</id>
             <ledColor>
                 <r>181</r>
                 <g>255</g>
                 <b>166</b>
             </ledColor>
-            <connectionTarget>ser:device=/dev/rfcomm4</connectionTarget>
+            <connectionTarget>ser:device=/dev/rfcomm0</connectionTarget>
         </fishBot_2>
-        <fishBot_1>
+        <fishBot_3>
             <id>D</id>
             <ledColor>
                 <r>90</r>
@@ -239,8 +239,8 @@
                 <b>200</b>
             </ledColor>
             <connectionTarget>ser:device=/dev/rfcomm3</connectionTarget>
-        </fishBot_1>
-        <fishBot_3>
+        </fishBot_3>
+        <fishBot_1>
             <id>F</id>
             <ledColor>
                 <r>90</r>
@@ -248,7 +248,7 @@
                 <b>200</b>
             </ledColor>
             <connectionTarget>ser:device=/dev/rfcomm5</connectionTarget>
-        </fishBot_3>
+        </fishBot_1>
     </robots>
     <setups>
         <mainCamera>
@@ -265,7 +265,7 @@
                 <trackingMethod>blobDetector</trackingMethod>
                 <numberOfAgents>6</numberOfAgents>
                 <blobDetector>
-                    <minBlobSizePx>3</minBlobSizePx>
+                    <minBlobSizePx>2</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
                     <minDistance>5.0</minDistance>
                     <blockSize>3</blockSize>
@@ -290,9 +290,9 @@
                     <fishBot_F>
                         <threshold>20</threshold>
                     </fishBot_F>
-                    <fishBot_E>
+                    <fishBot_A>
                         <threshold>30</threshold>
-                    </fishBot_E>
+                    </fishBot_A>
                 </fishBotLedsTracking>
             </tracking>
         </cameraBelow>
