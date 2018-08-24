@@ -54,5 +54,45 @@ bool CircularSetupControllerSettings::init(QString configurationFileName)
                           angleDeg, angleDeg);
     m_data.setTargetDeltaAngleRad(angleDeg * M_PI / 180.);
 
+    // read trajectory
+    std::string relativeTrajectoryPath = "";
+    settings.readVariable(QString("%1/trajectoryFileName").arg(m_settingPathPrefix),
+                          relativeTrajectoryPath,
+                          relativeTrajectoryPath);
+    m_data.setTrajectoryFileName(relativeTrajectoryPath);
+    QString trajectoryPath = configurationFolder +
+                                QDir::separator() +
+                                QString::fromStdString(relativeTrajectoryPath);
+    QList<PositionMeters> trajectory;
+    QFileInfo trajectoryFile(trajectoryPath);
+    if (trajectoryFile.exists() && trajectoryFile.isFile()) {
+        ReadSettingsHelper trajectorySettings(trajectoryPath);
+        std::vector<cv::Point2f> polygon;
+        trajectorySettings.readVariable(QString("polygon"), polygon);
+        if (polygon.size() > 0) {
+            for (auto& point : polygon)
+                trajectory << PositionMeters(point);
+            m_data.setTrajectory(trajectory);
+            qDebug() << QString("Loaded trajectory of %1 points, used in circular setup"
+                                "control modes for all robots").arg(m_trajectory.size());
+        } else {
+            qDebug() << "The trajectory is empty";
+        }
+    } else {
+        qDebug() << "Could not find the trajectory file used in circular setup control modes";
+    }
+
+    // read trajectory current index
+    size_t trajectoryCurrentIndex = 0;
+    settings.readVariable(QString("%1/trajectoryCurrentIndex").arg(m_settingPathPrefix),
+                          trajectoryCurrentIndex,
+                          trajectoryCurrentIndex);
+    if(trajectory.size() && trajectoryCurrentIndex >= trajectory.size()) {
+        qDebug() << "Trajectory current index out of bounds";
+        trajectoryCurrentIndex = 0;
+    }
+    m_data.setTrajectoryCurrentIndex(trajectoryCurrentIndex);
+
+
     return (QFileInfo(m_data.controlAreasFileName()).exists());
 }

@@ -42,6 +42,31 @@ public:
         m_targetDeltaAngleRad = targetDeltaAngleRad;
     }
 
+    //! Returns the file name of trajectory configuration file.
+    QString trajectoryFileName() const { return m_trajectoryFileName; }
+    //! Set the trajectory file name.
+    void setTrajectoryFileName(QString trajectoryFileName)
+    {
+        m_trajectoryFileName = trajectoryFileName;
+    }
+
+    //! Returns trajectory
+    QList<PositionMeters> trajectory() const { return m_trajectory; }
+    //! Set the trajectory
+    void setTrajectory(QList<PositionMeters>& trajectory)
+    {
+        m_trajectory = trajectory;
+    }
+
+    //! Returns trajectory current index
+    size_t trajectoryCurrentIndex() const { return m_trajectoryCurrentIndex; }
+    //! Set the trajectory curent index
+    void setTrajectoryCurrentIndex(size_t trajectoryCurrentIndex)
+    {
+        m_trajectoryCurrentIndex = trajectoryCurrentIndex;
+    }
+
+
 protected:
     //! The path to the file describine the control areas.
     QString m_controlAreasFileName;
@@ -50,6 +75,13 @@ protected:
     double m_targetRadiusM;
     //! The delta angle to set the target position with respect to the robot.
     double m_targetDeltaAngleRad;
+    //! The path of the file containing the trajectory. If not provided, use m_targetRadiusM and m_targetDeltaAngleRad
+    //  to define robot trajectories.
+    QString m_trajectoryFileName;
+    //! The predefined trajectory.
+    QList<PositionMeters> m_trajectory;
+    //! Current index in the trajectory.
+    size_t m_trajectoryCurrentIndex;
 };
 
 class CircularSetupControllerSettings : public ExperimentControllerSettings

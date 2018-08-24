@@ -158,11 +158,36 @@ PositionMeters CircularSetupController::computeTargetPosition()
     if (m_robot->state().position().isValid() &&
             (m_targetTurningDirection != TurningDirection::UNDEFINED))
     {
-        double deltaAngleRad = m_settings.targetDeltaAngleRad();
-        if (m_targetTurningDirection == TurningDirection::CLOCK_WISE)
-            deltaAngleRad *= -1;
-        double angleToRobotRad = m_setupCenter.angleRadTo(m_robot->state().position());
-        return m_setupCenter.positionAt(angleToRobotRad + deltaAngleRad, m_settings.targetRadiusM());
+        QList<PositionMeters> trajectory = m_settings.trajectory();
+        if (trajectory.size()) {
+            // Trajectory already provided in settings
+            size_t trajectoryCurrentIndex = m_settings.trajectoryCurrentIndex();
+            if (m_robot->state().position().closeTo(trajectory.at(trajectoryCurrentIndex))) {
+                if (m_targetTurningDirection == TurningDirection::CLOCK_WISE) {
+                    ++trajectoryCurrentIndex;
+                } else if (m_targetTurningDirection == TurningDirection::COUNTER_CLOCK_WISE) {
+                    if (trajectoryCurrentIndex == 0) {
+                        trajectoryCurrentIndex = trajectory.size() - 1;
+                    } else {
+                        --trajectoryCurrentIndex;
+                    }
+                }
+                if (trajectoryCurrentIndex >= trajectory.size()) {
+                    trajectoryCurrentIndex = 0;
+                }
+                m_settings.setTrajectoryCurrentIndex(trajectoryCurrentIndex);
+            }
+            return trajectory.at(trajectoryCurrentIndex);
+
+        } else {
+            // Trajectory is the circle of radius targetRadiusM
+            double deltaAngleRad = m_settings.targetDeltaAngleRad();
+            if (m_targetTurningDirection == TurningDirection::CLOCK_WISE)
+                deltaAngleRad *= -1;
+            double angleToRobotRad = m_setupCenter.angleRadTo(m_robot->state().position());
+            return m_setupCenter.positionAt(angleToRobotRad + deltaAngleRad, m_settings.targetRadiusM());
+        }
+
     } else {
         return PositionMeters::invalidPosition();
     }
