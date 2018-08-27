@@ -268,7 +268,7 @@
                     <minBlobSizePx>2</minBlobSizePx>
                     <qualityLevel>0.01</qualityLevel>
                     <minDistance>5.0</minDistance>
-                    <blockSize>3</blockSize>
+                    <blockSize>5</blockSize>
                     <useHarrisDetector>1</useHarrisDetector>
                     <k>0.04</k>
             </blobDetector>

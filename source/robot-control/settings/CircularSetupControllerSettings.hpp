@@ -1,6 +1,8 @@
 #ifndef CATS2_CIRCULAR_SETUP_CONTROLLER_SETTINGS_HPP
 #define CATS2_CIRCULAR_SETUP_CONTROLLER_SETTINGS_HPP
 
+#include <CoordinatesConversion.hpp>
+#include <AgentState.hpp>
 #include "ExperimentControllerSettings.hpp"
 
 /*!

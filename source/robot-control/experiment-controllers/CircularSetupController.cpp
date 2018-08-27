@@ -161,7 +161,7 @@ PositionMeters CircularSetupController::computeTargetPosition()
         QList<PositionMeters> trajectory = m_settings.trajectory();
         if (trajectory.size()) {
             // Trajectory already provided in settings
-            size_t trajectoryCurrentIndex = m_settings.trajectoryCurrentIndex();
+            int trajectoryCurrentIndex = m_settings.trajectoryCurrentIndex();
             if (m_robot->state().position().closeTo(trajectory.at(trajectoryCurrentIndex))) {
                 if (m_targetTurningDirection == TurningDirection::CLOCK_WISE) {
                     ++trajectoryCurrentIndex;

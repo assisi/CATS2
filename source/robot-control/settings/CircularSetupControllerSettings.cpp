@@ -59,7 +59,7 @@ bool CircularSetupControllerSettings::init(QString configurationFileName)
     settings.readVariable(QString("%1/trajectoryFileName").arg(m_settingPathPrefix),
                           relativeTrajectoryPath,
                           relativeTrajectoryPath);
-    m_data.setTrajectoryFileName(relativeTrajectoryPath);
+    m_data.setTrajectoryFileName(QString::fromStdString(relativeTrajectoryPath));
     QString trajectoryPath = configurationFolder +
                                 QDir::separator() +
                                 QString::fromStdString(relativeTrajectoryPath);
@@ -74,7 +74,7 @@ bool CircularSetupControllerSettings::init(QString configurationFileName)
                 trajectory << PositionMeters(point);
             m_data.setTrajectory(trajectory);
             qDebug() << QString("Loaded trajectory of %1 points, used in circular setup"
-                                "control modes for all robots").arg(m_trajectory.size());
+                                "control modes for all robots").arg(trajectory.size());
         } else {
             qDebug() << "The trajectory is empty";
         }
@@ -83,7 +83,7 @@ bool CircularSetupControllerSettings::init(QString configurationFileName)
     }
 
     // read trajectory current index
-    size_t trajectoryCurrentIndex = 0;
+    int trajectoryCurrentIndex = 0;
     settings.readVariable(QString("%1/trajectoryCurrentIndex").arg(m_settingPathPrefix),
                           trajectoryCurrentIndex,
                           trajectoryCurrentIndex);
