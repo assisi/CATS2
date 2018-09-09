@@ -152,6 +152,12 @@ MainWindow::MainWindow(QWidget *parent) :
             PositionMeters position(x, y);
             m_robotsHandler->contolLoop()->goToPosition(position, true);
         });
+
+        connect(m_interSpeciesDataManager.data(),
+                &InterSpeciesDataManager::notifyStopAllRobots,
+                [=]() {
+            m_robotsHandler->contolLoop()->stopAllRobots();
+        });
     }
 
     // show the window maximazed

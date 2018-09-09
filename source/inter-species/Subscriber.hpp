@@ -25,6 +25,8 @@ signals:
     void notifyReceptionOfUpdateRobotTargetPositionMessage(QString message);
     //! Notifies the reception of a command to change robot mode in 2Rooms Inter-species experiments
     void notifyInterspecies2RoomsModeChange(QString message);
+    //! Notifies that all robots must stop
+    void notifyStopAllRobots();
 
 protected:
     //! Processes the input message.

@@ -36,6 +36,8 @@ InterSpeciesDataManager::InterSpeciesDataManager(QString publisherAddress,
             this, &InterSpeciesDataManager::notifyRobotTargetPositionUpdated);
     connect(m_subscriber.data(), &Subscriber::notifyInterspecies2RoomsModeChange,
             this, &InterSpeciesDataManager::notifyInterspecies2RoomsModeChange);
+    connect(m_subscriber.data(), &Subscriber::notifyStopAllRobots,
+            this, &InterSpeciesDataManager::notifyStopAllRobots);
 
     thread->start();
 }
